@@ -12,3 +12,6 @@ all: clean run-tests
 
 clean:
 	rm -Rf build/
+
+pre-commit:
+	pre-commit run --hook-stage manual --files ./common/* ./client/* ./server/* ./editor/* ./tests/*
