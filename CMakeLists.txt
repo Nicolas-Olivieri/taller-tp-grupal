@@ -50,6 +50,21 @@ target_include_directories(taller_common PUBLIC .)
 # sudo apt-get install libopus-dev libopusfile-dev libxmp-dev libfluidsynth-dev fluidsynth libwavpack1 libwavpack-dev libfreetype-dev wavpack
 #
 
+# TOML installation
+# ---------------
+if(TALLER_CLIENT OR TALLER_EDITOR OR TALLER_SERVER)
+    include(FetchContent)
+    FetchContent_Declare(
+            toml11
+            GIT_REPOSITORY https://github.com/ToruNiina/toml11.git
+            GIT_TAG        v4.4.0
+    )
+
+    FetchContent_MakeAvailable(toml11)
+
+    target_link_libraries(taller_common PUBLIC toml11::toml11)
+endif()
+
 # Install libSDL2 and libSDL2pp (for client or editor)
 # HEY!! TODO XXX: add more dependendies (either for client, server or editor)
 if(TALLER_CLIENT OR TALLER_EDITOR)
@@ -118,7 +133,7 @@ if(TALLER_CLIENT)
     target_include_directories(taller_client PRIVATE ${libSDL2pp_SOURCE_DIR})
 
     # Link the taller_common lib target
-    target_link_libraries(taller_client taller_common SDL2pp::SDL2pp)
+    target_link_libraries(taller_client taller_common SDL2pp::SDL2pp toml11::toml11)
 endif()
 
 if(TALLER_SERVER)
@@ -135,7 +150,7 @@ if(TALLER_SERVER)
     set_project_warnings(taller_server ${TALLER_MAKE_WARNINGS_AS_ERRORS} FALSE)
 
     # Link the taller_common lib target
-    target_link_libraries(taller_server taller_common)
+    target_link_libraries(taller_server taller_common toml11::toml11)
 endif()
 
 if(TALLER_EDITOR)
@@ -155,7 +170,7 @@ if(TALLER_EDITOR)
     target_include_directories(taller_editor PRIVATE ${libSDL2pp_SOURCE_DIR})
 
     # Link the taller_common lib target
-    target_link_libraries(taller_editor taller_common SDL2pp::SDL2pp)
+    target_link_libraries(taller_editor taller_common SDL2pp::SDL2pp toml11::toml11)
 endif()
 
 
