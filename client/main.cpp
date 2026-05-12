@@ -1,15 +1,16 @@
-#include "../common/socket.h"
 #include "client.h"
 
-#define HOSTNAME argv[1]
-#define SERVNAME argv[2]
+#define CLI_HOSTNAME argv[1]
+#define CLI_SERVNAME argv[2]
+#define CLI_MIN_ARGS 3
+
 
 int main(const int argc, char* argv[]) {
-    if (argc != 3) {
+    if (argc != CLI_MIN_ARGS) {
         return 1;
     }
 
-    Client cliente(Socket(HOSTNAME, SERVNAME));
+    Client cliente(CLI_HOSTNAME, CLI_SERVNAME);
     cliente.run();
 
     return 0;

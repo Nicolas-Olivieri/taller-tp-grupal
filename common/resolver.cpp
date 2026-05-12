@@ -14,7 +14,8 @@
 #include "liberror.h"
 #include "resolvererror.h"
 
-Resolver::Resolver(const char* hostname, const char* servname, bool is_passive) {
+Resolver::Resolver(const char* hostname, const char* servname,
+                   bool is_passive) {
     struct addrinfo hints;
     this->result = this->_next = nullptr;
 
@@ -63,13 +64,16 @@ Resolver::Resolver(const char* hostname, const char* servname, bool is_passive) 
     if (s != 0) {
         if (s == EAI_SYSTEM) {
             /*
-             * Como `errno` es global y puede ser modificada por *cualquier* otra
-             * función, es *importantísimo* copiarla apenas detectemos el error.
+             * Como `errno` es global y puede ser modificada por *cualquier*
+             * otra función, es *importantísimo* copiarla apenas detectemos el
+             * error.
              *
              * En este caso, `LibError` lo hara por nosotros.
              */
-            throw LibError(errno, "Name resolution failed for hostname '%s' y servname '%s'",
-                           (hostname ? hostname : ""), (servname ? servname : ""));
+            throw LibError(
+                    errno,
+                    "Name resolution failed for hostname '%s' y servname '%s'",
+                    (hostname ? hostname : ""), (servname ? servname : ""));
 
         } else {
             /*

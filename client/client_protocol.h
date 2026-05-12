@@ -12,7 +12,7 @@ private:
 public:
     explicit ClientProtocol(Socket&& skt);
 
-    void send_msg(const DataDTO &data);
+    void send_msg(const DataDTO& data);
 
     DataDTO recv_msg();
 };

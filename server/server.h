@@ -1,19 +1,22 @@
 #ifndef SERVER_H
 #define SERVER_H
-#include "server_protocol.h"
+#include <string>
+
 #include "common/socket.h"
 
+#include "server_protocol.h"
 
 class Server {
 private:
     ServerProtocol protocol;
 
-    void poc_toml();
 
 public:
-    explicit Server(Socket&& skt);
+    explicit Server(const char* servname);
 
     void run();
+
+    void poc_toml();
 };
 
 

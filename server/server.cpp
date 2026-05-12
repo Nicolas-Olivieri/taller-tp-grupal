@@ -1,11 +1,14 @@
 #include "server.h"
+
 #include <iostream>
 #include <map>
+
 #include <toml.hpp>
-#include "common/toml_test.cpp"
+
+#include "common/toml_test.h"
 
 
-Server::Server(Socket&& skt) : protocol(skt.accept()) {}
+Server::Server(const char* servname): protocol(Socket(servname).accept()) {}
 
 void Server::run() {
     DataDTO response = protocol.recv_msg();
@@ -24,7 +27,8 @@ void Server::poc_toml() {
     try {
         auto root = toml::parse("items.toml");
 
-        auto equipables = toml::find<std::map<std::string, Equipable>>(root, "equipable");
+        auto equipables =
+                toml::find<std::map<std::string, Equipable>>(root, "equipable");
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << '\n';

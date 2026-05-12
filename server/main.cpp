@@ -1,14 +1,16 @@
 #include "common/socket.h"
+
 #include "server.h"
 
-#define SERVNAME argv[1]
+#define SERV_SERVNAME argv[1]
+#define SERV_MIN_ARGS 2
 
 int main(const int argc, char* argv[]) {
-    if (argc != 2) {
+    if (argc != SERV_MIN_ARGS) {
         return 1;
     }
 
-    Server server((Socket(SERVNAME)));
+    Server server(SERV_SERVNAME);
     server.run();
 
     return 0;

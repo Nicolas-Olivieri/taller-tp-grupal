@@ -1,7 +1,6 @@
 target_sources(taller_common
     PRIVATE
         # .cpp files
-        toml_test.cpp
         liberror.cpp
         resolver.cpp
         resolvererror.cpp
@@ -15,4 +14,5 @@ target_sources(taller_common
         socket.h
         types.h
         foo.h
+        toml_test.h
     )
