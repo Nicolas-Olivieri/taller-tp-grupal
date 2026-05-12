@@ -1,18 +1,15 @@
-#include <iostream>
-#include <map>
-#include <toml.hpp>
-#include "common/foo.h"
-#include "common/toml_test.cpp"
+#include "common/socket.h"
+#include "server.h"
 
-int main() {
-    try {
-        auto root = toml::parse("../items.toml");
+#define SERVNAME argv[1]
 
-        auto equipables = toml::find<std::map<std::string, Equipable>>(root, "equipable");
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << '\n';
+int main(const int argc, char* argv[]) {
+    if (argc != 2) {
+        return 1;
     }
 
-    return foo(6);
+    Server server((Socket(SERVNAME)));
+    server.run();
+
+    return 0;
 }

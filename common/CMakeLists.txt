@@ -1,9 +1,18 @@
 target_sources(taller_common
     PRIVATE
-    # .cpp files
-    foo.cpp
-    toml_test.cpp
+        # .cpp files
+        toml_test.cpp
+        liberror.cpp
+        resolver.cpp
+        resolvererror.cpp
+        socket.cpp
+        foo.cpp
     PUBLIC
-    # .h files
-    foo.h
+        # .h files
+        liberror.h
+        resolver.h
+        resolvererror.h
+        socket.h
+        types.h
+        foo.h
     )
