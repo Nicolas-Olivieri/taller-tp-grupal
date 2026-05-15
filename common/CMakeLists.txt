@@ -6,6 +6,7 @@ target_sources(taller_common
         resolvererror.cpp
         socket.cpp
         foo.cpp
+        logger.cpp
     PUBLIC
         # .h files
         liberror.h
@@ -15,4 +16,5 @@ target_sources(taller_common
         types.h
         foo.h
         toml_test.h
+        logger.h
     )

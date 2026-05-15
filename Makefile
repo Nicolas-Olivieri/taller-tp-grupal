@@ -22,10 +22,14 @@ SERVER_FLAGS= 5050
 EDITOR_FLAGS= # vacío de momento, agregar los necesarios
 TESTS_FLAGS= # vacío de momento, agregar los necesarios
 
+# Identificadores para las bitácoras de eventos
+SERVER_ID= "Argentum-Online-server"
+CLIENT_ID= "Argentum-Online-client"
+
 all: build
 
 pre-commit:
-	pre-commit run --hook-stage manual --files $(SOURCE_CODE)
+	pre-commit run --hook-stage manual --all-files
 
 build:
 	cmake --build $(BUILD_DIR) >/dev/null
@@ -44,3 +48,9 @@ editor: build
 
 test: build
 	$(BUILD_DIR)/$(TESTS_EXE) $(EDITOR_FLAGS)
+
+log-server:
+	journalctl -t $(SERVER_ID) -f
+
+log-client:
+	journalctl -t $(CLIENT_ID) -f
