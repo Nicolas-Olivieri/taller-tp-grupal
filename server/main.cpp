@@ -6,11 +6,12 @@
 #define SERV_MIN_ARGS 2
 
 int main(const int argc, char* argv[]) {
-    if (argc != SERV_MIN_ARGS) {
+    if (argc != SERV_MIN_ARGS && argv[0] != nullptr) {
         return 1;
     }
 
-    Server server(SERV_SERVNAME);
+
+    Server server;
     server.run();
 
     return 0;

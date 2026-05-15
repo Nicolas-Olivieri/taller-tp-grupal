@@ -6,11 +6,11 @@
 
 
 int main(const int argc, char* argv[]) {
-    if (argc != CLI_MIN_ARGS) {
+    if (argc != CLI_MIN_ARGS && argv[0] != nullptr) {
         return 1;
     }
 
-    Client cliente(CLI_HOSTNAME, CLI_SERVNAME);
+    Client cliente;
     cliente.run();
 
     return 0;

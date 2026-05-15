@@ -30,6 +30,9 @@ pre-commit:
 build:
 	cmake --build $(BUILD_DIR) >/dev/null
 
+error:
+	cmake --build $(BUILD_DIR)
+
 client: build
 	$(BUILD_DIR)/$(CLIENT_EXE) $(CLIENT_FLAGS)
 

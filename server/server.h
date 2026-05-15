@@ -7,16 +7,10 @@
 #include "server_protocol.h"
 
 class Server {
-private:
-    ServerProtocol protocol;
-
-
 public:
-    explicit Server(const char* servname);
+    Server();
 
     void run();
-
-    void poc_toml();
 };
 
 
