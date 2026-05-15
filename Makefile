@@ -25,7 +25,7 @@ TESTS_FLAGS= # vacío de momento, agregar los necesarios
 all: build
 
 pre-commit:
-	pre-commit run --hook-stage manual --files $(SOURCE_CODE)
+	pre-commit run --hook-stage manual --all-files
 
 build:
 	cmake --build $(BUILD_DIR) >/dev/null
