@@ -5,7 +5,7 @@
 #define CLI_MIN_ARGS 3
 
 
-int main(const int argc, char* argv[]) {
+int main(const int argc, const char* argv[]) {
     if (argc != CLI_MIN_ARGS && argv[0] != nullptr) {
         return 1;
     }

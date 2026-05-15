@@ -14,6 +14,4 @@
 
 Client::Client() {}
 
-void Client::run() {
-
-}
+void Client::run() {}

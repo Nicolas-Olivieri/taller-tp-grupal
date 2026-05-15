@@ -30,6 +30,6 @@ DataDTO ServerProtocol::recv_msg() {
     std::string msg(msg_size, 0);
     peer.recvall(&msg[0], msg_size);
 
-    DataDTO data = {static_cast<Command>(cmd), msg};
+    DataDTO data = {static_cast<CommandCode>(cmd), msg};
     return data;
 }

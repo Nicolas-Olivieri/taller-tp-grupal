@@ -11,7 +11,6 @@ public:
     Client();
 
     void run();
-
 };
 
 #endif
