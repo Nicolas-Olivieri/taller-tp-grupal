@@ -7,10 +7,10 @@
 
 class ClientProtocol {
 private:
-    Socket skt;
+    Socket& skt;
 
 public:
-    explicit ClientProtocol(Socket&& skt);
+    explicit ClientProtocol(Socket& skt);
 
     void send_msg(const DataDTO& data);
 

@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-ClientProtocol::ClientProtocol(Socket&& skt): skt(std::move(skt)) {}
+ClientProtocol::ClientProtocol(Socket& skt): skt(skt) {}
 
 void ClientProtocol::send_msg(const DataDTO& data) {
     const uint8_t cmd = data.command;
