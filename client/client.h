@@ -1,11 +1,12 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "common/socket.h"
-
 #include "client_protocol.h"
+#include "SDL/client_game.h"
 
 class Client {
+private:
+    ClientGame game;
 
 public:
     Client();

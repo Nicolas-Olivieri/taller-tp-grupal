@@ -114,6 +114,8 @@ if(TALLER_CLIENT OR TALLER_EDITOR)
     FetchContent_MakeAvailable(SDL2 SDL2_image SDL2_mixer SDL2_ttf libSDL2pp)
     # N: Yo lo agrego acá para asegurarme que se compile correctamente en el cmake-build-debug
     option(SDL2PP_WITH_IMAGE "Enable SDL2_image support" ON)
+
+    add_definitions(-DDATA_PATH="${PROJECT_SOURCE_DIR}/resources")
 endif()
 
 # Program section
