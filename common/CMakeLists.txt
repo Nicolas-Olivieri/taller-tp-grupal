@@ -5,6 +5,7 @@ target_sources(taller_common
         resolver.cpp
         resolvererror.cpp
         socket.cpp
+        thread/thread.cpp
         foo.cpp
     PUBLIC
         # .h files
@@ -12,6 +13,7 @@ target_sources(taller_common
         resolver.h
         resolvererror.h
         socket.h
+        thread/thread.h
         types.h
         foo.h
         toml_test.h
