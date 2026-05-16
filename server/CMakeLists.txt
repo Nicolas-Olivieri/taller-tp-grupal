@@ -3,9 +3,9 @@ target_sources(taller_server
         # .cpp files
         main.cpp
         server.cpp
-        server_protocol.cpp
+        protocol/server_protocol.cpp
     PUBLIC
         # .h files
         server.h
-        server_protocol.h
+        protocol/server_protocol.h
     )

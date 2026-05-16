@@ -19,4 +19,6 @@ target_sources(taller_common
         foo.h
         toml_test.h
         logger.h
+        message.h
+        dto/credentials.h
     )
