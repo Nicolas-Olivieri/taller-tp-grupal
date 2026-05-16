@@ -1,0 +1,35 @@
+#ifndef SPRITE_H
+#define SPRITE_H
+#include <map>
+
+#include "sprite_layer.h"
+#include "client/SDL/types.h"
+
+class Sprite {
+private:
+    SDL2pp::Point position;
+    SDL2pp::Point target_position;
+    int remaining_frames;
+
+    Direction direction;
+
+    std::map<Layer, SpriteLayer> layers;
+
+public:
+    Sprite(SpriteLayer&& body, SDL2pp::Point position, Direction action);
+
+    void add_layer(Layer layer_num, SpriteLayer&& layer);
+    void remove_layer(Layer layer_num);
+
+    void update_position(Direction new_action, const SDL2pp::Point &new_position);
+
+    void update_frame(int iteration);
+
+    void render();
+
+    SDL2pp::Point get_position() const;
+
+};
+
+
+#endif //SPRITE_H

@@ -6,6 +6,9 @@ target_sources(taller_common
         resolvererror.cpp
         socket.cpp
         foo.cpp
+
+        util/rate_timer.cpp
+
     PUBLIC
         # .h files
         liberror.h
@@ -15,4 +18,6 @@ target_sources(taller_common
         types.h
         foo.h
         toml_test.h
-    )
+
+        util/rate_timer.h
+)
