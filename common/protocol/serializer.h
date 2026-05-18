@@ -6,7 +6,9 @@
 #include <vector>
 
 #include "common/dto/credentials.h"
+#include "common/dto/event.h"
 #include "common/dto/message.h"
+#include "common/dto/moveevent.h"
 
 class Serializer {
 private:
@@ -25,6 +27,10 @@ public:
     void serialize(const ProtocolMessageDTO& dto);
 
     void serialize(const CredentialsDTO& credentials);
+
+    void serialize(const EventDTO& event);
+
+    void serialize(const MoveEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

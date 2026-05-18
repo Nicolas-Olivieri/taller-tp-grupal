@@ -10,6 +10,9 @@ target_sources(taller_common
         util/rate_timer.cpp
         logger.cpp
         dto/credentials.cpp
+        dto/event.cpp
+        dto/moveevent.cpp
+        dto/command.cpp
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
@@ -28,6 +31,9 @@ target_sources(taller_common
         logger.h
         dto/message.h
         dto/credentials.h
+        dto/event.h
+        dto/moveevent.h
+        dto/command.h
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h

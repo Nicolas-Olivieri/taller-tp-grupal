@@ -16,6 +16,16 @@ void Serializer::serialize(const CredentialsDTO& credentials) {
     serialize(credentials.password);
 }
 
+void Serializer::serialize(const EventDTO& event) {
+    serialize(static_cast<uint8_t>(Message::COMMAND));
+    serialize(static_cast<uint8_t>(event.command));
+}
+
+void Serializer::serialize(const MoveEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(static_cast<uint8_t>(event.direction));
+}
+
 void Serializer::serialize(const std::string& value) {
     uint16_t size = static_cast<uint16_t>(value.size());
     uint16_t netsize = htons(size);
