@@ -1,14 +1,18 @@
 #include "lobby.h"
-#include "common/socket.h"
+
+#include <QMessageBox>
+#include <utility>
+
 #include "common/dto/credentials.h"
 #include "common/liberror.h"
-#include <QMessageBox>
+#include "common/protocol/protocol.h"
+#include "common/socket.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
 
-Lobby::Lobby() : QMainWindow(nullptr) {
+Lobby::Lobby(): QMainWindow(nullptr) {
 
     this->setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     // Configuración de la interfaz gráfica (Widgets y Layouts)
@@ -56,14 +60,13 @@ void Lobby::conectMatch() {
 
 Socket Lobby::get_socket() {
     if (!socket) {
-        throw std::runtime_error("No se pudo conectar correctamente con el servidor");
+        throw std::runtime_error(
+                "No se pudo conectar correctamente con el servidor");
     }
     return std::move(socket.value());
 }
 
-std::string Lobby::get_username() {
-    return username;
-}
+std::string Lobby::get_username() { return username; }
 
 bool Lobby::can_create_socket() {
     const char* hostname = input_ip->text().trimmed().toUtf8().constData();
@@ -73,8 +76,11 @@ bool Lobby::can_create_socket() {
         socket.emplace(hostname, servname);
     } catch (const std::exception& error) {
         std::string error_txt(error.what());
-        std::string warning_txt = "Se obtuvo el siguiente error: " + error_txt + "\nVerifique que la dirección IP y Puerto ingresados correspondan a un servidor de Argentum";
-        QMessageBox::warning(this, "Error en la conexión",warning_txt.c_str());
+        std::string warning_txt =
+                "Se obtuvo el siguiente error: " + error_txt +
+                "\nVerifique que la dirección IP y Puerto ingresados "
+                "correspondan a un servidor de Argentum";
+        QMessageBox::warning(this, "Error en la conexión", warning_txt.c_str());
         input_ip->clear();
         input_port->clear();
         return false;
