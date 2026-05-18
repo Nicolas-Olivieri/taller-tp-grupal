@@ -22,6 +22,8 @@ target_sources(taller_common
         types.h
         foo.h
         toml_test.h
+        direction.h
+        queue.h
         logger.h
         dto/message.h
         dto/credentials.h

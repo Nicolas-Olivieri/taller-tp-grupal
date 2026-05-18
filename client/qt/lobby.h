@@ -1,40 +1,41 @@
 #ifndef TALLER_TP_LOBBY_H
 #define TALLER_TP_LOBBY_H
 
-#include <QMainWindow>
-#include <QListWidget>
 #include <QLineEdit>
+#include <QListWidget>
+#include <QMainWindow>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <string>
+
 #include "common/socket.h"
 
 class Lobby: public QMainWindow {
-        Q_OBJECT // no borrar la macro, tiene sentido aca
+    Q_OBJECT  // no borrar la macro, tiene sentido aca
 
-        public:
-        Lobby();
+            public: Lobby();
 
-        Socket get_socket();
+    Socket get_socket();
 
-        std::string get_username();
+    std::string get_username();
 
-        private slots:
-        void conectMatch(); // La función que se ejecutará cuando se pulse el botón
+private slots:
+    void conectMatch();  // La función que se ejecutará cuando se pulse el botón
 
-        private:
-        QWidget* central_widget;
-        QVBoxLayout* layout;
-        QLineEdit* input_ip;
-        QLineEdit* input_port;
-        QLineEdit* input_username;
-        QPushButton* send_button;
+private:
+    QWidget* central_widget;
+    QVBoxLayout* layout;
+    QLineEdit* input_ip;
+    QLineEdit* input_port;
+    QLineEdit* input_username;
+    QPushButton* send_button;
 
-        std::optional<Socket> socket;
-        std::string username;
+    std::optional<Socket> socket;
+    std::string username;
 
-        bool can_create_socket();
+    bool can_create_socket();
 
-        const std::string style = R"(
+    const std::string style = R"(
         QLineEdit {
             border: 1px solid #aaa;
             border-radius: 5px;
@@ -57,4 +58,4 @@ class Lobby: public QMainWindow {
         )";
 };
 
-#endif //TALLER_TP_LOBBY_H
+#endif  // TALLER_TP_LOBBY_H

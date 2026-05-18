@@ -13,7 +13,8 @@ enum class Message : uint8_t { CREDENTIALS };
 
 struct ProtocolMessageDTO {
     virtual size_t message_size() const = 0;
-    // Cada DTO tiene que implementar este para hacer el llamado de Serializer con *this
+    // Cada DTO tiene que implementar este para hacer el llamado de Serializer
+    // con *this
     virtual void accept(Serializer& serializer) const = 0;  // NOLINT
     virtual ~ProtocolMessageDTO() = default;
 };
