@@ -6,10 +6,9 @@
 #include <vector>
 
 #include "common/direction.h"
-#include "common/dto/command.h"
-#include "common/dto/snapshot/action.h"
-#include "common/dto/snapshot/appearance.h"
-#include "common/dto/snapshot/playerinfo.h"
+#include "common/dto/events/command.h"
+#include "common/dto/snapshot/actions/action.h"
+#include "common/dto/snapshot/info/playerinfo.h"
 #include "common/socket.h"
 
 class Deserializer {

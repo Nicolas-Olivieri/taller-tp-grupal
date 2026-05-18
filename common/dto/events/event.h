@@ -1,8 +1,9 @@
-#ifndef EVENT_H
-#define EVENT_H
+#ifndef EVENTDTO_H
+#define EVENTDTO_H
+
+#include "common/dto/message.h"
 
 #include "command.h"
-#include "message.h"
 
 // Clase base de los eventos. No es abstracta, pero otros eventos con más campos
 // van a heredar de ella
@@ -18,4 +19,4 @@ struct EventDTO: public ProtocolMessageDTO {
     virtual ~EventDTO() = default;  // obligatorio por herencia
 };
 
-#endif  // EVENT_H
+#endif  // EVENTDTO_H

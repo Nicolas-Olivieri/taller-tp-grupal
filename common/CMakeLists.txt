@@ -9,14 +9,14 @@ target_sources(taller_common
         foo.cpp
         util/rate_timer.cpp
         logger.cpp
-        dto/credentials.cpp
-        dto/event.cpp
-        dto/moveevent.cpp
-        dto/command.cpp
+        dto/lobby/credentials.cpp
+        dto/events/event.cpp
+        dto/events/moveevent.cpp
+        dto/events/command.cpp
         dto/snapshot/snapshot.cpp
-        dto/snapshot/appearance.cpp
-        dto/snapshot/action.cpp
-        dto/snapshot/playerinfo.cpp
+        dto/snapshot/actions/appearance.cpp
+        dto/snapshot/actions/action.cpp
+        dto/snapshot/info/playerinfo.cpp
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
@@ -34,14 +34,14 @@ target_sources(taller_common
         queue.h
         logger.h
         dto/message.h
-        dto/credentials.h
-        dto/event.h
-        dto/moveevent.h
-        dto/command.h
+        dto/lobby/credentials.h
+        dto/events/event.h
+        dto/events/moveevent.h
+        dto/events/command.h
         dto/snapshot/snapshot.h
-        dto/snapshot/appearance.h
-        dto/snapshot/action.h
-        dto/snapshot/playerinfo.h
+        dto/snapshot/actions/appearance.h
+        dto/snapshot/actions/action.h
+        dto/snapshot/info/playerinfo.h
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h

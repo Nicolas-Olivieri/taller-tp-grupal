@@ -1,5 +1,5 @@
-#ifndef APPEARANCE_H
-#define APPEARANCE_H
+#ifndef APPEARANCEDTO_H
+#define APPEARANCEDTO_H
 
 #include "common/dto/message.h"
 
@@ -15,4 +15,4 @@ struct AppearanceDTO: public ProtocolMessageDTO {
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // APPEARANCE_H
+#endif  // APPEARANCEDTO_H

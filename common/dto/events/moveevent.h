@@ -1,7 +1,5 @@
-#ifndef MOVEEVENT_H
-#define MOVEEVENT_H
-
-#include "common/direction.h"
+#ifndef MOVEEVENTDTO_H
+#define MOVEEVENTDTO_H
 
 #include "event.h"
 
@@ -15,4 +13,4 @@ struct MoveEventDTO: public EventDTO {
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // MOVEEVENT_H
+#endif  // MOVEEVENTDTO_H

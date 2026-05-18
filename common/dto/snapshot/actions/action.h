@@ -1,10 +1,9 @@
-#ifndef ACTION_H
-#define ACTION_H
-
-#include <cstdint>
+#ifndef ACTIONDTO_H
+#define ACTIONDTO_H
 
 #include "common/dto/message.h"
-#include "common/dto/snapshot/appearance.h"
+
+#include "appearance.h"
 
 enum class ActionType : uint8_t { APPEARANCE };
 
@@ -21,4 +20,4 @@ struct ActionDTO: public ProtocolMessageDTO {
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // ACTION_H
+#endif  // ACTIONDTO_H

@@ -5,13 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "common/dto/credentials.h"
-#include "common/dto/event.h"
+#include "common/dto/events/event.h"
+#include "common/dto/events/moveevent.h"
+#include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
-#include "common/dto/moveevent.h"
-#include "common/dto/snapshot/action.h"
-#include "common/dto/snapshot/appearance.h"
-#include "common/dto/snapshot/playerinfo.h"
 #include "common/dto/snapshot/snapshot.h"
 
 class Serializer {

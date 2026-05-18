@@ -1,12 +1,11 @@
-#ifndef SNAPSHOT_H
-#define SNAPSHOT_H
+#ifndef SNAPSHOTDTO_H
+#define SNAPSHOTDTO_H
 
 #include <vector>
 
+#include "actions/action.h"
 #include "common/dto/message.h"
-
-#include "action.h"
-#include "playerinfo.h"
+#include "info/playerinfo.h"
 
 struct SnapshotDTO: public ProtocolMessageDTO {
     std::vector<PlayerInfoDTO> players_information;
@@ -22,4 +21,4 @@ struct SnapshotDTO: public ProtocolMessageDTO {
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // SNAPSHOT_H
+#endif  // SNAPSHOTDTO_H

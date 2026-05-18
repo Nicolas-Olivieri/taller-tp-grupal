@@ -1,9 +1,9 @@
-#ifndef CREDENTIALS_H
-#define CREDENTIALS_H
+#ifndef CREDENTIALSDTO_H
+#define CREDENTIALSDTO_H
 
 #include <string>
 
-#include "message.h"
+#include "common/dto/message.h"
 
 struct CredentialsDTO: public ProtocolMessageDTO {
     std::string username;
@@ -21,4 +21,4 @@ struct CredentialsDTO: public ProtocolMessageDTO {
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // CREDENTIALS_H
+#endif  // CREDENTIALSDTO_H

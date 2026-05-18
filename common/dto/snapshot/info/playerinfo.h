@@ -1,5 +1,5 @@
-#ifndef PLAYERINFO_H
-#define PLAYERINFO_H
+#ifndef PLAYERINFODTO_H
+#define PLAYERINFODTO_H
 
 #include <string>
 
@@ -22,4 +22,4 @@ struct PlayerInfoDTO: public ProtocolMessageDTO {
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // PLAYERINFO_H
+#endif  // PLAYERINFODTO_H

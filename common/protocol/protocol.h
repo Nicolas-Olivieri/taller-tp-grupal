@@ -1,8 +1,8 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
-#include "common/dto/command.h"
-#include "common/dto/credentials.h"
+#include "common/dto/events/command.h"
+#include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
 #include "common/dto/snapshot/snapshot.h"
 #include "common/socket.h"
