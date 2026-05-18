@@ -3,19 +3,22 @@
 
 #include <string>
 
-#include "common/message.h"
+#include "common/dto/message.h"
 
-struct CredentialsDTO {
+struct CredentialsDTO: public ProtocolMessageDTO {
     std::string username;
     std::string password;
 
-    explicit CredentialsDTO(const std::string& username):
-            username(username), password("default") {}  // TODO: eliminar esta
+    explicit CredentialsDTO(
+            const std::string& username);  // TODO: eliminar esta
 
     // TODO: usar solo esta firma y eliminar la otra cuando implementemos la
     // lógica con contraseñas
-    CredentialsDTO(const std::string& username, const std::string& password):
-            username(username), password(password) {}
+    CredentialsDTO(const std::string& username, const std::string& password);
+
+    size_t message_size() const override;
+
+    void accept(Serializer& serializer) const override;
 };
 
 #endif  // CREDENTIALS_H

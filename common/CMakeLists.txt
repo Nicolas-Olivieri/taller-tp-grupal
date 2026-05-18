@@ -8,6 +8,10 @@ target_sources(taller_common
         thread/thread.cpp
         foo.cpp
         logger.cpp
+        dto/credentials.cpp
+        protocol/protocol.cpp
+        protocol/serializer.cpp
+        protocol/deserializer.cpp
     PUBLIC
         # .h files
         liberror.h
@@ -19,6 +23,9 @@ target_sources(taller_common
         foo.h
         toml_test.h
         logger.h
-        message.h
+        dto/message.h
         dto/credentials.h
+        protocol/protocol.h
+        protocol/serializer.h
+        protocol/deserializer.h
     )
