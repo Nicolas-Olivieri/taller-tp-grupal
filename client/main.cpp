@@ -1,15 +1,21 @@
 #include <iostream>
 
+#include "common/logger.h"
+
 #include "client.h"
 
 #define CLI_MIN_ARGS 3
 
+#define ERROR 1
 
-int main(int argc, char* argv[]) {
+
+int main(const int argc, char* argv[]) {
+    const auto log = Logger();
     try {
+
         if (argc != CLI_MIN_ARGS) {
-            std::cerr << "" << std::endl;
-            return 1;
+            std::cerr << "Usage: " << argv[0] << " " << std::endl;
+            return ERROR;
         }
 
         // TODO probar meter el init de QT app aca
@@ -22,10 +28,10 @@ int main(int argc, char* argv[]) {
         Client client(argc, argv);
         return client.run();
     } catch (const std::exception& e) {
-        // TODO agregar log de errores
-        std::cerr << "Ocurrió un error: " << e.what() << std::endl;
-        return 1;
+        log.err(EXCEPTION_MSG, e);
     } catch (...) {
-        std::cerr << "Ocurrió un error Desconocido" << std::endl;
+        log.crit(UNKNOWN_EXCEPTION_MSG);
     }
+
+    return ERROR;
 }

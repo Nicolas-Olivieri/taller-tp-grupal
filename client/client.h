@@ -14,10 +14,9 @@ private:
 
 public:
     Client(int argc, char* argv[]);
-    // TODO borrar si no se usa
-    //    explicit Client(QApplication& app);
 
     int run();
 };
 
-#endif
+
+#endif  // CLIENT_H

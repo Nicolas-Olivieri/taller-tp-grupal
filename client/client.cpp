@@ -7,7 +7,6 @@
 
 #include "client/qt/lobby.h"
 
-#include "client_game.h"
 
 
 
@@ -24,8 +23,8 @@ int Client::run() {
     Socket socket = lobby.get_socket();
     std::string username = lobby.get_username();
 
-    ClientGame game(std::move(socket), username);
-    game.run();
+//    ClientGame game(std::move(socket), username);
+//    game.run();
 
     return 0;
 }
