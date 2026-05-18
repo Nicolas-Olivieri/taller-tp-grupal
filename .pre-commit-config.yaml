@@ -12,11 +12,11 @@ repos:
       - id: cpplint
         files: ^(.*[.]cpp|.*[.]h)$
         args:
-          - --filter=-build/include_order,-legal/copyright,-build/include_subdir,-whitespace/indent,-readability/alt_tokens,-build/header_guard,-readability/todo,-whitespace/blank_line,-readability/inheritance
+          - --filter=-build/include_order,-legal/copyright,-build/include_subdir,-whitespace/indent,-readability/alt_tokens,-build/header_guard,-readability/todo,-whitespace/blank_line,-readability/inheritance,-runtime/references,-build/c++11
   - repo: https://github.com/pocc/pre-commit-hooks
     rev: 9a9bbc00895bbdb7670231c2565d4f1309c42905  # SHA of v1.3.5
     hooks:
       - id: cppcheck
         files: ^(.*[.]cpp|.*[.]h)$
-        args: ["--inline-suppr", "--enable=all", "--suppress=missingIncludeSystem", "--suppress=missingInclude", "--suppress=unusedFunction", "--suppress=unmatchedSuppression", "--suppress=unusedStructMember", "--language=c++", "--std=c++20", "--error-exitcode=1"]
+        args: ["--inline-suppr", "--enable=all", "--suppress=missingIncludeSystem", "--suppress=missingInclude", "--suppress=unusedFunction", "--suppress=unmatchedSuppression", "--suppress=unusedStructMember", "--language=c++", "--std=c++20", "--error-exitcode=1", "--library=qt"]
 

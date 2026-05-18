@@ -114,6 +114,15 @@ if(TALLER_CLIENT OR TALLER_EDITOR)
     FetchContent_MakeAvailable(SDL2 SDL2_image SDL2_mixer SDL2_ttf libSDL2pp)
     # N: Yo lo agrego acá para asegurarme que se compile correctamente en el cmake-build-debug
     option(SDL2PP_WITH_IMAGE "Enable SDL2_image support" ON)
+    find_package(SDL2_image REQUIRED)
+
+    # Agrego QT
+
+    find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_AUTOUIC ON)
+    set(CMAKE_AUTORCC ON)
 
     add_definitions(-DDATA_PATH="${PROJECT_SOURCE_DIR}/resources")
 endif()
@@ -125,7 +134,7 @@ if(TALLER_CLIENT)
     add_executable(taller_client)
 
     # Make them depend on taller_common lib
-    add_dependencies(taller_client taller_common SDL2pp::SDL2pp)
+    add_dependencies(taller_client taller_common SDL2pp::SDL2pp Qt6::Widgets)
 
     # Add source files and enable warnings
     # HEY!! TODO XXX: add more subfolders here
@@ -137,7 +146,7 @@ if(TALLER_CLIENT)
     target_include_directories(taller_client PRIVATE ${libSDL2pp_SOURCE_DIR})
 
     # Link the taller_common lib target
-    target_link_libraries(taller_client taller_common SDL2pp::SDL2pp toml11::toml11)
+    target_link_libraries(taller_client taller_common SDL2pp::SDL2pp toml11::toml11 Qt6::Widgets)
 endif()
 
 if(TALLER_SERVER)
@@ -162,7 +171,7 @@ if(TALLER_EDITOR)
     add_executable(taller_editor)
 
     # Make them depend on taller_common lib
-    add_dependencies(taller_editor taller_common SDL2pp::SDL2pp)
+    add_dependencies(taller_editor taller_common SDL2pp::SDL2pp Qt6::Widgets)
 
     # Add source files and enable warnings
     # HEY!! TODO XXX: add more subfolders here
@@ -174,7 +183,7 @@ if(TALLER_EDITOR)
     target_include_directories(taller_editor PRIVATE ${libSDL2pp_SOURCE_DIR})
 
     # Link the taller_common lib target
-    target_link_libraries(taller_editor taller_common SDL2pp::SDL2pp toml11::toml11)
+    target_link_libraries(taller_editor taller_common SDL2pp::SDL2pp toml11::toml11 Qt6::Widgets)
 endif()
 
 

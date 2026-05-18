@@ -3,14 +3,23 @@
 
 #include "SDL/client_game.h"
 
+#include <QApplication>
+#include <QCoreApplication>
+
+#include "client/qt/lobby.h"
+#include "common/socket.h"
+
 class Client {
 private:
+    QApplication app;
+    Lobby lobby;
     ClientGame game;
 
 public:
-    Client();
+    Client(int argc, char* argv[]);
 
-    void run();
+    int run();
 };
 
-#endif
+
+#endif  // CLIENT_H

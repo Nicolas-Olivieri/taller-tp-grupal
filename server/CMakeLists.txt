@@ -3,9 +3,25 @@ target_sources(taller_server
         # .cpp files
         main.cpp
         server.cpp
-        server_protocol.cpp
+        command/move_command.cpp
+        game/game_world.cpp
+        game/player.cpp
+        game/position.cpp
+        game/grid.h
+        game/interactive.h
+        game/killable.h
+        game/loot.h
+        game/tile.h
     PUBLIC
         # .h files
         server.h
-        server_protocol.h
+        command/command.h
+        command/move_command.h
+        game/game_world.cpp
+        game/player.cpp
+        game/position.cpp
+        game/grid.cpp
+        game/killable.cpp
+        game/loot.cpp
+        game/tile.cpp
     )

@@ -1,10 +1,32 @@
 #include "client.h"
 
+#include <exception>
+#include <iostream>
+#include <string>
+#include <utility>
+
+#include "client/qt/lobby.h"
 #include "SDL/client_game.h"
 
-Client::Client(): game(ClientGame()) {}
 
-void Client::run() {
-    // TODO: lanzar los hilos sender/receiver en paralelo al game
+Client::Client(int argc, char* argv[]): app(argc, argv) {}
+
+int Client::run() {
+    lobby.show();
+
+    int error = app.exec();
+
+    if (error)
+        return error;
+
+    Socket socket = lobby.get_socket();
+    std::string username = lobby.get_username();
+
+    std::cout << username << std::endl;
+    //    ClientGame game(std::move(socket), username);
+    //    game.run();
+
     game.run();
+
+    return 0;
 }

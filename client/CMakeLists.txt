@@ -3,7 +3,6 @@ target_sources(taller_client
         # .cpp files
         main.cpp
         client.cpp
-        client_protocol.cpp
 
         SDL/client_game.cpp
         SDL/sprites/animation.cpp
@@ -14,11 +13,10 @@ target_sources(taller_client
         SDL/sprites/sprite_creator.cpp
         SDL/sprites/texture_pool.cpp
 
-
+        qt/lobby.cpp
     PUBLIC
         # .h files
         client.h
-        client_protocol.h
         client_constants.h
 
         SDL/client_game.h
@@ -30,4 +28,5 @@ target_sources(taller_client
         SDL/sprites/sprite_creator.h
         SDL/sprites/texture_pool.h
 
-)
+        qt/lobby.h
+    )
