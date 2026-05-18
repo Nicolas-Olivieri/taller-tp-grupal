@@ -8,6 +8,11 @@ target_sources(taller_server
         game/game_world.cpp
         game/player.cpp
         game/position.cpp
+        game/grid.h
+        game/interactive.h
+        game/killable.h
+        game/loot.h
+        game/tile.h
     PUBLIC
         # .h files
         server.h
@@ -17,4 +22,8 @@ target_sources(taller_server
         game/game_world.cpp
         game/player.cpp
         game/position.cpp
+        game/grid.cpp
+        game/killable.cpp
+        game/loot.cpp
+        game/tile.cpp
     )

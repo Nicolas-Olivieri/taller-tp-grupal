@@ -2,11 +2,13 @@
 #define PLAYER_H
 
 #include <string>
+#include <utility>
 
+#include "killable.h"
 #include "position.h"
 
 
-class Player {
+class Player: public Killable {
 private:
     std::string player_name;
     Position position;

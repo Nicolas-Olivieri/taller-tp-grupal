@@ -2,7 +2,7 @@
 
 
 MoveCommand::MoveCommand(const std::string& player_name,
-                                 const Direction direction):
+                         const Direction direction):
         player_name(player_name), direction(direction) {}
 
 
