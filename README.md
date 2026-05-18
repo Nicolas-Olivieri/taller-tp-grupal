@@ -43,3 +43,9 @@ ni scripts adicionales (como correr valgrind).
 
 **Eso esta a cargo de los estudiantes,** tal como fue mostrado
 en los tps individuales, recaps y hands-on.
+
+## Créditos
+
+Los archivos resolver.h, resolver.cpp, socket.h, socket.cpp, resolvererror.h, resolvererror.cpp, liberror.h y liberror.cpp fureon tomados del repo [eldipa/hands-on-sockets-in-cpp](https://github.com/eldipa/hands-on-sockets-in-cpp) con licencia GPL v2.
+
+Los archivos queue.h y thread.h fueron tomados del repo [eldipa/hands-on-threads](https://github.com/eldipa/hands-on-threads) con licencia GPL v2. Además, se creó el archivo thread.cpp a partir de thread.h.
