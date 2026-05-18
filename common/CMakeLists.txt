@@ -7,6 +7,7 @@ target_sources(taller_common
         socket.cpp
         thread/thread.cpp
         foo.cpp
+        util/rate_timer.cpp
         logger.cpp
         dto/credentials.cpp
         protocol/protocol.cpp
@@ -19,9 +20,9 @@ target_sources(taller_common
         resolvererror.h
         socket.h
         thread/thread.h
-        types.h
         foo.h
         toml_test.h
+        util/rate_timer.h
         direction.h
         queue.h
         logger.h

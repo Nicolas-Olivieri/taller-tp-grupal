@@ -123,6 +123,8 @@ if(TALLER_CLIENT OR TALLER_EDITOR)
     set(CMAKE_AUTOMOC ON)
     set(CMAKE_AUTOUIC ON)
     set(CMAKE_AUTORCC ON)
+
+    add_definitions(-DDATA_PATH="${PROJECT_SOURCE_DIR}/resources")
 endif()
 
 # Program section

@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+#include "SDL/client_game.h"
 #include "client/qt/lobby.h"
 
 
@@ -24,6 +25,8 @@ int Client::run() {
     std::cout << username << std::endl;
     //    ClientGame game(std::move(socket), username);
     //    game.run();
+
+    game.run();
 
     return 0;
 }
