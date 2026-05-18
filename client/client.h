@@ -1,15 +1,21 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "common/logger.h"
+#include <QApplication>
+#include <QCoreApplication>
 
+#include "client/qt/lobby.h"
+#include "common/socket.h"
 
 class Client {
+private:
+    QApplication app;
+    Lobby lobby;
 
 public:
-    Client();
+    Client(int argc, char* argv[]);
 
-    void run(const Logger& log);
+    int run();
 };
 
 

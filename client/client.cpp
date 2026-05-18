@@ -1,5 +1,30 @@
 #include "client.h"
 
-Client::Client() {}
+#include <exception>
+#include <iostream>
+#include <string>
+#include <utility>
 
-void Client::run(const Logger& log) { log.info("PoC de Logger"); }
+#include "client/qt/lobby.h"
+
+
+
+
+Client::Client(int argc, char* argv[]): app(argc, argv) {}
+
+int Client::run() {
+    lobby.show();
+
+    int error = app.exec();
+
+    if (error)
+        return error;
+
+    Socket socket = lobby.get_socket();
+    std::string username = lobby.get_username();
+
+//    ClientGame game(std::move(socket), username);
+//    game.run();
+
+    return 0;
+}

@@ -12,7 +12,7 @@ repos:
       - id: cpplint
         files: ^(.*[.]cpp|.*[.]h)$
         args:
-          - --filter=-build/include_order,-legal/copyright,-build/include_subdir,-whitespace/indent,-readability/alt_tokens,-build/header_guard,-readability/todo,-whitespace/blank_line,-readability/inheritance
+          - --filter=-build/include_order,-legal/copyright,-build/include_subdir,-whitespace/indent,-readability/alt_tokens,-build/header_guard,-readability/todo,-whitespace/blank_line,-readability/inheritance,-runtime/references
   - repo: https://github.com/pocc/pre-commit-hooks
     rev: 9a9bbc00895bbdb7670231c2565d4f1309c42905  # SHA of v1.3.5
     hooks:
