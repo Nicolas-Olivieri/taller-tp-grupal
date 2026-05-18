@@ -1,48 +1,83 @@
 #include "lobby.h"
 #include "common/socket.h"
-#include "client/client_protocol.h"
+#include "common/dto/credentials.h"
+#include "common/liberror.h"
+#include <QMessageBox>
+
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+
 
 Lobby::Lobby() : QMainWindow(nullptr) {
 
-    this->setMinimumSize(640, 480);
+    this->setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     // Configuración de la interfaz gráfica (Widgets y Layouts)
-    _centralWidget = new QWidget(this);
-    layout = new QHBoxLayout(_centralWidget);
+    central_widget = new QWidget(this);
+    layout = new QVBoxLayout(central_widget);
 
-    inputIP = new QLineEdit(this);
-    inputIP->setPlaceholderText("Escribe una dirección IP");
-    inputPort = new QLineEdit(this);
-    inputPort->setPlaceholderText("Escribe un puerto");
+    input_ip = new QLineEdit(this);
+    input_ip->setPlaceholderText("Escribe una dirección IP");
+    input_port = new QLineEdit(this);
+    input_port->setPlaceholderText("Escribe un puerto");
+    input_username = new QLineEdit(this);
+    input_username->setPlaceholderText("Escribe tu username");
 
-    sendButton = new QPushButton("Conectarse", this);
+    send_button = new QPushButton("Conectarse", this);
 
-    layout->addWidget(inputIP);
-    layout->addWidget(inputPort);
-    layout->addWidget(sendButton);
-    setCentralWidget(_centralWidget);
+    layout->addWidget(input_ip);
+    layout->addWidget(input_port);
+    layout->addWidget(input_username);
+    layout->addWidget(send_button);
+
+    setCentralWidget(central_widget);
+
+    this->setStyleSheet(style.c_str());
 
     // Conexión Signal-Slot: El motor de la comunicación en Qt
     // Señal 'clicked()' del botón --> Slot 'agregarTarea()' de esta ventana
-    connect(sendButton, &QPushButton::clicked, this, &Lobby::conectMatch);
+    connect(send_button, &QPushButton::clicked, this, &Lobby::conectMatch);
 }
 
 void Lobby::conectMatch() {
-    const char* hostname = inputIP->text().trimmed().toUtf8().constData();
-    const char* servname = inputPort->text().trimmed().toUtf8().constData();
+    if (!can_create_socket())
+        return;
 
-    socket.emplace(hostname, servname);
+    username = input_username->text().trimmed().toStdString();
 
-    ClientProtocol protocol(socket.value());
+    Protocol protocol(socket.value());
 
-    const DataDTO msg = {Command::HANDSHAKE, "Hola mundo! Atte. Cliente"};
-    protocol.send_msg(msg);
+    const CredentialsDTO message(username);
 
+    protocol.send(message);
     close();
+
+    // TODO falta el download del mapa
 }
 
-Socket Lobby::finish() {
+Socket Lobby::get_socket() {
     if (!socket) {
         throw std::runtime_error("No se pudo conectar correctamente con el servidor");
     }
     return std::move(socket.value());
+}
+
+std::string Lobby::get_username() {
+    return username;
+}
+
+bool Lobby::can_create_socket() {
+    const char* hostname = input_ip->text().trimmed().toUtf8().constData();
+    const char* servname = input_port->text().trimmed().toUtf8().constData();
+
+    try {
+        socket.emplace(hostname, servname);
+    } catch (const std::exception& error) {
+        std::string error_txt(error.what());
+        std::string warning_txt = "Se obtuvo el siguiente error: " + error_txt + "\nVerifique que la dirección IP y Puerto ingresados correspondan a un servidor de Argentum";
+        QMessageBox::warning(this, "Error en la conexión",warning_txt.c_str());
+        input_ip->clear();
+        input_port->clear();
+        return false;
+    }
+    return true;
 }
