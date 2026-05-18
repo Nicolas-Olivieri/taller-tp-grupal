@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "common/dto/message.h"
+#include "message.h"
 
 struct CredentialsDTO: public ProtocolMessageDTO {
     std::string username;

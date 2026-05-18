@@ -9,7 +9,7 @@
 // dispatch
 class Serializer;
 
-enum class Message : uint8_t { CREDENTIALS };
+enum class Message : uint8_t { CREDENTIALS, COMMAND };
 
 struct ProtocolMessageDTO {
     virtual size_t message_size() const = 0;
