@@ -7,7 +7,7 @@
 #include "SDL2pp/Texture.hh"
 
 #include "animation.h"
-#include "../../../common/util/constants.h"
+#include "../../../common/direction.h"
 
 
 class SpriteLayer {

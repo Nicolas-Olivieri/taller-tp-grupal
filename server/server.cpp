@@ -10,6 +10,4 @@
 
 Server::Server() {}
 
-void Server::run() {
-
-}
+void Server::run() {}

@@ -3,7 +3,7 @@
 #define PIXELS_PER_STEP 5
 
 Sprite::Sprite(SpriteLayer &&body, const SDL2pp::Point position, const Direction action) :
-    position(position), remaining_frames(0), direction(action), layers{{Layer::BODY, body}}
+    position(position), direction(action), layers{{Layer::BODY, body}}
 {}
 
 void Sprite::add_layer(Layer layer_num, SpriteLayer &&layer) {
@@ -18,26 +18,27 @@ void Sprite::update_position(const Direction new_direction, const SDL2pp::Point 
     target_position = new_position;
 
     if (position == target_position) {
-        direction = IDLE;
+        direction = Direction::IDLE;
         return;
     }
 
     direction = new_direction;
     const SDL2pp::Point diff = target_position - position;
     switch (direction) {
-        case DOWN:
+        case Direction::DOWN:
             position.y += std::min(PIXELS_PER_STEP, diff.y);
             break;
-        case UP:
+        case Direction::UP:
             position.y -= std::min(PIXELS_PER_STEP, std::abs(diff.y));
             break;
-        case LEFT:
+        case Direction::LEFT:
             position.x -= std::min(PIXELS_PER_STEP, std::abs(diff.x));
             break;
-        case RIGHT:
+        case Direction::RIGHT:
             position.x += std::min(PIXELS_PER_STEP, diff.x);
             break;
-        case IDLE:
+        case Direction::IDLE:
+        default:
             break;
     }
 }

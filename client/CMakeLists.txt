@@ -19,11 +19,12 @@ target_sources(taller_client
         # .h files
         client.h
         client_protocol.h
+        client_constants.h
 
         SDL/client_game.h
+
         SDL/sprites/animation.h
         SDL/sprites/animation_pool.h
-
         SDL/sprites/sprite.h
         SDL/sprites/sprite_layer.h
         SDL/sprites/sprite_creator.h

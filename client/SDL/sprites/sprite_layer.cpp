@@ -1,4 +1,5 @@
 #include "sprite_layer.h"
+#include <cassert>
 
 
 SpriteLayer::SpriteLayer(SDL2pp::Renderer &renderer, SDL2pp::Texture& texture, const SDL2pp::Point &offset, const SDL2pp::Rect &frame,
@@ -10,6 +11,8 @@ void SpriteLayer::render(const SDL2pp::Point &base_position) {
 }
 
 void SpriteLayer::update_frame(const int iteration, const Direction action) {
+    assert(action != IDLE);
+
     const Animation animation = animations.at(action);
     frame = animation.next_frame(iteration);
     last_action = action;

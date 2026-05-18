@@ -3,13 +3,13 @@
 #include <map>
 
 #include "sprite_layer.h"
-#include "client/SDL/types.h"
+#include "../../client_constants.h"
+#include "../../../common/direction.h"
 
 class Sprite {
 private:
     SDL2pp::Point position;
     SDL2pp::Point target_position;
-    int remaining_frames;
 
     Direction direction;
 
@@ -21,7 +21,7 @@ public:
     void add_layer(Layer layer_num, SpriteLayer&& layer);
     void remove_layer(Layer layer_num);
 
-    void update_position(Direction new_action, const SDL2pp::Point &new_position);
+    void update_position(Direction new_direction, const SDL2pp::Point &new_position);
 
     void update_frame(int iteration);
 
