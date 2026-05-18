@@ -3,8 +3,9 @@
 
 #include <map>
 
-#include "animation.h"
 #include "../../../common/direction.h"
+
+#include "animation.h"
 
 class AnimationPool {
 private:
@@ -17,4 +18,4 @@ public:
 };
 
 
-#endif //ANIMATION_POOL_H
+#endif  // ANIMATION_POOL_H

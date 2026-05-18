@@ -5,8 +5,8 @@
 #include <string>
 #include <utility>
 
-#include "client/qt/lobby.h"
 #include "SDL/client_game.h"
+#include "client/qt/lobby.h"
 
 
 Client::Client(int argc, char* argv[]): app(argc, argv) {}

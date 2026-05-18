@@ -1,11 +1,10 @@
 #ifndef SPRITE_CREATOR_H
 #define SPRITE_CREATOR_H
 
-#include "sprite_layer.h"
-
-#include "sprite.h"
-#include "texture_pool.h"
 #include "animation_pool.h"
+#include "sprite.h"
+#include "sprite_layer.h"
+#include "texture_pool.h"
 
 
 class SpriteCreator {
@@ -23,4 +22,4 @@ public:
 };
 
 
-#endif //SPRITE_CREATOR_H
+#endif  // SPRITE_CREATOR_H

@@ -1,6 +1,10 @@
 #ifndef SDL_H
 #define SDL_H
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include <SDL2pp/Renderer.hh>
 #include <SDL2pp/SDL2pp.hh>
 
@@ -34,7 +38,7 @@ public:
 
     int pollEvents();
 
-    int pollEvents(Sprite &user) const;
+    int pollEvents(Sprite& user) const;
 
     void update_state_from_server();
 

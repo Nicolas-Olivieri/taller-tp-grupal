@@ -20,7 +20,6 @@ target_sources(taller_common
         resolvererror.h
         socket.h
         thread/thread.h
-        types.h
         foo.h
         toml_test.h
         util/rate_timer.h

@@ -11,19 +11,19 @@
 #define HEAD_H 64
 
 
-TexturePool::TexturePool(SDL2pp::Renderer& renderer) :
-    renderer(renderer) {
+TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
 
-    // Se carga un vector/map a partir de TOML de todos los nombres de archivos que son para surfaces/textures
-    // Se hace un for que itera el vector/map y guarda id -> Texture/Surface(DATA_PATH '/nombre_actual.png')
-    // Se repite lo mismo para el mapa de rects
+    // Se carga un vector/map a partir de TOML de todos los nombres de archivos
+    // que son para surfaces/textures Se hace un for que itera el vector/map y
+    // guarda id -> Texture/Surface(DATA_PATH '/nombre_actual.png') Se repite lo
+    // mismo para el mapa de rects
 
     textures.try_emplace(1, renderer, DATA_PATH "/heads.png");
     textures.try_emplace(2, renderer, DATA_PATH "/bodies.png");
 
-    base_rects.insert({{1, SDL2pp::Rect(HEAD_OFFX, HEAD_OFFY, HEAD_W, HEAD_H)},
-                            {2, SDL2pp::Rect(BODY_OFFX, BODY_OFFY, BODY_W, BODY_H)}});
-
+    base_rects.insert(
+            {{1, SDL2pp::Rect(HEAD_OFFX, HEAD_OFFY, HEAD_W, HEAD_H)},
+             {2, SDL2pp::Rect(BODY_OFFX, BODY_OFFY, BODY_W, BODY_H)}});
 }
 
 

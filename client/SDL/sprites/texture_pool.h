@@ -19,8 +19,7 @@ public:
 
     SDL2pp::Texture& get_sprite_texture(uint8_t id);
     SDL2pp::Rect get_sprite_rect(uint8_t id) const;
-
 };
 
 
-#endif //TEXTURE_POOL_H
+#endif  // TEXTURE_POOL_H

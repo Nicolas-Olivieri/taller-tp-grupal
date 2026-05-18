@@ -1,20 +1,21 @@
 #include "sprite.h"
 
+#include <algorithm>
+
 #define PIXELS_PER_STEP 5
 
-Sprite::Sprite(SpriteLayer &&body, const SDL2pp::Point position, const Direction action) :
-    position(position), direction(action), layers{{Layer::BODY, body}}
-{}
+Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position,
+               const Direction action):
+        position(position), direction(action), layers{{Layer::BODY, body}} {}
 
-void Sprite::add_layer(Layer layer_num, SpriteLayer &&layer) {
+void Sprite::add_layer(Layer layer_num, SpriteLayer&& layer) {
     layers.emplace(layer_num, layer);
 }
 
-void Sprite::remove_layer(const Layer layer_num) {
-    layers.erase(layer_num);
-}
+void Sprite::remove_layer(const Layer layer_num) { layers.erase(layer_num); }
 
-void Sprite::update_position(const Direction new_direction, const SDL2pp::Point &new_position) {
+void Sprite::update_position(const Direction new_direction,
+                             const SDL2pp::Point& new_position) {
     target_position = new_position;
 
     if (position == target_position) {
@@ -44,8 +45,8 @@ void Sprite::update_position(const Direction new_direction, const SDL2pp::Point 
 }
 
 void Sprite::update_frame(const int iteration) {
-    for (auto&[_, layer] : layers) {
-        if (direction != IDLE) {
+    for (auto& [_, layer]: layers) {
+        if (direction != Direction::IDLE) {
             layer.update_frame(iteration, direction);
         } else {
             layer.set_base_frame();
@@ -61,10 +62,9 @@ void Sprite::render() {
         return;
     }
 
-    for (auto& layer : layers) {
+    for (auto& layer: layers) {
         layer.second.render(position);
     }
-
 }
 
-SDL2pp::Point Sprite::get_position() const {return position;}
+SDL2pp::Point Sprite::get_position() const { return position; }

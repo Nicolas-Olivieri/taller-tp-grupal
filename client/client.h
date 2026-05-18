@@ -1,11 +1,10 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "SDL/client_game.h"
-
 #include <QApplication>
 #include <QCoreApplication>
 
+#include "SDL/client_game.h"
 #include "client/qt/lobby.h"
 #include "common/socket.h"
 
