@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include <utility>
 
-#include "common/dto/credentials.h"
+#include "common/dto/lobby/credentials.h"
 #include "common/liberror.h"
 #include "common/protocol/protocol.h"
 #include "common/socket.h"

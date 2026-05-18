@@ -12,8 +12,8 @@ CredentialsDTO::CredentialsDTO(const std::string& username,
         username(username), password(password) {}
 
 size_t CredentialsDTO::message_size() const {
-    return sizeof(Message) + sizeof(uint16_t) + username.size() +
-           sizeof(uint16_t) + password.size();
+    return sizeof(uint16_t) + username.size() + sizeof(uint16_t) +
+           password.size();
 }
 
 void CredentialsDTO::accept(Serializer& serializer) const {

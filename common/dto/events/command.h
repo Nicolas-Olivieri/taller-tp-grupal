@@ -1,11 +1,9 @@
-#ifndef COMMAND_H
-#define COMMAND_H
+#ifndef REQUESTEDCOMMANDDTO_H
+#define REQUESTEDCOMMANDDTO_H
 
 #include <string>
 
 #include "common/direction.h"
-
-#include "message.h"
 
 enum class CommandType : uint8_t { MOVE };
 
@@ -28,4 +26,4 @@ struct RequestedCommandDTO {
     RequestedCommandDTO(const CommandType& cmd, const Direction& direction);
 };
 
-#endif  // COMMAND_H
+#endif  // REQUESTEDCOMMANDDTO_H

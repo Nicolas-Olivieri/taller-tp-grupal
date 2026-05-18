@@ -9,7 +9,7 @@
 Protocol::Protocol(Socket& socket): socket(socket) {}
 
 void Protocol::send(const ProtocolMessageDTO& dto) {
-    size_t buffsize = dto.message_size();
+    size_t buffsize = sizeof(Message) + dto.message_size();
     std::vector<uint8_t> buffer(buffsize);
 
     Serializer serializer(buffer);
@@ -48,6 +48,20 @@ RequestedCommandDTO Protocol::recv_command() {
 
     // TODO: esta firma seguramente cambie
     return RequestedCommandDTO(command, direction);
+}
+
+SnapshotDTO Protocol::recv_snapshot() {
+    check_header_message_byte(Message::SNAPSHOT);
+
+    Deserializer deserializer(this->socket);
+
+    std::vector<PlayerInfoDTO> players_information =
+            deserializer.recv_players_information();
+    // TODO: std::vector<CreatureDTO> creatures_information =
+    // deserializer.recv_creatures_information();
+    std::vector<ActionDTO> actions = deserializer.recv_actions();
+
+    return SnapshotDTO(players_information, actions);
 }
 
 void Protocol::check_header_message_byte(const Message& expected) {

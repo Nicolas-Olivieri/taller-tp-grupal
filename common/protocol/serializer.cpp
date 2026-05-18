@@ -26,11 +26,33 @@ void Serializer::serialize(const MoveEventDTO& event) {
     serialize(static_cast<uint8_t>(event.direction));
 }
 
+void Serializer::serialize(const SnapshotDTO& snapshot) {
+    serialize(static_cast<uint8_t>(Message::SNAPSHOT));
+    serialize(snapshot.players_information);
+    serialize(snapshot.actions);
+}
+
+void Serializer::serialize(const PlayerInfoDTO& info) {
+    serialize(info.name);
+    serialize(static_cast<uint8_t>(info.direction));
+    serialize(info.x);
+    serialize(info.y);
+}
+
+// TODO: se debería serializar dependiendo de action.action (ActionType)
+void Serializer::serialize(const ActionDTO& action) {
+    serialize(static_cast<uint8_t>(action.action));
+    serialize(action.appearance);
+}
+
+void Serializer::serialize(const AppearanceDTO& appearance) {
+    serialize(appearance.body);
+    serialize(appearance.head);
+}
+
 void Serializer::serialize(const std::string& value) {
     uint16_t size = static_cast<uint16_t>(value.size());
-    uint16_t netsize = htons(size);
-
-    serialize(netsize);
+    serialize(size);
 
     std::memcpy(&this->buffer[offset], value.data(), size);
     offset += size;
@@ -41,6 +63,8 @@ void Serializer::serialize(uint8_t value) {
 }
 
 void Serializer::serialize(uint16_t value) {
-    std::memcpy(&this->buffer[this->offset], &value, sizeof(value));
-    offset += sizeof(value);
+    uint16_t netvalue = ntohs(value);
+
+    std::memcpy(&this->buffer[this->offset], &netvalue, sizeof(netvalue));
+    offset += sizeof(netvalue);
 }
