@@ -9,6 +9,10 @@
 #include "common/dto/event.h"
 #include "common/dto/message.h"
 #include "common/dto/moveevent.h"
+#include "common/dto/snapshot/action.h"
+#include "common/dto/snapshot/appearance.h"
+#include "common/dto/snapshot/playerinfo.h"
+#include "common/dto/snapshot/snapshot.h"
 
 class Serializer {
 private:
@@ -21,16 +25,33 @@ private:
 
     void serialize(uint16_t value);
 
+    // Generaliza la forma de serializar vectores de cualquier tipo T
+    template <typename T>
+    void serialize(const std::vector<T>& container) {
+        serialize(static_cast<uint16_t>(container.size()));
+        for (const auto& elem: container) serialize(elem);
+    }
+
 public:
     explicit Serializer(std::vector<uint8_t>& buffer);  // NOLINT
 
     void serialize(const ProtocolMessageDTO& dto);
 
+    // Las siguientes son para aplicar double dispatch con los DTO que heredan
+    // de ProtocolMessageDTO
     void serialize(const CredentialsDTO& credentials);
 
     void serialize(const EventDTO& event);
 
     void serialize(const MoveEventDTO& event);
+
+    void serialize(const SnapshotDTO& snapshot);
+
+    void serialize(const PlayerInfoDTO& info);
+
+    void serialize(const ActionDTO& action);
+
+    void serialize(const AppearanceDTO& appearance);
 };
 
 #endif  // SERIALIZER_H

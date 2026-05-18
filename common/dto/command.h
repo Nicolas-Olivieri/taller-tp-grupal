@@ -1,5 +1,5 @@
-#ifndef COMMAND_H
-#define COMMAND_H
+#ifndef REQUESTEDCOMMAND_H
+#define REQUESTEDCOMMAND_H
 
 #include <string>
 
@@ -28,4 +28,4 @@ struct RequestedCommandDTO {
     RequestedCommandDTO(const CommandType& cmd, const Direction& direction);
 };
 
-#endif  // COMMAND_H
+#endif  // REQUESTEDCOMMAND_H

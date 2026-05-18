@@ -3,14 +3,26 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "common/direction.h"
 #include "common/dto/command.h"
+#include "common/dto/snapshot/action.h"
+#include "common/dto/snapshot/appearance.h"
+#include "common/dto/snapshot/playerinfo.h"
 #include "common/socket.h"
 
 class Deserializer {
 private:
     Socket& socket;
+
+    PlayerInfoDTO recv_player_info();
+
+    ActionDTO recv_action();
+
+    ActionType recv_action_type();
+
+    AppearanceDTO recv_appearance();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT
@@ -24,6 +36,10 @@ public:
     CommandType recv_command_type();
 
     Direction recv_direction();
+
+    std::vector<PlayerInfoDTO> recv_players_information();
+
+    std::vector<ActionDTO> recv_actions();
 };
 
 #endif  // DESERIALIZER_H

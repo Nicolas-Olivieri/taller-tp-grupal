@@ -13,6 +13,10 @@ target_sources(taller_common
         dto/event.cpp
         dto/moveevent.cpp
         dto/command.cpp
+        dto/snapshot/snapshot.cpp
+        dto/snapshot/appearance.cpp
+        dto/snapshot/action.cpp
+        dto/snapshot/playerinfo.cpp
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
@@ -34,6 +38,10 @@ target_sources(taller_common
         dto/event.h
         dto/moveevent.h
         dto/command.h
+        dto/snapshot/snapshot.h
+        dto/snapshot/appearance.h
+        dto/snapshot/action.h
+        dto/snapshot/playerinfo.h
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h
