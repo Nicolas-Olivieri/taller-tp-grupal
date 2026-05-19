@@ -4,10 +4,9 @@
 
 
 SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture,
-                         const SDL2pp::Point& offset, const SDL2pp::Rect& frame,
+                         const SDL2pp::Point& offset,
                          std::map<Direction, Animation>& animations):
         offset(offset),
-        frame(frame),
         last_action(Direction::DOWN),
         texture(texture),
         animations(animations),
