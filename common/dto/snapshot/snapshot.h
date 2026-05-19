@@ -16,6 +16,9 @@ struct SnapshotDTO: public ProtocolMessageDTO {
     SnapshotDTO(const std::vector<PlayerInfoDTO>& players_information,
                 const std::vector<ActionDTO>& actions);
 
+    // Constructor dummy
+    SnapshotDTO() = default;
+
     size_t message_size() const override;
 
     void accept(Serializer& serializer) const override;

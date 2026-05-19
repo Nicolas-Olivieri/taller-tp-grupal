@@ -1,6 +1,8 @@
 #ifndef SPRITE_CREATOR_H
 #define SPRITE_CREATOR_H
 
+#include "common/dto/snapshot/actions/appearance.h"
+
 #include "animation_pool.h"
 #include "sprite.h"
 #include "sprite_layer.h"
@@ -18,7 +20,7 @@ public:
 
     SpriteLayer create_sprite_layer(int id);
 
-    Sprite create_user();
+    Sprite create_user(const AppearanceDTO& appearance);
 };
 
 

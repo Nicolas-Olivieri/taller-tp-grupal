@@ -1,5 +1,6 @@
 #include "protocol.h"
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -68,6 +69,8 @@ void Protocol::check_header_message_byte(const Message& expected) {
     Deserializer deserializer(this->socket);
     uint8_t msgbyte = deserializer.recv_uint8();
 
-    if (msgbyte != static_cast<uint8_t>(expected))
-        throw std::exception();  // TODO: definir excepción
+    if (msgbyte != static_cast<uint8_t>(expected)) {
+        throw std::runtime_error("Se recibió un byte que no era el esperado en "
+                                 "el protocolo");  // TODO: definir excepción
+    }
 }

@@ -3,6 +3,8 @@
 #include <map>
 #include <utility>
 
+#include "common/dto/snapshot/actions/appearance.h"
+
 #include "sprite_layer.h"
 
 #define HEAD_ID 1
@@ -16,9 +18,9 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
         renderer(renderer) {}
 
 
-Sprite SpriteCreator::create_user() {
-    SpriteLayer head = create_sprite_layer(HEAD_ID);
-    SpriteLayer body = create_sprite_layer(BODY_ID);
+Sprite SpriteCreator::create_user(const AppearanceDTO& appearance) {
+    SpriteLayer head = create_sprite_layer(appearance.body);
+    SpriteLayer body = create_sprite_layer(appearance.head);
 
     Sprite sprite(std::move(body), SDL2pp::Point(0, 0), Direction::IDLE);
     sprite.add_layer(Layer::HEAD, std::move(head));

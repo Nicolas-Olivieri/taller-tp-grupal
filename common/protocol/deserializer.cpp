@@ -39,8 +39,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::MOVE:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
-            throw std::invalid_argument("Byte de comando no reconocido: " +
-                                        byte);
+            throw std::invalid_argument("Byte de comando no reconocido");
             // TODO: chequear si es la mejor excepción
     }
 }
@@ -58,8 +57,7 @@ Direction Deserializer::recv_direction() {
         case Direction::IDLE:
             return static_cast<Direction>(byte);
         default:  // Undefined Behavior -> Excepción
-            throw std::invalid_argument("Byte de dirección no reconocido: " +
-                                        byte);
+            throw std::invalid_argument("Byte de dirección no reconocido");
             // TODO: chequear si es la mejor excepción
     }
 }
@@ -120,8 +118,7 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::APPEARANCE:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
-            throw std::invalid_argument("Byte de acción no reconocido: " +
-                                        byte);
+            throw std::invalid_argument("Byte de acción no reconocido");
             // TODO: chequear si es la mejor excepción
     }
 }
@@ -131,6 +128,7 @@ AppearanceDTO Deserializer::recv_appearance() {
     // TODO 2: capaz en un futuro cada categoría debería ser un enum
     uint8_t body = recv_uint8();
     uint8_t head = recv_uint8();
+    std::string name = recv_string();
 
-    return AppearanceDTO(body, head);
+    return AppearanceDTO(body, head, name);
 }
