@@ -7,6 +7,20 @@ target_sources(taller_server
         game/game_world.cpp
         game/player.cpp
         game/position.cpp
+        game/grid.cpp
+        game/killable.cpp
+        game/loot.cpp
+        game/tile.cpp
+        connection/acceptor.cpp
+        connection/lobbyhandler.cpp
+    PUBLIC
+        # .h files
+        server.h
+        command/command.h
+        command/move_command.h
+        game/game_world.h
+        game/player.h
+        game/position.h
         game/grid.h
         game/interactive.h
         game/killable.h
@@ -14,18 +28,5 @@ target_sources(taller_server
         game/tile.h
         connection/acceptor.h
         connection/lobbyhandler.h
-    PUBLIC
-        # .h files
-        server.h
-        command/command.h
-        command/move_command.h
-        game/game_world.cpp
-        game/player.cpp
-        game/position.cpp
-        game/grid.cpp
-        game/killable.cpp
-        game/loot.cpp
-        game/tile.cpp
-        connection/acceptor.cpp
-        connection/lobbyhandler.cpp
+        connection/connectioninfo.h
     )
