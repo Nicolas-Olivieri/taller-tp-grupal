@@ -60,8 +60,7 @@ void Lobby::conectMatch() {
 
 Socket Lobby::get_socket() {
     if (!socket) {
-        throw std::runtime_error(
-                "No se pudo conectar correctamente con el servidor");
+        throw std::runtime_error("No se pudo conectar correctamente con el servidor");
     }
     return std::move(socket.value());
 }
@@ -82,10 +81,9 @@ bool Lobby::can_create_socket() {
         socket.emplace(hostname, servname);
     } catch (const std::exception& error) {
         std::string error_txt(error.what());
-        std::string warning_txt =
-                "Se obtuvo el siguiente error: " + error_txt +
-                "\nVerifique que la dirección IP y Puerto ingresados "
-                "correspondan a un servidor de Argentum";
+        std::string warning_txt = "Se obtuvo el siguiente error: " + error_txt +
+                                  "\nVerifique que la dirección IP y Puerto ingresados "
+                                  "correspondan a un servidor de Argentum";
         QMessageBox::warning(this, "Error en la conexión", warning_txt.c_str());
         input_ip->clear();
         input_port->clear();

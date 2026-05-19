@@ -11,15 +11,12 @@
 #define HEAD_OFFSET 21
 
 SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
-        texture_pool(TexturePool(renderer)),
-        animation_pool(AnimationPool()),
-        renderer(renderer) {}
+        texture_pool(TexturePool(renderer)), animation_pool(AnimationPool()), renderer(renderer) {}
 
 
 Sprite SpriteCreator::create_user(const AppearanceDTO& appearance_data) {
     SpriteLayer head = create_sprite_layer("head", appearance_data.head);
-    SpriteLayer body = create_sprite_layer("body", appearance_data.body,
-                                           SDL2pp::Point(0, HEAD_OFFSET));
+    SpriteLayer body = create_sprite_layer("body", appearance_data.body, SDL2pp::Point(0, HEAD_OFFSET));
 
     Sprite sprite(std::move(body), SDL2pp::Point(0, 0), Direction::IDLE);
     sprite.add_layer(Layer::HEAD, std::move(head));
@@ -27,12 +24,10 @@ Sprite SpriteCreator::create_user(const AppearanceDTO& appearance_data) {
     return sprite;
 }
 
-SpriteLayer SpriteCreator::create_sprite_layer(const std::string& category,
-                                               const uint8_t id,
+SpriteLayer SpriteCreator::create_sprite_layer(const std::string& category, const uint8_t id,
                                                const SDL2pp::Point& offset) {
     SDL2pp::Texture& texture = texture_pool.get_sprite_texture(category, id);
-    std::map<Direction, Animation>& actions =
-            animation_pool.get_animation(category);
+    std::map<Direction, Animation>& actions = animation_pool.get_animation(category);
 
     return {renderer, texture, offset, actions};
 }

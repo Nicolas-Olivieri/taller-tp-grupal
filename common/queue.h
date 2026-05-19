@@ -41,8 +41,7 @@ private:
 public:
     Queue(): max_size(UINT_MAX - 1), closed(false) {}
 
-    explicit Queue(const unsigned int max_size):
-            max_size(max_size), closed(false) {}
+    explicit Queue(const unsigned int max_size): max_size(max_size), closed(false) {}
 
     bool try_push(T const& val) {
         std::unique_lock<std::mutex> lock(mtx);
@@ -194,8 +193,7 @@ private:
 public:
     Queue(): max_size(UINT_MAX - 1), closed(false) {}
 
-    explicit Queue(const unsigned int max_size):
-            max_size(max_size), closed(false) {}
+    explicit Queue(const unsigned int max_size): max_size(max_size), closed(false) {}
 
     bool try_push(void* const& val) {
         std::unique_lock<std::mutex> lock(mtx);

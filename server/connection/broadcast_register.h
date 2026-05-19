@@ -14,8 +14,7 @@ private:
     Queue<SnapshotDTO>& queue;
 
 public:
-    explicit BroadcastRegister(EventBroadcaster& broadcaster,
-                               Queue<SnapshotDTO>& queue);
+    explicit BroadcastRegister(EventBroadcaster& broadcaster, Queue<SnapshotDTO>& queue);
 
     ~BroadcastRegister();
 };

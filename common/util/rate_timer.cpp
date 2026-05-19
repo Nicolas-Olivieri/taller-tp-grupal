@@ -3,9 +3,7 @@
 #include <thread>
 
 RateTimer::RateTimer(const int fps):
-        rate(1000 / fps),
-        iteration(0),
-        start_time(std::chrono::steady_clock::now()) {}
+        rate(1000 / fps), iteration(0), start_time(std::chrono::steady_clock::now()) {}
 
 int RateTimer::calculate_next_iteration() {
     const auto finish_time = std::chrono::steady_clock::now();

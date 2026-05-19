@@ -19,8 +19,7 @@
 
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         sdl(SDL2pp::SDL(SDL_INIT_VIDEO)),
-        window(SDL2pp::Window("SDL2pp demo", SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED, 640, 480,
+        window(SDL2pp::Window("SDL2pp demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480,
                               SDL_WINDOW_RESIZABLE)),
         renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         player_name(std::move(player_name)),
@@ -107,26 +106,21 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
     assert(event.type == SDL_KEYDOWN);
     auto key_pressed = event.key.keysym.sym;
 
-    if (KeyMapper::is_movement_key(key_pressed) &&
-        players.at(player_name).is_idle()) {
+    if (KeyMapper::is_movement_key(key_pressed) && players.at(player_name).is_idle()) {
         Direction direction_chosen = KeyMapper::get_direction(key_pressed);
 
-        connection.push_command(
-                std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
+        connection.push_command(std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
     }
 }
 
-void ClientGame::update_players(
-        const std::vector<PlayerInfoDTO>& players_information) {
+void ClientGame::update_players(const std::vector<PlayerInfoDTO>& players_information) {
     for (const PlayerInfoDTO& player_info: players_information) {
         if (!players.contains(player_info.name)) {
             continue;
         }
 
-        players.at(player_info.name)
-                .set_target_position(player_info.direction,
-                                     SDL2pp::Point(player_info.x * TILE_SIZE,
-                                                   player_info.y * TILE_SIZE));
+        SDL2pp::Point position(player_info.x * TILE_SIZE, player_info.y * TILE_SIZE);
+        players.at(player_info.name).set_target_position(player_info.direction, position);
     }
 }
 

@@ -15,8 +15,7 @@ private:
 public:
     explicit SpawnCommand(const std::string& player_name);
 
-    explicit SpawnCommand(const std::string& player_name,
-                          const Position& position);
+    explicit SpawnCommand(const std::string& player_name, const Position& position);
 
     void execute(GameWorld& world) override;
 

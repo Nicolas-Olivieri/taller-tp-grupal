@@ -14,8 +14,7 @@
 #include "liberror.h"
 #include "resolvererror.h"
 
-Resolver::Resolver(const char* hostname, const char* servname,
-                   bool is_passive) {
+Resolver::Resolver(const char* hostname, const char* servname, bool is_passive) {
     struct addrinfo hints;
     this->result = this->_next = nullptr;
 
@@ -70,10 +69,8 @@ Resolver::Resolver(const char* hostname, const char* servname,
              *
              * En este caso, `LibError` lo hara por nosotros.
              */
-            throw LibError(
-                    errno,
-                    "Name resolution failed for hostname '%s' y servname '%s'",
-                    (hostname ? hostname : ""), (servname ? servname : ""));
+            throw LibError(errno, "Name resolution failed for hostname '%s' y servname '%s'",
+                           (hostname ? hostname : ""), (servname ? servname : ""));
 
         } else {
             /*

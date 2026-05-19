@@ -4,8 +4,7 @@
 
 #include <arpa/inet.h>
 
-Serializer::Serializer(std::vector<uint8_t>& buffer):
-        buffer(buffer), offset(0) {}
+Serializer::Serializer(std::vector<uint8_t>& buffer): buffer(buffer), offset(0) {}
 
 // Double dispatch para definir cómo se serializa cada DTO
 void Serializer::serialize(const ProtocolMessageDTO& dto) { dto.accept(*this); }
@@ -59,9 +58,7 @@ void Serializer::serialize(const std::string& value) {
     offset += size;
 }
 
-void Serializer::serialize(uint8_t value) {
-    this->buffer[this->offset++] = value;
-}
+void Serializer::serialize(uint8_t value) { this->buffer[this->offset++] = value; }
 
 void Serializer::serialize(uint16_t value) {
     uint16_t netvalue = ntohs(value);

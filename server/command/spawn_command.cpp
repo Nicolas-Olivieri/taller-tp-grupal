@@ -7,8 +7,7 @@ SpawnCommand::SpawnCommand(const std::string& player_name):
         player_name(player_name), position(std::nullopt) {}
 
 
-SpawnCommand::SpawnCommand(const std::string& player_name,
-                           const Position& position):
+SpawnCommand::SpawnCommand(const std::string& player_name, const Position& position):
         player_name(player_name), position(position) {}
 
 

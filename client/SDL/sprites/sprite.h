@@ -22,8 +22,7 @@ public:
     void add_layer(Layer layer_num, SpriteLayer&& layer);
     void remove_layer(Layer layer_num);
 
-    void set_target_position(Direction new_direction,
-                             const SDL2pp::Point& new_target);
+    void set_target_position(Direction new_direction, const SDL2pp::Point& new_target);
 
     void update_visual_position();
     void update_frame(int iteration);

@@ -18,8 +18,7 @@ TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
 
         std::map<uint8_t, SDL2pp::Texture> category_textures;
         for (int i = start; i <= finish; ++i) {
-            std::string path =
-                    std::format("{}/{}/{}.png", DATA_PATH, category, i);
+            std::string path = std::format("{}/{}/{}.png", DATA_PATH, category, i);
             SDL2pp::Texture texture(renderer, path);
 
             category_textures.insert({i, std::move(texture)});
@@ -30,7 +29,6 @@ TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
 }
 
 
-SDL2pp::Texture& TexturePool::get_sprite_texture(const std::string& category_id,
-                                                 const uint8_t sub_id) {
+SDL2pp::Texture& TexturePool::get_sprite_texture(const std::string& category_id, const uint8_t sub_id) {
     return textures.at(category_id).at(sub_id);
 }

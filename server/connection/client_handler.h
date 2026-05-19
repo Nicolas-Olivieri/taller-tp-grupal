@@ -25,8 +25,7 @@ private:
 
 public:
     explicit ClientHandler(Socket&& peer, const std::string& player_name,
-                           Queue<std::unique_ptr<Command>>& command_queue,
-                           EventBroadcaster& broadcaster);
+                           Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster);
 
     void start();
 

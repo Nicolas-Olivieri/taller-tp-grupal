@@ -8,18 +8,14 @@
 
 
 ConnectionHandler::ConnectionHandler(Socket&& socket):
-        socket(std::move(socket)),
-        sender(this->socket),
-        receiver(this->socket) {}
+        socket(std::move(socket)), sender(this->socket), receiver(this->socket) {}
 
 void ConnectionHandler::start() {
     receiver.start();
     sender.start();
 }
 
-void ConnectionHandler::push_command(std::unique_ptr<EventDTO>&& event) {
-    sender.push(std::move(event));
-}
+void ConnectionHandler::push_command(std::unique_ptr<EventDTO>&& event) { sender.push(std::move(event)); }
 
 void ConnectionHandler::stop() {
     socket.shutdown(SHUT_RDWR);
@@ -30,6 +26,4 @@ void ConnectionHandler::stop() {
     sender.join();
 }
 
-bool ConnectionHandler::try_pop_snapshot(SnapshotDTO& snapshot) {
-    return receiver.try_pop(snapshot);
-}
+bool ConnectionHandler::try_pop_snapshot(SnapshotDTO& snapshot) { return receiver.try_pop(snapshot); }

@@ -7,10 +7,6 @@ ActionDTO::ActionDTO(const AppearanceDTO& appearance):
 
 // TODO: este método debería cambiar su comportamiento dependiendo del
 // ActionType, considerar opciones de implementación
-size_t ActionDTO::message_size() const {
-    return sizeof(action) + appearance.message_size();
-}
+size_t ActionDTO::message_size() const { return sizeof(action) + appearance.message_size(); }
 
-void ActionDTO::accept(Serializer& serializer) const {
-    serializer.serialize(*this);
-}
+void ActionDTO::accept(Serializer& serializer) const { serializer.serialize(*this); }

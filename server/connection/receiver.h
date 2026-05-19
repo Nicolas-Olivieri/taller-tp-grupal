@@ -19,8 +19,7 @@ private:
     Queue<std::unique_ptr<Command>>& command_queue;
 
 public:
-    Receiver(Socket& peer, const std::string& player_name,
-             Queue<std::unique_ptr<Command>>& command_queue);
+    Receiver(Socket& peer, const std::string& player_name, Queue<std::unique_ptr<Command>>& command_queue);
 
     void run() override;
 };

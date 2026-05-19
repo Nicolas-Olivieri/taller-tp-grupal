@@ -5,11 +5,8 @@
 #include "common/dto/lobby/credentials.h"
 #include "common/protocol/protocol.h"
 
-LobbyHandler::LobbyHandler(Socket&& socket,
-                           Queue<ConnectionInfo>& waiting_players):
-        handshake_finished(false),
-        socket(std::move(socket)),
-        waiting_players(waiting_players) {}
+LobbyHandler::LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players):
+        handshake_finished(false), socket(std::move(socket)), waiting_players(waiting_players) {}
 
 void LobbyHandler::run() {
     Protocol protocol(this->socket);

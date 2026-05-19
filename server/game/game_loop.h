@@ -17,8 +17,7 @@ private:
     EventBroadcaster& broadcaster;
 
 public:
-    explicit GameLoop(Queue<std::unique_ptr<Command>>& command_queue,
-                      EventBroadcaster& broadcaster);
+    explicit GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster);
 
     void run() override;
 

@@ -13,8 +13,7 @@ private:
     std::vector<SDL2pp::Rect> frames;
 
 public:
-    Animation(int frame_amount, int x_offset, int y_offset, int width,
-              int height);
+    Animation(int frame_amount, int x_offset, int y_offset, int width, int height);
 
     SDL2pp::Rect next_frame(int iteration) const;
 

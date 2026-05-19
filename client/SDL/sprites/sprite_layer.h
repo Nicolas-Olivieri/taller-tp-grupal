@@ -22,8 +22,7 @@ private:
     SDL2pp::Renderer& renderer;
 
 public:
-    SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture,
-                const SDL2pp::Point& offset,
+    SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const SDL2pp::Point& offset,
                 std::map<Direction, Animation>& animations);
 
     void render(const SDL2pp::Point& base_position);
