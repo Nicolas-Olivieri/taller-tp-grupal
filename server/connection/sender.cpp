@@ -3,11 +3,8 @@
 #include "broadcast_register.h"
 
 
-Sender::Sender(Socket& peer, Queue<SnapshotDTO>& client_queue,
-               EventBroadcaster& broadcaster):
-        protocol(peer),
-        client_queue(client_queue),
-        broadcast(broadcaster, this->client_queue) {}
+Sender::Sender(Socket& peer, Queue<SnapshotDTO>& client_queue, EventBroadcaster& broadcaster):
+        protocol(peer), client_queue(client_queue), broadcast(broadcaster, this->client_queue) {}
 
 
 void Sender::run() {

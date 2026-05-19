@@ -14,7 +14,6 @@ AnimationPool::AnimationPool() {
     this->animations = std::move(animations_data);
 }
 
-std::map<Direction, Animation>& AnimationPool::get_animation(
-        const std::string& category) {
+std::map<Direction, Animation>& AnimationPool::get_animation(const std::string& category) {
     return animations.at(category);
 }

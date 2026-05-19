@@ -5,8 +5,7 @@
 #define CMD_EXIT 'q'
 
 
-Server::Server(const char* servname):
-        acceptor(servname, waiting_players), game_acceptor(waiting_players) {}
+Server::Server(const char* servname): acceptor(servname, waiting_players), game_acceptor(waiting_players) {}
 
 void Server::run() {
     acceptor.start();

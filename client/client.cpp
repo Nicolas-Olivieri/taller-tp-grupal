@@ -22,7 +22,8 @@ int Client::run() {
     Socket socket = lobby.get_socket();
     ConnectionHandler connection(std::move(socket));
 
-    ClientGame game(connection);
+    std::string player_name = lobby.get_username();
+    ClientGame game(connection, player_name);
     game.run();
 
     return 0;

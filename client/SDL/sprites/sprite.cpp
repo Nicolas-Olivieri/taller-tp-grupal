@@ -4,27 +4,30 @@
 
 #define PIXELS_PER_STEP 5
 
-Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position,
-               const Direction action):
+Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction action):
         position(position), direction(action), layers{{Layer::BODY, body}} {}
 
-void Sprite::add_layer(Layer layer_num, SpriteLayer&& layer) {
-    layers.emplace(layer_num, layer);
-}
+void Sprite::add_layer(Layer layer_num, SpriteLayer&& layer) { layers.emplace(layer_num, layer); }
 
 void Sprite::remove_layer(const Layer layer_num) { layers.erase(layer_num); }
 
-void Sprite::update_position(const Direction new_direction,
-                             const SDL2pp::Point& new_position) {
-    target_position = new_position;
 
+void Sprite::set_target_position(const Direction new_direction, const SDL2pp::Point& new_target) {
+    target_position = new_target;
+
+    if (new_direction != Direction::IDLE) {
+        direction = new_direction;
+    }
+}
+
+void Sprite::update_visual_position() {
     if (position == target_position) {
         direction = Direction::IDLE;
         return;
     }
 
-    direction = new_direction;
     const SDL2pp::Point diff = target_position - position;
+
     switch (direction) {
         case Direction::DOWN:
             position.y += std::min(PIXELS_PER_STEP, diff.y);
@@ -68,3 +71,5 @@ void Sprite::render() {
 }
 
 SDL2pp::Point Sprite::get_position() const { return position; }
+
+bool Sprite::is_idle() const { return direction == Direction::IDLE; }

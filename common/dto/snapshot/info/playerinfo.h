@@ -14,8 +14,7 @@ struct PlayerInfoDTO: public ProtocolMessageDTO {
     // PlayersStatsDTO stats; TODO: agregar esto Y NO OLVIDAR MODIFICAR LOS
     // MÉTODOS PARA TENERLO EN CUENTA
 
-    PlayerInfoDTO(const std::string& name, const Direction& direction,
-                  uint16_t x, uint16_t y);
+    PlayerInfoDTO(const std::string& name, const Direction& direction, uint16_t x, uint16_t y);
 
     size_t message_size() const override;
 

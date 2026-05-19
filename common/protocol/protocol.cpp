@@ -56,8 +56,7 @@ SnapshotDTO Protocol::recv_snapshot() {
 
     Deserializer deserializer(this->socket);
 
-    std::vector<PlayerInfoDTO> players_information =
-            deserializer.recv_players_information();
+    std::vector<PlayerInfoDTO> players_information = deserializer.recv_players_information();
     // TODO: std::vector<CreatureDTO> creatures_information =
     // deserializer.recv_creatures_information();
     std::vector<ActionDTO> actions = deserializer.recv_actions();

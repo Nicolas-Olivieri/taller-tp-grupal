@@ -20,6 +20,4 @@ void ClientSender::run() {
 
 void ClientSender::close() { sender_q.close(); }
 
-void ClientSender::push(std::unique_ptr<EventDTO>&& event) {
-    sender_q.push(std::move(event));
-}
+void ClientSender::push(std::unique_ptr<EventDTO>&& event) { sender_q.push(std::move(event)); }

@@ -13,20 +13,17 @@ void EventBroadcaster::add_queue(Queue<SnapshotDTO>& queue) {
 
 void EventBroadcaster::remove_queue(const Queue<SnapshotDTO>& queue) {
     std::unique_lock lock(mtx);
-    client_queues.remove_if(
-            [&queue](const Queue<SnapshotDTO>* q) { return q == &queue; });
+    client_queues.remove_if([&queue](const Queue<SnapshotDTO>* q) { return q == &queue; });
 }
 
 
-void EventBroadcaster::broadcast(
-        const std::unordered_map<std::string, Player>& players) {
+void EventBroadcaster::broadcast(const std::unordered_map<std::string, Player>& players) {
     std::unique_lock lock(mtx);
 
     std::vector<PlayerInfoDTO> players_info;
     for (const auto& [player_name, player]: players) {
         Position position = player.get_position();
-        players_info.emplace_back(player_name, player.get_direction(),
-                                  position.get_x(), position.get_y());
+        players_info.emplace_back(player_name, player.get_direction(), position.get_x(), position.get_y());
     }
 
     const SnapshotDTO snapshot(players_info, actions);
@@ -36,6 +33,4 @@ void EventBroadcaster::broadcast(
 }
 
 
-void EventBroadcaster::add_action(const ActionDTO& action) {
-    actions.push_back(action);
-}
+void EventBroadcaster::add_action(const ActionDTO& action) { actions.push_back(action); }

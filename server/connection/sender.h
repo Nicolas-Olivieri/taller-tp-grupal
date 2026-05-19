@@ -16,8 +16,7 @@ private:
     BroadcastRegister broadcast;
 
 public:
-    Sender(Socket& peer, Queue<SnapshotDTO>& client_queue,
-           EventBroadcaster& broadcaster);
+    Sender(Socket& peer, Queue<SnapshotDTO>& client_queue, EventBroadcaster& broadcaster);
 
     void run() override;
 };

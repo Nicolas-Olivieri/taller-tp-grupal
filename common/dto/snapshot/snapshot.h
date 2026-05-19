@@ -13,8 +13,7 @@ struct SnapshotDTO: public ProtocolMessageDTO {
     // NO OLVIDAR MODIFICAR LOS MÉTODOS PARA TENERLO EN CUENTA
     std::vector<ActionDTO> actions;
 
-    SnapshotDTO(const std::vector<PlayerInfoDTO>& players_information,
-                const std::vector<ActionDTO>& actions);
+    SnapshotDTO(const std::vector<PlayerInfoDTO>& players_information, const std::vector<ActionDTO>& actions);
 
     // Constructor dummy
     SnapshotDTO() = default;

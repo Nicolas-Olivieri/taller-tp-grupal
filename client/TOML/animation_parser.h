@@ -34,8 +34,7 @@ struct toml::from<AnimationData> {
                 category_animations.insert({{dir, std::move(anim)}});
             }
 
-            data.animations.insert(
-                    {{category, std::move(category_animations)}});
+            data.animations.insert({{category, std::move(category_animations)}});
         }
         return data;
     }

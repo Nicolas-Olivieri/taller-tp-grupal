@@ -14,10 +14,10 @@ class GameLoop: public Thread {
 private:
     Queue<std::unique_ptr<Command>>& command_queue;
     GameWorld game_world;
-    EventBroadcaster broadcaster;
+    EventBroadcaster& broadcaster;
 
 public:
-    explicit GameLoop(Queue<std::unique_ptr<Command>>& command_queue);
+    explicit GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster);
 
     void run() override;
 

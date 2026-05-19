@@ -4,14 +4,10 @@
 Position::Position(const int x, const int y): x(x), y(y) {}
 
 
-Position Position::operator+(const Position& other) const {
-    return Position(x + other.x, y + other.y);
-}
+Position Position::operator+(const Position& other) const { return Position(x + other.x, y + other.y); }
 
 
-bool Position::operator==(const Position& other) const {
-    return x == other.x and y == other.y;
-}
+bool Position::operator==(const Position& other) const { return x == other.x and y == other.y; }
 
 
 Position Position::move(const Direction& direction) const {

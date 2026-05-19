@@ -15,8 +15,7 @@ private:
 public:
     explicit TexturePool(SDL2pp::Renderer& renderer);
 
-    SDL2pp::Texture& get_sprite_texture(const std::string& category_id,
-                                        uint8_t sub_id);
+    SDL2pp::Texture& get_sprite_texture(const std::string& category_id, uint8_t sub_id);
 };
 
 

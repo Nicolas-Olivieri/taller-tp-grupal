@@ -3,8 +3,7 @@
 #include <cassert>
 
 
-SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture,
-                         const SDL2pp::Point& offset,
+SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const SDL2pp::Point& offset,
                          std::map<Direction, Animation>& animations):
         offset(offset),
         last_action(Direction::DOWN),
@@ -13,8 +12,7 @@ SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture,
         renderer(renderer) {}
 
 void SpriteLayer::render(const SDL2pp::Point& base_position) {
-    renderer.Copy(texture, frame,
-                  SDL2pp::Rect(base_position + offset, frame.GetSize()));
+    renderer.Copy(texture, frame, SDL2pp::Rect(base_position + offset, frame.GetSize()));
 }
 
 void SpriteLayer::update_frame(const int iteration, const Direction action) {

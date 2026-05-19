@@ -9,8 +9,7 @@ struct CredentialsDTO: public ProtocolMessageDTO {
     std::string username;
     std::string password;
 
-    explicit CredentialsDTO(
-            const std::string& username);  // TODO: eliminar esta
+    explicit CredentialsDTO(const std::string& username);  // TODO: eliminar esta
 
     // TODO: usar solo esta firma y eliminar la otra cuando implementemos la
     // lógica con contraseñas

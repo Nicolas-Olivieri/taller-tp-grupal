@@ -49,8 +49,7 @@ Socket::Socket(const char* hostname, const char* servname) {
         /*
          * Con esta llamada creamos/obtenemos un socket.
          * */
-        temp_skt =
-                socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+        temp_skt = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
         if (temp_skt == -1) {
             continue;
         }
@@ -93,8 +92,8 @@ Socket::Socket(const char* hostname, const char* servname) {
     if (temp_skt != -1)
         ::close(temp_skt);
 
-    throw LibError(saved_errno, "socket construction failed (connect to %s:%s)",
-                   (hostname ? hostname : ""), (servname ? servname : ""));
+    throw LibError(saved_errno, "socket construction failed (connect to %s:%s)", (hostname ? hostname : ""),
+                   (servname ? servname : ""));
 }
 
 Socket::Socket(const char* servname) {
@@ -110,8 +109,7 @@ Socket::Socket(const char* servname) {
         if (temp_skt != -1)
             ::close(temp_skt);
 
-        temp_skt =
-                socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+        temp_skt = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
         if (temp_skt == -1) {
             continue;
         }
@@ -148,8 +146,7 @@ Socket::Socket(const char* servname) {
          * De ahí el nombre "reuse address" o "SO_REUSEADDR".
          **/
         int optval = 1;
-        s = setsockopt(temp_skt, SOL_SOCKET, SO_REUSEADDR, &optval,
-                       sizeof(optval));
+        s = setsockopt(temp_skt, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
         if (s == -1) {
             continue;
         }
@@ -194,8 +191,7 @@ Socket::Socket(const char* servname) {
     if (temp_skt != -1)
         ::close(temp_skt);
 
-    throw LibError(saved_errno, "socket construction failed (listen on %s)",
-                   (servname ? servname : ""));
+    throw LibError(saved_errno, "socket construction failed (listen on %s)", (servname ? servname : ""));
 }
 
 Socket::Socket(Socket&& other) {
@@ -344,8 +340,7 @@ int Socket::recvall(void* data, unsigned int sz) {
              * */
             assert(s == 0);
             if (received)
-                throw LibError(EPIPE, "socket received only %d of %d bytes",
-                               received, sz);
+                throw LibError(EPIPE, "socket received only %d of %d bytes", received, sz);
             throw ClosedSocket();
         }
         /*
@@ -370,8 +365,7 @@ int Socket::sendall(const void* data, unsigned int sz) {
         if (s <= 0) {
             assert(s == 0);
             if (sent)
-                throw LibError(EPIPE, "socket sent only %d of %d bytes", sent,
-                               sz);
+                throw LibError(EPIPE, "socket sent only %d of %d bytes", sent, sz);
             throw ClosedSocket();
         }
         sent += s;
@@ -435,13 +429,9 @@ void Socket::shutdown(int how) {
     }
 }
 
-bool Socket::is_stream_send_closed() const {
-    return stream_status & STREAM_SEND_CLOSED;
-}
+bool Socket::is_stream_send_closed() const { return stream_status & STREAM_SEND_CLOSED; }
 
-bool Socket::is_stream_recv_closed() const {
-    return stream_status & STREAM_RECV_CLOSED;
-}
+bool Socket::is_stream_recv_closed() const { return stream_status & STREAM_RECV_CLOSED; }
 
 int Socket::close() {
     chk_skt_or_fail();

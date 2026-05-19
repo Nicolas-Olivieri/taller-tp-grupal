@@ -25,8 +25,7 @@ private:
     void send_to_lobby(Socket&& peer);
 
 public:
-    Acceptor(const std::string& servname,
-             Queue<ConnectionInfo>& waiting_players);
+    Acceptor(const std::string& servname, Queue<ConnectionInfo>& waiting_players);
 
     void run() override;
 

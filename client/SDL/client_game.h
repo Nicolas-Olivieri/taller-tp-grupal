@@ -21,6 +21,7 @@ private:
     SDL2pp::Window window;
     SDL2pp::Renderer renderer;
 
+    std::string player_name;
     TexturePool texture_pool;
     SpriteCreator sprite_creator;
     std::map<std::string, Sprite> players;
@@ -28,21 +29,21 @@ private:
     ConnectionHandler& connection;
 
 public:
-    explicit ClientGame(ConnectionHandler& connection);
+    ClientGame(ConnectionHandler& connection, std::string& player_name);
 
     void run();
 
+private:
+    // Principales
     int pollEvents();
-
-    int pollEvents(Sprite& user) const;
 
     void update_state_from_server();
 
-    void update_animation_frames(int it);
+    void update_visuals(int it);
 
     void render_in_z_order();
 
-private:
+    // Auxiliares
     void add_new_player(const AppearanceDTO& appearance);
 
     void handle_key_down(const SDL_Event& event);
