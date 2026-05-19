@@ -5,7 +5,7 @@ Grid::Grid(const int width, const int height): width_(width), height_(height) {
     for (int x = 0; x < width; ++x) {
         std::vector<Tile> row;
         for (int y = 0; y < height; ++y) {
-            if (y < 2) {
+            if (y < height_ / 2) {
                 row.emplace_back(true);
             } else {
                 row.emplace_back(false);

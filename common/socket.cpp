@@ -346,15 +346,13 @@ int Socket::recvall(void* data, unsigned int sz) {
             if (received)
                 throw LibError(EPIPE, "socket received only %d of %d bytes",
                                received, sz);
-            else
-                return 0;
-        } else {
-            /*
-             * OK, recibimos algo pero no necesariamente todo lo que
-             * esperamos. La condición del `while` checkea eso justamente.
-             * */
-            received += s;
+            throw ClosedSocket();
         }
+        /*
+         * OK, recibimos algo pero no necesariamente todo lo que
+         * esperamos. La condición del `while` checkea eso justamente.
+         * */
+        received += s;
     }
 
     return sz;
@@ -374,11 +372,9 @@ int Socket::sendall(const void* data, unsigned int sz) {
             if (sent)
                 throw LibError(EPIPE, "socket sent only %d of %d bytes", sent,
                                sz);
-            else
-                return 0;
-        } else {
-            sent += s;
+            throw ClosedSocket();
         }
+        sent += s;
     }
 
     return sz;

@@ -6,7 +6,7 @@
 
 
 GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue):
-        command_queue(command_queue), game_world(10, 10) {}
+        command_queue(command_queue), game_world(100, 100) {}
 
 
 void GameLoop::run() {
@@ -16,6 +16,7 @@ void GameLoop::run() {
     while (should_keep_running()) {
         process_commands();
         update_world(iteration);
+
         iteration = timer.calculate_next_iteration();
     }
 }
@@ -26,7 +27,7 @@ void GameLoop::process_commands() {
         std::unique_ptr<Command> cmd;
         while (command_queue.try_pop(cmd)) {
             cmd->execute(game_world);
-            // broadcast(...);
+            cmd->broadcast(broadcaster);
         }
     } catch (const ClosedQueue&) {}
 }
@@ -37,9 +38,7 @@ void GameLoop::update_world(const int /* iteration */) {
 }
 
 
-// void GameLoop::broadcast(...) const {
-//     // TODO: Implementar lógica
-// }
+void GameLoop::broadcast() { broadcaster.broadcast(game_world.get_players()); }
 
 
 GameLoop::~GameLoop() {

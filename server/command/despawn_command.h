@@ -14,6 +14,8 @@ public:
     explicit DespawnCommand(const std::string& player_name);
 
     void execute(GameWorld& world) override;
+
+    void broadcast(EventBroadcaster& broadcaster) override;
 };
 
 

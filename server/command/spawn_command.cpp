@@ -1,5 +1,7 @@
 #include "spawn_command.h"
 
+#include "server/connection/event_broadcaster.h"
+
 
 SpawnCommand::SpawnCommand(const std::string& player_name):
         player_name(player_name), position(std::nullopt) {}
@@ -19,4 +21,9 @@ void SpawnCommand::execute(GameWorld& world) {
         // El jugador aparece de manera aleatoria
         world.add_player(player_name);
     }
+}
+
+
+void SpawnCommand::broadcast(EventBroadcaster& broadcaster) {
+    broadcaster.add_action(ActionDTO(AppearanceDTO(0, 0, player_name)));
 }

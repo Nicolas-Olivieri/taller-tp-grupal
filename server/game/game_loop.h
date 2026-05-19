@@ -14,6 +14,7 @@ class GameLoop: public Thread {
 private:
     Queue<std::unique_ptr<Command>>& command_queue;
     GameWorld game_world;
+    EventBroadcaster broadcaster;
 
 public:
     explicit GameLoop(Queue<std::unique_ptr<Command>>& command_queue);
@@ -31,7 +32,7 @@ private:
 
     void update_world(int iteration);
 
-    // void broadcast(...) const;
+    void broadcast();
 };
 
 

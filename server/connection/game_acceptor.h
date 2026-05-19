@@ -15,6 +15,8 @@
 
 class GameAcceptor: public Thread {
 private:
+    EventBroadcaster broadcaster;
+
     std::list<ClientHandler> clients;
 
     Queue<std::unique_ptr<Command>> command_queue;

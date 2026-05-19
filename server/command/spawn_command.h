@@ -19,6 +19,8 @@ public:
                           const Position& position);
 
     void execute(GameWorld& world) override;
+
+    void broadcast(EventBroadcaster& broadcaster) override;
 };
 
 

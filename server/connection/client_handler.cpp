@@ -4,12 +4,13 @@
 
 
 ClientHandler::ClientHandler(Socket&& peer, const std::string& player_name,
-                             Queue<std::unique_ptr<Command>>& command_queue):
-        peer_(std::move(peer)),
+                             Queue<std::unique_ptr<Command>>& command_queue,
+                             EventBroadcaster& broadcaster):
+        peer(std::move(peer)),
         player_name(player_name),
         client_queue(CLIENT_QUEUE_MAX_SIZE),
-        sender(peer_, client_queue),
-        receiver(peer_, command_queue) {}
+        sender(this->peer, client_queue, broadcaster),
+        receiver(this->peer, player_name, command_queue) {}
 
 
 void ClientHandler::start() {
@@ -28,20 +29,7 @@ void ClientHandler::join() {
 
 
 bool ClientHandler::is_alive() const {
-    return sender.is_alive() and receiver.is_alive();
-}
-
-
-void ClientHandler::send(const int event) {
-
-    try {
-        if (not client_queue.try_push(event)) {
-            // Queue llena
-        }
-
-    } catch (const ClosedQueue&) {
-        // Queue cerrada por desconexión
-    }
+    return sender.is_alive() or receiver.is_alive();
 }
 
 

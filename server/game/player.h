@@ -12,13 +12,16 @@ class Player: public Killable {
 private:
     std::string player_name;
     Position position;
+    Direction direction;
 
 public:
     explicit Player(const std::string& player_name, const Position& position);
 
-    void move(const Position& new_position);
+    void move(const Position& new_position, const Direction& new_direction);
 
     Position get_position() const;
+
+    Direction get_direction() const;
 };
 
 

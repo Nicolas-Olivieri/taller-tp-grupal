@@ -17,15 +17,16 @@ private:
     // límite de mensajes encolados para cada cliente
     static constexpr int CLIENT_QUEUE_MAX_SIZE = 512;
 
-    Socket peer_;
+    Socket peer;
     const std::string player_name;
-    Queue<int> client_queue;  // TODO: revisar el tipo de dato de la queue
+    Queue<SnapshotDTO> client_queue;
     Sender sender;
     Receiver receiver;
 
 public:
     explicit ClientHandler(Socket&& peer, const std::string& player_name,
-                           Queue<std::unique_ptr<Command>>& command_queue);
+                           Queue<std::unique_ptr<Command>>& command_queue,
+                           EventBroadcaster& broadcaster);
 
     void start();
 
@@ -36,8 +37,6 @@ public:
     bool is_alive() const;
 
     const std::string& get_name() const;
-
-    void send(int event);
 
     void polite_kill();
 
