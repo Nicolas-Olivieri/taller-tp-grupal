@@ -12,6 +12,8 @@ target_sources(taller_server
         game/killable.h
         game/loot.h
         game/tile.h
+        connection/acceptor.h
+        connection/lobbyhandler.h
     PUBLIC
         # .h files
         server.h
@@ -24,4 +26,6 @@ target_sources(taller_server
         game/killable.cpp
         game/loot.cpp
         game/tile.cpp
+        connection/acceptor.cpp
+        connection/lobbyhandler.cpp
     )
