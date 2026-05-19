@@ -1,14 +1,12 @@
 #include "sprite_creator.h"
 
 #include <map>
+#include <string>
 #include <utility>
 
 #include "common/dto/snapshot/actions/appearance.h"
 
 #include "sprite_layer.h"
-
-#define HEAD_ID 1
-#define BODY_ID 2
 
 #define HEAD_OFFSET 21
 
@@ -18,9 +16,10 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
         renderer(renderer) {}
 
 
-Sprite SpriteCreator::create_user(const AppearanceDTO& appearance) {
-    SpriteLayer head = create_sprite_layer(appearance.body);
-    SpriteLayer body = create_sprite_layer(appearance.head);
+Sprite SpriteCreator::create_user(const AppearanceDTO& appearance_data) {
+    SpriteLayer head = create_sprite_layer("head", appearance_data.head);
+    SpriteLayer body = create_sprite_layer("body", appearance_data.body,
+                                           SDL2pp::Point(0, HEAD_OFFSET));
 
     Sprite sprite(std::move(body), SDL2pp::Point(0, 0), Direction::IDLE);
     sprite.add_layer(Layer::HEAD, std::move(head));
@@ -28,13 +27,12 @@ Sprite SpriteCreator::create_user(const AppearanceDTO& appearance) {
     return sprite;
 }
 
-SpriteLayer SpriteCreator::create_sprite_layer(const int id) {
-    SDL2pp::Texture& texture = texture_pool.get_sprite_texture(id);
-    std::map<Direction, Animation>& actions = animation_pool.get_animation(id);
+SpriteLayer SpriteCreator::create_sprite_layer(const std::string& category,
+                                               const uint8_t id,
+                                               const SDL2pp::Point& offset) {
+    SDL2pp::Texture& texture = texture_pool.get_sprite_texture(category, id);
+    std::map<Direction, Animation>& actions =
+            animation_pool.get_animation(category);
 
-    const SDL2pp::Rect base = texture_pool.get_sprite_rect(id);
-    const SDL2pp::Point offset =
-            id == 1 ? SDL2pp::Point(0, 0) : SDL2pp::Point(0, HEAD_OFFSET);
-
-    return SpriteLayer(renderer, texture, offset, base, actions);
+    return {renderer, texture, offset, actions};
 }

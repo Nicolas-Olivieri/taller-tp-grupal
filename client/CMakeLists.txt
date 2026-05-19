@@ -25,8 +25,9 @@ target_sources(taller_client
         client.h
         client_constants.h
 
-        SDL/client_game.h
+        TOML/animation_parser.h
 
+        SDL/client_game.h
         SDL/sprites/animation.h
         SDL/sprites/animation_pool.h
         SDL/sprites/sprite.h

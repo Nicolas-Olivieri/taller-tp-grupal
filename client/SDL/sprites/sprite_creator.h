@@ -1,6 +1,8 @@
 #ifndef SPRITE_CREATOR_H
 #define SPRITE_CREATOR_H
 
+#include <string>
+
 #include "common/dto/snapshot/actions/appearance.h"
 
 #include "animation_pool.h"
@@ -18,9 +20,11 @@ private:
 public:
     explicit SpriteCreator(SDL2pp::Renderer& renderer);
 
-    SpriteLayer create_sprite_layer(int id);
+    SpriteLayer create_sprite_layer(
+            const std::string& category, uint8_t id,
+            const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
 
-    Sprite create_user(const AppearanceDTO& appearance);
+    Sprite create_user(const AppearanceDTO& appearance_data);
 };
 
 
