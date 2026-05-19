@@ -55,9 +55,9 @@ void GameWorld::move_player(const std::string& player_name,
 
 void GameWorld::add_player(const std::string& player_name,
                            const Position& position) {
-    Player player(player_name, position);
-    players.insert({player_name, player});
-    grid.get_tile(position).occupy(&player);
+    auto [it, success] =
+            players.emplace(player_name, Player(player_name, position));
+    grid.get_tile(position).occupy(&(it->second));
     std::cout << "[World] Jugador " << player_name << " creado en " << position
               << std::endl;
 }
@@ -65,4 +65,15 @@ void GameWorld::add_player(const std::string& player_name,
 
 void GameWorld::add_player(const std::string& player_name) {
     add_player(player_name, grid.spawn());
+}
+
+
+void GameWorld::remove_player(const std::string& player_name) {
+    const auto it = players.find(player_name);
+    if (it == players.end()) {
+        return;
+    }
+    players.erase(it);
+    std::cout << "[World] Jugador " << player_name << " desconectado"
+              << std::endl;
 }

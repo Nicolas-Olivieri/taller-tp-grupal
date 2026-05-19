@@ -20,6 +20,7 @@ private:
     void move_into_waiting_queue(const std::string& username);
 
     void shutdown_if_blocked();
+
 public:
     LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players);
 

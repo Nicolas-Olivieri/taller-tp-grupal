@@ -2,11 +2,14 @@
 #define SERVER_H
 
 #include "connection/acceptor.h"
+#include "connection/game_acceptor.h"
+
 
 class Server {
 private:
     Queue<ConnectionInfo> waiting_players;
     Acceptor acceptor;
+    GameAcceptor game_acceptor;
 
 public:
     explicit Server(const char* servname);

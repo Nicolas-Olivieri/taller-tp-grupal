@@ -7,7 +7,9 @@
 
 LobbyHandler::LobbyHandler(Socket&& socket,
                            Queue<ConnectionInfo>& waiting_players):
-        handshake_finished(false), socket(std::move(socket)), waiting_players(waiting_players) {}
+        handshake_finished(false),
+        socket(std::move(socket)),
+        waiting_players(waiting_players) {}
 
 void LobbyHandler::run() {
     Protocol protocol(this->socket);
@@ -25,7 +27,7 @@ void LobbyHandler::run() {
 
 void LobbyHandler::move_into_waiting_queue(const std::string& username) {
     std::lock_guard<std::mutex> lock(this->mutex);
-    
+
     handshake_finished = true;
 
     ConnectionInfo info = {username, std::move(this->socket)};
