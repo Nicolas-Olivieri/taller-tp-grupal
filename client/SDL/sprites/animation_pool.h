@@ -2,6 +2,7 @@
 #define ANIMATION_POOL_H
 
 #include <map>
+#include <string>
 
 #include "../../../common/direction.h"
 
@@ -9,12 +10,12 @@
 
 class AnimationPool {
 private:
-    std::map<uint8_t, std::map<Direction, Animation>> animations;
+    std::map<std::string, std::map<Direction, Animation>> animations;
 
 public:
     AnimationPool();
 
-    std::map<Direction, Animation>& get_animation(uint8_t id);
+    std::map<Direction, Animation>& get_animation(const std::string& category);
 };
 
 

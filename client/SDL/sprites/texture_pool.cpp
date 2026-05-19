@@ -1,36 +1,36 @@
 #include "texture_pool.h"
 
-#define BODY_OFFX 256
-#define BODY_OFFY 0
-#define BODY_W 27
-#define BODY_H 47
+#include <string>
+#include <utility>
+#include <vector>
 
-#define HEAD_OFFX 162
-#define HEAD_OFFY 256
-#define HEAD_W 27
-#define HEAD_H 64
+#include <toml.hpp>
 
 
 TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
+    auto root = toml::parse(DATA_PATH "/texture_files.toml");
+    auto files = toml::find(root, "file_ids");
 
-    // Se carga un vector/map a partir de TOML de todos los nombres de archivos
-    // que son para surfaces/textures Se hace un for que itera el vector/map y
-    // guarda id -> Texture/Surface(DATA_PATH '/nombre_actual.png') Se repite lo
-    // mismo para el mapa de rects
+    for (const auto& [category, ids]: files.as_table()) {
+        auto values = toml::get<std::vector<int>>(ids);
+        const int start = values[0];
+        const int finish = values[1];
 
-    textures.try_emplace(1, renderer, DATA_PATH "/heads.png");
-    textures.try_emplace(2, renderer, DATA_PATH "/bodies.png");
+        std::map<uint8_t, SDL2pp::Texture> category_textures;
+        for (int i = start; i <= finish; ++i) {
+            std::string path =
+                    std::format("{}/{}/{}.png", DATA_PATH, category, i);
+            SDL2pp::Texture texture(renderer, path);
 
-    base_rects.insert(
-            {{1, SDL2pp::Rect(HEAD_OFFX, HEAD_OFFY, HEAD_W, HEAD_H)},
-             {2, SDL2pp::Rect(BODY_OFFX, BODY_OFFY, BODY_W, BODY_H)}});
+            category_textures.insert({i, std::move(texture)});
+        }
+
+        textures.insert({category, std::move(category_textures)});
+    }
 }
 
 
-SDL2pp::Texture& TexturePool::get_sprite_texture(const uint8_t id) {
-    return textures.at(id);
-}
-
-SDL2pp::Rect TexturePool::get_sprite_rect(const uint8_t id) const {
-    return base_rects.at(id);
+SDL2pp::Texture& TexturePool::get_sprite_texture(const std::string& category_id,
+                                                 const uint8_t sub_id) {
+    return textures.at(category_id).at(sub_id);
 }

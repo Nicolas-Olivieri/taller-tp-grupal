@@ -22,7 +22,8 @@ ClientGame::ClientGame():
 
 void ClientGame::run() {
     // MOCK ::::::::::::::::::
-    Sprite user = sprite_creator.create_user();
+    AppearanceDTO appearance(0, 0);
+    Sprite user = sprite_creator.create_user(appearance);
     ServerMsgMock msg("dummy", 0, 0, Direction::IDLE);
 
     players.insert({{"dummy", user}});

@@ -1,0 +1,17 @@
+#dir = [cant_frames, offset_x, offset_y, width, height]
+
+[animations.body]
+0 = [6, 0, 0, 27, 47]
+1 = [6, 0, 47, 27, 47]
+2 = [5, 0, 94, 27, 47]
+3 = [5, 0, 141, 27, 47]
+
+[animations.head]
+0 = [1, 0, 0, 27, 64]
+1 = [1, 0, 64, 27, 64]
+2 = [1, 0, 128, 27, 64]
+3 = [1, 0, 192, 27, 64]
+
+[sprites]
+0 = [0, 0, 50, 20]      # el obstacle 0 es de 50x20px
+1 = [0, 0, 128, 128]    # el obstacle 1 es de 128x128px

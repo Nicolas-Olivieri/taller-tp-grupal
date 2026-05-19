@@ -1,0 +1,4 @@
+# cat = [primer_arch.png, ultimo_arch.png]
+[file_ids]
+body = [0,2]
+head = [0,3]
