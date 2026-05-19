@@ -5,8 +5,9 @@
 #define FPS 30
 
 
-GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue):
-        command_queue(command_queue), game_world(100, 100) {}
+GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue,
+                   EventBroadcaster& broadcaster):
+        command_queue(command_queue), game_world(100, 100), broadcaster(broadcaster) {}
 
 
 void GameLoop::run() {
@@ -17,6 +18,7 @@ void GameLoop::run() {
         process_commands();
         update_world(iteration);
 
+        broadcast();
         iteration = timer.calculate_next_iteration();
     }
 }
