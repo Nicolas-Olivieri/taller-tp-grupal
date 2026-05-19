@@ -13,6 +13,13 @@ target_sources(taller_server
         game/tile.cpp
         connection/acceptor.cpp
         connection/lobbyhandler.cpp
+        connection/game_acceptor.cpp
+        game/game_loop.cpp
+        connection/client_handler.cpp
+        connection/sender.cpp
+        connection/receiver.cpp
+        command/spawn_command.cpp
+        command/despawn_command.cpp
     PUBLIC
         # .h files
         server.h
@@ -29,4 +36,11 @@ target_sources(taller_server
         connection/acceptor.h
         connection/lobbyhandler.h
         connection/connectioninfo.h
+        connection/game_acceptor.h
+        game/game_loop.h
+        connection/client_handler.h
+        connection/sender.h
+        connection/receiver.h
+        command/spawn_command.h
+        command/despawn_command.h
     )
