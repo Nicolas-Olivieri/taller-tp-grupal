@@ -14,6 +14,7 @@
 #include "key_mapper.h"
 
 #define TILE_SIZE 25
+#define FPS 30
 
 ClientGame::ClientGame(ConnectionHandler& connection):
         sdl(SDL2pp::SDL(SDL_INIT_VIDEO)),
@@ -29,7 +30,7 @@ ClientGame::ClientGame(ConnectionHandler& connection):
 
 void ClientGame::run() {
 
-    RateTimer timer(24);
+    RateTimer timer(FPS);
     int iteration = 0;
 
     while (true) {

@@ -4,7 +4,7 @@
 Player::Player(const std::string& player_name, const Position& position):
         player_name(player_name),
         position(position),
-        direction(Direction::DOWN) {}
+        direction(Direction::IDLE) {}
 
 
 void Player::move(const Position& new_position,
