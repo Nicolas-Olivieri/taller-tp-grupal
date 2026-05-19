@@ -48,6 +48,7 @@ void Serializer::serialize(const ActionDTO& action) {
 void Serializer::serialize(const AppearanceDTO& appearance) {
     serialize(appearance.body);
     serialize(appearance.head);
+    serialize(appearance.name);
 }
 
 void Serializer::serialize(const std::string& value) {

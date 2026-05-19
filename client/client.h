@@ -12,7 +12,6 @@ class Client {
 private:
     QApplication app;
     Lobby lobby;
-    ClientGame game;
 
 public:
     Client(int argc, char* argv[]);

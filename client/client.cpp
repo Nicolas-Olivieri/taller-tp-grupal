@@ -20,12 +20,9 @@ int Client::run() {
         return error;
 
     Socket socket = lobby.get_socket();
-    std::string username = lobby.get_username();
+    ConnectionHandler connection(std::move(socket));
 
-    std::cout << username << std::endl;
-    //    ClientGame game(std::move(socket), username);
-    //    game.run();
-
+    ClientGame game(connection);
     game.run();
 
     return 0;

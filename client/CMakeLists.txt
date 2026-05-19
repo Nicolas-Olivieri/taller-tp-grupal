@@ -14,6 +14,12 @@ target_sources(taller_client
         SDL/sprites/texture_pool.cpp
 
         qt/lobby.cpp
+
+        connection/client_receiver.cpp
+        connection/client_sender.cpp
+        connection/connection_handler.cpp
+
+        SDL/key_mapper.cpp
     PUBLIC
         # .h files
         client.h
@@ -30,4 +36,10 @@ target_sources(taller_client
         SDL/sprites/texture_pool.h
 
         qt/lobby.h
+
+        connection/client_receiver.h
+        connection/client_sender.h
+        connection/connection_handler.h
+
+        SDL/key_mapper.h
     )

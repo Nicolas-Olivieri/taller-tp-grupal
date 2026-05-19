@@ -19,7 +19,7 @@ private:
 
     Socket peer_;
     const std::string player_name;
-    Queue<int> client_queue; // TODO: revisar el tipo de dato de la queue
+    Queue<int> client_queue;  // TODO: revisar el tipo de dato de la queue
     Sender sender;
     Receiver receiver;
 

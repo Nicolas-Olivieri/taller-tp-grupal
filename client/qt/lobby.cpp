@@ -69,6 +69,12 @@ Socket Lobby::get_socket() {
 std::string Lobby::get_username() { return username; }
 
 bool Lobby::can_create_socket() {
+    // TODO borrar, es el default
+    if (input_ip->text().isEmpty() || input_port->text().isEmpty()) {
+        socket.emplace("127.0.0.1", "5050");
+        return true;
+    }
+
     const char* hostname = input_ip->text().trimmed().toUtf8().constData();
     const char* servname = input_port->text().trimmed().toUtf8().constData();
 
