@@ -7,8 +7,7 @@
 
 
 GameAcceptor::GameAcceptor(Queue<ConnectionInfo>& waiting_queue):
-        waiting_queue(waiting_queue),
-        game_loop(command_queue, broadcaster) {}
+        waiting_queue(waiting_queue), game_loop(command_queue, broadcaster) {}
 
 
 void GameAcceptor::run() {

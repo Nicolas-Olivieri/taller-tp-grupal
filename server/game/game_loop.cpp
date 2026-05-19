@@ -7,7 +7,9 @@
 
 GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue,
                    EventBroadcaster& broadcaster):
-        command_queue(command_queue), game_world(100, 100), broadcaster(broadcaster) {}
+        command_queue(command_queue),
+        game_world(100, 100),
+        broadcaster(broadcaster) {}
 
 
 void GameLoop::run() {

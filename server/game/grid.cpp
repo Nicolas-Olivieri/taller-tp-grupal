@@ -29,8 +29,9 @@ Tile& Grid::get_tile(const Position& position) {
 
 
 Position Grid::spawn() const {
-    /* TODO: solución temporal, revisar cómo manejar el spawn inicial de jugadores
-    
+    /* TODO: solución temporal, revisar cómo manejar el spawn inicial de
+    jugadores
+
     std::random_device rd;
     std::default_random_engine generator(rd());
     std::uniform_int_distribution get_random_width(0, width_);
