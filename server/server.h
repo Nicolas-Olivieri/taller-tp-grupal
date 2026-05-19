@@ -1,14 +1,17 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "connection/acceptor.h"
 
 class Server {
+private:
+    Queue<ConnectionInfo> waiting_players;
+    Acceptor acceptor;
+
 public:
-    Server();
+    explicit Server(const char* servname);
 
     void run();
-
-    void poc_command();
 };
 
 

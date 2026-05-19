@@ -7,7 +7,7 @@
 #include <mutex>
 #include <queue>
 #include <stdexcept>
-
+#include <utility>
 
 struct ClosedQueue: public std::runtime_error {
     ClosedQueue(): std::runtime_error("The queue is already closed.") {}
@@ -64,6 +64,27 @@ public:
         return true;
     }
 
+    // Sobrecarga de try_push para pushear por movimiento
+    bool try_push(T&& val) {
+        std::unique_lock<std::mutex> lock(mtx);
+
+        if (closed) {
+            throw ClosedQueue();
+        }
+
+        if (q.size() == max_size) {
+            return false;
+        }
+
+        if (q.empty()) {
+            is_not_empty.notify_all();
+        }
+
+        q.push(std::move(val));
+
+        return true;
+    }
+
     bool try_pop(T& val) {
         std::unique_lock<std::mutex> lock(mtx);
 
@@ -79,7 +100,7 @@ public:
             is_not_full.notify_all();
         }
 
-        val = q.front();
+        val = std::move(q.front());
         q.pop();
 
         return true;
@@ -103,6 +124,25 @@ public:
         q.push(val);
     }
 
+    // Sobrecarga de push para pushear por movimiento
+    void push(T&& val) {
+        std::unique_lock<std::mutex> lock(mtx);
+
+        if (closed) {
+            throw ClosedQueue();
+        }
+
+        while (q.size() == max_size) {
+            is_not_full.wait(lock);
+        }
+
+        if (q.empty()) {
+            is_not_empty.notify_all();
+        }
+
+        q.push(std::move(val));
+    }
+
     T pop() {
         std::unique_lock<std::mutex> lock(mtx);
 
@@ -117,7 +157,7 @@ public:
             is_not_full.notify_all();
         }
 
-        T const val = q.front();
+        T val = std::move(q.front());
         q.pop();
 
         return val;

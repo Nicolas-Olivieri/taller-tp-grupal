@@ -19,7 +19,7 @@ int main(const int argc, const char* argv[]) {
 
         log.open(SERV_SERVNAME);
 
-        Server server;
+        Server server(argv[1]);
         server.run();
 
         return SUCCESS;
