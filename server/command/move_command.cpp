@@ -9,3 +9,6 @@ MoveCommand::MoveCommand(const std::string& player_name,
 void MoveCommand::execute(GameWorld& world) {
     world.move_player(player_name, direction);
 }
+
+
+void MoveCommand::broadcast(EventBroadcaster& /* broadcaster */) {}

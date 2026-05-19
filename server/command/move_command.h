@@ -15,6 +15,8 @@ public:
     MoveCommand(const std::string& player_name, Direction direction);
 
     void execute(GameWorld& world) override;
+
+    void broadcast(EventBroadcaster& broadcaster) override;
 };
 
 

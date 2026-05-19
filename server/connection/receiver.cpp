@@ -1,16 +1,16 @@
 #include "receiver.h"
 
 
-Receiver::Receiver(Socket& peer,
+Receiver::Receiver(Socket& peer, const std::string& player_name,
                    Queue<std::unique_ptr<Command>>& command_queue):
-        peer(peer), command_queue(command_queue) {}
+        protocol(peer), factory(player_name), command_queue(command_queue) {}
 
 
 void Receiver::run() {
-    /*
     try {
         while (should_keep_running()) {
-            // recibir un comando por la red y encolarlo en la cola de comandos
+            RequestedCommandDTO dto = protocol.recv_command();
+            command_queue.push(factory.create(dto));
         }
 
     } catch (const ClosedSocket&) {
@@ -21,5 +21,4 @@ void Receiver::run() {
             // Receiver finalizado por servidor desconectado
         }
     }
-    */
 }

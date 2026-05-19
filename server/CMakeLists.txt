@@ -20,6 +20,9 @@ target_sources(taller_server
         connection/receiver.cpp
         command/spawn_command.cpp
         command/despawn_command.cpp
+        command/command_factory.cpp
+        connection/event_broadcaster.cpp
+        connection/broadcast_register.cpp
     PUBLIC
         # .h files
         server.h
@@ -43,4 +46,7 @@ target_sources(taller_server
         connection/receiver.h
         command/spawn_command.h
         command/despawn_command.h
+        command/command_factory.h
+        connection/event_broadcaster.h
+        connection/broadcast_register.h
     )

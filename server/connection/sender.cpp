@@ -1,15 +1,20 @@
 #include "sender.h"
 
+#include "broadcast_register.h"
 
-Sender::Sender(Socket& peer, Queue<int>& client_queue):
-        peer(peer), client_queue(client_queue) {}
+
+Sender::Sender(Socket& peer, Queue<SnapshotDTO>& client_queue,
+               EventBroadcaster& broadcaster):
+        protocol(peer),
+        client_queue(client_queue),
+        broadcast(broadcaster, this->client_queue) {}
 
 
 void Sender::run() {
-    /*
     try {
         while (should_keep_running()) {
-            // desencolar evento de la cola del cliente y enviarlo por la red
+            SnapshotDTO snapshot = client_queue.pop();
+            protocol.send(snapshot);
         }
 
     } catch (const ClosedQueue&) {
@@ -23,5 +28,4 @@ void Sender::run() {
             // Sender finalizado por servidor desconectado
         }
     }
-    */
 }
