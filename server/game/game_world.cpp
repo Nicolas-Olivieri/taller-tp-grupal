@@ -66,3 +66,14 @@ void GameWorld::add_player(const std::string& player_name,
 void GameWorld::add_player(const std::string& player_name) {
     add_player(player_name, grid.spawn());
 }
+
+
+void GameWorld::remove_player(const std::string& player_name) {
+    const auto it = players.find(player_name);
+    if (it == players.end()) {
+        return;
+    }
+    players.erase(it);
+    std::cout << "[World] Jugador " << player_name << " desconectado"
+              << std::endl;
+}

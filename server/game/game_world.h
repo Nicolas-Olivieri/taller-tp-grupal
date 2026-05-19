@@ -26,6 +26,8 @@ public:
     void add_player(const std::string& player_name, const Position& position);
 
     void add_player(const std::string& player_name);
+
+    void remove_player(const std::string& player_name);
 };
 
 
