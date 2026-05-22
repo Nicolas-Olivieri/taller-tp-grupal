@@ -17,6 +17,7 @@ target_sources(taller_common
         dto/snapshot/actions/appearance.cpp
         dto/snapshot/actions/action.cpp
         dto/snapshot/info/playerinfo.cpp
+        dto/snapshot/snapshot_builder.cpp
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
@@ -42,6 +43,7 @@ target_sources(taller_common
         dto/snapshot/actions/appearance.h
         dto/snapshot/actions/action.h
         dto/snapshot/info/playerinfo.h
+        dto/snapshot/snapshot_builder.h
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h

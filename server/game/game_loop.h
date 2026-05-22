@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "common/dto/snapshot/snapshot_builder.h"
 #include "common/queue.h"
 #include "common/thread/thread.h"
 #include "server/command/command.h"
@@ -28,11 +29,11 @@ public:
     ~GameLoop() override;
 
 private:
-    void process_commands();
+    void process_commands(SnapshotBuilder& builder);
 
     void update_world(int iteration);
 
-    void broadcast();
+    void broadcast(SnapshotBuilder& builder);
 };
 
 

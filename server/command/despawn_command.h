@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "common/dto/snapshot/snapshot_builder.h"
+
 #include "command.h"
 
 
@@ -15,7 +17,7 @@ public:
 
     void execute(GameWorld& world) override;
 
-    void broadcast(EventBroadcaster& broadcaster) override;
+    void build_snapshot(SnapshotBuilder& builder) override;
 };
 
 
