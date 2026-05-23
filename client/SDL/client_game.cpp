@@ -97,9 +97,9 @@ void ClientGame::render_in_z_order() {
     renderer.Present();
 }
 
-void ClientGame::add_new_player(const AppearanceDTO& appearance) {
-    Sprite user = sprite_creator.create_user(appearance);
-    players.insert({{appearance.name, user}});
+void ClientGame::add_new_player(const PlayerInfoDTO& info) {
+    Sprite user = sprite_creator.create_user(info.appearance);
+    players.insert({{info.name, user}});
 }
 
 void ClientGame::handle_key_down(const SDL_Event& event) {
@@ -116,7 +116,7 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
 void ClientGame::update_players(const std::vector<PlayerInfoDTO>& players_information) {
     for (const PlayerInfoDTO& player_info: players_information) {
         if (!players.contains(player_info.name)) {
-            continue;
+            add_new_player(player_info);
         }
 
         SDL2pp::Point position(player_info.x * TILE_SIZE, player_info.y * TILE_SIZE);
@@ -127,9 +127,6 @@ void ClientGame::update_players(const std::vector<PlayerInfoDTO>& players_inform
 void ClientGame::handle_action(const ActionDTO& action) {
     // TODO agregar todos los tipos que vayamos agregando
     switch (action.action) {
-        case ActionType::APPEARANCE:
-            add_new_player(action.appearance);
-            break;
         default:
             break;
     }

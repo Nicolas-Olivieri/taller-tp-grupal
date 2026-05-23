@@ -13,5 +13,6 @@ void SnapshotBuilder::add_action(const ActionDTO& action) { actions.push_back(ac
 
 PlayerInfoDTO SnapshotBuilder::convert_to_info(const std::string& player_name, const Player& player) {
     Position position = player.get_position();
-    return PlayerInfoDTO(player_name, player.get_direction(), position.get_x(), position.get_y());
+    return PlayerInfoDTO(player_name, player.get_direction(), position.get_x(), position.get_y(),
+                         AppearanceDTO());
 }

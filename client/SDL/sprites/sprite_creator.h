@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "common/dto/snapshot/actions/appearance.h"
+#include "common/dto/snapshot/info/appearance.h"
 
 #include "animation_pool.h"
 #include "sprite.h"

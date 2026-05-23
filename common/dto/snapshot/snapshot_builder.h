@@ -25,6 +25,12 @@ public:
 
     void add_action(const ActionDTO& action);
 
+    // Elimina el constructor y el operador de asignación por copia
+    SnapshotBuilder(const SnapshotBuilder&) = delete;
+    SnapshotBuilder& operator=(const SnapshotBuilder&) = delete;
+    SnapshotBuilder(SnapshotBuilder&&) = delete;
+    SnapshotBuilder& operator=(SnapshotBuilder&&) = delete;
+
 private:
     PlayerInfoDTO convert_to_info(const std::string& player_name, const Player& player);
 };
