@@ -7,6 +7,13 @@ GameWorld::GameWorld(const int width, const int height): grid(width, height) {}
 std::unordered_map<std::string, Player> GameWorld::get_players() const { return players; }
 
 
+void GameWorld::update(const int iteration) {
+    for (auto& [name, player]: players) {
+        player.update(iteration);
+    }
+}
+
+
 void GameWorld::move_player(const std::string& player_name, const Direction direction) {
     // buscar al jugador
     const auto it = players.find(player_name);
@@ -15,6 +22,11 @@ void GameWorld::move_player(const std::string& player_name, const Direction dire
     }
 
     auto& player = it->second;
+
+    if (not player.can_move()) {
+        return;
+    }
+
     const Position current = player.get_position();
 
     std::cout << "[World] Jugador " << player_name << " intentando moverse " << std::endl;

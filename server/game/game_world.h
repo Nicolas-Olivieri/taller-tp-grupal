@@ -23,6 +23,8 @@ public:
 
     std::unordered_map<std::string, Player> get_players() const;
 
+    void update(int iteration);
+
     void move_player(const std::string& player_name, Direction direction);
 
     void add_player(const std::string& player_name, const Position& position);

@@ -22,6 +22,12 @@ public:
     Position get_position() const;
 
     Direction get_direction() const;
+
+    bool can_attack() const;
+
+    bool can_move() const;
+
+    void update(int iteration);
 };
 
 
