@@ -12,16 +12,18 @@ GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcas
 
 void GameLoop::run() {
     RateTimer timer(FPS);
-    int iteration = 0;
+    int current_iteration = 0;
+    int last_iteration = -1;
 
     while (should_keep_running()) {
         SnapshotBuilder builder;
 
         process_commands(builder);
-        update_world(iteration);
+        update_world(current_iteration - last_iteration);
 
         broadcast(builder);
-        iteration = timer.calculate_next_iteration();
+        last_iteration = current_iteration;
+        current_iteration = timer.calculate_next_iteration();
     }
 }
 
@@ -37,9 +39,7 @@ void GameLoop::process_commands(SnapshotBuilder& builder) {
 }
 
 
-void GameLoop::update_world(const int /* iteration */) {
-    // TODO: Implementar lógica
-}
+void GameLoop::update_world(const int iteration) { game_world.update(iteration); }
 
 
 void GameLoop::broadcast(SnapshotBuilder& builder) {

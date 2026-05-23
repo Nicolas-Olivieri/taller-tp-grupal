@@ -8,6 +8,12 @@ class Player;
 
 
 class Killable: public Interactive {
+protected:
+    int attack_cooldown;
+    int move_cooldown;
+
+    Killable(int attack_cooldown, int move_cooldown);
+
 public:
     void drop();
 

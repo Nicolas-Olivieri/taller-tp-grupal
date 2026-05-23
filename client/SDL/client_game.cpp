@@ -106,7 +106,7 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
     assert(event.type == SDL_KEYDOWN);
     auto key_pressed = event.key.keysym.sym;
 
-    if (KeyMapper::is_movement_key(key_pressed) && players.at(player_name).is_idle()) {
+    if (KeyMapper::is_movement_key(key_pressed)) {
         Direction direction_chosen = KeyMapper::get_direction(key_pressed);
 
         connection.push_command(std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
