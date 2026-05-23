@@ -2,7 +2,8 @@
 
 #include <algorithm>
 
-#define PIXELS_PER_STEP 5
+#define MIN_PIXELS_PER_STEP 3
+#define CHANGE_RATE 0.3
 
 Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction action):
         position(position), direction(action), layers{{Layer::BODY, body}} {}
@@ -28,23 +29,8 @@ void Sprite::update_visual_position() {
 
     const SDL2pp::Point diff = target_position - position;
 
-    switch (direction) {
-        case Direction::DOWN:
-            position.y += std::min(PIXELS_PER_STEP, diff.y);
-            break;
-        case Direction::UP:
-            position.y -= std::min(PIXELS_PER_STEP, std::abs(diff.y));
-            break;
-        case Direction::LEFT:
-            position.x -= std::min(PIXELS_PER_STEP, std::abs(diff.x));
-            break;
-        case Direction::RIGHT:
-            position.x += std::min(PIXELS_PER_STEP, diff.x);
-            break;
-        case Direction::IDLE:
-        default:
-            break;
-    }
+    position.x = get_new_coordinate(position.x, diff.x);
+    position.y = get_new_coordinate(position.y, diff.y);
 }
 
 void Sprite::update_frame(const int iteration) {
@@ -73,3 +59,13 @@ void Sprite::render() {
 SDL2pp::Point Sprite::get_position() const { return position; }
 
 bool Sprite::is_idle() const { return direction == Direction::IDLE; }
+
+int Sprite::get_new_coordinate(const int& current_coordinate, const int& coordinate_diff) {
+    const int coordinate_movement = coordinate_diff * CHANGE_RATE;
+
+    if (MIN_PIXELS_PER_STEP > std::abs(coordinate_movement)) {
+        return current_coordinate + coordinate_diff;  // target coordinate
+    } else {
+        return current_coordinate + coordinate_movement;
+    }
+}
