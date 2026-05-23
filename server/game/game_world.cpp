@@ -66,6 +66,7 @@ void GameWorld::remove_player(const std::string& player_name) {
     if (it == players.end()) {
         return;
     }
+    grid.get_tile(it->second.get_position()).occupy(nullptr);
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
 }

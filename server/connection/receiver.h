@@ -15,6 +15,7 @@
 class Receiver: public Thread {
 private:
     Protocol protocol;
+    std::string player_name;
     CommandFactory factory;
     Queue<std::unique_ptr<Command>>& command_queue;
 

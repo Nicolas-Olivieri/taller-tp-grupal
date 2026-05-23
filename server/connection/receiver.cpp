@@ -1,9 +1,11 @@
 #include "receiver.h"
 
+#include "server/command/despawn_command.h"
+
 
 Receiver::Receiver(Socket& peer, const std::string& player_name,
                    Queue<std::unique_ptr<Command>>& command_queue):
-        protocol(peer), factory(player_name), command_queue(command_queue) {}
+        protocol(peer), player_name(player_name), factory(player_name), command_queue(command_queue) {}
 
 
 void Receiver::run() {
@@ -21,4 +23,6 @@ void Receiver::run() {
             // Receiver finalizado por servidor desconectado
         }
     }
+
+    command_queue.push(std::make_unique<DespawnCommand>(player_name));
 }
