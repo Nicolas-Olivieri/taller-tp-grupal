@@ -5,9 +5,11 @@ target_sources(taller_client
         client.cpp
 
         SDL/client_game.cpp
+        SDL/camera.cpp
+        SDL/world.cpp
+
         SDL/sprites/animation.cpp
         SDL/sprites/animation_pool.cpp
-
         SDL/sprites/sprite.cpp
         SDL/sprites/sprite_layer.cpp
         SDL/sprites/sprite_creator.cpp
@@ -28,6 +30,9 @@ target_sources(taller_client
         TOML/animation_parser.h
 
         SDL/client_game.h
+        SDL/camera.h
+        SDL/world.h
+
         SDL/sprites/animation.h
         SDL/sprites/animation_pool.h
         SDL/sprites/sprite.h
