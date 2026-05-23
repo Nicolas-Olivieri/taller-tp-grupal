@@ -2,7 +2,6 @@
 
 #include <utility>
 
-#include "server/command/despawn_command.h"
 #include "server/command/spawn_command.h"
 
 
@@ -28,7 +27,6 @@ void GameAcceptor::reap() {
     auto it = clients.begin();
     while (it != clients.end()) {
         if (not it->is_alive()) {
-            command_queue.push(std::make_unique<DespawnCommand>(it->get_name()));
             it = clients.erase(it);
         } else {
             ++it;
