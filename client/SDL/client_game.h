@@ -44,7 +44,7 @@ private:
     void render_in_z_order();
 
     // Auxiliares
-    void add_new_player(const AppearanceDTO& appearance);
+    void add_new_player(const PlayerInfoDTO& info);
 
     void handle_key_down(const SDL_Event& event);
 

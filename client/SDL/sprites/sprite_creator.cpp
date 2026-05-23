@@ -4,8 +4,6 @@
 #include <string>
 #include <utility>
 
-#include "common/dto/snapshot/actions/appearance.h"
-
 #include "sprite_layer.h"
 
 #define HEAD_OFFSET 21

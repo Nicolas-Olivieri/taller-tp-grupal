@@ -3,17 +3,14 @@
 
 #include "common/dto/message.h"
 
-#include "appearance.h"
-
-enum class ActionType : uint8_t { APPEARANCE };
+enum class ActionType : uint8_t { PLACEHOLDER };  // TODO: eliminar PLACEHOLDER
 
 struct ActionDTO: public ProtocolMessageDTO {
     ActionType action;
-    AppearanceDTO appearance;
 
-    // TODO: debería agregarse un constructor por cada acción definida, donde el
-    // ActionType se define correspondientemente
-    explicit ActionDTO(const AppearanceDTO& appearance);
+    // TODO: REVISAR CONSTRUCTOR DEPENDIENDO DE COMO SE MANEJEN LAS ACTION EN EL FUTURO.
+    // pueden llegar a no necesitar el ActionType dependiendo del contenido.
+    explicit ActionDTO(ActionType action);
 
     size_t message_size() const override;
 

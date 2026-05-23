@@ -36,18 +36,15 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(static_cast<uint8_t>(info.direction));
     serialize(info.x);
     serialize(info.y);
+    serialize(info.appearance);
 }
 
 // TODO: se debería serializar dependiendo de action.action (ActionType)
-void Serializer::serialize(const ActionDTO& action) {
-    serialize(static_cast<uint8_t>(action.action));
-    serialize(action.appearance);
-}
+void Serializer::serialize(const ActionDTO& action) { serialize(static_cast<uint8_t>(action.action)); }
 
 void Serializer::serialize(const AppearanceDTO& appearance) {
     serialize(appearance.body);
     serialize(appearance.head);
-    serialize(appearance.name);
 }
 
 void Serializer::serialize(const std::string& value) {

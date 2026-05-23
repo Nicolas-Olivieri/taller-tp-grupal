@@ -80,8 +80,9 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
+    AppearanceDTO appearance = recv_appearance();
 
-    return PlayerInfoDTO(name, direction, x, y);
+    return PlayerInfoDTO(name, direction, x, y, appearance);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -101,10 +102,8 @@ ActionDTO Deserializer::recv_action() {
     ActionType type = recv_action_type();
     // TODO: recordar modificar esto para recibir la información según el
     // ActionType
-    if (type == ActionType::APPEARANCE) {
-        AppearanceDTO appearance = recv_appearance();
-        return ActionDTO(appearance);
-    }
+    if (type == ActionType::PLACEHOLDER)
+        return ActionDTO(type);
 
     throw std::exception();  // TODO: modificar
 }
@@ -115,7 +114,7 @@ ActionType Deserializer::recv_action_type() {
     switch (static_cast<ActionType>(byte)) {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
-        case ActionType::APPEARANCE:
+        case ActionType::PLACEHOLDER:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -128,7 +127,6 @@ AppearanceDTO Deserializer::recv_appearance() {
     // TODO 2: capaz en un futuro cada categoría debería ser un enum
     uint8_t body = recv_uint8();
     uint8_t head = recv_uint8();
-    std::string name = recv_string();
 
-    return AppearanceDTO(body, head, name);
+    return AppearanceDTO(body, head);
 }

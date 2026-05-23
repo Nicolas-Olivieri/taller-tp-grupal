@@ -1,5 +1,6 @@
 #include "game_loop.h"
 
+#include "common/dto/snapshot/snapshot_builder.h"
 #include "common/util/rate_timer.h"
 
 #define FPS 30
@@ -14,21 +15,23 @@ void GameLoop::run() {
     int iteration = 0;
 
     while (should_keep_running()) {
-        process_commands();
+        SnapshotBuilder builder;
+
+        process_commands(builder);
         update_world(iteration);
 
-        broadcast();
+        broadcast(builder);
         iteration = timer.calculate_next_iteration();
     }
 }
 
 
-void GameLoop::process_commands() {
+void GameLoop::process_commands(SnapshotBuilder& builder) {
     try {
         std::unique_ptr<Command> cmd;
         while (command_queue.try_pop(cmd)) {
             cmd->execute(game_world);
-            cmd->broadcast(broadcaster);
+            cmd->build_snapshot(builder);
         }
     } catch (const ClosedQueue&) {}
 }
@@ -39,7 +42,10 @@ void GameLoop::update_world(const int /* iteration */) {
 }
 
 
-void GameLoop::broadcast() { broadcaster.broadcast(game_world.get_players()); }
+void GameLoop::broadcast(SnapshotBuilder& builder) {
+    builder.add_players(game_world.get_players());
+    broadcaster.broadcast(builder.build());
+}
 
 
 GameLoop::~GameLoop() {

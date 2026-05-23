@@ -16,7 +16,6 @@ class EventBroadcaster {
 private:
     std::mutex mtx;
     std::list<Queue<SnapshotDTO>*> client_queues;
-    std::vector<ActionDTO> actions;
 
 public:
     EventBroadcaster() = default;
@@ -25,9 +24,7 @@ public:
 
     void remove_queue(const Queue<SnapshotDTO>& queue);
 
-    void broadcast(const std::unordered_map<std::string, Player>& players);
-
-    void add_action(const ActionDTO& action);
+    void broadcast(const SnapshotDTO& snapshot);
 
     EventBroadcaster(const EventBroadcaster&) = delete;
 

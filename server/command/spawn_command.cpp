@@ -22,7 +22,4 @@ void SpawnCommand::execute(GameWorld& world) {
     }
 }
 
-
-void SpawnCommand::broadcast(EventBroadcaster& broadcaster) {
-    broadcaster.add_action(ActionDTO(AppearanceDTO(0, 0, player_name)));
-}
+void SpawnCommand::build_snapshot(SnapshotBuilder& /* builder */) {}

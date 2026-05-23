@@ -9,9 +9,12 @@
 struct AppearanceDTO: public ProtocolMessageDTO {
     uint8_t body;
     uint8_t head;
-    std::string name;
 
-    AppearanceDTO(uint8_t body, uint8_t head, const std::string& name);
+    // TODO Constructor default para conseguir una apariencia default hasta que podamos conseguirla en base al
+    // jugador
+    AppearanceDTO();
+
+    AppearanceDTO(uint8_t body, uint8_t head);
 
     size_t message_size() const override;
 
