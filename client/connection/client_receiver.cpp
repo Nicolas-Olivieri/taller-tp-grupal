@@ -18,3 +18,5 @@ void ClientReceiver::run() {
 }
 
 bool ClientReceiver::try_pop(SnapshotDTO& snapshot) { return receiver_q.try_pop(snapshot); }
+
+SnapshotDTO ClientReceiver::pop() { return receiver_q.pop(); }

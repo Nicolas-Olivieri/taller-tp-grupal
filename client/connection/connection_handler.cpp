@@ -27,3 +27,5 @@ void ConnectionHandler::stop() {
 }
 
 bool ConnectionHandler::try_pop_snapshot(SnapshotDTO& snapshot) { return receiver.try_pop(snapshot); }
+
+SnapshotDTO ConnectionHandler::pop_snapshot() { return receiver.pop(); }
