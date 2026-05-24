@@ -4,8 +4,9 @@
 
 #define PIXELS_PER_STEP 5
 
-Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction action):
-        position(position), direction(action), layers{{Layer::BODY, body}} {}
+Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction action,
+               const SDL2pp::Point size):
+        position(position), direction(action), size(size), layers{{Layer::BODY, body}} {}
 
 void Sprite::add_layer(Layer layer_num, SpriteLayer&& layer) { layers.emplace(layer_num, layer); }
 
@@ -57,19 +58,34 @@ void Sprite::update_frame(const int iteration) {
     }
 }
 
-void Sprite::render() {
+void Sprite::render(const SDL2pp::Point& camera_offset) {
+    SDL2pp::Point render_position = position - camera_offset;
+
     if (direction == Direction::UP) {
         for (auto layer = layers.rbegin(); layer != layers.rend(); ++layer) {
-            layer->second.render(position);
+            layer->second.render(render_position);
         }
         return;
     }
 
     for (auto& layer: layers) {
-        layer.second.render(position);
+        layer.second.render(render_position);
     }
 }
 
 SDL2pp::Point Sprite::get_position() const { return position; }
 
+SDL2pp::Point Sprite::get_size() const { return size; }
+
 bool Sprite::is_idle() const { return direction == Direction::IDLE; }
+
+bool Sprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const {
+    for (auto& [_, layer]: layers) {
+        const SDL2pp::Rect offseted_camera(area.GetTopLeft() - offset, area.GetSize());
+        if (layer.frame.Intersects(offseted_camera)) {
+            return true;
+        }
+    }
+    std::cout << "no intersecte :(" << std::endl;
+    return false;
+}

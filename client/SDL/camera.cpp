@@ -7,8 +7,8 @@ Camera::Camera(const int screen_width, const int screen_height, const Rect world
 void Camera::update_position() {
     const Point user_position = user.get_position();
 
-    view.SetX(user_position.GetX() - view.GetW() / 2);
-    view.SetY(user_position.GetY() - view.GetH() / 2);
+    view.SetX((user_position.GetX() + user.get_size().GetX() / 2) - view.GetW() / 2);
+    view.SetY((user_position.GetY() + user.get_size().GetY() / 2) - view.GetH() / 2);
 
     if (view.GetX() < 0)
         view.SetX(0);

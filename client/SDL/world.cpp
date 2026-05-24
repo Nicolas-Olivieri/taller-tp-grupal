@@ -19,17 +19,24 @@ void World::update_visuals(const int it) {
 }
 
 void World::render_in_z_order(const Camera& camera) {
+    Texture bg(renderer, DATA_PATH "/fondo2.jpg");
+    renderer.Copy(bg, camera.get_view(), Rect(0, 0, WORLD_WIDTH, WORLD_HEIGHT));
+
     std::vector<Sprite> viewed_sprites = filter_viewed_sprites(camera);
 
-    for (auto& [name, entity]: players) {
-        entity.render();
+    for (auto& entity: viewed_sprites) {
+        entity.render(camera.get_view().GetTopLeft());
     }
     renderer.Present();
 }
 
 std::vector<Sprite> World::filter_viewed_sprites(const Camera& camera) {
     std::vector<Sprite> viewed_sprites;
-    for (auto& [name, entity]: players) {}
+    for (auto& [name, entity]: players) {
+        if (entity.intersects(camera.get_view(), camera.get_view().GetTopLeft())) {
+            viewed_sprites.push_back(entity);
+        }
+    }
     return viewed_sprites;
 }
 

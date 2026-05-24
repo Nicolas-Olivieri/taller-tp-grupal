@@ -40,11 +40,11 @@ void ClientGame::run() {
             return;
 
         update_state_from_server();
+        camera.update_position();
         renderer.Clear();
 
         world.update_visuals(iteration);
         world.render_in_z_order(camera);
-        camera.update_position();
 
         iteration = timer.calculate_next_iteration();
     }
@@ -54,9 +54,8 @@ Camera ClientGame::initialize_world_and_camera() {
     // 1. Recibe el mundo
     // 2. Recibe primer snapshot con yo adentro?
 
-    SnapshotDTO snapshot;
-    while (true) {  // TODO ampliar para tener pop bloqueante y no un while true
-        connection.try_pop_snapshot(snapshot);
+    while (true) {
+        const SnapshotDTO snapshot = connection.pop_snapshot();
         std::vector<PlayerInfoDTO> info = snapshot.players_information;
 
         auto it = std::find_if(info.begin(), info.end(), [this](const PlayerInfoDTO& player_info) {
