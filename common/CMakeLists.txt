@@ -21,6 +21,9 @@ target_sources(taller_common
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
+
+        dto/snapshot/actions/despawn.cpp
+
     PUBLIC
         # .h files
         liberror.h
@@ -47,4 +50,6 @@ target_sources(taller_common
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h
+
+        dto/snapshot/actions/despawn.h
     )

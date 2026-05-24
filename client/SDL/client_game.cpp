@@ -127,6 +127,11 @@ void ClientGame::update_players(const std::vector<PlayerInfoDTO>& players_inform
 void ClientGame::handle_action(const ActionDTO& action) {
     // TODO agregar todos los tipos que vayamos agregando
     switch (action.action) {
+        case ActionType::DESPAWN:
+            if (players.contains(action.despawn.player_despawned)) {
+                players.extract(action.despawn.player_despawned);
+            }
+            break;
         default:
             break;
     }

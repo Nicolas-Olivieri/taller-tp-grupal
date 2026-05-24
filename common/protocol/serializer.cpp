@@ -1,6 +1,7 @@
 #include "serializer.h"
 
 #include <cstring>
+#include <stdexcept>
 
 #include <arpa/inet.h>
 
@@ -40,7 +41,17 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
 }
 
 // TODO: se debería serializar dependiendo de action.action (ActionType)
-void Serializer::serialize(const ActionDTO& action) { serialize(static_cast<uint8_t>(action.action)); }
+void Serializer::serialize(const ActionDTO& action) {
+    serialize(static_cast<uint8_t>(action.action));
+
+    switch (action.action) {
+        case ActionType::DESPAWN:
+            serialize(action.despawn);
+            break;
+        default:
+            throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
+    }
+}
 
 void Serializer::serialize(const AppearanceDTO& appearance) {
     serialize(appearance.body);
@@ -63,3 +74,5 @@ void Serializer::serialize(uint16_t value) {
     std::memcpy(&this->buffer[this->offset], &netvalue, sizeof(netvalue));
     offset += sizeof(netvalue);
 }
+
+void Serializer::serialize(const DespawnDTO& despawn) { serialize(despawn.player_despawned); }

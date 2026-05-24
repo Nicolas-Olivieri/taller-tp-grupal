@@ -49,6 +49,8 @@ public:
     void serialize(const ActionDTO& action);
 
     void serialize(const AppearanceDTO& appearance);
+
+    void serialize(const DespawnDTO& despawn);
 };
 
 #endif  // SERIALIZER_H
