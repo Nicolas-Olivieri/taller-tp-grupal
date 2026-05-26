@@ -7,9 +7,9 @@ GameWorld::GameWorld(const int width, const int height): grid(width, height) {}
 std::unordered_map<std::string, Player> GameWorld::get_players() const { return players; }
 
 
-void GameWorld::update(const int iteration) {
+void GameWorld::update() {
     for (auto& [name, player]: players) {
-        player.update(iteration);
+        player.update();
     }
 }
 
@@ -52,7 +52,7 @@ void GameWorld::move_player(const std::string& player_name, const Direction dire
         grid.get_tile(current).occupy(nullptr);
         tile.occupy(&player);
 
-        player.move(target, direction);
+        player.update_position(target, direction);
 
         // notificar el evento de movimiento
         std::cout << "[World] Jugador " << player_name << " se movió a " << target << std::endl;
