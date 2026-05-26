@@ -14,7 +14,6 @@
 
 #include "key_mapper.h"
 
-#define TILE_SIZE 25
 #define FPS 30
 
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
@@ -25,7 +24,8 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         player_name(std::move(player_name)),
         texture_pool(renderer),
         sprite_creator(renderer),
-        connection(connection) {
+        connection(connection),
+        key_being_pressed(SDLK_UNKNOWN) {
     connection.start();
 }
 
@@ -51,6 +51,7 @@ void ClientGame::run() {
 
 int ClientGame::pollEvents() {
     SDL_Event event;
+    bool key_was_pressed = false;
 
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -59,9 +60,22 @@ int ClientGame::pollEvents() {
         }
 
         if (event.type == SDL_KEYDOWN) {
+            key_was_pressed = true;
             handle_key_down(event);
         }
+
+        // Esto no sirvió en esta condición, nunca se cumplía
+        // key_was_pressed == event.key.keysym.sym &&
+        if (event.type == SDL_KEYUP && KeyMapper::is_movement_key(event.key.keysym.sym)) {
+            key_being_pressed = SDLK_UNKNOWN;
+        }
     }
+
+    // TODO esto definitivamente habría que modularizarlo/encapsularlo
+    if (!key_was_pressed && KeyMapper::is_movement_key(key_being_pressed)) {
+        connection.push_command(std::make_unique<MoveEventDTO>(KeyMapper::get_direction(key_being_pressed)));
+    }
+
     return 0;
 }
 
@@ -98,7 +112,7 @@ void ClientGame::render_in_z_order() {
 }
 
 void ClientGame::add_new_player(const PlayerInfoDTO& info) {
-    Sprite user = sprite_creator.create_user(info.appearance);
+    Sprite user = sprite_creator.create_user(info);
     players.insert({{info.name, user}});
 }
 
@@ -106,10 +120,14 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
     assert(event.type == SDL_KEYDOWN);
     auto key_pressed = event.key.keysym.sym;
 
+    //    if (key_pressed == key_being_pressed)
+    //        return; // evito floodear al servidor
+    //
     if (KeyMapper::is_movement_key(key_pressed)) {
         Direction direction_chosen = KeyMapper::get_direction(key_pressed);
 
         connection.push_command(std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
+        key_being_pressed = key_pressed;
     }
 }
 
@@ -119,7 +137,7 @@ void ClientGame::update_players(const std::vector<PlayerInfoDTO>& players_inform
             add_new_player(player_info);
         }
 
-        SDL2pp::Point position(player_info.x * TILE_SIZE, player_info.y * TILE_SIZE);
+        SDL2pp::Point position(player_info.x, player_info.y);
         players.at(player_info.name).set_target_position(player_info.direction, position);
     }
 }

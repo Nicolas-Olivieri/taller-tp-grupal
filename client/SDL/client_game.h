@@ -28,6 +28,8 @@ private:
 
     ConnectionHandler& connection;
 
+    int key_being_pressed;
+
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name);
 

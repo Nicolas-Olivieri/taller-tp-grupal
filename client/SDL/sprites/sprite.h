@@ -29,9 +29,16 @@ public:
 
     void render();
 
+
     SDL2pp::Point get_position() const;
 
     bool is_idle() const;
+
+private:
+    int get_new_coordinate(const int& current_coordinate, const int& coordinate_diff);
+
+    // Transforma las coorddenadas multiplicándolas por la cte TILE_SIZE
+    SDL2pp::Point to_sprite_point(const SDL2pp::Point& point);
 };
 
 
