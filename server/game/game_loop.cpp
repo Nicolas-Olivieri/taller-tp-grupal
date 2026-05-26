@@ -4,10 +4,15 @@
 #include "common/util/rate_timer.h"
 
 #define FPS 30
+#define SAVE_FRAME FPS * 10
 
 
-GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster):
-        command_queue(command_queue), game_world(100, 100), broadcaster(broadcaster) {}
+GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster,
+                   PlayerRepository& player_repository):
+        command_queue(command_queue),
+        game_world(100, 100),
+        broadcaster(broadcaster),
+        player_repository(player_repository) {}
 
 
 void GameLoop::run() {
@@ -27,6 +32,10 @@ void GameLoop::run() {
 
         last_iteration = current_iteration;
         current_iteration = timer.calculate_next_iteration();
+
+        // TODO: engrapadísimo también
+        if (current_iteration % SAVE_FRAME == 0)
+            player_repository.save_progress(game_world.get_players());
     }
 }
 

@@ -3,9 +3,13 @@
 #include "common/queue.h"
 
 #define CMD_EXIT 'q'
+#define DB_PATH "./playerdata.bin"
+#define INDX_PATH "./index.bin"
 
-
-Server::Server(const char* servname): acceptor(servname, waiting_players), game_acceptor(waiting_players) {}
+Server::Server(const char* servname):
+        player_repository(DB_PATH, INDX_PATH),
+        acceptor(servname, waiting_players, player_repository),
+        game_acceptor(waiting_players, player_repository) {}
 
 void Server::run() {
     acceptor.start();

@@ -5,8 +5,10 @@
 #include "server/command/spawn_command.h"
 
 
-GameAcceptor::GameAcceptor(Queue<ConnectionInfo>& waiting_queue):
-        waiting_queue(waiting_queue), game_loop(command_queue, broadcaster) {}
+GameAcceptor::GameAcceptor(Queue<ConnectionInfo>& waiting_queue, PlayerRepository& player_repository):
+        waiting_queue(waiting_queue),
+        player_repository(player_repository),
+        game_loop(command_queue, broadcaster, player_repository) {}
 
 
 void GameAcceptor::run() {
@@ -17,7 +19,13 @@ void GameAcceptor::run() {
             reap();
             clients.emplace_back(std::move(peer), player_name, command_queue, broadcaster);
             clients.back().start();
-            command_queue.push(std::make_unique<SpawnCommand>(player_name));
+
+            // TODO: engrapadísimo, pero de momento es solución suficiente con respecto a recuperar posición
+            // persistida
+            PlayerData data = player_repository.get(player_name);
+            Position position(data.position_x, data.position_y);
+
+            command_queue.push(std::make_unique<SpawnCommand>(player_name, position));
         }
     } catch (const ClosedQueue&) {}
 }

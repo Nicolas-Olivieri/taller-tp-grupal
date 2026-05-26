@@ -7,6 +7,7 @@
 #include "common/queue.h"
 #include "common/socket.h"
 #include "common/thread/thread.h"
+#include "server/persistance/playerrepository.h"
 
 #include "connectioninfo.h"
 
@@ -16,13 +17,15 @@ private:
     bool handshake_finished;
     Socket socket;
     Queue<ConnectionInfo>& waiting_players;
+    PlayerRepository& player_repository;
 
     void move_into_waiting_queue(const std::string& username);
 
     void shutdown_if_blocked();
 
 public:
-    LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players);
+    LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players,
+                 PlayerRepository& player_repository);
 
     void run() override;
 
