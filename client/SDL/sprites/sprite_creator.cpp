@@ -12,13 +12,16 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
         texture_pool(TexturePool(renderer)), animation_pool(AnimationPool()), renderer(renderer) {}
 
 
-Sprite SpriteCreator::create_user(const AppearanceDTO& appearance_data) {
+Sprite SpriteCreator::create_user(const PlayerInfoDTO& playerInfo) {
+    const AppearanceDTO& appearance_data = playerInfo.appearance;
+    const SDL2pp::Point position(playerInfo.x, playerInfo.y);
+
     SpriteLayer head = create_sprite_layer("head", appearance_data.head);
     SpriteLayer body = create_sprite_layer("body", appearance_data.body, SDL2pp::Point(0, HEAD_OFFSET));
 
     const SDL2pp::Point size = body.frame.Union(head.frame).GetSize();
 
-    Sprite sprite(std::move(body), SDL2pp::Point(0, 0), Direction::IDLE, size);
+    Sprite sprite(std::move(body), position, Direction::IDLE, size);
     sprite.add_layer(Layer::HEAD, std::move(head));
 
     return sprite;

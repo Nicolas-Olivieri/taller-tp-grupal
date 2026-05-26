@@ -36,6 +36,12 @@ public:
     bool is_idle() const;
 
     bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const;
+
+private:
+    int get_new_coordinate(const int& current_coordinate, const int& coordinate_diff);
+
+    // Transforma las coorddenadas multiplicándolas por la cte TILE_SIZE
+    SDL2pp::Point to_sprite_point(const SDL2pp::Point& point);
 };
 
 

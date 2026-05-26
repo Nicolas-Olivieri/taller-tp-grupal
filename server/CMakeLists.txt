@@ -4,8 +4,17 @@ target_sources(taller_server
         main.cpp
         server.cpp
         command/move_command.cpp
+        command/interact_command.cpp
         game/game_world.cpp
-        game/player.cpp
+        game/player/player.cpp
+        game/stats/recoverable_stat.cpp
+        game/stats/mana.cpp
+        game/stats/health.cpp
+        game/stats/experience.cpp
+        game/stats/stats.cpp
+        game/stats/archetype.cpp
+        game/stats/race.cpp
+        util/calculator.cpp
         game/position.cpp
         game/grid.cpp
         game/killable.cpp
@@ -28,8 +37,17 @@ target_sources(taller_server
         server.h
         command/command.h
         command/move_command.h
+        command/interact_command.h
         game/game_world.h
-        game/player.h
+        game/player/player.h
+        game/stats/recoverable_stat.h
+        game/stats/mana.h
+        game/stats/health.h
+        game/stats/experience.h
+        game/stats/stats.h
+        game/stats/archetype.h
+        game/stats/race.h
+        util/calculator.h
         game/position.h
         game/grid.h
         game/interactive.h

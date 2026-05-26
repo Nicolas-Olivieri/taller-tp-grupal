@@ -12,4 +12,6 @@
 
 enum class Layer { BODY = 0, HEAD = 1, HELMET = 2, WEAPON = 3, SHIELD = 4 };
 
+#define TILE_SIZE 25
+
 #endif  // CLIENT_CONSTANTS_H

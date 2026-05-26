@@ -23,6 +23,8 @@ private:
 
     AppearanceDTO recv_appearance();
 
+    DespawnDTO recv_despawn();
+
 public:
     explicit Deserializer(Socket& socket);  // NOLINT
 

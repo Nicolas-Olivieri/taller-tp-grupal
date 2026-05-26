@@ -24,6 +24,7 @@ private:
 
     std::string player_name;
     World world;
+    int key_being_pressed;
 
     // Principales
     int pollEvents();
@@ -32,6 +33,7 @@ private:
 
     void handle_key_down(const SDL_Event& event);
 
+    void handle_mouse_click(const SDL_Event& event);
 
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name);

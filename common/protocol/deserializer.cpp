@@ -38,6 +38,8 @@ CommandType Deserializer::recv_command_type() {
         // luego borrar este comentario
         case CommandType::MOVE:
             return static_cast<CommandType>(byte);
+        case CommandType::INTERACT:
+            return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
             // TODO: chequear si es la mejor excepción
@@ -102,10 +104,12 @@ ActionDTO Deserializer::recv_action() {
     ActionType type = recv_action_type();
     // TODO: recordar modificar esto para recibir la información según el
     // ActionType
-    if (type == ActionType::PLACEHOLDER)
-        return ActionDTO(type);
-
-    throw std::exception();  // TODO: modificar
+    switch (type) {
+        case ActionType::DESPAWN:
+            return ActionDTO(recv_despawn());
+        default:
+            throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
+    }
 }
 
 ActionType Deserializer::recv_action_type() {
@@ -114,7 +118,7 @@ ActionType Deserializer::recv_action_type() {
     switch (static_cast<ActionType>(byte)) {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
-        case ActionType::PLACEHOLDER:
+        case ActionType::DESPAWN:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -129,4 +133,10 @@ AppearanceDTO Deserializer::recv_appearance() {
     uint8_t head = recv_uint8();
 
     return AppearanceDTO(body, head);
+}
+
+DespawnDTO Deserializer::recv_despawn() {
+    std::string player_despawned = recv_string();
+
+    return DespawnDTO(player_despawned);
 }

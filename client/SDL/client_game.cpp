@@ -9,6 +9,7 @@
 #include <SDL2pp/Window.hh>
 
 #include "../client_constants.h"
+#include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/util/rate_timer.h"
 #include "sprites/sprite.h"
@@ -24,7 +25,8 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         renderer(Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         connection(connection),
         player_name(player_name),
-        world(renderer, player_name) {
+        world(renderer, player_name),
+        key_being_pressed(SDLK_UNKNOWN) {
     connection.start();
 }
 
@@ -75,6 +77,7 @@ Camera ClientGame::initialize_world_and_camera() {
 
 int ClientGame::pollEvents() {
     SDL_Event event;
+    bool key_was_pressed = false;
 
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -83,9 +86,26 @@ int ClientGame::pollEvents() {
         }
 
         if (event.type == SDL_KEYDOWN) {
+            key_was_pressed = true;
             handle_key_down(event);
         }
+
+        // Esto no sirvió en esta condición, nunca se cumplía
+        // key_was_pressed == event.key.keysym.sym &&
+        if (event.type == SDL_KEYUP && KeyMapper::is_movement_key(event.key.keysym.sym)) {
+            key_being_pressed = SDLK_UNKNOWN;
+        }
+
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            handle_mouse_click(event);
+        }
     }
+
+    // TODO esto definitivamente habría que modularizarlo/encapsularlo
+    if (!key_was_pressed && KeyMapper::is_movement_key(key_being_pressed)) {
+        connection.push_command(std::make_unique<MoveEventDTO>(KeyMapper::get_direction(key_being_pressed)));
+    }
+
     return 0;
 }
 
@@ -113,5 +133,14 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
         Direction direction_chosen = KeyMapper::get_direction(key_pressed);
 
         connection.push_command(std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
+        key_being_pressed = key_pressed;
+    }
+}
+
+void ClientGame::handle_mouse_click(const SDL_Event& event) {
+    if (event.button.button == SDL_BUTTON_LEFT) {
+        const uint16_t target_x = event.button.x / TILE_SIZE;
+        const uint16_t target_y = event.button.y / TILE_SIZE;
+        connection.push_command(std::make_unique<InteractEventDTO>(target_x, target_y));
     }
 }

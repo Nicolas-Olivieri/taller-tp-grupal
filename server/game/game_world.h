@@ -6,9 +6,9 @@
 #include <unordered_map>
 
 #include "common/direction.h"
+#include "player/player.h"
 
 #include "grid.h"
-#include "player.h"
 #include "position.h"
 
 
@@ -23,7 +23,7 @@ public:
 
     std::unordered_map<std::string, Player> get_players() const;
 
-    void update(int iteration);
+    void update();
 
     void move_player(const std::string& player_name, Direction direction);
 
@@ -32,6 +32,8 @@ public:
     void add_player(const std::string& player_name);
 
     void remove_player(const std::string& player_name);
+
+    void attack(const std::string& player_name, const Position& position);
 };
 
 

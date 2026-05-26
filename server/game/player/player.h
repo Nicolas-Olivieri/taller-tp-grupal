@@ -2,22 +2,28 @@
 #define PLAYER_H
 
 #include <string>
-#include <utility>
 
-#include "killable.h"
-#include "position.h"
+#include "../killable.h"
+#include "../position.h"
+#include "server/game/stats/archetype.h"
+#include "server/game/stats/race.h"
 
 
 class Player: public Killable {
 private:
-    std::string player_name;
+    const std::string player_name;
+    const Archetype archetype;
+    const Race race;
+
     Position position;
     Direction direction;
 
 public:
     explicit Player(const std::string& player_name, const Position& position);
 
-    void move(const Position& new_position, const Direction& new_direction);
+    void update_position(const Position& new_position, const Direction& new_direction);
+
+    void attack();
 
     Position get_position() const;
 
@@ -27,7 +33,7 @@ public:
 
     bool can_move() const;
 
-    void update(int iteration);
+    void update();
 };
 
 

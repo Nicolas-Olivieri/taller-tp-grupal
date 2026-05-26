@@ -19,9 +19,12 @@ void GameLoop::run() {
         SnapshotBuilder builder;
 
         process_commands(builder);
-        update_world(current_iteration - last_iteration);
+        for (int i = 0; i < current_iteration - last_iteration; ++i) {
+            update_world();
+        }
 
         broadcast(builder);
+
         last_iteration = current_iteration;
         current_iteration = timer.calculate_next_iteration();
     }
@@ -39,7 +42,7 @@ void GameLoop::process_commands(SnapshotBuilder& builder) {
 }
 
 
-void GameLoop::update_world(const int iteration) { game_world.update(iteration); }
+void GameLoop::update_world() { game_world.update(); }
 
 
 void GameLoop::broadcast(SnapshotBuilder& builder) {

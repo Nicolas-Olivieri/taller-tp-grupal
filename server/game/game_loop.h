@@ -31,7 +31,7 @@ public:
 private:
     void process_commands(SnapshotBuilder& builder);
 
-    void update_world(int iteration);
+    void update_world();
 
     void broadcast(SnapshotBuilder& builder);
 };
