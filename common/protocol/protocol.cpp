@@ -36,6 +36,14 @@ RequestedCommandDTO Protocol::recv_command() {
     Deserializer deserializer(this->socket);
 
     CommandType command = deserializer.recv_command_type();
+
+    if (command == CommandType::INTERACT) {
+        const int x = deserializer.recv_uint16();
+        const int y = deserializer.recv_uint16();
+
+        return RequestedCommandDTO(command, x, y);
+    }
+
     // TODO 1: de momento, este método está pensado SOLO para moverse por el
     // mapa, pero en un futuro va a tener que ramificarse dependiendo del
     // CommandType

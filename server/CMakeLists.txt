@@ -4,6 +4,7 @@ target_sources(taller_server
         main.cpp
         server.cpp
         command/move_command.cpp
+        command/interact_command.cpp
         game/game_world.cpp
         game/player/player.cpp
         game/stats/recoverable_stat.cpp
@@ -36,6 +37,7 @@ target_sources(taller_server
         server.h
         command/command.h
         command/move_command.h
+        command/interact_command.h
         game/game_world.h
         game/player/player.h
         game/stats/recoverable_stat.h

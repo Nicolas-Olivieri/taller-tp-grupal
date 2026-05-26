@@ -8,7 +8,7 @@ class Player;
 
 class Interactive {
 public:
-    virtual void interact(Player&) = 0;
+    virtual bool interact(Player&) = 0;
 
     virtual ~Interactive() = default;
 };

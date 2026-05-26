@@ -50,6 +50,8 @@ private:
 
     void handle_key_down(const SDL_Event& event);
 
+    void handle_mouse_click(const SDL_Event& event);
+
     void handle_action(const ActionDTO& action);
 
     void update_players(const std::vector<PlayerInfoDTO>& players_information);

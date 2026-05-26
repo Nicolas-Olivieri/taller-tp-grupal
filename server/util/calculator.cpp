@@ -32,3 +32,13 @@ int Calculator::meditation_mana_recovery(const int intelligence, const int facto
 uint32_t Calculator::calculate_xp_limit(const int level) {
     return static_cast<uint32_t>(1000 * std::pow(level, 1.8));
 }
+
+
+// TODO: Refactorizar el generador de números aleatorios para no crearlo en cada golpe
+int Calculator::calculate_unarmed_damage(const int strength) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, 3);
+
+    return strength * dis(gen);
+}

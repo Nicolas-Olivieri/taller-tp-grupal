@@ -23,7 +23,9 @@ protected:
 public:
     void drop();
 
-    void interact(Player&) override;
+    bool interact(Player&) override;
+
+    int get_strength() const;
 };
 
 

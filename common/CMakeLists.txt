@@ -12,6 +12,7 @@ target_sources(taller_common
         dto/lobby/credentials.cpp
         dto/events/event.cpp
         dto/events/moveevent.cpp
+        dto/events/interact_event.cpp
         dto/events/command.cpp
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
@@ -41,6 +42,7 @@ target_sources(taller_common
         dto/lobby/credentials.h
         dto/events/event.h
         dto/events/moveevent.h
+        dto/events/interact_event.h
         dto/events/command.h
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "common/dto/events/event.h"
+#include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
@@ -51,6 +52,8 @@ public:
     void serialize(const AppearanceDTO& appearance);
 
     void serialize(const DespawnDTO& despawn);
+
+    void serialize(const InteractEventDTO& event);
 };
 
 #endif  // SERIALIZER_H
