@@ -10,7 +10,6 @@
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/snapshot.h"
 #include "common/queue.h"
-#include "server/game/player.h"
 
 class EventBroadcaster {
 private:
