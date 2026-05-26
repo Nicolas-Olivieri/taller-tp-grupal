@@ -14,7 +14,6 @@
 
 #include "key_mapper.h"
 
-#define TILE_SIZE 25
 #define FPS 30
 
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
@@ -113,7 +112,7 @@ void ClientGame::render_in_z_order() {
 }
 
 void ClientGame::add_new_player(const PlayerInfoDTO& info) {
-    Sprite user = sprite_creator.create_user(info.appearance);
+    Sprite user = sprite_creator.create_user(info);
     players.insert({{info.name, user}});
 }
 
@@ -138,7 +137,7 @@ void ClientGame::update_players(const std::vector<PlayerInfoDTO>& players_inform
             add_new_player(player_info);
         }
 
-        SDL2pp::Point position(player_info.x * TILE_SIZE, player_info.y * TILE_SIZE);
+        SDL2pp::Point position(player_info.x, player_info.y);
         players.at(player_info.name).set_target_position(player_info.direction, position);
     }
 }

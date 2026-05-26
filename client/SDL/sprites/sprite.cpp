@@ -6,7 +6,10 @@
 #define CHANGE_RATE 0.3
 
 Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction action):
-        position(position), direction(action), layers{{Layer::BODY, body}} {}
+        position(to_sprite_point(position)),
+        target_position(this->position),
+        direction(action),
+        layers{{Layer::BODY, body}} {}
 
 void Sprite::add_layer(Layer layer_num, SpriteLayer&& layer) { layers.emplace(layer_num, layer); }
 
@@ -14,7 +17,7 @@ void Sprite::remove_layer(const Layer layer_num) { layers.erase(layer_num); }
 
 
 void Sprite::set_target_position(const Direction new_direction, const SDL2pp::Point& new_target) {
-    target_position = new_target;
+    target_position = to_sprite_point(new_target);
 
     if (new_direction != Direction::IDLE) {
         direction = new_direction;
@@ -69,3 +72,5 @@ int Sprite::get_new_coordinate(const int& current_coordinate, const int& coordin
         return current_coordinate + coordinate_movement;
     }
 }
+
+SDL2pp::Point Sprite::to_sprite_point(const SDL2pp::Point& point) { return point * TILE_SIZE; }
