@@ -1,3 +1,11 @@
-#include "common/foo.h"
+#include "editor.h"
+#include <QApplication>
 
-int main() { return foo(4); }
+int main(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+    Editor editor;
+    editor.showMaximized();
+
+    return QApplication::exec();
+}
