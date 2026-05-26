@@ -1,7 +1,9 @@
 #include "createcommand.h"
 
-CreatePlayerCommand::CreatePlayerCommand(const std::string& username, const PlayerData& data):
-        username(username), data(data) {}
+#include <utility>
+
+CreatePlayerCommand::CreatePlayerCommand(const std::string& username, PlayerData data):
+        username(username), data(std::move(data)) {}
 
 void CreatePlayerCommand::execute(PlayerDataBase& database, PlayerIndex& index) {
     if (index.exists(username))

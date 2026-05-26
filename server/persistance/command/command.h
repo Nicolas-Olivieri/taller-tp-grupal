@@ -7,7 +7,7 @@
 class PlayerPersistanceCommand {
 public:
     virtual void execute(PlayerDataBase& database, PlayerIndex& index) = 0;
-    virtual ~PlayerPersistanceCommand() = 0;
+    virtual ~PlayerPersistanceCommand() = default;
 };
 
 #endif  // PERSISTANCECOMMAND_H

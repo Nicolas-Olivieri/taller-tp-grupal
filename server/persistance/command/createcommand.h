@@ -8,10 +8,10 @@
 class CreatePlayerCommand: public PlayerPersistanceCommand {
 private:
     const std::string& username;
-    const PlayerData& data;
+    const PlayerData data;
 
 public:
-    CreatePlayerCommand(const std::string& username, const PlayerData& data);
+    CreatePlayerCommand(const std::string& username, PlayerData data);
 
     void execute(PlayerDataBase& database, PlayerIndex& index) override;
 

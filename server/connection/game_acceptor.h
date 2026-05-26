@@ -8,10 +8,10 @@
 #include "common/thread/thread.h"
 #include "server/command/command.h"
 #include "server/game/game_loop.h"
+#include "server/persistance/playerrepository.h"
 
 #include "client_handler.h"
 #include "connectioninfo.h"
-
 
 class GameAcceptor: public Thread {
 private:
@@ -21,11 +21,12 @@ private:
 
     Queue<std::unique_ptr<Command>> command_queue;
     Queue<ConnectionInfo>& waiting_queue;
+    PlayerRepository& player_repository;
 
     GameLoop game_loop;
 
 public:
-    explicit GameAcceptor(Queue<ConnectionInfo>& waiting_queue);
+    GameAcceptor(Queue<ConnectionInfo>& waiting_queue, PlayerRepository& player_repository);
 
     void run() override;
 

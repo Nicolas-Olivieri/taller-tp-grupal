@@ -51,12 +51,18 @@ void PlayerIndex::add(const std::string& username, uint32_t offset) {
 }
 
 uint32_t PlayerIndex::get(const std::string& username) {
-    if (!exists(username))
+    std::lock_guard<std::mutex> lock(mutex);
+
+    if (index.find(username) == index.end())
         throw PlayerNotFound();
 
     return index.at(username);
 }
 
-bool PlayerIndex::exists(const std::string& username) const { return index.find(username) != index.end(); }
+bool PlayerIndex::exists(const std::string& username) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+    return index.find(username) != index.end();
+}
 
 PlayerIndex::~PlayerIndex() { file.close(); }

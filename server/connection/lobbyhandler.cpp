@@ -5,8 +5,12 @@
 #include "common/dto/lobby/credentials.h"
 #include "common/protocol/protocol.h"
 
-LobbyHandler::LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players):
-        handshake_finished(false), socket(std::move(socket)), waiting_players(waiting_players) {}
+LobbyHandler::LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players,
+                           PlayerRepository& player_repository):
+        handshake_finished(false),
+        socket(std::move(socket)),
+        waiting_players(waiting_players),
+        player_repository(player_repository) {}
 
 void LobbyHandler::run() {
     Protocol protocol(this->socket);
@@ -16,6 +20,11 @@ void LobbyHandler::run() {
     // comprobación de login/regsitro
 
     // si es registro, recibir personalización del personaje + persistencia
+    try {
+        player_repository.get(credentials.username);
+    } catch (const PlayerNotFound& error) {
+        player_repository.create(credentials.username, 0, 0, 0, 0);
+    }
 
     // envío de información del mundo + snapshot inicial
 

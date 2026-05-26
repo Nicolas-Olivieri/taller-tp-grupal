@@ -12,6 +12,9 @@
 #define CLAN_NAME 15
 
 // TODO: Considerar cambiar algunos uint por enums
+
+#pragma pack(push, 1)
+
 struct PlayerData {
     uint32_t current_xp_amount{0};
     uint16_t current_hp{0};
@@ -45,5 +48,7 @@ struct PlayerData {
 
     explicit PlayerData(const Player& player);
 };
+
+#pragma pack(pop)
 
 #endif  // PLAYERDATA_H

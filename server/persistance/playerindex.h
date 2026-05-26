@@ -30,7 +30,7 @@ public:
 
     uint32_t get(const std::string& username);
 
-    bool exists(const std::string& username) const;
+    bool exists(const std::string& username);
 
     ~PlayerIndex();
 };

@@ -32,6 +32,12 @@ target_sources(taller_server
         command/command_factory.cpp
         connection/event_broadcaster.cpp
         connection/broadcast_register.cpp
+        persistance/command/createcommand.cpp
+        persistance/command/updatecommand.cpp
+        persistance/playerdata.cpp
+        persistance/playerdatabase.cpp
+        persistance/playerindex.cpp
+        persistance/playerrepository.cpp
     PUBLIC
         # .h files
         server.h
@@ -67,4 +73,11 @@ target_sources(taller_server
         command/command_factory.h
         connection/event_broadcaster.h
         connection/broadcast_register.h
+        persistance/command/command.h
+        persistance/command/createcommand.h
+        persistance/command/updatecommand.h
+        persistance/playerdata.h
+        persistance/playerdatabase.h
+        persistance/playerindex.h
+        persistance/playerrepository.h
     )
