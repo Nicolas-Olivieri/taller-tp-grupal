@@ -18,6 +18,8 @@ public:
 
 
     bool try_pop(SnapshotDTO& snapshot);
+
+    SnapshotDTO pop();
 };
 
 

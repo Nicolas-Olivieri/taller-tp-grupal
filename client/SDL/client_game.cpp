@@ -8,27 +8,26 @@
 #include <SDL2pp/SDL2pp.hh>
 #include <SDL2pp/Window.hh>
 
+#include "../client_constants.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/util/rate_timer.h"
 #include "sprites/sprite.h"
 
+#include "camera.h"
 #include "key_mapper.h"
 
-#define FPS 30
 
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         sdl(SDL2pp::SDL(SDL_INIT_VIDEO)),
-        window(SDL2pp::Window("SDL2pp demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480,
-                              SDL_WINDOW_RESIZABLE)),
+        window(SDL2pp::Window("SDL2pp demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+                              SCREEN_HEIGHT, 0)),
         renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
-        player_name(std::move(player_name)),
-        texture_pool(renderer),
-        sprite_creator(renderer),
         connection(connection),
-        key_being_pressed(SDLK_UNKNOWN) {
-    connection.start();
-}
+        player_name(player_name),
+        world(renderer, player_name),
+        key_being_pressed(SDLK_UNKNOWN),
+        camera(initialize_world_and_camera()) {}
 
 void ClientGame::run() {
 
@@ -43,11 +42,35 @@ void ClientGame::run() {
         update_state_from_server();
         renderer.Clear();
 
-        update_visuals(iteration);
-        render_in_z_order();
+        world.update_visuals(iteration);
+        camera.update_position();
+        world.render_in_z_order(camera);
 
         iteration = timer.calculate_next_iteration();
     }
+}
+
+Camera ClientGame::initialize_world_and_camera() {
+    // 1. Recibe el mundo
+    // 2. Recibe primer snapshot con yo adentro?
+    connection.start();
+
+    while (true) {
+        const SnapshotDTO snapshot = connection.pop_snapshot();
+        std::vector<PlayerInfoDTO> info = snapshot.players_information;
+
+        auto it = std::find_if(info.begin(), info.end(), [this](const PlayerInfoDTO& player_info) {
+            return player_info.name == player_name;
+        });
+
+        if (it != info.end()) {
+            world.update_players(info);
+            break;
+        }
+    }
+    Sprite& user = world.get_client_player();
+    SDL2pp::Rect& world_size = world.get_world_size();
+    return {SCREEN_WIDTH, SCREEN_HEIGHT, world_size, user};
 }
 
 int ClientGame::pollEvents() {
@@ -90,44 +113,20 @@ void ClientGame::update_state_from_server() {
 
     while (connection.try_pop_snapshot(snapshot)) {
         updated = true;
-        for (const ActionDTO& action: snapshot.actions) {
-            handle_action(action);
-        }
+        world.handle_actions(snapshot.actions);
     }
 
     if (!updated)
         return;
-    update_players(snapshot.players_information);
+    world.update_players(snapshot.players_information);
+    // TODO añadir el resto del manejo de sprites
 }
 
-void ClientGame::update_visuals(const int it) {
-    for (auto& [name, entity]: players) {
-        entity.update_visual_position();
-        entity.update_frame(it);
-    }
-}
-
-
-void ClientGame::render_in_z_order() {
-    renderer.SetDrawColor(0, 32, 32);
-    for (auto& [name, entity]: players) {
-        entity.render();
-    }
-    renderer.Present();
-}
-
-void ClientGame::add_new_player(const PlayerInfoDTO& info) {
-    Sprite user = sprite_creator.create_user(info);
-    players.insert({{info.name, user}});
-}
 
 void ClientGame::handle_key_down(const SDL_Event& event) {
     assert(event.type == SDL_KEYDOWN);
     auto key_pressed = event.key.keysym.sym;
 
-    //    if (key_pressed == key_being_pressed)
-    //        return; // evito floodear al servidor
-    //
     if (KeyMapper::is_movement_key(key_pressed)) {
         Direction direction_chosen = KeyMapper::get_direction(key_pressed);
 
@@ -138,32 +137,8 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
 
 void ClientGame::handle_mouse_click(const SDL_Event& event) {
     if (event.button.button == SDL_BUTTON_LEFT) {
-        const uint16_t target_x = event.button.x / TILE_SIZE;
-        const uint16_t target_y = event.button.y / TILE_SIZE;
+        const uint16_t target_x = (camera.get_view().GetX() + event.button.x) / TILE_SIZE;
+        const uint16_t target_y = (camera.get_view().GetY() + event.button.y) / TILE_SIZE;
         connection.push_command(std::make_unique<InteractEventDTO>(target_x, target_y));
-    }
-}
-
-void ClientGame::update_players(const std::vector<PlayerInfoDTO>& players_information) {
-    for (const PlayerInfoDTO& player_info: players_information) {
-        if (!players.contains(player_info.name)) {
-            add_new_player(player_info);
-        }
-
-        SDL2pp::Point position(player_info.x, player_info.y);
-        players.at(player_info.name).set_target_position(player_info.direction, position);
-    }
-}
-
-void ClientGame::handle_action(const ActionDTO& action) {
-    // TODO agregar todos los tipos que vayamos agregando
-    switch (action.action) {
-        case ActionType::DESPAWN:
-            if (players.contains(action.despawn.player_despawned)) {
-                players.extract(action.despawn.player_despawned);
-            }
-            break;
-        default:
-            break;
     }
 }

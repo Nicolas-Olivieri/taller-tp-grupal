@@ -9,7 +9,9 @@ SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, c
         last_action(Direction::DOWN),
         texture(texture),
         animations(animations),
-        renderer(renderer) {}
+        renderer(renderer) {
+    set_base_frame();
+}
 
 void SpriteLayer::render(const SDL2pp::Point& base_position) {
     renderer.Copy(texture, frame, SDL2pp::Rect(base_position + offset, frame.GetSize()));
