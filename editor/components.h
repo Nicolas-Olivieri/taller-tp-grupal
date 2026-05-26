@@ -3,20 +3,21 @@
 #include <qpixmap.h>
 
 
-struct Tile {
+struct TileView {
     uint8_t id;
     QPixmap img;
-    QString name; // Definirlo en el TOML para mayor claridad
+    QString name;  // Definirlo en el TOML para mayor claridad
+    bool is_walkable;
 };
 
-struct CollidableItem {
+struct CollidableView {
     uint8_t id;
     QPixmap img;
+    QString name;
     int tile_width;
     int tile_height;
-    QVector<QVector<bool>> collidable_tiles; // MATRIZ 0 = caminable, 1 = NO caminable
+    QVector<QVector<bool>> collidable_tiles;  // MATRIZ 0 = caminable, 1 = NO caminable
 };
 
 
-
-#endif //COMPONENTS_H
+#endif  // COMPONENTS_H

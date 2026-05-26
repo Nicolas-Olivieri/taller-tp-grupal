@@ -54,3 +54,6 @@ cmake-build-debug
 # Linux
 .*.swp
 *~
+
+# QT creator
+.qtcreator

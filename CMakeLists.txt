@@ -181,6 +181,7 @@ if(TALLER_EDITOR)
 
     # add libSDL2pp's headers
     target_include_directories(taller_editor PRIVATE ${libSDL2pp_SOURCE_DIR})
+    target_include_directories(taller_editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/editor)
 
     # Link the taller_common lib target
     target_link_libraries(taller_editor taller_common SDL2pp::SDL2pp toml11::toml11 Qt6::Widgets)
