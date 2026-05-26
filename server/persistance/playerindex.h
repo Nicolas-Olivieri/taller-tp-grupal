@@ -23,6 +23,13 @@ private:
     std::fstream file;
     std::unordered_map<std::string, uint32_t> index;
 
+    void open_file_correctly(const std::string& index_path);
+
+    void load_index_map();
+
+    void append_player(const std::string& username, uint16_t net_username_size, uint32_t net_offset,
+                       uint32_t offset);
+
 public:
     explicit PlayerIndex(const std::string& index_path);
 
