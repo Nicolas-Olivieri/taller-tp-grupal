@@ -13,18 +13,17 @@
 #include "camera.h"
 #include "world.h"
 
-using namespace SDL2pp;
-
 class ClientGame {
 private:
-    SDL sdl;
-    Window window;
-    Renderer renderer;
+    SDL2pp::SDL sdl;
+    SDL2pp::Window window;
+    SDL2pp::Renderer renderer;
     ConnectionHandler& connection;
 
     std::string player_name;
     World world;
     int key_being_pressed;
+    Camera camera;
 
     // Principales
     int pollEvents();

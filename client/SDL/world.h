@@ -13,22 +13,20 @@
 
 #include "camera.h"
 
-using namespace SDL2pp;
-
 class World {
 private:
-    Renderer& renderer;
+    SDL2pp::Renderer& renderer;
     TexturePool texture_pool;
     SpriteCreator sprite_creator;
 
-    Rect world_view;
+    SDL2pp::Rect world_view;
     std::string player_name;
     std::map<std::string, Sprite> players;
 
     void add_new_player(const PlayerInfoDTO& info);
 
 public:
-    World(Renderer& renderer, std::string& player_name);
+    World(SDL2pp::Renderer& renderer, std::string& player_name);
 
     void update_players(const std::vector<PlayerInfoDTO>& players_information);
     void handle_actions(const std::vector<ActionDTO>& actions);
@@ -41,7 +39,7 @@ public:
 
     Sprite& get_client_player();
 
-    Rect& get_world_size();
+    SDL2pp::Rect& get_world_size();
 };
 
 

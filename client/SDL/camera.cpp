@@ -1,11 +1,13 @@
 #include "camera.h"
 
 
-Camera::Camera(const int screen_width, const int screen_height, const Rect world_size, Sprite& user):
-        view(Rect(Point(0, 0), Point(screen_width, screen_height))), world_size(world_size), user(user) {}
+Camera::Camera(const int screen_width, const int screen_height, const SDL2pp::Rect world_size, Sprite& user):
+        view(SDL2pp::Rect(SDL2pp::Point(0, 0), SDL2pp::Point(screen_width, screen_height))),
+        world_size(world_size),
+        user(user) {}
 
 void Camera::update_position() {
-    const Point user_position = user.get_position();
+    const SDL2pp::Point user_position = user.get_position();
 
     view.SetX((user_position.GetX() + user.get_size().GetX() / 2) - view.GetW() / 2);
     view.SetY((user_position.GetY() + user.get_size().GetY() / 2) - view.GetH() / 2);
@@ -20,6 +22,6 @@ void Camera::update_position() {
         view.SetY(world_size.GetY() - view.GetH());
 }
 
-Rect Camera::get_world() const { return world_size; }
+SDL2pp::Rect Camera::get_world() const { return world_size; }
 
-Rect Camera::get_view() const { return view; }
+SDL2pp::Rect Camera::get_view() const { return view; }

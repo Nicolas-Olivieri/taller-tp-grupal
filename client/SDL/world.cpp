@@ -4,11 +4,11 @@
 
 #include "camera.h"
 
-World::World(Renderer& renderer, std::string& player_name):
+World::World(SDL2pp::Renderer& renderer, std::string& player_name):
         renderer(renderer),
         texture_pool(renderer),
         sprite_creator(renderer),
-        world_view(Point(0, 0), Point(WORLD_WIDTH, WORLD_HEIGHT)),
+        world_view(SDL2pp::Point(0, 0), SDL2pp::Point(WORLD_WIDTH, WORLD_HEIGHT)),
         player_name(player_name) {}
 
 void World::update_visuals(const int it) {
@@ -19,8 +19,8 @@ void World::update_visuals(const int it) {
 }
 
 void World::render_in_z_order(const Camera& camera) {
-    Texture bg(renderer, DATA_PATH "/fondo2.jpg");
-    renderer.Copy(bg, camera.get_view(), Rect(0, 0, WORLD_WIDTH, WORLD_HEIGHT));
+    //    Texture bg(renderer, DATA_PATH "/fondo2.jpg");
+    //    renderer.Copy(bg, camera.get_view(), Rect(0, 0, WORLD_WIDTH, WORLD_HEIGHT));
 
     std::vector<Sprite> viewed_sprites = filter_viewed_sprites(camera);
 
@@ -47,7 +47,7 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
             add_new_player(player_info);
         }
 
-        Point position(player_info.x * TILE_SIZE, player_info.y * TILE_SIZE);
+        SDL2pp::Point position(player_info.x, player_info.y);
         players.at(player_info.name).set_target_position(player_info.direction, position);
     }
 }
@@ -56,6 +56,11 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
     // TODO agregar todos los tipos que vayamos agregando
     for (auto& action: actions) {
         switch (action.action) {
+            case ActionType::DESPAWN:
+                if (players.contains(action.despawn.player_despawned)) {
+                    players.extract(action.despawn.player_despawned);
+                }
+                break;
             default:
                 break;
         }
@@ -64,11 +69,11 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 
 
 void World::add_new_player(const PlayerInfoDTO& info) {
-    Sprite user = sprite_creator.create_user(info.appearance);
+    Sprite user = sprite_creator.create_user(info);
     players.insert({{info.name, user}});
 }
 
 
 Sprite& World::get_client_player() { return players.at(player_name); }
 
-Rect& World::get_world_size() { return world_view; }
+SDL2pp::Rect& World::get_world_size() { return world_view; }

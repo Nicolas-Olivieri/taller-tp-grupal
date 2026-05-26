@@ -19,33 +19,31 @@
 
 
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
-        sdl(SDL(SDL_INIT_VIDEO)),
-        window(Window("SDL2pp demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-                      SCREEN_HEIGHT, 0)),
-        renderer(Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
+        sdl(SDL2pp::SDL(SDL_INIT_VIDEO)),
+        window(SDL2pp::Window("SDL2pp demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
+                              SCREEN_HEIGHT, 0)),
+        renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         connection(connection),
         player_name(player_name),
         world(renderer, player_name),
-        key_being_pressed(SDLK_UNKNOWN) {
-    connection.start();
-}
+        key_being_pressed(SDLK_UNKNOWN),
+        camera(initialize_world_and_camera()) {}
 
 void ClientGame::run() {
 
     RateTimer timer(FPS);
     int iteration = 0;
 
-    Camera camera = initialize_world_and_camera();
     while (true) {
         int ret = pollEvents();
         if (ret == 1)
             return;
 
         update_state_from_server();
-        camera.update_position();
         renderer.Clear();
 
         world.update_visuals(iteration);
+        camera.update_position();
         world.render_in_z_order(camera);
 
         iteration = timer.calculate_next_iteration();
@@ -55,6 +53,7 @@ void ClientGame::run() {
 Camera ClientGame::initialize_world_and_camera() {
     // 1. Recibe el mundo
     // 2. Recibe primer snapshot con yo adentro?
+    connection.start();
 
     while (true) {
         const SnapshotDTO snapshot = connection.pop_snapshot();
@@ -65,13 +64,12 @@ Camera ClientGame::initialize_world_and_camera() {
         });
 
         if (it != info.end()) {
-            std::cout << it->name << std::endl;
             world.update_players(info);
             break;
         }
     }
     Sprite& user = world.get_client_player();
-    Rect& world_size = world.get_world_size();
+    SDL2pp::Rect& world_size = world.get_world_size();
     return {SCREEN_WIDTH, SCREEN_HEIGHT, world_size, user};
 }
 
@@ -139,8 +137,8 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
 
 void ClientGame::handle_mouse_click(const SDL_Event& event) {
     if (event.button.button == SDL_BUTTON_LEFT) {
-        const uint16_t target_x = event.button.x / TILE_SIZE;
-        const uint16_t target_y = event.button.y / TILE_SIZE;
+        const uint16_t target_x = (camera.get_view().GetX() + event.button.x) / TILE_SIZE;
+        const uint16_t target_y = (camera.get_view().GetY() + event.button.y) / TILE_SIZE;
         connection.push_command(std::make_unique<InteractEventDTO>(target_x, target_y));
     }
 }

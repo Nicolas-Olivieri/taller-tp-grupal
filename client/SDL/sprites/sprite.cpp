@@ -7,7 +7,11 @@
 
 Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction action,
                const SDL2pp::Point size):
-        position(to_sprite_point(position)), target_position(this->position), direction(action), size(size), layers{{Layer::BODY, body}} {}
+        position(to_sprite_point(position)),
+        target_position(this->position),
+        direction(action),
+        size(size),
+        layers{{Layer::BODY, body}} {}
 
 void Sprite::add_layer(Layer layer_num, SpriteLayer&& layer) { layers.emplace(layer_num, layer); }
 

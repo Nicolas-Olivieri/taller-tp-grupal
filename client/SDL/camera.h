@@ -3,22 +3,20 @@
 #include "SDL2pp/SDL2pp.hh"
 #include "sprites/sprite.h"
 
-using namespace SDL2pp;
-
 class Camera {
 private:
-    Rect view;
-    Rect world_size;
+    SDL2pp::Rect view;
+    SDL2pp::Rect world_size;
     Sprite& user;
 
 public:
-    Camera(int screen_width, int screen_height, Rect world_size, Sprite& user);
+    Camera(int screen_width, int screen_height, SDL2pp::Rect world_size, Sprite& user);
 
     void update_position();
 
-    Rect get_world() const;
+    SDL2pp::Rect get_world() const;
 
-    Rect get_view() const;
+    SDL2pp::Rect get_view() const;
 };
 
 
