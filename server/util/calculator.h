@@ -13,6 +13,8 @@ public:
     static int meditation_mana_recovery(int intelligence, int factor_class_meditation);
 
     static uint32_t calculate_xp_limit(int level);
+
+    static int calculate_unarmed_damage(int strength);
 };
 
 

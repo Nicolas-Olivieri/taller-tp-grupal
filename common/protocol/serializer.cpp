@@ -75,4 +75,10 @@ void Serializer::serialize(uint16_t value) {
     offset += sizeof(netvalue);
 }
 
+void Serializer::serialize(const InteractEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.target_x);
+    serialize(event.target_y);
+}
+
 void Serializer::serialize(const DespawnDTO& despawn) { serialize(despawn.player_despawned); }

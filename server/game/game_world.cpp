@@ -82,3 +82,50 @@ void GameWorld::remove_player(const std::string& player_name) {
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
 }
+
+
+// TODO: Esta versión no tiene en cuenta el arma equipada
+// TODO: Validar que el jugador que intenta atacar no está muerto
+void GameWorld::attack(const std::string& player_name, const Position& position) {
+    const auto it = players.find(player_name);
+    if (it == players.end()) {
+        return;
+    }
+
+    Player& attacker = it->second;
+
+    if (std::abs(attacker.get_position().get_x() - position.get_x()) > 1 or
+        std::abs(attacker.get_position().get_y() - position.get_y()) > 1) {
+        std::cout << "[World] El objetivo está demasiado lejos" << std::endl;
+        return;
+    }
+
+    if (not attacker.can_attack()) {
+        std::cout << "[World] Jugador " << player_name << " intentó atacar pero está en cooldown"
+                  << std::endl;
+        return;
+    }
+
+    if (position == attacker.get_position()) {
+        std::cout << "[World] Jugador " << player_name << " intentó atacarse a sí mismo" << std::endl;
+        return;
+    }
+
+    try {
+        const Tile& target_tile = grid.get_tile(position);
+        Interactive* occupant = target_tile.occupant();
+
+        if (occupant != nullptr) {
+            attacker.attack();
+            if (occupant->interact(attacker)) {
+                std::cout << "[World] " << player_name << " mató a la entidad" << std::endl;
+            }
+
+        } else {
+            std::cout << "[World] " << player_name << " golpeó al aire" << std::endl;
+        }
+
+    } catch (const std::out_of_range&) {
+        // Golpeó el borde del mapa
+    }
+}

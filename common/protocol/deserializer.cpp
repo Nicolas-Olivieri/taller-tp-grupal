@@ -38,6 +38,8 @@ CommandType Deserializer::recv_command_type() {
         // luego borrar este comentario
         case CommandType::MOVE:
             return static_cast<CommandType>(byte);
+        case CommandType::INTERACT:
+            return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
             // TODO: chequear si es la mejor excepción

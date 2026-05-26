@@ -8,6 +8,7 @@
 #include <SDL2pp/SDL2pp.hh>
 #include <SDL2pp/Window.hh>
 
+#include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/util/rate_timer.h"
 #include "sprites/sprite.h"
@@ -69,6 +70,10 @@ int ClientGame::pollEvents() {
         if (event.type == SDL_KEYUP && KeyMapper::is_movement_key(event.key.keysym.sym)) {
             key_being_pressed = SDLK_UNKNOWN;
         }
+
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            handle_mouse_click(event);
+        }
     }
 
     // TODO esto definitivamente habría que modularizarlo/encapsularlo
@@ -128,6 +133,14 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
 
         connection.push_command(std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
         key_being_pressed = key_pressed;
+    }
+}
+
+void ClientGame::handle_mouse_click(const SDL_Event& event) {
+    if (event.button.button == SDL_BUTTON_LEFT) {
+        const uint16_t target_x = event.button.x / TILE_SIZE;
+        const uint16_t target_y = event.button.y / TILE_SIZE;
+        connection.push_command(std::make_unique<InteractEventDTO>(target_x, target_y));
     }
 }
 

@@ -32,6 +32,8 @@ public:
     void add_player(const std::string& player_name);
 
     void remove_player(const std::string& player_name);
+
+    void attack(const std::string& player_name, const Position& position);
 };
 
 
