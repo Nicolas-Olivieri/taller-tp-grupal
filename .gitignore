@@ -5,6 +5,7 @@ tags.*
 # IDEs
 .idea
 .code
+.vscode
 
 # Cmake
 cmake-build-debug

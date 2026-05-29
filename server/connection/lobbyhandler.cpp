@@ -20,11 +20,8 @@ void LobbyHandler::run() {
     // comprobación de login/regsitro
 
     // si es registro, recibir personalización del personaje + persistencia
-    try {
-        player_repository.get(credentials.username);
-    } catch (const PlayerNotFound& error) {
+    if (!player_repository.exists(credentials.username))
         player_repository.create(credentials.username, 0, 0, 0, 0);
-    }
 
     // envío de información del mundo + snapshot inicial
 
