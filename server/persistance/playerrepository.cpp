@@ -41,9 +41,7 @@ void PlayerRepository::create(const std::string& username, uint8_t archetype, ui
                               uint8_t head) {
     PlayerData data(archetype, race, body, head);
 
-    if (index.exists(username))
-        throw PlayerAlreadyExists();
-
+    index.hold_username(username);
     uint32_t offset = database.add(data);
     index.add(username, offset);
 }

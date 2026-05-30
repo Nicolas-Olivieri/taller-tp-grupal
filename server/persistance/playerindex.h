@@ -33,6 +33,8 @@ private:
 public:
     explicit PlayerIndex(const std::string& index_path);
 
+    void hold_username(const std::string& username);
+
     void add(const std::string& username, uint32_t offset);
 
     uint32_t get(const std::string& username);
