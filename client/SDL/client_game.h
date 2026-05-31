@@ -11,6 +11,7 @@
 #include "client/connection/connection_handler.h"
 
 #include "camera.h"
+#include "user_interface.h"
 #include "world.h"
 
 class ClientGame {
@@ -23,16 +24,27 @@ private:
     std::string player_name;
     World world;
     int key_being_pressed;
+    const SDL2pp::Rect game_viewport = {20, 150, 700, 610};
     Camera camera;
+
+    UserInterface ui;
 
     // Principales
     int pollEvents();
+
+    void render_ui_and_world();
 
     void update_state_from_server();
 
     void handle_key_down(const SDL_Event& event);
 
     void handle_mouse_click(const SDL_Event& event);
+
+    void handle_ui_click(const SDL_Event& event);
+
+    void handle_game_click(const SDL_Event& event);
+
+    bool is_inside_gameport(int x, int y);
 
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name);

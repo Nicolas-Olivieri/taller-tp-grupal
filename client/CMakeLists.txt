@@ -22,6 +22,8 @@ target_sources(taller_client
         connection/connection_handler.cpp
 
         SDL/key_mapper.cpp
+        SDL/user_interface.cpp
+
     PUBLIC
         # .h files
         client.h
@@ -47,4 +49,6 @@ target_sources(taller_client
         connection/connection_handler.h
 
         SDL/key_mapper.h
+
+        SDL/user_interface.cpp
     )

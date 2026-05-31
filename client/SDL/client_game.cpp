@@ -20,14 +20,15 @@
 
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         sdl(SDL2pp::SDL(SDL_INIT_VIDEO)),
-        window(SDL2pp::Window("SDL2pp demo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-                              SCREEN_HEIGHT, 0)),
+        window(SDL2pp::Window("Argentum Online", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                              SCREEN_WIDTH, SCREEN_HEIGHT, 0)),
         renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         connection(connection),
         player_name(player_name),
         world(renderer, player_name),
         key_being_pressed(SDLK_UNKNOWN),
-        camera(initialize_world_and_camera()) {}
+        camera(initialize_world_and_camera()),
+        ui(renderer, player_name) {}
 
 void ClientGame::run() {
 
@@ -44,7 +45,8 @@ void ClientGame::run() {
 
         world.update_visuals(iteration);
         camera.update_position();
-        world.render_in_z_order(camera);
+
+        render_ui_and_world();
 
         iteration = timer.calculate_next_iteration();
     }
@@ -70,7 +72,7 @@ Camera ClientGame::initialize_world_and_camera() {
     }
     Sprite& user = world.get_client_player();
     SDL2pp::Rect& world_size = world.get_world_size();
-    return {SCREEN_WIDTH, SCREEN_HEIGHT, world_size, user};
+    return {game_viewport.GetW(), game_viewport.GetH(), world_size, user};
 }
 
 int ClientGame::pollEvents() {
@@ -114,11 +116,13 @@ void ClientGame::update_state_from_server() {
     while (connection.try_pop_snapshot(snapshot)) {
         updated = true;
         world.handle_actions(snapshot.actions);
+        //        ui.update_chat(snapshot.actions);
     }
 
     if (!updated)
         return;
     world.update_players(snapshot.players_information);
+    //     ui.update_player_state(snapshot.players_information);
     // TODO añadir el resto del manejo de sprites
 }
 
@@ -136,9 +140,40 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
 }
 
 void ClientGame::handle_mouse_click(const SDL_Event& event) {
+    assert(event.type == SDL_MOUSEBUTTONDOWN);
+    if (is_inside_gameport(event.button.x, event.button.y)) {
+        handle_game_click(event);
+    } else {
+        handle_ui_click(event);
+    }
+}
+
+void ClientGame::render_ui_and_world() {
+    ui.render();
+
+    renderer.SetViewport(game_viewport);
+    world.render_in_z_order(camera);
+
+    renderer.SetViewport(SDL2pp::NullOpt);
+
+    // TODO actualizar campos de vida, mana en función a que se sabe del personaje, si escribió, etc.
+    //    ui.render_fields(); // o algo asi
+}
+
+bool ClientGame::is_inside_gameport(int x, int y) {
+    return x >= game_viewport.x && x <= (game_viewport.x + game_viewport.w) && y >= game_viewport.y &&
+           y <= (game_viewport.y + game_viewport.h);
+}
+
+void ClientGame::handle_ui_click(const SDL_Event& /* event */) {}
+
+void ClientGame::handle_game_click(const SDL_Event& event) {
+    int game_click_x = event.button.x - game_viewport.x;
+    int game_click_y = event.button.y - game_viewport.y;
+
     if (event.button.button == SDL_BUTTON_LEFT) {
-        const uint16_t target_x = (camera.get_view().GetX() + event.button.x) / TILE_SIZE;
-        const uint16_t target_y = (camera.get_view().GetY() + event.button.y) / TILE_SIZE;
+        const uint16_t target_x = (camera.get_view().GetX() + game_click_x) / TILE_SIZE;
+        const uint16_t target_y = (camera.get_view().GetY() + game_click_y) / TILE_SIZE;
         connection.push_command(std::make_unique<InteractEventDTO>(target_x, target_y));
     }
 }
