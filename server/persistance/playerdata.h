@@ -4,12 +4,13 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "server/game/player/player.h"
-
 // TODO: constantes temporales, sincronizar dependencias
 #define INVENTORY_AMOUNT 9
 #define BANK_AMOUNT 16
 #define CLAN_NAME 15
+
+// Forward Declaration para evitar dependencia circular
+class Player;
 
 // TODO: Considerar cambiar algunos uint por enums
 

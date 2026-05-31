@@ -62,16 +62,24 @@ void GameWorld::move_player(const std::string& player_name, const Direction dire
     }
 }
 
+void GameWorld::add_player(const std::string& player_name, const PlayerData& data) {
+    auto it = emplace_player(player_name, data);
+    grid.get_tile(it->second.get_position()).occupy(&(it->second));
 
-void GameWorld::add_player(const std::string& player_name, const Position& position) {
-    auto [it, success] = players.emplace(player_name, Player(player_name, position));
-    grid.get_tile(position).occupy(&(it->second));
-    std::cout << "[World] Jugador " << player_name << " creado en " << position << std::endl;
+    std::cout << "[World] Jugador " << player_name << " creado en " << it->second.get_position() << std::endl;
 }
 
-
-void GameWorld::add_player(const std::string& player_name) { add_player(player_name, grid.spawn()); }
-
+std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(const std::string& player_name,
+                                                                            const PlayerData& data) {
+    if (data.has_played_before) {
+        auto [it, success] = players.emplace(player_name, Player(player_name, data));
+        return it;
+    } else {
+        Position random_position(grid.spawn());
+        auto [it, success] = players.emplace(player_name, Player(player_name, data, random_position));
+        return it;
+    }
+}
 
 void GameWorld::remove_player(const std::string& player_name) {
     const auto it = players.find(player_name);

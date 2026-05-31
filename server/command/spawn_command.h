@@ -1,7 +1,6 @@
 #ifndef SPAWN_COMMAND_H
 #define SPAWN_COMMAND_H
 
-#include <optional>
 #include <string>
 
 #include "common/dto/snapshot/snapshot_builder.h"
@@ -12,12 +11,10 @@
 class SpawnCommand: public Command {
 private:
     std::string player_name;
-    std::optional<Position> position;
+    PlayerData data;
 
 public:
-    explicit SpawnCommand(const std::string& player_name);
-
-    explicit SpawnCommand(const std::string& player_name, const Position& position);
+    SpawnCommand(const std::string& player_name, const PlayerData& data);
 
     void execute(GameWorld& world) override;
 

@@ -1,6 +1,7 @@
 #ifndef RECOVERABLE_STAT_H
 #define RECOVERABLE_STAT_H
 
+#include <cstdint>
 
 class RecoverableStat {
 protected:
@@ -20,6 +21,8 @@ public:
     virtual void update();
 
     virtual bool loose(int amount) = 0;
+
+    int get_current() const;
 
     virtual ~RecoverableStat() = default;
 };

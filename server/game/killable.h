@@ -17,8 +17,8 @@ protected:
 
     Stats stats;
 
-    Killable(int attack_cooldown, int move_cooldown, int agility, int constitution, int intelligence,
-             int strength, Archetype archetype, Race race);
+    Killable(int attack_cooldown, int move_cooldown, uint8_t archetype_id, uint8_t race_id,
+             uint32_t current_xp_amount, uint8_t level);
 
 public:
     void drop();

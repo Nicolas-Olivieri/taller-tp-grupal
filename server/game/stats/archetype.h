@@ -9,7 +9,7 @@ struct Archetype {
     const uint8_t mana_factor;
     const uint8_t meditation_factor;
 
-    explicit Archetype(uint8_t health_factor, uint8_t mana_factor, uint8_t meditation_factor);
+    explicit Archetype(uint8_t archetype_id);
 };
 
 

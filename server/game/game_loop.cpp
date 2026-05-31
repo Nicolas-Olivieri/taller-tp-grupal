@@ -4,13 +4,13 @@
 #include "common/util/rate_timer.h"
 
 #define FPS 30
-#define SAVE_FRAME FPS * 10
+#define SAVE_FRAME (FPS * 10)
 
 
 GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster,
                    PlayerRepository& player_repository):
         command_queue(command_queue),
-        game_world(100, 100),
+        game_world(39, 76),
         broadcaster(broadcaster),
         player_repository(player_repository) {}
 

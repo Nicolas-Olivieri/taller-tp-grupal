@@ -9,15 +9,13 @@ private:
     int constitution;
 
 public:
-    Health(int recovery_factor, int factor_class, int factor_race, int constitution);
+    Health(int recovery_factor, int factor_class, int factor_race, int constitution, uint8_t level);
 
     void update_max(int level) override;
 
     void update() override;
 
     bool loose(int amount) override;
-
-    int get_current() const;
 };
 
 

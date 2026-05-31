@@ -11,7 +11,7 @@ private:
 
 public:
     Mana(int recovery_factor, int factor_class, int factor_race, int factor_class_meditation,
-         int intelligence);
+         int intelligence, uint8_t level);
 
     void update_max(int level) override;
 

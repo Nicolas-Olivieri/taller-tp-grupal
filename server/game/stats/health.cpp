@@ -3,10 +3,9 @@
 #include "server/util/calculator.h"
 
 
-Health::Health(const int recovery_factor, const int factor_class, const int factor_race,
-               const int constitution):
+Health::Health(int recovery_factor, int factor_class, int factor_race, int constitution, uint8_t level):
         RecoverableStat(recovery_factor, factor_class, factor_race,
-                        Calculator::calculate_max_health(1, constitution, factor_class, factor_race)),
+                        Calculator::calculate_max_health(level, constitution, factor_class, factor_race)),
         constitution(constitution) {}
 
 
@@ -45,6 +44,3 @@ bool Health::loose(const int amount) {
 
     return false;
 }
-
-
-int Health::get_current() const { return current_amount; }

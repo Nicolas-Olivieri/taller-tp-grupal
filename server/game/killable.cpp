@@ -4,13 +4,12 @@
 #include "server/util/calculator.h"
 
 
-Killable::Killable(const int attack_cooldown, const int move_cooldown, const int agility,
-                   const int constitution, const int intelligence, const int strength,
-                   const Archetype archetype, const Race race):
+Killable::Killable(int attack_cooldown, int move_cooldown, uint8_t archetype_id, uint8_t race_id,
+                   uint32_t current_xp_amount, uint8_t level):
         is_meditating(false),
         attack_cooldown(attack_cooldown),
         move_cooldown(move_cooldown),
-        stats(agility, constitution, intelligence, strength, archetype, race) {}
+        stats(archetype_id, race_id, current_xp_amount, level) {}
 
 
 // TODO
