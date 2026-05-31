@@ -20,10 +20,14 @@ void LobbyHandler::run() {
     // comprobación de login/regsitro
 
     // si es registro, recibir personalización del personaje + persistencia
-    try {
-        player_repository.get(credentials.username);
-    } catch (const PlayerNotFound& error) {
-        player_repository.create(credentials.username, 0, 0, 0, 0);
+    if (!player_repository.exists(credentials.username)) {
+        try {
+            player_repository.create(credentials.username, 0, 0, 0, 0);
+        } catch (const PlayerAlreadyExists& errror) {
+            // TODO: un jugador se puso el nombre que este quería justo al mismo tiempo y se lo sacó
+            std::cout << "[Lobby] " << credentials.username << " is already taken" << std::endl;
+            return;
+        }
     }
 
     // envío de información del mundo + snapshot inicial

@@ -5,6 +5,7 @@ tags.*
 # IDEs
 .idea
 .code
+.vscode
 
 # Cmake
 cmake-build-debug
@@ -54,3 +55,7 @@ cmake-build-debug
 # Linux
 .*.swp
 *~
+
+# Persistencia
+index.bin
+playerdata.bin

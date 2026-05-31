@@ -4,6 +4,10 @@
 
 #include <arpa/inet.h>
 
+#include "playerdata.h"
+
+#define INVALID_OFFSET sizeof(PlayerData) - 1
+
 PlayerIndex::PlayerIndex(const std::string& index_path):
         file(index_path, std::ios::in | std::ios::out | std::ios::binary | std::ios::app) {
 
@@ -41,6 +45,17 @@ void PlayerIndex::load_index_map() {
     }
 }
 
+void PlayerIndex::hold_username(const std::string& username) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+    if (index.find(username) != index.end())
+        throw PlayerAlreadyExists();
+
+    // Todo offset debe ser múltiplo de sizeof(PlayerData), cualquier valor que no lo sea apunta a una
+    // posición inválida.
+    index[username] = INVALID_OFFSET;
+}
+
 void PlayerIndex::add(const std::string& username, uint32_t offset) {
     uint16_t net_username_size = htons(static_cast<uint16_t>(username.size()));
     uint32_t net_offset = htonl(offset);
@@ -64,7 +79,7 @@ void PlayerIndex::append_player(const std::string& username, uint16_t net_userna
 uint32_t PlayerIndex::get(const std::string& username) {
     std::lock_guard<std::mutex> lock(mutex);
 
-    if (index.find(username) == index.end())
+    if (index.find(username) == index.end() || index.at(username) % sizeof(PlayerData) != 0)
         throw PlayerNotFound();
 
     return index.at(username);

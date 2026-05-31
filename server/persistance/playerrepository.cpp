@@ -2,47 +2,48 @@
 
 #include <utility>
 
-#include "command/createcommand.h"
-#include "command/updatecommand.h"
-
 #define REQUESTS_LIM UINT8_MAX
 
 PlayerRepository::PlayerRepository(const std::string& database_path, const std::string& index_path):
-        database(database_path), index(index_path), requests(REQUESTS_LIM) {
+        database(database_path), index(index_path), async_requests(REQUESTS_LIM) {
     start();
 }
 
 void PlayerRepository::run() {
     try {
         while (should_keep_running()) {
-            std::unique_ptr<PlayerPersistanceCommand> cmd = this->requests.pop();
-            cmd->execute(this->database, this->index);
+            std::unordered_map<std::string, PlayerData> players_data = this->async_requests.pop();
+            update_current_players_state(players_data);
         }
     } catch (const ClosedQueue& error) {}
 }
 
-void PlayerRepository::save_progress(const std::string& player_name, const Player& player) {
-    PlayerData data(player);
-
-    std::unordered_map<std::string, PlayerData> players_data = {{player_name, data}};
-    this->requests.push(std::make_unique<UpdatePlayerCommand>(std::move(players_data)));
+void PlayerRepository::update_current_players_state(
+        const std::unordered_map<std::string, PlayerData>& players_data) {
+    for (auto& [username, data]: players_data) {
+        uint32_t offset = index.get(username);
+        database.update(data, offset);
+    }
 }
 
 void PlayerRepository::save_progress(const std::unordered_map<std::string, Player>& players) {
     std::unordered_map<std::string, PlayerData> players_data;
 
-    for (const auto& player: players) {
-        PlayerData data(player.second);
-        players_data[player.first] = data;
+    for (const auto& [username, player]: players) {
+        PlayerData data(player);
+        players_data[username] = data;
     }
 
-    this->requests.push(std::make_unique<UpdatePlayerCommand>(std::move(players_data)));
+    this->async_requests.push(std::move(players_data));
 }
 
 void PlayerRepository::create(const std::string& username, uint8_t archetype, uint8_t race, uint8_t body,
                               uint8_t head) {
     PlayerData data(archetype, race, body, head);
-    this->requests.push(std::make_unique<CreatePlayerCommand>(username, data));
+
+    index.hold_username(username);
+    uint32_t offset = database.add(data);
+    index.add(username, offset);
 }
 
 PlayerData PlayerRepository::get(const std::string& username) {
@@ -50,8 +51,10 @@ PlayerData PlayerRepository::get(const std::string& username) {
     return this->database.get(offset);
 }
 
+bool PlayerRepository::exists(const std::string& username) { return index.exists(username); }
+
 PlayerRepository::~PlayerRepository() {
     stop();
-    this->requests.close();
+    this->async_requests.close();
     join();
 }

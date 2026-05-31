@@ -20,10 +20,8 @@ Tile& Grid::get_tile(const Position& position) {
     const int x = position.get_x();
     const int y = position.get_y();
 
-    if (x < 0 or x >= width_ or y < 0 or y >= height_) {
-        std::cout << "posicion: " << x << " " << y << std::endl;
+    if (x < 0 or x >= width_ or y < 0 or y >= height_)
         throw std::out_of_range("Position out of range");
-    }
 
     return tiles_[x][y];
 }

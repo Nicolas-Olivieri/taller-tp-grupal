@@ -1,6 +1,6 @@
 .PHONY: all test clean editor client common server build
 
-# Directorio sobre el que se contruye el build
+# Directorio sobre el que se construye el build
 BUILD_DIR= cmake-build-debug
 
 # Todos los archivos con código fuente
@@ -21,6 +21,10 @@ CLIENT_FLAGS= -platform xcb
 SERVER_FLAGS= 5050
 EDITOR_FLAGS= # vacío de momento, agregar los necesarios
 TESTS_FLAGS= # vacío de momento, agregar los necesarios
+
+# Archivos a borrar en rutina clean
+CLEAN_FILES= ./index.bin
+CLEAN_FILES+= ./playerdata.bin
 
 # Identificadores para las bitácoras de eventos
 SERVER_ID= "Argentum-Online-server"
@@ -48,6 +52,10 @@ editor: build
 
 test: build
 	$(BUILD_DIR)/$(TESTS_EXE) $(EDITOR_FLAGS)
+
+clean:
+	@touch $(CLEAN_FILES)
+	@rm $(CLEAN_FILES)
 
 log-server:
 	journalctl -t $(SERVER_ID) -f
