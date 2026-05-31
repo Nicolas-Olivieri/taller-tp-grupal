@@ -24,7 +24,8 @@ public:
     ~MapCanvas();
 
 private:
-    void place_asset(QPoint clicked_cell);
+    void place_asset(QPointF clicked_pos);
+    void erase_asset(QPointF clicked_pos);
     QPoint coordinates_to_grid(QPointF coordinates) const;
 
 

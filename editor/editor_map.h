@@ -21,6 +21,7 @@ public:
 
     int add_asset(QPoint position, const AssetData &asset_data);
 
+    bool erase_asset(int asset_id);
 };
 
 

@@ -1,7 +1,9 @@
 #include "editor_map.h"
-
+#include <QSet>
 
 EditorMap::EditorMap() : tile_id(0) {}
+
+// AÑADIR ASSET ::::::::::::::::
 
 int EditorMap::add_asset(const QPoint position, const AssetData &asset_data) {
     if (asset_data.type == ImageType::TILE) {
@@ -12,7 +14,6 @@ int EditorMap::add_asset(const QPoint position, const AssetData &asset_data) {
     }
     return -1;
 }
-
 
 int EditorMap::add_tile(const QPoint position, const AssetData &tile_data) {
     // Chequea colisiones para cada una de las celdas que ocupa
@@ -65,3 +66,34 @@ int EditorMap::add_collider(const QPoint position, const AssetData &collider_dat
     tile_id++;
     return new_tile.id;
 }
+
+
+// ELIMINAR ASSET ::::::::::::::::
+
+bool EditorMap::erase_asset(const int asset_id) {
+    const Placement& placement_data = placements[asset_id];
+    const AssetData& asset = placement_data.asset;
+    const QPoint& position = placement_data.origin;
+
+    if (asset.type == ImageType::TILE) {
+        for (int i = 0; i < asset.tile_width; i++) {
+            for (int j = 0; j < asset.tile_height; j++) {
+                QPoint curr_pos(position.x()+i, position.y()+j);
+                if (occupied_tiles[curr_pos].length() == 2) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    placements.remove(tile_id);
+    for (int i = 0; i < asset.tile_width; i++) {
+        for (int j = 0; j < asset.tile_height; j++) {
+            QPoint curr_pos(position.x()+i, position.y()+j);
+            occupied_tiles.remove(curr_pos);
+        }
+    }
+
+    return true;
+}
+
