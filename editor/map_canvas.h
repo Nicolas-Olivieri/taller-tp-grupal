@@ -1,5 +1,5 @@
-#ifndef MAPCANVAS_H
-#define MAPCANVAS_H
+#ifndef MAP_CANVAS_H
+#define MAP_CANVAS_H
 
 #include <QGraphicsView>
 
@@ -23,6 +23,11 @@ public:
 
     ~MapCanvas();
 
+private:
+    void place_asset(QPoint clicked_cell);
+    QPoint coordinates_to_grid(QPointF coordinates) const;
+
+
 public slots:
     void setSelectedAsset(const AssetData& data);
 
@@ -45,11 +50,6 @@ private:
 
     AssetData selected_asset;
     QGraphicsPixmapItem* asset_preview;
-
-
-    void placeTile();
-
-    QPoint coordinates_to_grid(QPointF coordinates) const;
 };
 
-#endif  // MAPCANVAS_H
+#endif  // MAP_CANVAS_H

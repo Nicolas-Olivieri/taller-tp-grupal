@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QGraphicsPixmapItem>
+#include <QtMath>
 
 #define TILE_SIZE 32
 
@@ -23,6 +24,7 @@ MapCanvas::MapCanvas(const QHash<uint8_t, AssetData>& tiles,
     // Setea preview de imagen
     asset_preview = new QGraphicsPixmapItem();
     asset_preview->setOpacity(0.5);
+    asset_preview->setZValue(99.0);
     scene->addItem(asset_preview);
 }
 
@@ -57,34 +59,35 @@ void MapCanvas::drawBackground(QPainter *painter, const QRectF &rect) {
 void MapCanvas::mouseMoveEvent(QMouseEvent *event) {
     asset_preview->show();
     const QPointF scene_pos = mapToScene(event->pos());
-    asset_preview->setPos(coordinates_to_grid(scene_pos));
+    asset_preview->setPos(coordinates_to_grid(scene_pos)*32);
 }
 
 void MapCanvas::mousePressEvent(QMouseEvent *event) {
     if (mode == EditorMode::DRAW) {
-        placeTile();
+        const QPointF scene_pos = mapToScene(event->pos());
+        place_asset(coordinates_to_grid(scene_pos));
     }
-    std::cout << event->flags() <<std::endl;
 }
 
-void MapCanvas::placeTile() {
-    const bool placed = map.add_tile(coordinates_to_grid(asset_preview->pos()), selected_asset);
-    if (!placed) {return;}
+void MapCanvas::place_asset(const QPoint clicked_cell) {
+    const int asset_id = map.add_asset(clicked_cell, selected_asset);
+    if (asset_id == -1) {return;}
 
     const auto tile = new QGraphicsPixmapItem(asset_preview->pixmap());
     tile->setPos(asset_preview->pos());
+    tile->setData(0, asset_id);
     scene->addItem(tile);
 }
 
 QPoint MapCanvas::coordinates_to_grid(const QPointF coordinates) const {
-    int x_grid = static_cast<int>(coordinates.x()) / 32;
-    int y_grid = static_cast<int>(coordinates.y()) / 32;
+    int x_grid = qFloor(coordinates.x() / 32);
+    int y_grid = qFloor(coordinates.y() / 32);
 
     // Si los números son negativos, hay que ajustar el offset
     if (coordinates.x() < 0) x_grid--;
     if (coordinates.y() < 0) y_grid--;
 
-    return QPoint(x_grid * 32, y_grid * 32);
+    return QPoint(x_grid, y_grid);
 }
 
 MapCanvas::~MapCanvas() { delete ui; }

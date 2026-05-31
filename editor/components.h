@@ -23,7 +23,7 @@ struct AssetData {
 
 struct Placement {
     int id;
-    QRect bouds;
+    QPoint origin;
     AssetData asset;
 };
 

@@ -2,7 +2,6 @@
 #define EDITOR_MAP_H
 #include <qhash.h>
 #include <qpoint.h>
-#include <qset.h>
 
 #include "components.h"
 
@@ -13,12 +12,15 @@ private:
     QHash<int, Placement> placements;
     QHash<QPoint, QVector<int>> occupied_tiles;
 
+    int add_tile(QPoint position, const AssetData &tile_data);
+
+    int add_collider(QPoint position, const AssetData &collider_data);
+
 public:
     EditorMap();
 
-    bool add_tile(QPoint position, const AssetData &tile_data);
+    int add_asset(QPoint position, const AssetData &asset_data);
 
-    bool add_collider(QPoint position, const AssetData &collider_data);
 };
 
 
