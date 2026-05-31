@@ -28,3 +28,5 @@ void RecoverableStat::update() {
         }
     }
 }
+
+int RecoverableStat::get_current() const { return current_amount; }

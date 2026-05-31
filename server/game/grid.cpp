@@ -28,9 +28,6 @@ Tile& Grid::get_tile(const Position& position) {
 
 
 Position Grid::spawn() const {
-    /* TODO: solución temporal, revisar cómo manejar el spawn inicial de
-    jugadores
-
     std::random_device rd;
     std::default_random_engine generator(rd());
     std::uniform_int_distribution get_random_width(0, width_);
@@ -39,8 +36,7 @@ Position Grid::spawn() const {
     do {
         x = get_random_width(generator);
         y = get_random_height(generator);
-    } while (not tiles_[x][y].is_walkable() or
-             tiles_[x][y].occupant() != nullptr); */
-    int x = 0, y = 0;
+    } while (not tiles_[x][y].is_walkable() or tiles_[x][y].occupant() != nullptr);
+
     return Position(x, y);
 }

@@ -5,10 +5,10 @@
 #define FPS 30
 
 
-Mana::Mana(const int recovery_factor, const int factor_class, const int factor_race,
-           const int factor_class_meditation, const int intelligence):
+Mana::Mana(int recovery_factor, int factor_class, int factor_race, int factor_class_meditation,
+           int intelligence, uint8_t level):
         RecoverableStat(recovery_factor, factor_class, factor_race,
-                        Calculator::calculate_max_mana(1, intelligence, factor_class, factor_race)),
+                        Calculator::calculate_max_mana(level, intelligence, factor_class, factor_race)),
         intelligence(intelligence),
         factor_class_meditation(factor_class_meditation) {}
 

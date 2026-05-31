@@ -3,8 +3,8 @@
 #include "server/util/calculator.h"
 
 
-Experience::Experience(): current_amount(0), level(1) {}
-
+Experience::Experience(uint32_t current_amount, uint8_t level):
+        current_amount(current_amount), level(level) {}
 
 uint8_t Experience::get_level() const { return level; }
 

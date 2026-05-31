@@ -10,7 +10,7 @@ private:
     uint8_t level;
 
 public:
-    Experience();
+    Experience(uint32_t current_amount, uint8_t level);
 
     uint8_t get_level() const;
 

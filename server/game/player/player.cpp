@@ -5,30 +5,37 @@
 #define ATTACK_COOLDOWN 30
 #define MOVE_COOLDOWN 6
 
-#define AGILITY 10
-#define INTELLIGENCE 10
-#define CONSTITUTION 10
-#define STRENGTH 10
 
-#define ARCHETYPE_HEALTH_FACTOR 3
-#define ARCHETYPE_MANA_FACTOR 3
-#define ARCHETYPE_MEDITATION_FACTOR 3
-
-#define RACE_HEALTH_FACTOR 3
-#define RACE_MANA_FACTOR 3
-#define RACE_RECOVERY_FACTOR 3
-
-
-Player::Player(const std::string& player_name, const Position& position):
-        Killable(ATTACK_COOLDOWN, MOVE_COOLDOWN, AGILITY, CONSTITUTION, INTELLIGENCE, STRENGTH,
-                 Archetype(ARCHETYPE_HEALTH_FACTOR, ARCHETYPE_MANA_FACTOR, ARCHETYPE_MEDITATION_FACTOR),
-                 Race(RACE_HEALTH_FACTOR, RACE_MANA_FACTOR, RACE_RECOVERY_FACTOR)),
+// TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
+// modelo
+// TODO 2: no olvidar inicializar la vida con lo que le quedaba cuando se desconectó, las RecoverableStat
+// deberían exponer algo para ello
+Player::Player(const std::string& player_name, const PlayerData& persisted_data):
+        Killable(ATTACK_COOLDOWN, MOVE_COOLDOWN, persisted_data.archetype, persisted_data.race,
+                 persisted_data.current_xp_amount, persisted_data.xp_level),
         player_name(player_name),
-        archetype(ARCHETYPE_HEALTH_FACTOR, ARCHETYPE_MANA_FACTOR, ARCHETYPE_MEDITATION_FACTOR),
-        race(RACE_HEALTH_FACTOR, RACE_MANA_FACTOR, RACE_RECOVERY_FACTOR),
-        position(position),
+        /*
+        archetype(persisted_data.archetype),
+        race(persisted_data.race),
+        */
+        body(persisted_data.body),
+        head(persisted_data.head),
+        position(persisted_data.position_x, persisted_data.position_y),
         direction(Direction::IDLE) {}
 
+Player::Player(const std::string& player_name, const PlayerData& persisted_data,
+               const Position& starting_position):
+        Killable(ATTACK_COOLDOWN, MOVE_COOLDOWN, persisted_data.archetype, persisted_data.race,
+                 persisted_data.current_xp_amount, persisted_data.xp_level),
+        player_name(player_name),
+        /*
+        archetype(persisted_data.archetype),
+        race(persisted_data.race),
+        */
+        body(persisted_data.body),
+        head(persisted_data.head),
+        position(starting_position),
+        direction(Direction::IDLE) {}
 
 void Player::update_position(const Position& new_position, const Direction& new_direction) {
     position = new_position;
@@ -39,12 +46,16 @@ void Player::update_position(const Position& new_position, const Direction& new_
 
 void Player::attack() { attack_cooldown = ATTACK_COOLDOWN; }
 
+Stats Player::get_stats() const { return stats; }
 
 Position Player::get_position() const { return position; }
 
 
 Direction Player::get_direction() const { return direction; }
 
+uint8_t Player::get_body() const { return body; }
+
+uint8_t Player::get_head() const { return head; }
 
 bool Player::can_attack() const { return attack_cooldown == 0; }
 

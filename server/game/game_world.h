@@ -27,9 +27,10 @@ public:
 
     void move_player(const std::string& player_name, Direction direction);
 
-    void add_player(const std::string& player_name, const Position& position);
+    void add_player(const std::string& player_name, const PlayerData& data);
 
-    void add_player(const std::string& player_name);
+    std::unordered_map<std::string, Player>::iterator emplace_player(const std::string& player_name,
+                                                                     const PlayerData& data);
 
     void remove_player(const std::string& player_name);
 
