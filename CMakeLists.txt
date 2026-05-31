@@ -179,6 +179,8 @@ if(TALLER_EDITOR)
 
     set_project_warnings(taller_editor ${TALLER_MAKE_WARNINGS_AS_ERRORS} FALSE)
 
+    target_include_directories(taller_editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/editor)
+
     # add libSDL2pp's headers
     target_include_directories(taller_editor PRIVATE ${libSDL2pp_SOURCE_DIR})
     target_include_directories(taller_editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/editor)

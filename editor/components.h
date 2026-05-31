@@ -2,22 +2,29 @@
 #define COMPONENTS_H
 #include <qpixmap.h>
 
-
-struct TileView {
-    uint8_t id;
-    QPixmap img;
-    QString name;  // Definirlo en el TOML para mayor claridad
-    bool is_walkable;
+enum class EditorMode {
+    DRAW, ERASE, SELECT, SET_COLLISIONS, NONE
 };
 
-struct CollidableView {
+enum class ImageType {
+    TILE, COLLIDER
+};
+
+struct AssetData {
     uint8_t id;
     QPixmap img;
     QString name;
+    ImageType type; // TILE o COLLIDER
     int tile_width;
     int tile_height;
-    QVector<QVector<bool>> collidable_tiles;  // MATRIZ 0 = caminable, 1 = NO caminable
+    QVector<QVector<bool>> unwalkable_tiles;  // MATRIZ 0 = caminable, 1 = NO caminable
 };
 
+
+struct Placement {
+    int id;
+    QRect bouds;
+    AssetData asset;
+};
 
 #endif  // COMPONENTS_H

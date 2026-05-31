@@ -4,7 +4,7 @@ target_sources(taller_editor
         editor.cpp
         map_canvas.cpp
         editor_map.cpp
-        imageselector.cpp
+        asset_selector.cpp
 
     PUBLIC
         components.h
@@ -12,9 +12,9 @@ target_sources(taller_editor
         editor.h
         map_canvas.h
         editor_map.h
-        imageselector.h
+        asset_selector.h
 
         mapcanvas.ui
         editor.ui
-        imageselector.ui
+        assetselector.ui
 )

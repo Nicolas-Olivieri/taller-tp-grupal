@@ -14,7 +14,7 @@
 
 #include "key_mapper.h"
 
-#define TILE_SIZE 25
+#define TILE_SIZE 32
 #define FPS 30
 
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
