@@ -7,6 +7,7 @@
 #include "map_data.h"
 #include "asset_selector.h"
 #include "map_canvas.h"
+#include "map_loader.h"
 #include "map_saver.h"
 
 namespace Ui {
@@ -22,20 +23,23 @@ public:
     ~Editor();
     
 private slots:
-    void set_mode(const EditorMode& new_mode) const;
+    void set_mode(const EditorMode& new_mode);
 
     void prompt_file_saving();
+
+    void prompt_file_opening();
 
 private:
     Ui::Editor* ui;
     QHash<uint8_t, AssetData> tiles;
-    QHash<uint8_t, AssetData> collidables;
+    QHash<uint16_t, AssetData> colliders;
 
     MapData map_data;
-    MapCanvas* map_canvas;
+    MapCanvas map_canvas;
     AssetSelector* asset_selector;
     QHash<EditorMode, QPushButton*> action_buttons;
 
+    MapLoader loader;
     MapSaver saver;
 };
 

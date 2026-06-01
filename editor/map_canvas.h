@@ -12,8 +12,9 @@ class MapCanvas;
 }
 
 class MapCanvas: public QGraphicsView {
-    Q_OBJECT
+friend class MapLoader;
 
+    Q_OBJECT
 public:
     explicit MapCanvas(MapData& map_data, QGraphicsView* parent = nullptr);
 
@@ -23,9 +24,13 @@ public:
 
 private:
     void place_asset(QPointF clicked_pos);
+    void add_asset_to_scene(QPoint clicked_cell, int asset_id);
+
     void erase_asset(QPointF clicked_pos);
 
-    void set_unwalkable_tiles(const QPoint &clicked_cell, int tile_id) const;
+void erase_all_assets();
+
+void set_unwalkable_tiles(const QPoint &clicked_cell, int tile_id) const;
     void erase_unwalkable_tiles(int tile_id) const;
 
     QPoint coordinates_to_grid(QPointF coordinates) const;

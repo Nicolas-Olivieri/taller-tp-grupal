@@ -6,7 +6,8 @@
 #include "ui_editor.h"
 
 Editor::Editor(QWidget* parent):
-    QMainWindow(parent), ui(new Ui::Editor), map_data(MapData()), saver(MapSaver(this->map_data))
+    QMainWindow(parent), ui(new Ui::Editor), map_data(MapData()), map_canvas(MapCanvas(this->map_data)),
+    loader(this->map_data, this->map_canvas, tiles, colliders), saver(MapSaver(this->map_data))
 {
     ui->setupUi(this);
 
@@ -17,43 +18,50 @@ Editor::Editor(QWidget* parent):
     AssetData coll1 = {0, QPixmap(DATA_PATH "/collidable/0.png"), "Carreta", ImageType::COLLIDER, 3, 2, QRect(0,0,3,2)};
 
     tiles.insert({{tile0.id, tile0}, {tile1.id, tile1}, {tile2.id, tile2}});
-    collidables.insert({{coll1.id, coll1}});
+    colliders.insert({{coll1.id, coll1}});
 
 
-    map_canvas = new MapCanvas(map_data);
-    ui->mapWidget->addWidget(map_canvas);
+    ui->mapWidget->addWidget(&map_canvas);
 
-    asset_selector = new AssetSelector(tiles, collidables);
+    asset_selector = new AssetSelector(tiles, colliders);
     ui->selectorWidget->addWidget(asset_selector);
 
     action_buttons.insert({ {EditorMode::DRAW, ui->drawBtn},
                                     {EditorMode::ERASE, ui->eraseBtn},
-                                    {EditorMode::SELECT, ui->selectBtn},
                                     {EditorMode::DRAG, ui->dragBtn}});
 
 
     // Conexión botones
     connect(ui->saveBtn, &QPushButton::clicked, this, &Editor::prompt_file_saving);
-    connect(ui->cbox_unwalkables, &QCheckBox::clicked, map_canvas, &MapCanvas::set_visibility_unwalkables);
+    connect(ui->loadBtn, &QPushButton::clicked, this, &Editor::prompt_file_opening);
+    connect(ui->cbox_unwalkables, &QCheckBox::clicked, &map_canvas, &MapCanvas::set_visibility_unwalkables);
 
     for (const auto& [mode, btn] : action_buttons.asKeyValueRange()) {
         connect(btn, &QPushButton::clicked, this, [this, mode] {set_mode(mode);});
     }
 
     // Conxiones Selector <-> Mapa (canvas)
-    connect(asset_selector, &AssetSelector::clickedImage, map_canvas, &MapCanvas::set_selected_asset);
+    connect(asset_selector, &AssetSelector::clickedImage, &map_canvas, &MapCanvas::set_selected_asset);
 }
 
-void Editor::set_mode(const EditorMode& new_mode) const{
+void Editor::set_mode(const EditorMode& new_mode) {
     for (const auto& [mode, btn] : action_buttons.asKeyValueRange()) {
-        if (mode != new_mode) {btn->setChecked(false);}
+        btn->setChecked(mode == new_mode);
     }
-    map_canvas->set_mode(new_mode);
+    map_canvas.set_mode(new_mode);
 }
 
 void Editor::prompt_file_saving() {
     const QString filename = QFileDialog::getSaveFileName();
     saver.save(filename);
+}
+
+void Editor::prompt_file_opening() {
+    set_mode(EditorMode::DRAW);
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Cargar mapa"),
+                                                            QDir::currentPath(),tr("bin files (*.bin)"));
+    loader.load(fileName);
+    set_mode(EditorMode::DRAG);
 }
 
 Editor::~Editor() { delete ui; }

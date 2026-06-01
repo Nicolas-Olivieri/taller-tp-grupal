@@ -10,15 +10,19 @@
 
 MapCanvas::MapCanvas(MapData& map_data, QGraphicsView* parent):
     QGraphicsView(parent), ui(new Ui::MapCanvas), scene(new QGraphicsScene(this)),
-    map_data(map_data), mode(EditorMode::SELECT)
+    map_data(map_data), mode(EditorMode::DRAG)
 {
     ui->setupUi(this);
 
     // Setea escena
     this->setScene(scene);
+    scene->setSceneRect(0,0,width(),height());
     this->setRenderHint(QPainter::SmoothPixmapTransform);
     this->setDragMode(ScrollHandDrag);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setMouseTracking(true);
+
 
     // Setea preview de imagen
     asset_preview = new QGraphicsPixmapItem();
@@ -50,14 +54,35 @@ void MapCanvas::drawBackground(QPainter *painter, const QRectF &rect) {
 }
 
 void MapCanvas::mouseMoveEvent(QMouseEvent *event) {
-    if (mode != EditorMode::DRAW) {return;}
+    if (mode == EditorMode::DRAG) {
+        const QRectF visible_area = this->mapToScene(this->viewport()->rect()).boundingRect();
+        const QRectF limits = scene->sceneRect();
 
-    asset_preview->show();
-    const QPointF scene_pos = mapToScene(event->pos());
-    asset_preview->setPos(coordinates_to_grid(scene_pos)*TILE_SIZE);
+        const QRectF safe_zone = limits.adjusted(100, 100, -100, -100);
+
+        if (!safe_zone.contains(visible_area)) {
+            QRectF nuevos_limites = limits.united(visible_area);
+
+            nuevos_limites.adjust(-2000, -2000, 2000, 2000);
+
+            scene->setSceneRect(nuevos_limites);
+        }
+
+        QGraphicsView::mouseMoveEvent(event);
+
+    } else if (mode == EditorMode::DRAW) {
+        asset_preview->show();
+        const QPointF scene_pos = mapToScene(event->pos());
+        asset_preview->setPos(coordinates_to_grid(scene_pos) * TILE_SIZE);
+    }
 }
 
 void MapCanvas::mousePressEvent(QMouseEvent *event) {
+    if (mode == EditorMode::DRAG) {
+        QGraphicsView::mousePressEvent(event);
+        return;
+    }
+
     const QPointF scene_pos = mapToScene(event->pos());
 
     if (mode == EditorMode::DRAW) {
@@ -75,6 +100,9 @@ void MapCanvas::set_mode(const EditorMode new_mode) {
 
     if (mode != EditorMode::DRAW) {
         asset_preview->hide();
+    }
+    if (mode == EditorMode::DRAG) {
+        this->setDragMode(ScrollHandDrag);
     }
 }
 
@@ -100,10 +128,14 @@ void MapCanvas::place_asset(const QPointF clicked_pos) {
     const int asset_id = map_data.add_asset(clicked_cell, drawing_asset);
     if (asset_id == -1) {return;}
 
+    add_asset_to_scene(clicked_cell, asset_id);
+}
+
+void MapCanvas::add_asset_to_scene(const QPoint clicked_cell, const int asset_id) {
     set_unwalkable_tiles(clicked_cell, asset_id);
 
     const auto tile = new QGraphicsPixmapItem(asset_preview->pixmap());
-    tile->setPos(asset_preview->pos());
+    tile->setPos(clicked_cell*TILE_SIZE);
     tile->setData(0, asset_id);
     scene->addItem(tile);
 }
@@ -123,6 +155,17 @@ void MapCanvas::erase_asset(const QPointF clicked_pos) {
     scene->removeItem(clicked_asset);
     delete clicked_asset;
 }
+
+void MapCanvas::erase_all_assets() {
+    QList<QGraphicsItem*> assets = scene->items();
+    for (const auto asset : assets) {
+        // Evito eliminar los elementos necesarios para el funcionamiento del editor
+        if (asset != asset_preview && asset != unwalkable_tiles) {
+            scene->removeItem(asset);
+        }
+    }
+}
+
 
 void MapCanvas::set_unwalkable_tiles(const QPoint& clicked_cell, const int tile_id) const {
     const QPoint unwalkable_offset = drawing_asset.unwalkable_tiles.topLeft();

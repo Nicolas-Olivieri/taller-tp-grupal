@@ -1,9 +1,10 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
+
 #include <qpixmap.h>
 
 enum class EditorMode {
-    DRAW, ERASE, SELECT, DRAG, SET_COLLISIONS, NONE
+    DRAW, ERASE, DRAG
 };
 
 enum class ImageType {

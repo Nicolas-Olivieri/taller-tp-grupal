@@ -8,6 +8,7 @@
 
 class MapData {
 friend class MapSaver;
+friend class MapLoader;
 
 private:
     int tile_id;

@@ -1,9 +1,6 @@
 #ifndef MAP_SAVER_H
 #define MAP_SAVER_H
 
-#include <qfile.h>
-#include <QObject>
-
 #include "map_data.h"
 
 class MapSaver{

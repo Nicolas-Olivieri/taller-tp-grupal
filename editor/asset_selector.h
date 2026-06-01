@@ -14,7 +14,7 @@ class AssetSelector: public QTabWidget {
     Q_OBJECT
 
 public:
-    AssetSelector(const QHash<uint8_t, AssetData> &tiles, const QHash<uint8_t, AssetData> &colliders, QWidget *parent = nullptr);
+    AssetSelector(const QHash<uint8_t, AssetData> &tiles, const QHash<uint16_t, AssetData> &colliders, QWidget *parent = nullptr);
 
     ~AssetSelector();
 
@@ -26,7 +26,7 @@ private:
     Ui::AssetSelector* ui{};
 
     const QHash<uint8_t, AssetData>& tiles;
-    const QHash<uint8_t, AssetData>& colliders;
+    const QHash<uint16_t, AssetData>& colliders;
 };
 
 #endif  // IMAGE_SELECTOR_H
