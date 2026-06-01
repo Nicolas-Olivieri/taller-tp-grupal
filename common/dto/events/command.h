@@ -5,7 +5,7 @@
 
 #include "common/direction.h"
 
-enum class CommandType : uint8_t { MOVE, INTERACT };
+enum class CommandType : uint8_t { MOVE, INTERACT, CHAT };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a
 // partir de los EventDTO
@@ -17,10 +17,10 @@ struct RequestedCommandDTO {
     int x;
     int y;
 
+    std::string receiver;
+    std::string message;
     /* TODO: agregar los siguientes al implementar los correspondientes comandos
     item_id
-    other_player
-    message
     clan_name
     */
 
@@ -28,6 +28,8 @@ struct RequestedCommandDTO {
     RequestedCommandDTO(const CommandType& cmd, const Direction& direction);
 
     RequestedCommandDTO(const CommandType& cmd, int x, int y);
+
+    RequestedCommandDTO(const CommandType& cmd, const std::string& receiver, const std::string& content);
 };
 
 #endif  // REQUESTEDCOMMANDDTO_H

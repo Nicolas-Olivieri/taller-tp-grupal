@@ -42,21 +42,22 @@ RequestedCommandDTO Protocol::recv_command() {
         const int y = deserializer.recv_uint16();
 
         return RequestedCommandDTO(command, x, y);
+    } else if (command == CommandType::MOVE) {
+        Direction direction = deserializer.recv_direction();
+
+        return RequestedCommandDTO(command, direction);
+    } else if (command == CommandType::CHAT) {
+        const std::string receiver = deserializer.recv_string();
+        const std::string content = deserializer.recv_string();
+
+        return RequestedCommandDTO(command, receiver, content);
+    } else {
+        throw std::invalid_argument("The received command type has no known way to be deserialized");
     }
 
-    // TODO 1: de momento, este método está pensado SOLO para moverse por el
-    // mapa, pero en un futuro va a tener que ramificarse dependiendo del
-    // CommandType
-    Direction direction = deserializer.recv_direction();
-
     /* TODO 2: agregar los siguientes al implementar los correspondientes
-    comandos item_id other_player message clan_name
-    x
-    y
+    comandos item_id clan_name
     */
-
-    // TODO: esta firma seguramente cambie
-    return RequestedCommandDTO(command, direction);
 }
 
 SnapshotDTO Protocol::recv_snapshot() {
