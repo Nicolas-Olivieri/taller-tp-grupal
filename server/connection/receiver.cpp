@@ -15,6 +15,11 @@ void Receiver::run() {
             command_queue.push(factory.create(dto));
         }
 
+        command_queue.push(std::make_unique<DespawnCommand>(player_name));
+
+    } catch (const ClosedQueue&) {
+        // Receiver finalizado por servidor desconectado
+
     } catch (const ClosedSocket&) {
         if (should_keep_running()) {
             // Receiver finalizado por cliente desconectado
@@ -23,6 +28,4 @@ void Receiver::run() {
             // Receiver finalizado por servidor desconectado
         }
     }
-
-    command_queue.push(std::make_unique<DespawnCommand>(player_name));
 }
