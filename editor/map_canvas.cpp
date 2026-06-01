@@ -8,10 +8,10 @@
 
 #define TILE_SIZE 32
 
-MapCanvas::MapCanvas(const QHash<uint8_t, AssetData>& tiles,
-                     const QHash<uint8_t, AssetData>& colliders, QGraphicsView* parent):
+MapCanvas::MapCanvas(/*const QHash<uint8_t, AssetData>& tiles,
+                     const QHash<uint8_t, AssetData>& colliders, */ QGraphicsView* parent):
     QGraphicsView(parent), ui(new Ui::MapCanvas), scene(new QGraphicsScene(this)),
-    map(EditorMap()), tiles(tiles), colliders(colliders), mode(EditorMode::NONE)
+    map(EditorMap()), /*tiles(tiles), colliders(colliders),*/ mode(EditorMode::SELECT)
 {
     ui->setupUi(this);
 
@@ -26,25 +26,15 @@ MapCanvas::MapCanvas(const QHash<uint8_t, AssetData>& tiles,
     asset_preview->setOpacity(0.5);
     asset_preview->setZValue(99.0);
     scene->addItem(asset_preview);
-}
 
-void MapCanvas::setMode(const EditorMode new_mode) {
-    mode = new_mode;
-
-    if (mode == EditorMode::ERASE) {
-        asset_preview->hide();
-    }
+    // Setea capa de no caminable
+    unwalkable_tiles = scene->createItemGroup({});
+    unwalkable_tiles->setZValue(98.0);
+    unwalkable_tiles->setVisible(false);
 }
 
 
-void MapCanvas::setSelectedAsset(const AssetData& data) {
-    selected_asset = data;
-    mode = EditorMode::DRAW;
-
-    asset_preview->hide();
-    asset_preview->setPixmap(data.img);
-}
-
+// MÉTODOS DE QGRAPHICSVIEW ::::::::::::::::::::::::::::
 
 void MapCanvas::drawBackground(QPainter *painter, const QRectF &rect) {
     QPixmap gridTile(TILE_SIZE, TILE_SIZE);
@@ -61,7 +51,7 @@ void MapCanvas::drawBackground(QPainter *painter, const QRectF &rect) {
 }
 
 void MapCanvas::mouseMoveEvent(QMouseEvent *event) {
-    if (mode == EditorMode::ERASE) {return;}
+    if (mode != EditorMode::DRAW) {return;}
 
     asset_preview->show();
     const QPointF scene_pos = mapToScene(event->pos());
@@ -78,10 +68,40 @@ void MapCanvas::mousePressEvent(QMouseEvent *event) {
     }
 }
 
+
+// MÉTODOS DE SETEO ::::::::::::::::::::::::::::
+
+void MapCanvas::set_mode(const EditorMode new_mode) {
+    mode = new_mode;
+
+    if (mode != EditorMode::DRAW) {
+        asset_preview->hide();
+    }
+}
+
+void MapCanvas::set_selected_asset(const AssetData& data) {
+    if (mode != EditorMode::DRAW) {return;}
+
+    drawing_asset = data;
+    asset_preview->hide();
+    asset_preview->setPixmap(data.img);
+}
+
+void MapCanvas::set_visibility_unwalkables() const {
+    const bool curr_state = unwalkable_tiles->isVisible();
+    unwalkable_tiles->setVisible(!curr_state);
+    QGraphicsItemGroup group(unwalkable_tiles);
+}
+
+
+// MÉTODOS DE ASSETS ::::::::::::::::::::::::::::
+
 void MapCanvas::place_asset(const QPointF clicked_pos) {
     const QPoint clicked_cell = coordinates_to_grid(clicked_pos);
-    const int asset_id = map.add_asset(clicked_cell, selected_asset);
+    const int asset_id = map.add_asset(clicked_cell, drawing_asset);
     if (asset_id == -1) {return;}
+
+    set_unwalkable_tiles(clicked_cell, asset_id);
 
     const auto tile = new QGraphicsPixmapItem(asset_preview->pixmap());
     tile->setPos(asset_preview->pos());
@@ -91,15 +111,48 @@ void MapCanvas::place_asset(const QPointF clicked_pos) {
 
 void MapCanvas::erase_asset(const QPointF clicked_pos) {
     const QList<QGraphicsItem*> cell_assets = scene->items(clicked_pos);
-
-    if (cell_assets.empty() || !cell_assets.first()->data(0).isValid()) {return;}
+    if (cell_assets.empty() ||
+        !cell_assets.first()->data(0).isValid() ||
+        cell_assets.first()->group() == unwalkable_tiles) {return;}
 
     QGraphicsItem* clicked_asset = cell_assets.first();
     const bool erased = map.erase_asset(clicked_asset->data(0).toInt());
     if (!erased) { return; }
 
+    erase_unwalkable_tiles(clicked_asset->data(0).toInt());
+
     scene->removeItem(clicked_asset);
     delete clicked_asset;
+}
+
+void MapCanvas::set_unwalkable_tiles(const QPoint& clicked_cell, const int tile_id) const {
+    const QPoint unwalkable_offset = drawing_asset.unwalkable_tiles.topLeft();
+    const QSize unwalkable_size = drawing_asset.unwalkable_tiles.size();
+
+    const QBrush redBrush(QColor(255, 0, 0, 150));
+    const QPen noPen(Qt::NoPen);
+    for (int i = unwalkable_offset.x(); i < unwalkable_size.width(); i++) {
+        for (int j = unwalkable_offset.y(); j < unwalkable_size.height(); j++) {
+            auto* mark = new QGraphicsEllipseItem(11,11,10,10);
+            mark->setZValue(98.0);
+            mark->setData(0, tile_id);
+            mark->setBrush(redBrush);
+            mark->setPen(noPen);
+            mark->setPos((clicked_cell.x()+i)*TILE_SIZE, (clicked_cell.y()+j)*TILE_SIZE);
+
+            unwalkable_tiles->addToGroup(mark);
+        }
+    }
+}
+
+void MapCanvas::erase_unwalkable_tiles(const int tile_id) const {
+    QList<QGraphicsItem*> marks = unwalkable_tiles->childItems();
+    for (const auto & mark : marks) {
+        if (mark->data(0) == tile_id) {
+            unwalkable_tiles->removeFromGroup(mark);
+            delete mark;
+        }
+    }
 }
 
 

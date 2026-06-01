@@ -21,17 +21,17 @@ public:
     ~Editor();
     
 private slots:
-    void setEraseMode() const;
     // void saveMap();
+    void set_mode(const EditorMode& new_mode) const;
 
 private:
     Ui::Editor* ui;
-    // EditorMap map;
     QHash<uint8_t, AssetData> tiles;
     QHash<uint8_t, AssetData> collidables;
 
     MapCanvas* map_canvas;
     AssetSelector* asset_selector;
+    QHash<EditorMode, QPushButton*> action_buttons;
 };
 
 #endif  // EDITOR_H

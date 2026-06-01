@@ -3,7 +3,7 @@
 #include <qpixmap.h>
 
 enum class EditorMode {
-    DRAW, ERASE, SELECT, SET_COLLISIONS, NONE
+    DRAW, ERASE, SELECT, DRAG, SET_COLLISIONS, NONE
 };
 
 enum class ImageType {
@@ -17,7 +17,7 @@ struct AssetData {
     ImageType type; // TILE o COLLIDER
     int tile_width;
     int tile_height;
-    QVector<QVector<bool>> unwalkable_tiles;  // MATRIZ 0 = caminable, 1 = NO caminable
+    QRect unwalkable_tiles;
 };
 
 
