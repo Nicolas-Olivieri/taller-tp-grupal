@@ -5,24 +5,24 @@
 
 class RecoverableStat {
 protected:
-    const int recovery_factor;
-    const int factor_class;
-    const int factor_race;
+    const uint8_t recovery_factor;
+    const float factor_class;
+    const float factor_race;
 
-    int max_amount;
-    int current_amount;
+    uint16_t max_amount;
+    uint16_t current_amount;
     int tick_accumulator;
 
-    explicit RecoverableStat(int recovery_factor, int factor_class, int factor_race, int max);
+    RecoverableStat(uint8_t recovery_factor, float factor_class, float factor_race, uint8_t max);
 
 public:
-    virtual void update_max(int level) = 0;
+    virtual void update_max(uint8_t level) = 0;
 
     virtual void update();
 
-    virtual bool loose(int amount) = 0;
+    virtual bool loose(uint16_t amount) = 0;
 
-    int get_current() const;
+    uint16_t get_current() const;
 
     virtual ~RecoverableStat() = default;
 };

@@ -6,15 +6,17 @@
 
 class Calculator {
 public:
-    static int calculate_max_health(int level, int constitution, int factor_class, int factor_race);
+    static uint16_t calculate_max_health(uint8_t level, uint8_t constitution, float factor_class,
+                                         float factor_race);
 
-    static int calculate_max_mana(int level, int intelligence, int factor_class, int factor_race);
+    static uint16_t calculate_max_mana(uint8_t level, uint8_t intelligence, float factor_class,
+                                       float factor_race);
 
-    static int meditation_mana_recovery(int intelligence, int factor_class_meditation);
+    static int meditation_mana_recovery(uint8_t intelligence, float factor_class_meditation);
 
-    static uint32_t calculate_xp_limit(int level);
+    static uint32_t calculate_xp_limit(uint8_t level);
 
-    static int calculate_unarmed_damage(int strength);
+    static uint16_t calculate_unarmed_damage(uint8_t strength);
 };
 
 

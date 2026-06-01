@@ -3,8 +3,7 @@
 #define FPS 30
 
 
-RecoverableStat::RecoverableStat(const int recovery_factor, const int factor_class, const int factor_race,
-                                 const int max):
+RecoverableStat::RecoverableStat(uint8_t recovery_factor, float factor_class, float factor_race, uint8_t max):
         recovery_factor(recovery_factor),
         factor_class(factor_class),
         factor_race(factor_race),
@@ -29,4 +28,4 @@ void RecoverableStat::update() {
     }
 }
 
-int RecoverableStat::get_current() const { return current_amount; }
+uint16_t RecoverableStat::get_current() const { return current_amount; }

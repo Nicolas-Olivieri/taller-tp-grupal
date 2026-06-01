@@ -5,15 +5,15 @@
 #define FPS 30
 
 
-Mana::Mana(int recovery_factor, int factor_class, int factor_race, int factor_class_meditation,
-           int intelligence, uint8_t level):
+Mana::Mana(uint8_t recovery_factor, float factor_class, float factor_race, float factor_class_meditation,
+           uint8_t intelligence, uint8_t level):
         RecoverableStat(recovery_factor, factor_class, factor_race,
                         Calculator::calculate_max_mana(level, intelligence, factor_class, factor_race)),
         intelligence(intelligence),
         factor_class_meditation(factor_class_meditation) {}
 
 
-void Mana::update_max(const int level) {
+void Mana::update_max(uint8_t level) {
     const int new_max = Calculator::calculate_max_mana(level, intelligence, factor_class, factor_race);
 
     const int difference = new_max - max_amount;
@@ -42,10 +42,12 @@ void Mana::meditate() {
 }
 
 
-bool Mana::loose(const int amount) {
-    current_amount -= amount;
-    if (current_amount <= 0) {
+bool Mana::loose(uint16_t amount) {
+    if (current_amount <= amount) {
+        // TODO: blquear el uso de hechizo, si no tiene maná suficiente, no debería poder usar el hechizo
         current_amount = 0;
+    } else {
+        current_amount -= amount;
     }
 
     return false;

@@ -1,13 +1,6 @@
 #include "stats.h"
 
-#include "archetype.h"
-#include "race.h"
-
-// TODO: PLACEHOLDERS; borrar cuando podamos leerlas desde un toml dependiendo de archetype y race
-#define AGILITY 10
-#define INTELLIGENCE 10
-#define CONSTITUTION 10
-#define STRENGTH 10
+#include "server/TOML/statsconfig.h"
 
 Stats::Stats(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t xp_level):
         experience(current_xp_amount, xp_level),
@@ -19,32 +12,44 @@ Stats::Stats(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, 
         mana(mana_from(archetype_id, race_id)) {}
 
 uint8_t Stats::agility_from(uint8_t archetype_id, uint8_t race_id) {
-    return AGILITY + /* PLACEHOLDERS para uso */ archetype_id + race_id + experience.get_level();
+    uint8_t archetype_agility = StatsConfig::get().get_archetype(archetype_id).agility;
+    uint8_t race_agility = StatsConfig::get().get_race(race_id).agility;
+
+    return (archetype_agility + race_agility) / 2;
 }
 
 uint8_t Stats::constitution_from(uint8_t archetype_id, uint8_t race_id) {
-    return INTELLIGENCE + /* PLACEHOLDERS para uso */ archetype_id + race_id + experience.get_level();
+    uint8_t base = StatsConfig::get().get_archetype(archetype_id).constitution_multiplier;
+    uint8_t multiplier = StatsConfig::get().get_race(race_id).constitution;
+
+    return base + experience.get_level() * multiplier;
 }
 
 uint8_t Stats::intelligence_from(uint8_t archetype_id, uint8_t race_id) {
-    return CONSTITUTION + /* PLACEHOLDERS para uso */ archetype_id + race_id + experience.get_level();
+    uint8_t base = StatsConfig::get().get_archetype(archetype_id).intelligence_multiplier;
+    uint8_t multiplier = StatsConfig::get().get_race(race_id).intelligence;
+
+    return base + experience.get_level() * multiplier;
 }
 
 uint8_t Stats::strength_from(uint8_t archetype_id, uint8_t race_id) {
-    return STRENGTH + /* PLACEHOLDERS para uso */ archetype_id + race_id + experience.get_level();
+    uint8_t base = StatsConfig::get().get_archetype(archetype_id).strength_multiplier;
+    uint8_t multiplier = StatsConfig::get().get_race(race_id).strength;
+
+    return base + experience.get_level() * multiplier;
 }
 
 Health Stats::health_from(uint8_t archetype_id, uint8_t race_id) {
-    Archetype archetype(archetype_id);
-    Race race(race_id);
+    const ArchetypeData& archetype = StatsConfig::get().get_archetype(archetype_id);
+    const RaceData& race = StatsConfig::get().get_race(race_id);
 
     return Health(race.recovery_factor, archetype.health_factor, race.health_factor, constitution,
                   experience.get_level());
 }
 
 Mana Stats::mana_from(uint8_t archetype_id, uint8_t race_id) {
-    Archetype archetype(archetype_id);
-    Race race(race_id);
+    const ArchetypeData& archetype = StatsConfig::get().get_archetype(archetype_id);
+    const RaceData& race = StatsConfig::get().get_race(race_id);
 
     return Mana(race.recovery_factor, archetype.mana_factor, race.mana_factor, archetype.meditation_factor,
                 intelligence, experience.get_level());
