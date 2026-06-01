@@ -30,11 +30,14 @@ uint32_t PlayerDataBase::add(PlayerData data) {
 
     file.seekp(0, std::ios::end);
     uint32_t offset = static_cast<uint32_t>(file.tellp());
-    file.write(reinterpret_cast<const char*>(&data), sizeof(data));
-
-    file.flush();
+    write_data(data);
 
     return offset;
+}
+
+void PlayerDataBase::write_data(const PlayerData& data) {
+    file.write(reinterpret_cast<const char*>(&data), sizeof(data));
+    file.flush();
 }
 
 void PlayerDataBase::set_data_for_network(PlayerData& data) {
@@ -53,9 +56,7 @@ void PlayerDataBase::update(PlayerData data, uint32_t offset) {
     std::lock_guard<std::mutex> lock(mutex);
 
     file.seekp(offset, std::ios::beg);
-    file.write(reinterpret_cast<const char*>(&data), offsetof(PlayerData, archetype));
-
-    file.flush();
+    write_data(data);
 }
 
 PlayerData PlayerDataBase::get(uint32_t offset) {

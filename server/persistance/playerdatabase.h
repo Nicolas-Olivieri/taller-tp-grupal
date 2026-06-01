@@ -19,6 +19,8 @@ private:
 
     void read_player_data(PlayerData& data, uint32_t offset);
 
+    void write_data(const PlayerData& data);
+
 public:
     explicit PlayerDataBase(const std::string& database_path);
 
