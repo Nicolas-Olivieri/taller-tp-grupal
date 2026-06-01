@@ -4,7 +4,7 @@
 #include <QGraphicsView>
 
 #include "components.h"
-#include "editor_map.h"
+#include "map_data.h"
 #include "client/client.h"
 
 namespace Ui {
@@ -15,9 +15,7 @@ class MapCanvas: public QGraphicsView {
     Q_OBJECT
 
 public:
-    explicit MapCanvas(/*const QHash<uint8_t, AssetData>& tiles,
-                       const QHash<uint8_t, AssetData>& colliders,*/
-                       QGraphicsView* parent = nullptr);
+    explicit MapCanvas(MapData& map_data, QGraphicsView* parent = nullptr);
 
     void set_mode(EditorMode new_mode);
 
@@ -47,13 +45,9 @@ private:
     Ui::MapCanvas* ui;
     QGraphicsScene* scene;
 
-    EditorMap map;
-    // const QHash<uint8_t, AssetData>& tiles;
-    // const QHash<uint8_t, AssetData>& colliders;
-
+    MapData& map_data;
 
     EditorMode mode;
-
     AssetData drawing_asset;
     QGraphicsPixmapItem* asset_preview;
     QGraphicsItemGroup* unwalkable_tiles;

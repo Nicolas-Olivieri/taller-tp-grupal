@@ -1,11 +1,11 @@
-#include "editor_map.h"
+#include "map_data.h"
 #include <QSet>
 
-EditorMap::EditorMap() : tile_id(0) {}
+MapData::MapData() : tile_id(0) {}
 
 // AÑADIR ASSET::::::::::::::::
 
-int EditorMap::add_asset(const QPoint position, const AssetData &asset_data) {
+int MapData::add_asset(const QPoint position, const AssetData &asset_data) {
     if (asset_data.type == ImageType::TILE) {
         return add_tile(position, asset_data);
     }
@@ -15,7 +15,7 @@ int EditorMap::add_asset(const QPoint position, const AssetData &asset_data) {
     return -1;
 }
 
-int EditorMap::add_tile(const QPoint position, const AssetData &tile_data) {
+int MapData::add_tile(const QPoint position, const AssetData &tile_data) {
     // Chequea colisiones para cada una de las celdas que ocupa
     for (int i = 0; i < tile_data.tile_width; i++) {
         for (int j = 0; j < tile_data.tile_height; j++) {
@@ -50,7 +50,7 @@ int EditorMap::add_tile(const QPoint position, const AssetData &tile_data) {
     return new_tile.id;
 }
 
-int EditorMap::add_collider(const QPoint position, const AssetData &collider_data) {
+int MapData::add_collider(const QPoint position, const AssetData &collider_data) {
     // Chequea colisiones para cada una de las celdas que ocupa
     for (int i = 0; i < collider_data.tile_width; i++) {
         for (int j = 0; j < collider_data.tile_height; j++) {
@@ -88,7 +88,7 @@ int EditorMap::add_collider(const QPoint position, const AssetData &collider_dat
 
 // BORRAR ASSET::::::::::::::::
 
-bool EditorMap::erase_asset(const int asset_id) {
+bool MapData::erase_asset(const int asset_id) {
     const Placement& placement_data = placements[asset_id];
     const AssetData& asset = placement_data.asset;
     const QPoint& position = placement_data.origin;

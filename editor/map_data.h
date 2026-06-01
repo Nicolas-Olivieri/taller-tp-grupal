@@ -1,12 +1,14 @@
-#ifndef EDITOR_MAP_H
-#define EDITOR_MAP_H
+#ifndef MAP_DATA_H
+#define MAP_DATA_H
 #include <qhash.h>
 #include <qpoint.h>
 
 #include "components.h"
 
 
-class EditorMap {
+class MapData {
+friend class MapSaver;
+
 private:
     int tile_id;
     QHash<int, Placement> placements;
@@ -18,7 +20,7 @@ private:
     int add_collider(QPoint position, const AssetData &collider_data);
 
 public:
-    EditorMap();
+    MapData();
 
     int add_asset(QPoint position, const AssetData &asset_data);
 
@@ -26,4 +28,4 @@ public:
 };
 
 
-#endif //EDITOR_MAP_H
+#endif //MAP_DATA_H

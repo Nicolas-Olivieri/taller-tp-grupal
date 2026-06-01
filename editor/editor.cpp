@@ -1,11 +1,12 @@
 #include "editor.h"
 
+#include <QFileDialog>
 #include <ui_mapcanvas.h>
 
 #include "ui_editor.h"
 
 Editor::Editor(QWidget* parent):
-    QMainWindow(parent), ui(new Ui::Editor)
+    QMainWindow(parent), ui(new Ui::Editor), map_data(MapData()), saver(MapSaver(this->map_data))
 {
     ui->setupUi(this);
 
@@ -18,7 +19,8 @@ Editor::Editor(QWidget* parent):
     tiles.insert({{tile0.id, tile0}, {tile1.id, tile1}, {tile2.id, tile2}});
     collidables.insert({{coll1.id, coll1}});
 
-    map_canvas = new MapCanvas(/*tiles, collidables*/);
+
+    map_canvas = new MapCanvas(map_data);
     ui->mapWidget->addWidget(map_canvas);
 
     asset_selector = new AssetSelector(tiles, collidables);
@@ -31,6 +33,7 @@ Editor::Editor(QWidget* parent):
 
 
     // Conexión botones
+    connect(ui->saveBtn, &QPushButton::clicked, this, &Editor::prompt_file_saving);
     connect(ui->cbox_unwalkables, &QCheckBox::clicked, map_canvas, &MapCanvas::set_visibility_unwalkables);
 
     for (const auto& [mode, btn] : action_buttons.asKeyValueRange()) {
@@ -46,6 +49,11 @@ void Editor::set_mode(const EditorMode& new_mode) const{
         if (mode != new_mode) {btn->setChecked(false);}
     }
     map_canvas->set_mode(new_mode);
+}
+
+void Editor::prompt_file_saving() {
+    const QString filename = QFileDialog::getSaveFileName();
+    saver.save(filename);
 }
 
 Editor::~Editor() { delete ui; }

@@ -8,10 +8,9 @@
 
 #define TILE_SIZE 32
 
-MapCanvas::MapCanvas(/*const QHash<uint8_t, AssetData>& tiles,
-                     const QHash<uint8_t, AssetData>& colliders, */ QGraphicsView* parent):
+MapCanvas::MapCanvas(MapData& map_data, QGraphicsView* parent):
     QGraphicsView(parent), ui(new Ui::MapCanvas), scene(new QGraphicsScene(this)),
-    map(EditorMap()), /*tiles(tiles), colliders(colliders),*/ mode(EditorMode::SELECT)
+    map_data(map_data), mode(EditorMode::SELECT)
 {
     ui->setupUi(this);
 
@@ -98,7 +97,7 @@ void MapCanvas::set_visibility_unwalkables() const {
 
 void MapCanvas::place_asset(const QPointF clicked_pos) {
     const QPoint clicked_cell = coordinates_to_grid(clicked_pos);
-    const int asset_id = map.add_asset(clicked_cell, drawing_asset);
+    const int asset_id = map_data.add_asset(clicked_cell, drawing_asset);
     if (asset_id == -1) {return;}
 
     set_unwalkable_tiles(clicked_cell, asset_id);
@@ -116,7 +115,7 @@ void MapCanvas::erase_asset(const QPointF clicked_pos) {
         cell_assets.first()->group() == unwalkable_tiles) {return;}
 
     QGraphicsItem* clicked_asset = cell_assets.first();
-    const bool erased = map.erase_asset(clicked_asset->data(0).toInt());
+    const bool erased = map_data.erase_asset(clicked_asset->data(0).toInt());
     if (!erased) { return; }
 
     erase_unwalkable_tiles(clicked_asset->data(0).toInt());
