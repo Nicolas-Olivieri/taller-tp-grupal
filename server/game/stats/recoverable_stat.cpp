@@ -31,3 +31,10 @@ void RecoverableStat::update() {
 uint16_t RecoverableStat::get_max() const { return max_amount; }
 
 uint16_t RecoverableStat::get_current() const { return current_amount; }
+
+void RecoverableStat::set_current(const int amount) {
+    current_amount = amount;
+    if (current_amount > max_amount) {
+        current_amount = max_amount;
+    }
+}

@@ -62,11 +62,12 @@ void GameWorld::move_player(const std::string& player_name, const Direction dire
     }
 }
 
-void GameWorld::add_player(const std::string& player_name, const PlayerData& data) {
-    auto it = emplace_player(player_name, data);
-    grid.get_tile(it->second.get_position()).occupy(&(it->second));
 
-    std::cout << "[World] Jugador " << player_name << " creado en " << it->second.get_position() << std::endl;
+void GameWorld::add_player(const std::string& player_name, const PlayerData& data) {
+    const auto it = emplace_player(player_name, data);
+    grid.get_tile(it->second.get_position()).occupy(&(it->second));
+    std::cout << "[World] Jugador " << player_name << " creado en " << it->second.get_position() << " con "
+              << it->second.get_stats().health.get_current() << " puntos de salud" << std::endl;
 }
 
 std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(const std::string& player_name,

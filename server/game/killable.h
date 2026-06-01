@@ -4,6 +4,7 @@
 #include "server/game/stats/stats.h"
 
 #include "interactive.h"
+#include "position.h"
 
 
 class Player;
@@ -11,21 +12,40 @@ class Player;
 
 class Killable: public Interactive {
 protected:
+    const int required_attack_cooldown;
+    const int required_move_cooldown;
+
+    int current_attack_cooldown;
+    int current_move_cooldown;
+
     bool is_meditating;
-    int attack_cooldown;
-    int move_cooldown;
 
     Stats stats;
 
-    Killable(int attack_cooldown, int move_cooldown, uint8_t archetype_id, uint8_t race_id,
-             uint32_t current_xp_amount, uint8_t level);
+    Position position;
+    Direction direction;
+
+    Killable(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t level,
+             Position position);
 
 public:
     void drop();
 
     bool interact(Player&) override;
 
+    bool can_move() const;
+
+    void update_position(const Position& new_position, const Direction& new_direction);
+
+    bool can_attack() const;
+
+    void attack();
+
     int get_strength() const;
+
+    Position get_position() const;
+
+    Direction get_direction() const;
 };
 
 
