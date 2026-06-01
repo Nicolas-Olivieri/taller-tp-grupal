@@ -12,7 +12,7 @@ uint8_t Experience::get_level() const { return level; }
 uint32_t Experience::get_current_amount() const { return current_amount; }
 
 
-void Experience::earn_xp(const uint32_t amount) {
+bool Experience::earn_xp(uint32_t amount) {
     current_amount += amount;
     bool leveled_up = false;
 
@@ -24,7 +24,5 @@ void Experience::earn_xp(const uint32_t amount) {
         limit = Calculator::calculate_xp_limit(level);
     }
 
-    if (leveled_up) {
-        // TODO: Notificar para que Health y Mana invoquen a update_max()
-    }
+    return leveled_up;
 }

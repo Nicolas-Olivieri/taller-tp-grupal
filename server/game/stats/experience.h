@@ -16,7 +16,7 @@ public:
 
     uint32_t get_current_amount() const;
 
-    void earn_xp(uint32_t amount);
+    bool earn_xp(uint32_t amount);
 };
 
 

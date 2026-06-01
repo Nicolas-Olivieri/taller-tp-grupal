@@ -22,6 +22,8 @@ public:
 
     virtual bool loose(uint16_t amount) = 0;
 
+    uint16_t get_max() const;
+
     uint16_t get_current() const;
 
     virtual ~RecoverableStat() = default;

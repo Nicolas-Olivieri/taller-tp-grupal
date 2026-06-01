@@ -1,56 +1,37 @@
 #include "stats.h"
 
-#include "server/TOML/statsconfig.h"
+#include "server/util/calculator.h"
 
 Stats::Stats(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t xp_level):
+        archetype_id(archetype_id),
+        race_id(race_id),
         experience(current_xp_amount, xp_level),
-        agility(agility_from(archetype_id, race_id)),
-        constitution(constitution_from(archetype_id, race_id)),
-        intelligence(intelligence_from(archetype_id, race_id)),
-        strength(strength_from(archetype_id, race_id)),
-        health(health_from(archetype_id, race_id)),
-        mana(mana_from(archetype_id, race_id)) {}
+        agility(Calculator::calculate_averagable_stat(race().agility, archetype().agility)),
+        constitution(Calculator::calculate_scalable_stat(race().constitution, xp_level,
+                                                         archetype().constitution_multiplier)),
+        intelligence(Calculator::calculate_scalable_stat(race().intelligence, xp_level,
+                                                         archetype().intelligence_multiplier)),
+        strength(Calculator::calculate_scalable_stat(race().strength, xp_level,
+                                                     archetype().strength_multiplier)),
+        health(race().recovery_factor, archetype().health_factor, race().health_factor, constitution,
+               xp_level),
+        mana(race().recovery_factor, archetype().mana_factor, race().mana_factor,
+             archetype().meditation_factor, intelligence, xp_level) {}
 
-uint8_t Stats::agility_from(uint8_t archetype_id, uint8_t race_id) {
-    uint8_t archetype_agility = StatsConfig::get().get_archetype(archetype_id).agility;
-    uint8_t race_agility = StatsConfig::get().get_race(race_id).agility;
+const ArchetypeData& Stats::archetype() { return StatsConfig::get().get_archetype(archetype_id); }
 
-    return (archetype_agility + race_agility) / 2;
-}
+const RaceData& Stats::race() { return StatsConfig::get().get_race(race_id); }
 
-uint8_t Stats::constitution_from(uint8_t archetype_id, uint8_t race_id) {
-    uint8_t base = StatsConfig::get().get_archetype(archetype_id).constitution_multiplier;
-    uint8_t multiplier = StatsConfig::get().get_race(race_id).constitution;
+void Stats::upgrade() {
+    uint8_t new_level = experience.get_level();
 
-    return base + experience.get_level() * multiplier;
-}
+    constitution = Calculator::calculate_scalable_stat(race().constitution, new_level,
+                                                       archetype().constitution_multiplier);
+    intelligence = Calculator::calculate_scalable_stat(race().intelligence, new_level,
+                                                       archetype().intelligence_multiplier);
+    strength =
+            Calculator::calculate_scalable_stat(race().strength, new_level, archetype().strength_multiplier);
 
-uint8_t Stats::intelligence_from(uint8_t archetype_id, uint8_t race_id) {
-    uint8_t base = StatsConfig::get().get_archetype(archetype_id).intelligence_multiplier;
-    uint8_t multiplier = StatsConfig::get().get_race(race_id).intelligence;
-
-    return base + experience.get_level() * multiplier;
-}
-
-uint8_t Stats::strength_from(uint8_t archetype_id, uint8_t race_id) {
-    uint8_t base = StatsConfig::get().get_archetype(archetype_id).strength_multiplier;
-    uint8_t multiplier = StatsConfig::get().get_race(race_id).strength;
-
-    return base + experience.get_level() * multiplier;
-}
-
-Health Stats::health_from(uint8_t archetype_id, uint8_t race_id) {
-    const ArchetypeData& archetype = StatsConfig::get().get_archetype(archetype_id);
-    const RaceData& race = StatsConfig::get().get_race(race_id);
-
-    return Health(race.recovery_factor, archetype.health_factor, race.health_factor, constitution,
-                  experience.get_level());
-}
-
-Mana Stats::mana_from(uint8_t archetype_id, uint8_t race_id) {
-    const ArchetypeData& archetype = StatsConfig::get().get_archetype(archetype_id);
-    const RaceData& race = StatsConfig::get().get_race(race_id);
-
-    return Mana(race.recovery_factor, archetype.mana_factor, race.mana_factor, archetype.meditation_factor,
-                intelligence, experience.get_level());
+    health.update_max(new_level);
+    mana.update_max(new_level);
 }

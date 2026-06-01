@@ -2,7 +2,7 @@
 
 #include "server/util/calculator.h"
 
-Health::Health(uint8_t recovery_factor, float factor_class, float factor_race, uint8_t constitution,
+Health::Health(uint8_t recovery_factor, float factor_class, float factor_race, uint8_t& constitution,
                uint8_t level):
         RecoverableStat(recovery_factor, factor_class, factor_race,
                         Calculator::calculate_max_health(level, constitution, factor_class, factor_race)),

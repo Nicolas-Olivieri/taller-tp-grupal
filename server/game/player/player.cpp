@@ -14,10 +14,6 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         Killable(ATTACK_COOLDOWN, MOVE_COOLDOWN, persisted_data.archetype, persisted_data.race,
                  persisted_data.current_xp_amount, persisted_data.xp_level),
         player_name(player_name),
-        /*
-        archetype(persisted_data.archetype),
-        race(persisted_data.race),
-        */
         body(persisted_data.body),
         head(persisted_data.head),
         position(persisted_data.position_x, persisted_data.position_y),
@@ -28,10 +24,6 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         Killable(ATTACK_COOLDOWN, MOVE_COOLDOWN, persisted_data.archetype, persisted_data.race,
                  persisted_data.current_xp_amount, persisted_data.xp_level),
         player_name(player_name),
-        /*
-        archetype(persisted_data.archetype),
-        race(persisted_data.race),
-        */
         body(persisted_data.body),
         head(persisted_data.head),
         position(starting_position),
@@ -62,6 +54,10 @@ bool Player::can_attack() const { return attack_cooldown == 0; }
 
 bool Player::can_move() const { return move_cooldown == 0; }
 
+void Player::earn_xp(uint32_t amount) {
+    if (stats.experience.earn_xp(amount))
+        stats.upgrade();
+}
 
 void Player::update() {
     attack_cooldown--;
