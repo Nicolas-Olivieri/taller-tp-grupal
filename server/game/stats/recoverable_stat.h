@@ -26,6 +26,8 @@ public:
 
     uint16_t get_current() const;
 
+    void set_current(int amount);
+
     virtual ~RecoverableStat() = default;
 };
 

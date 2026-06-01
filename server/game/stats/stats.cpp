@@ -18,9 +18,9 @@ Stats::Stats(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, 
         mana(race().recovery_factor, archetype().mana_factor, race().mana_factor,
              archetype().meditation_factor, intelligence, xp_level) {}
 
-const ArchetypeData& Stats::archetype() { return StatsConfig::get().get_archetype(archetype_id); }
+const ArchetypeData& Stats::archetype() const { return GameConfig::get().get_archetype(archetype_id); }
 
-const RaceData& Stats::race() { return StatsConfig::get().get_race(race_id); }
+const RaceData& Stats::race() const { return GameConfig::get().get_race(race_id); }
 
 void Stats::upgrade() {
     uint8_t new_level = experience.get_level();

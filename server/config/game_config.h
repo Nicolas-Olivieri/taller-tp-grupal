@@ -1,10 +1,14 @@
-#ifndef STATSCONFIG_H
-#define STATSCONFIG_H
+#ifndef GAME_CONFIG_H
+#define GAME_CONFIG_H
 
 #include <cstdint>
-#include <string>
 #include <unordered_map>
-#include <vector>
+
+
+struct CooldownData {
+    uint8_t attack;
+    uint8_t move;
+};
 
 struct ArchetypeData {
     float health_factor;
@@ -26,22 +30,27 @@ struct RaceData {
     uint8_t strength;
 };
 
-class StatsConfig {
+
+class GameConfig {
 private:
+    CooldownData cooldowns{};
     std::unordered_map<uint8_t, ArchetypeData> archetypes;
     std::unordered_map<uint8_t, RaceData> races;
 
-    StatsConfig();
+    GameConfig();
 
 public:
-    static StatsConfig& get();
+    static GameConfig& get();
 
-    StatsConfig(const StatsConfig&) = delete;
-    StatsConfig& operator=(const StatsConfig&) = delete;
+    GameConfig(const GameConfig&) = delete;
+    GameConfig& operator=(const GameConfig&) = delete;
 
     const ArchetypeData& get_archetype(uint8_t id) const;
 
     const RaceData& get_race(uint8_t id) const;
+
+    const CooldownData& get_cooldown() const;
 };
 
-#endif  // STATSCONFIG_H
+
+#endif  // GAME_CONFIG_H

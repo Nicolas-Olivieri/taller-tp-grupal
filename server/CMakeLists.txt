@@ -34,7 +34,7 @@ target_sources(taller_server
         persistance/playerdatabase.cpp
         persistance/playerindex.cpp
         persistance/playerrepository.cpp
-        TOML/statsconfig.cpp
+        config/game_config.cpp
     PUBLIC
         # .h files
         server.h
@@ -72,5 +72,5 @@ target_sources(taller_server
         persistance/playerdatabase.h
         persistance/playerindex.h
         persistance/playerrepository.h
-        TOML/statsconfig.h
+        config/game_config.h
     )
