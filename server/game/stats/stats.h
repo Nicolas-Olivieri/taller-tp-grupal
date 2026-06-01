@@ -3,11 +3,16 @@
 
 #include <cstdint>
 
+#include "server/TOML/statsconfig.h"
+
 #include "experience.h"
 #include "health.h"
 #include "mana.h"
 
 struct Stats {
+    uint8_t archetype_id;
+    uint8_t race_id;
+
     Experience experience;
 
     uint8_t agility;
@@ -20,12 +25,11 @@ struct Stats {
 
     Stats(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t xp_level);
 
-    uint8_t agility_from(uint8_t archetype_id, uint8_t race_id);
-    uint8_t constitution_from(uint8_t archetype_id, uint8_t race_id);
-    uint8_t intelligence_from(uint8_t archetype_id, uint8_t race_id);
-    uint8_t strength_from(uint8_t archetype_id, uint8_t race_id);
-    Health health_from(uint8_t archetype_id, uint8_t race_id);
-    Mana mana_from(uint8_t archetype_id, uint8_t race_id);
+    const ArchetypeData& archetype();
+
+    const RaceData& race();
+
+    void upgrade();
 };
 
 

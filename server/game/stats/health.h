@@ -6,16 +6,17 @@
 
 class Health: public RecoverableStat {
 private:
-    int constitution;
+    uint8_t& constitution;
 
 public:
-    Health(int recovery_factor, int factor_class, int factor_race, int constitution, uint8_t level);
+    Health(uint8_t recovery_factor, float factor_class, float factor_race, uint8_t& constitution,
+           uint8_t level);
 
-    void update_max(int level) override;
+    void update_max(uint8_t level) override;
 
     void update() override;
 
-    bool loose(int amount) override;
+    bool loose(uint16_t amount) override;
 };
 
 

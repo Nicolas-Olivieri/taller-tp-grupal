@@ -12,8 +12,6 @@ target_sources(taller_server
         game/stats/health.cpp
         game/stats/experience.cpp
         game/stats/stats.cpp
-        game/stats/archetype.cpp
-        game/stats/race.cpp
         util/calculator.cpp
         game/position.cpp
         game/grid.cpp
@@ -36,6 +34,7 @@ target_sources(taller_server
         persistance/playerdatabase.cpp
         persistance/playerindex.cpp
         persistance/playerrepository.cpp
+        TOML/statsconfig.cpp
     PUBLIC
         # .h files
         server.h
@@ -49,8 +48,6 @@ target_sources(taller_server
         game/stats/health.h
         game/stats/experience.h
         game/stats/stats.h
-        game/stats/archetype.h
-        game/stats/race.h
         util/calculator.h
         game/position.h
         game/grid.h
@@ -75,4 +72,5 @@ target_sources(taller_server
         persistance/playerdatabase.h
         persistance/playerindex.h
         persistance/playerrepository.h
+        TOML/statsconfig.h
     )

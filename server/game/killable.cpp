@@ -17,8 +17,21 @@ void Killable::drop() {}
 
 
 bool Killable::interact(Player& attacker) {
-    const int damage = Calculator::calculate_unarmed_damage(attacker.get_strength());
-    return stats.health.loose(damage);
+    const uint16_t damage = Calculator::calculate_unarmed_damage(attacker.get_strength());
+
+    uint32_t earned_xp;
+    bool was_killed = stats.health.loose(damage);
+
+    if (was_killed)
+        earned_xp = Calculator::kill_exp(this->stats.health.get_max(), this->stats.experience.get_level(),
+                                         attacker.stats.experience.get_level());
+    else
+        earned_xp = Calculator::attack_exp(damage, this->stats.experience.get_level(),
+                                           attacker.stats.experience.get_level());
+
+    attacker.earn_xp(earned_xp);
+
+    return was_killed;
 }
 
 
