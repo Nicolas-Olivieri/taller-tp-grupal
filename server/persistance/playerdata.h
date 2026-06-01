@@ -34,10 +34,8 @@ struct PlayerData {
     uint8_t bank[BANK_AMOUNT]{0};
     uint8_t bank_amounts[BANK_AMOUNT]{0};
     uint8_t clan[CLAN_NAME]{0};
-    uint8_t is_founder{0};         // Nunca cambia solo cuando vale 1
-    uint8_t has_played_before{0};  // Nunca cambia solo cuando vale 1
-
-    // Estos campos son constantes para todo jugador. Los variables agregarlos encima de estos
+    uint8_t is_founder{0};
+    uint8_t has_played_before{0};
     uint8_t archetype{0};
     uint8_t race{0};
     uint8_t body{0};
