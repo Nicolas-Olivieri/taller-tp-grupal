@@ -8,7 +8,7 @@ class Priest: public Ally {
 public:
     explicit Priest(const Position& position);
 
-    void execute(Player& player, const AllyAction& action) override;
+    AllyExecuteResult execute(Player& player, const AllyAction& action) override;
 
     AllyType get_type() const override;
 

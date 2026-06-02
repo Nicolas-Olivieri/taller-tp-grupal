@@ -17,7 +17,10 @@ target_sources(taller_common
         dto/events/chatevent.cpp
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
-        dto/snapshot/actions/chatmessage.cpp
+        dto/snapshot/actions/action_types/act_message/chatmessage.cpp
+        dto/snapshot/actions/action_types/act_resurrection/resurrection.cpp
+        dto/snapshot/actions/action_types/act_death/death.cpp
+
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/snapshot_builder.cpp
@@ -25,9 +28,11 @@ target_sources(taller_common
         protocol/serializer.cpp
         protocol/deserializer.cpp
 
-        dto/snapshot/actions/despawn.cpp
+        dto/snapshot/actions/action_types/act_despawn/despawn.cpp
 
         dto/lobby/ally_info.cpp
+
+        dto/snapshot/info/player_stats.cpp
 
     PUBLIC
         # .h files
@@ -51,7 +56,10 @@ target_sources(taller_common
         dto/events/chatevent.h
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h
-        dto/snapshot/actions/chatmessage.h
+        dto/snapshot/actions/action_types/act_message/chatmessage.h
+        dto/snapshot/actions/action_types/act_resurrection/resurrection.h
+        dto/snapshot/actions/action_types/act_death/death.h
+
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/snapshot_builder.h
@@ -59,8 +67,10 @@ target_sources(taller_common
         protocol/serializer.h
         protocol/deserializer.h
 
-        dto/snapshot/actions/despawn.h
+        dto/snapshot/actions/action_types/act_despawn/despawn.h
 
         dto/lobby/ally_info.h
         creature_type.h
+
+        dto/snapshot/info/player_stats.h
     )

@@ -42,7 +42,7 @@ public:
 
     void drop() override;
 
-    bool interact(Player& attacker) override;
+    InteractResult interact(Player& attacker) override;
 
     void update_position(const Position& new_position, const Direction& new_direction) override;
 

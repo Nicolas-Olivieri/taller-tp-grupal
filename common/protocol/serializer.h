@@ -12,6 +12,8 @@
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
+#include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
+#include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/snapshot.h"
 
 class Serializer {
@@ -49,6 +51,7 @@ public:
 
     void serialize(const PlayerInfoDTO& info);
 
+    // Es el que se sigue expandiendo al agregar una action nueva
     void serialize(const ActionDTO& action);
 
     void serialize(const AppearanceDTO& appearance);
@@ -62,6 +65,12 @@ public:
     void serialize(const ChatEventDTO& event);
 
     void serialize(const AllyInfoDTO& info);
+
+    void serialize(const PlayerStatsDTO& stats);
+
+    void serialize(const ResurrectionDTO& resurrection);
+
+    void serialize(const DeathDTO& death);
 };
 
 #endif  // SERIALIZER_H

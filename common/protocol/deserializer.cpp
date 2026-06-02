@@ -85,8 +85,9 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
     AppearanceDTO appearance = recv_appearance();
+    PlayerStatsDTO stats = recv_player_stats();
 
-    return PlayerInfoDTO(name, direction, x, y, appearance);
+    return PlayerInfoDTO(name, direction, x, y, appearance, stats);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -111,6 +112,10 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_despawn());
         case ActionType::MESSAGE:
             return ActionDTO(recv_chat_message());
+        case ActionType::RESURRECTION:
+            return ActionDTO(recv_resurrection());
+        case ActionType::DEATH:
+            return ActionDTO(recv_death());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -124,6 +129,8 @@ ActionType Deserializer::recv_action_type() {
         // luego borrar este comentario
         case ActionType::DESPAWN:
         case ActionType::MESSAGE:
+        case ActionType::RESURRECTION:
+        case ActionType::DEATH:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -202,4 +209,26 @@ MessageVisibility Deserializer::recv_message_visibility() {
             throw std::invalid_argument("Byte de visibilidad de mensaje no reconocido");
             // TODO: chequear si es la mejor excepción
     }
+}
+
+PlayerStatsDTO Deserializer::recv_player_stats() {
+    const uint16_t max_health = recv_uint16();
+    const uint16_t current_health = recv_uint16();
+    const uint16_t max_mana = recv_uint16();
+    const uint16_t current_mana = recv_uint16();
+
+    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana);
+}
+
+ResurrectionDTO Deserializer::recv_resurrection() {
+    std::string name = recv_string();
+    AppearanceDTO appearance = recv_appearance();
+
+    return ResurrectionDTO(name, appearance);
+}
+
+DeathDTO Deserializer::recv_death() {
+    const std::string name = recv_string();
+
+    return DeathDTO(name);
 }

@@ -6,7 +6,7 @@
 Priest::Priest(const Position& position): Ally(position) {}
 
 
-void Priest::execute(Player& player, const AllyAction& action) {
+AllyExecuteResult Priest::execute(Player& player, const AllyAction& action) {
     switch (action) {
         case AllyAction::HEAL:
             if (player.is_alive()) {
@@ -22,11 +22,11 @@ void Priest::execute(Player& player, const AllyAction& action) {
             if (not player.is_alive()) {
                 std::cout << "[Priest] El jugador fue resucitado" << std::endl;
                 player.heal();
-            } else {
-                std::cout << "[Priest] El jugador ya está vivo" << std::endl;
+                return AllyExecuteResult(ResurrectResult::PLAYER_RESURRECTED);
             }
-            // TODO: Notificar mediante un evento / mensaje
-            break;
+
+            std::cout << "[Priest] El jugador ya está vivo" << std::endl;
+            return AllyExecuteResult(ResurrectResult::PLAYER_IS_ALIVE);
 
         case AllyAction::BUY:
             // TODO: Implementar la lógica de comprar hechizos y pociones
@@ -35,6 +35,7 @@ void Priest::execute(Player& player, const AllyAction& action) {
             // El sacerdote ignora los comandos de venta
             break;
     }
+    return AllyExecuteResult(ResurrectResult::NO_RESULT);
 }
 
 

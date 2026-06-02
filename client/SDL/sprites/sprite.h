@@ -37,6 +37,8 @@ public:
 
     bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const;
 
+    void remove_all_layers();
+
 private:
     int get_new_coordinate(const int& current_coordinate, const int& coordinate_diff);
 

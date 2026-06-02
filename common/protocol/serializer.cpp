@@ -38,6 +38,7 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(info.x);
     serialize(info.y);
     serialize(info.appearance);
+    serialize(info.stats);
 }
 
 // TODO: se debería serializar dependiendo de action.action (ActionType)
@@ -50,6 +51,12 @@ void Serializer::serialize(const ActionDTO& action) {
             break;
         case ActionType::MESSAGE:
             serialize(action.chat_message);
+            break;
+        case ActionType::RESURRECTION:
+            serialize(action.resurrection);
+            break;
+        case ActionType::DEATH:
+            serialize(action.death);
             break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
@@ -104,3 +111,17 @@ void Serializer::serialize(const ChatEventDTO& event) {
     serialize(event.receiver);
     serialize(event.content);
 }
+
+void Serializer::serialize(const PlayerStatsDTO& stats) {
+    serialize(stats.max_health);
+    serialize(stats.current_health);
+    serialize(stats.max_mana);
+    serialize(stats.current_mana);
+}
+
+void Serializer::serialize(const ResurrectionDTO& resurrection) {
+    serialize(resurrection.player_resurrected);
+    serialize(resurrection.original_appearance);
+}
+
+void Serializer::serialize(const DeathDTO& death) { serialize(death.player_dead); }

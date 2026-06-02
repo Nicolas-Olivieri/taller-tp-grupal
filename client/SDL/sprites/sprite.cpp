@@ -90,3 +90,5 @@ bool Sprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) c
     }
     return false;
 }
+
+void Sprite::remove_all_layers() { layers.clear(); }

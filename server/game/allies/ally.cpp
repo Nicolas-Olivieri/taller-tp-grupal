@@ -1,15 +1,17 @@
 #include "ally.h"
 
+#include <cassert>
+
 #include "server/game/player/player.h"
 
 
 Ally::Ally(const Position& position): position(position) {}
 
 
-bool Ally::interact(Player& player) {
+InteractResult Ally::interact(Player& player) {
     player.bind_ally(this);
-    std::cout << "[Ally] El jugador se vinculó con el sacerdote" << std::endl;
-    return false;
+    std::cout << "[Ally] El jugador se vinculó con el aliado" << std::endl;
+    return InteractResult(true);
 }
 
 
