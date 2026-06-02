@@ -15,6 +15,7 @@ private:
     QHash<int, Placement> placements;
     QHash<QPoint, QVector<int>> occupied_tiles;
     QHash<QPoint, QVector<int>> unwalkable_tiles;
+    uint16_t tile_amount, collider_amount, npc_amount;
 
     int add_tile(QPoint position, const AssetData& tile_data);
 

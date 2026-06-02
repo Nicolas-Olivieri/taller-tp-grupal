@@ -16,11 +16,13 @@ Editor::Editor(QWidget* parent):
         ui(new Ui::Editor),
         tiles(populate_hash<uint8_t>("tiles", ImageType::TILE)),
         colliders(populate_hash<uint16_t>("colliders", ImageType::COLLIDER)),
+        npcs(populate_hash<uint8_t>("npcs", ImageType::NPC)),
         map_data(MapData()),
         map_canvas(MapCanvas(this->map_data)),
-        asset_selector(this->tiles, this->colliders),
-        loader(this->map_data, this->map_canvas, tiles, colliders),
+        asset_selector(this->tiles, this->colliders, this->npcs),
+        loader(this->map_data, this->map_canvas, tiles, colliders, npcs),
         saver(MapSaver(this->map_data)) {
+
     ui->setupUi(this);
     ui->mapWidget->addWidget(&map_canvas);
     ui->selectorWidget->addWidget(&asset_selector);

@@ -10,7 +10,7 @@ int MapData::add_asset(const QPoint position, const AssetData& asset_data) {
     if (asset_data.type == ImageType::TILE) {
         return add_tile(position, asset_data);
     }
-    if (asset_data.type == ImageType::COLLIDER) {
+    if (asset_data.type == ImageType::COLLIDER || asset_data.type == ImageType::NPC) {
         return add_collider(position, asset_data);
     }
     return -1;

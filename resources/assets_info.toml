@@ -25,3 +25,10 @@ name = "Carreta"
 width = 3
 height = 2
 unwalkable = [0,0,3,2]
+
+[[npcs]]
+id = 0
+name = "Cura"
+width = 1
+height = 2
+unwalkable = [0,0,1,2]

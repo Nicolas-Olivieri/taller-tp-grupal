@@ -6,8 +6,9 @@
 #include "ui_assetselector.h"
 
 AssetSelector::AssetSelector(const QHash<uint8_t, AssetData>& tiles,
-                             const QHash<uint16_t, AssetData>& colliders, QWidget* parent):
-        QTabWidget(parent), ui(new Ui::AssetSelector), tiles(tiles), colliders(colliders) {
+                             const QHash<uint16_t, AssetData>& colliders,
+                             const QHash<uint8_t, AssetData>& npcs, QWidget* parent):
+        QTabWidget(parent), ui(new Ui::AssetSelector), tiles(tiles), colliders(colliders), npcs(npcs) {
 
     ui->setupUi(this);
 
@@ -23,6 +24,12 @@ AssetSelector::AssetSelector(const QHash<uint8_t, AssetData>& tiles,
         ui->colliders_list->addItem(item);
     }
 
+    for (const auto& npcs_data: npcs) {
+        auto* item = new QListWidgetItem(npcs_data.img, npcs_data.name);
+        item->setData(Qt::UserRole, npcs_data.id);
+        ui->npcs_list->addItem(item);
+    }
+
     connect(ui->tiles_list, &QListWidget::itemClicked, this, [this, tiles](const QListWidgetItem* item) {
         int id = item->data(Qt::UserRole).toInt();
         emit clickedImage(tiles.value(id));
@@ -33,6 +40,11 @@ AssetSelector::AssetSelector(const QHash<uint8_t, AssetData>& tiles,
                 int id = item->data(Qt::UserRole).toInt();
                 emit clickedImage(colliders.value(id));
             });
+
+    connect(ui->npcs_list, &QListWidget::itemClicked, this, [this, npcs](const QListWidgetItem* item) {
+        int id = item->data(Qt::UserRole).toInt();
+        emit clickedImage(npcs.value(id));
+    });
 }
 
 

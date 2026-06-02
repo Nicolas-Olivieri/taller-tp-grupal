@@ -6,8 +6,8 @@
 #define HEADER 0xFAF4
 
 MapLoader::MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
-                     QHash<uint16_t, AssetData>& colliders):
-        data(data), canvas(canvas), tiles(tiles), colliders(colliders) {}
+                     QHash<uint16_t, AssetData>& colliders, QHash<uint8_t, AssetData>& npcs):
+        data(data), canvas(canvas), tiles(tiles), colliders(colliders), npcs(npcs) {}
 
 
 bool MapLoader::load(const QString& filename) const {
@@ -33,6 +33,9 @@ bool MapLoader::load(const QString& filename) const {
 
     // Cargo los colliders
     load_assets<uint16_t>(stream, colliders);
+
+    // Cargo los npcs
+    load_assets<uint8_t>(stream, npcs);
 
     file.close();
     return true;

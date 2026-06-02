@@ -37,6 +37,7 @@ private:
     Ui::Editor* ui;
     QHash<uint8_t, AssetData> tiles;
     QHash<uint16_t, AssetData> colliders;
+    QHash<uint8_t, AssetData> npcs;
 
     MapData map_data;
     MapCanvas map_canvas;
