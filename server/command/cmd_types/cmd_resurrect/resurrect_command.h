@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "server/command/cmd_results/resurrect_result.h"
+#include "server/command/cmd_results/ally_execute/resurrect_result.h"
 #include "server/command/command.h"
 
 

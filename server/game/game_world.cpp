@@ -1,5 +1,6 @@
 #include "game_world.h"
 
+#include <cassert>
 #include <utility>
 
 #include "allies/ally.h"
@@ -96,38 +97,24 @@ void GameWorld::remove_player(const std::string& player_name) {
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
 }
 
+InteractResult GameWorld::interact(const std::string& player_name, const Position& position) {
+    if (!players.contains(player_name))
+        return InteractResult(false);
 
-// TODO: Validar que el jugador que intenta atacar no está muerto
-void GameWorld::interact(const std::string& player_name, const Position& position) {
-    const auto it = players.find(player_name);
-    if (it == players.end()) {
-        return;
-    }
-
-    Player& player = it->second;
-
-    if (position == player.get_position()) {
-        std::cout << "[World] Jugador " << player_name << " intentó atacarse a sí mismo" << std::endl;
-        return;
-    }
+    Player& player = players.at(player_name);
 
     try {
         const Tile& target_tile = grid.get_tile(position);
         Interactive* occupant = target_tile.occupant();
 
         if (occupant != nullptr) {
-            // TODO tendría que devolver otra cosa
-            if (occupant->interact(player)) {
-                std::cout << "[World] " << player_name << " mató a la entidad" << std::endl;
-            }
-
-        } else {
-            std::cout << "[World] " << player_name << " golpeó al aire" << std::endl;
+            return occupant->interact(player);
         }
-
+        std::cout << "[World] " << player_name << " golpeó al aire" << std::endl;
     } catch (const std::out_of_range&) {
         // Golpeó el borde del mapa
     }
+    return InteractResult(false);
 }
 
 

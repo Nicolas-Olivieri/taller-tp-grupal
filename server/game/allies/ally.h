@@ -2,7 +2,7 @@
 #define ALLY_H
 
 #include "common/creature_type.h"
-#include "server/command/cmd_results/ally_execute_result.h"
+#include "server/command/cmd_results/ally_execute/ally_execute_result.h"
 #include "server/game/interactive.h"
 #include "server/game/position.h"
 
@@ -19,7 +19,7 @@ protected:
 public:
     explicit Ally(const Position& position);
 
-    bool interact(Player& player) override;  // bind
+    InteractResult interact(Player& player) override;  // bind
 
     Position get_position() const;
 

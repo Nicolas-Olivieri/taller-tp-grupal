@@ -95,21 +95,26 @@ bool Player::can_reach(const Position& other_position) const {
            std::abs(position.get_y() - other_position.get_y()) <= range;
 }
 
-bool Player::interact(Player& attacker) {
+InteractResult Player::interact(Player& attacker) {
+    if (position == attacker.get_position()) {
+        std::cout << "[Player] Jugador " << player_name << " intentó atacarse a sí mismo" << std::endl;
+        return InteractResult(false);
+    }
+
     if (not attacker.can_reach(position)) {
         std::cout << "[Player] El objetivo está demasiado lejos" << std::endl;
-        return false;
+        return InteractResult(AttackStatus::OUT_OF_RANGE);
     }
 
     if (not is_alive()) {
         std::cout << "[Player] Jugador " << player_name << " fue atacado, pero ya está muerto" << std::endl;
-        return false;
+        return InteractResult(AttackStatus::DEAD_TARGET);
     }
 
     if (not attacker.can_attack()) {
         std::cout << "[Player] Jugador " << player_name << " fue atacado, pero el enemigo no podía atacar"
                   << std::endl;
-        return false;
+        return InteractResult(AttackStatus::CANNOT_ATTACK);
     }
 
     const int damage = attacker.attack();
@@ -121,7 +126,7 @@ bool Player::interact(Player& attacker) {
 
     if (Calculator::can_dodge(stats.agility)) {
         std::cout << "[Player] " << player_name << " ESQUIVO!" << std::endl;
-        return false;
+        return InteractResult(AttackStatus::TARGET_DODGED);
     }
 
     // TODO Falta considerar
@@ -139,7 +144,7 @@ bool Player::interact(Player& attacker) {
 
     // TODO notificar el caso particular?
     if (damage_applied <= 0)
-        return false;
+        return InteractResult(0, false);
 
 
     uint32_t earned_xp;
@@ -156,7 +161,7 @@ bool Player::interact(Player& attacker) {
 
     attacker.earn_xp(earned_xp);
 
-    return was_killed;
+    return InteractResult(damage_applied, was_killed);
 }
 
 void Player::update_position(const Position& new_position, const Direction& new_direction) {
