@@ -22,7 +22,7 @@
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         sdl(SDL2pp::SDL(SDL_INIT_VIDEO)),
         window(SDL2pp::Window("Argentum Online", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                              SCREEN_WIDTH, SCREEN_HEIGHT, 0)),
+                              SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS)),
         renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         connection(connection),
         player_name(player_name),
@@ -30,17 +30,21 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         key_being_pressed(SDLK_UNKNOWN),
         camera(initialize_world_and_camera()),
         ui(renderer, player_name),
+        keep_running(true),
+        just_restored(false),
         is_chat_active(false),
-        chat_text("") {}
+        chat_text("") {
+    SDL_SetWindowHitTest(window.Get(), hit_test_callback, this);
+}
 
 void ClientGame::run() {
 
     RateTimer timer(FPS);
     int iteration = 0;
 
-    while (true) {
-        int ret = pollEvents();
-        if (ret == 1)
+    while (keep_running) {
+        pollEvents();
+        if (not keep_running)
             return;
 
         update_state_from_server();
@@ -78,17 +82,21 @@ Camera ClientGame::initialize_world_and_camera() {
     return {game_viewport.GetW(), game_viewport.GetH(), world_size, user};
 }
 
-int ClientGame::pollEvents() {
+void ClientGame::pollEvents() {
     SDL_Event event;
     bool key_was_pressed = false;
 
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {
-            connection.stop();
-            return 1;
+        if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+            just_restored = true;
         }
 
         if (event.type == SDL_MOUSEBUTTONDOWN) {
+            handle_mouse_click(event);
+        }
+
+        if (event.type == SDL_MOUSEBUTTONUP && just_restored) {
+            just_restored = false;
             handle_mouse_click(event);
         }
 
@@ -109,12 +117,15 @@ int ClientGame::pollEvents() {
         }
     }
 
+    if (not keep_running) {
+        connection.stop();
+        return;
+    }
+
     // TODO esto definitivamente habría que modularizarlo/encapsularlo
     if (!key_was_pressed && KeyMapper::is_movement_key(key_being_pressed)) {
         connection.push_command(std::make_unique<MoveEventDTO>(KeyMapper::get_direction(key_being_pressed)));
     }
-
-    return 0;
 }
 
 void ClientGame::handle_chat_events(const SDL_Event& event) {
@@ -189,7 +200,7 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
 }
 
 void ClientGame::handle_mouse_click(const SDL_Event& event) {
-    assert(event.type == SDL_MOUSEBUTTONDOWN);
+    assert(event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP);
     if (is_inside_viewport(event.button.x, event.button.y, game_viewport)) {
         handle_game_click(event);
     } else {
@@ -219,10 +230,18 @@ bool ClientGame::is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport) 
 }
 
 void ClientGame::handle_ui_click(const SDL_Event& event) {
+    int x = event.button.x;
+    int y = event.button.y;
+
     if (event.button.button == SDL_BUTTON_LEFT) {
         // Clic izquierdo sobre el chat
-        if (is_inside_viewport(event.button.x, event.button.y, chat_icon))
+        if (is_inside_viewport(x, y, chat_icon)) {
             toggle_chat();
+        } else if (is_inside_viewport(x, y, minimize_button)) {
+            window.Minimize();
+        } else if (is_inside_viewport(x, y, close_button)) {
+            keep_running = false;
+        }
     }
 }
 
@@ -246,4 +265,14 @@ void ClientGame::handle_game_click(const SDL_Event& event) {
         const uint16_t target_y = (camera.get_view().GetY() + game_click_y) / TILE_SIZE;
         connection.push_command(std::make_unique<InteractEventDTO>(target_x, target_y));
     }
+}
+
+SDL_HitTestResult ClientGame::hit_test_callback(SDL_Window*, const SDL_Point* area, void* data) {
+    ClientGame* game = static_cast<ClientGame*>(data);
+
+    if (game->is_inside_viewport(area->x, area->y, game->header_bar)) {
+        return SDL_HITTEST_DRAGGABLE;
+    }
+
+    return SDL_HITTEST_NORMAL;
 }

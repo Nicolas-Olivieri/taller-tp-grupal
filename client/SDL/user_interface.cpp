@@ -4,7 +4,7 @@
 
 // TODO: revisar constantes
 #define FONT_SIZE 19
-#define MAX_HISTORY_MSGS 4
+#define LINE_SPACING 21
 
 UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name):
         renderer(renderer),
@@ -20,26 +20,20 @@ void UserInterface::render_chat_history() {
     if (chat_history.empty())
         return;
 
-    // TODO: constantes
-    int start_x = 20;
-    int start_y = 33;
-    int line_spacing = 21;
-    int max_width = 600;
-
     for (size_t i = 0; i < chat_history.size(); ++i) {
         if (chat_history[i].empty())
             continue;
 
         SDL2pp::Texture line_texture(renderer, font.RenderText_Solid(chat_history[i], text_color));
 
-        int current_y = start_y + (i * line_spacing);
+        int current_y = history_messages.GetY() + (i * LINE_SPACING);
         int text_w = line_texture.GetWidth();
         int text_h = line_texture.GetHeight();
 
-        cut_text_if_necessary(text_w, max_width);
+        cut_text_if_necessary(text_w, history_messages.GetW());
 
         renderer.Copy(line_texture, SDL2pp::Rect(0, 0, text_w, text_h),
-                      SDL2pp::Rect(start_x, current_y, text_w, text_h));
+                      SDL2pp::Rect(history_messages.GetX(), current_y, text_w, text_h));
     }
 }
 
@@ -57,15 +51,10 @@ void UserInterface::render_chat_input(const std::string& input, bool is_chat_act
     int text_w = text_texture.GetWidth();
     int text_h = text_texture.GetHeight();
 
-    // TODO: constantes
-    int max_width = 580;
-    int start_x = 40;
-    int start_y = 120;
-
-    cut_text_if_necessary(text_w, max_width);
+    cut_text_if_necessary(text_w, input_box.GetW());
 
     renderer.Copy(text_texture, SDL2pp::Rect(0, 0, text_w, text_h),
-                  SDL2pp::Rect(start_x, start_y, text_w, text_h));
+                  SDL2pp::Rect(input_box.GetX(), input_box.GetY(), text_w, text_h));
 }
 
 void UserInterface::cut_text_if_necessary(int& text_width, int max_width) {
@@ -93,7 +82,7 @@ void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
 
         if (msg.visibility == MessageVisibility::PRIVATE &&
             (player_name == msg.receiver || player_name == msg.sender)) {
-            std::string formatted_msg = "<" + msg.sender + "> " + msg.content;
+            std::string formatted_msg = "[" + msg.sender + "] " + msg.content;
             enqueue_message(formatted_msg);
         }
     }
@@ -101,6 +90,6 @@ void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
 
 void UserInterface::enqueue_message(const std::string& message) {
     chat_history.push_back(message);
-    if (chat_history.size() > MAX_HISTORY_MSGS)
+    if (chat_history.size() > static_cast<size_t>(history_messages.GetH()) / LINE_SPACING)
         chat_history.pop_front();
 }

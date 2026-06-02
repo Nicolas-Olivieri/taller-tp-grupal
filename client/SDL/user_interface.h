@@ -24,6 +24,9 @@ private:
     // Blanco
     SDL_Color text_color = {255, 255, 255, 255};
 
+    SDL2pp::Rect history_messages = {20, 35, 600, 147};
+    SDL2pp::Rect input_box = {45, 190, 580, 25};
+
     std::deque<std::string> chat_history;
 
     void enqueue_message(const std::string& message);
