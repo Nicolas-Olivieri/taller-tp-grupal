@@ -48,6 +48,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::DESPAWN:
             serialize(action.despawn);
             break;
+        case ActionType::MESSAGE:
+            serialize(action.chat_message);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
