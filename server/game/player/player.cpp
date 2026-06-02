@@ -16,7 +16,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
                  persisted_data.xp_level, Position(persisted_data.position_x, persisted_data.position_y)),
         player_name(player_name),
         body(persisted_data.body),
-        head(persisted_data.head) {
+        head(persisted_data.head),
+        inventory(stats) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
 }
@@ -28,7 +29,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
                  persisted_data.xp_level, starting_position),
         player_name(player_name),
         body(persisted_data.body),
-        head(persisted_data.head) {}
+        head(persisted_data.head),
+        inventory(stats) {}
 
 
 int Player::attack() {
@@ -58,8 +60,8 @@ bool Player::can_attack() const {
 
     int mana_cost = ItemMapper::get_mana_cost(inventory.get_equipment().weapon);
 
-    std::cout << "costo de mana: " << mana_cost << "\n";
-    std::cout << "mana actual: " << stats.mana.get_current() << "\n";
+    std::cout << "[Player] costo de mana: " << mana_cost << "\n";
+    std::cout << "[Player] mana actual: " << stats.mana.get_current() << "\n";
 
     return mana_cost <= stats.mana.get_current();
 }
@@ -86,21 +88,21 @@ bool Player::can_reach(const Position& other_position) const {
 
 bool Player::interact(Player& attacker) {
     if (not attacker.can_reach(position)) {
-        std::cout << "[World] El objetivo está demasiado lejos" << std::endl;
+        std::cout << "[Player] El objetivo está demasiado lejos" << std::endl;
         return false;
     }
 
     if (not attacker.can_attack()) {
-        std::cout << "[World] Jugador " << player_name << " fue atacado, pero el enemigo estaba en cooldown"
+        std::cout << "[Player] Jugador " << player_name << " fue atacado, pero el enemigo estaba en cooldown"
                   << std::endl;
         return false;
     }
 
     const int damage = attacker.attack();
-    std::cout << "[World] " << player_name << " fue atacado " << std::endl;
+    std::cout << "[Player] " << player_name << " fue atacado " << std::endl;
 
     if (Calculator::can_dodge(stats.agility)) {
-        std::cout << "[World] " << player_name << " ESQUIVO!" << std::endl;
+        std::cout << "[Player] " << player_name << " ESQUIVO!" << std::endl;
         return false;
     }
 
@@ -112,8 +114,8 @@ bool Player::interact(Player& attacker) {
 
     const int defense = Calculator::calculate_defense(inventory.get_equipment());
 
-    std::cout << "daño" << damage << "\n";
-    std::cout << "defensa" << defense << "\n";
+    std::cout << "[Player] daño: " << damage << "\n";
+    std::cout << "[Player] defensa: " << defense << "\n";
 
     const int damage_applied = damage - defense;
 

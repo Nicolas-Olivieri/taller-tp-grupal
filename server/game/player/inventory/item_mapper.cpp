@@ -83,3 +83,17 @@ int ItemMapper::get_mana_cost(uint8_t item_id) {
 }
 
 bool ItemMapper::is_magic(uint8_t item_id) { return get_mana_cost(item_id) == 0; }
+
+uint8_t ItemMapper::get_usable_type_effect(uint8_t item_id) {
+    assert(is_usable(item_id));
+    GameConfig& config = GameConfig::get();
+
+    return config.get_usables().find(item_id)->second.type_effect;
+}
+
+uint16_t ItemMapper::get_usable_effect_amount(uint8_t item_id) {
+    assert(is_usable(item_id));
+    GameConfig& config = GameConfig::get();
+
+    return config.get_usables().find(item_id)->second.effect_amount;
+}

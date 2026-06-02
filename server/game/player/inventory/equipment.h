@@ -6,6 +6,8 @@
 
 #define NO_ITEM 0
 
+enum class UsableTypeEffect : uint8_t { HEALTH = 0, MANA = 1 };
+
 struct Equipment {
     uint8_t helmet;
     uint8_t armor;

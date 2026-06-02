@@ -1,11 +1,14 @@
 #include "inventory.h"
 
 #include <cassert>
+#include <stdexcept>
 
 #include "item_mapper.h"
 
 // ver comentario en el .h
-Inventory::Inventory(): equipment({NO_ITEM, NO_ITEM, NO_ITEM, 1}) { item_to_amount_map[1] = 1; }
+Inventory::Inventory(Stats& stats): stats(stats), equipment({NO_ITEM, NO_ITEM, NO_ITEM, 1}) {
+    item_to_amount_map[1] = 1;
+}
 
 void Inventory::use_item(uint8_t item) {
     if (!item_to_amount_map.contains(item)) {
@@ -26,14 +29,8 @@ void Inventory::drop_item(uint8_t item) {
         return;
     }
 
-    item_to_amount_map[item]--;
-
-    if (item_to_amount_map[item] == 0) {
-        if (is_equipped(item)) {
-            unequip_item(item);
-        }
-        item_to_amount_map.extract(item);
-    }
+    consume_item(item);
+    // TODO lo debería soltar/devolver??
 }
 
 void Inventory::acquire_item(uint8_t item) {
@@ -62,7 +59,22 @@ Equipment Inventory::get_equipment() const { return equipment; }
 
 void Inventory::use_usable_item(uint8_t item) {
     assert(ItemMapper::is_usable(item));
-    // TODO continuar
+    assert(item_to_amount_map.contains(item));
+
+    const uint16_t effect_amount = ItemMapper::get_usable_effect_amount(item);
+
+    switch (static_cast<UsableTypeEffect>(ItemMapper::get_usable_type_effect(item))) {
+        case UsableTypeEffect::HEALTH:
+            stats.health.recover(effect_amount);
+            break;
+        case UsableTypeEffect::MANA:
+            stats.mana.recover(effect_amount);
+            break;
+        default:
+            throw std::runtime_error("Inventory encontró un tipo inválido de efecto de usable");
+    }
+
+    consume_item(item);
 }
 
 int Inventory::get_range() const {
@@ -73,3 +85,16 @@ int Inventory::get_range() const {
 }
 
 int Inventory::get_attack_cost() const { return ItemMapper::get_mana_cost(equipment.weapon); }
+
+void Inventory::consume_item(uint8_t item) {
+    assert(item_to_amount_map.contains(item));
+
+    item_to_amount_map[item]--;
+
+    if (item_to_amount_map[item] == 0) {
+        if (is_equipped(item)) {
+            unequip_item(item);
+        }
+        item_to_amount_map.extract(item);
+    }
+}

@@ -24,6 +24,10 @@ public:
     static int get_mana_cost(uint8_t item_id);
 
     static bool is_magic(uint8_t item_id);
+
+    static uint8_t get_usable_type_effect(uint8_t item_id);
+
+    static uint16_t get_usable_effect_amount(uint8_t item_id);
 };
 
 

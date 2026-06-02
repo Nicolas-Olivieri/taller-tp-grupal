@@ -40,15 +40,9 @@ uint32_t Calculator::attack_exp(uint16_t damage, uint8_t foe_level, uint8_t own_
     return damage * std::max(foe_level - own_level + 10, 0);
 }
 
-// TODO: refactorizar con el probability
 uint32_t Calculator::kill_exp(uint16_t foe_max_health, uint8_t foe_level, uint8_t own_level) {
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0, 0.1);
-
-    return dis(gen) * foe_max_health * std::max(foe_level - own_level + 10, 0);
+    return random_float(0.0f, 0.1f) * foe_max_health * std::max(foe_level - own_level + 10, 0);
 }
-
 
 int Calculator::random_number(const int min, const int max) {
     static std::random_device rd;
@@ -58,10 +52,6 @@ int Calculator::random_number(const int min, const int max) {
 }
 
 uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& equipment) {
-    // TODO agregar al TOML lo esperado en este item
-    if (equipment.weapon == NO_ITEM)
-        return calculate_unarmed_damage(strength);
-
     return strength * get_random_from_item(equipment.weapon);
 }
 
@@ -77,15 +67,13 @@ int Calculator::get_random_from_item(const uint8_t item) {
     return random_number(ItemMapper::get_min(item), ItemMapper::get_max(item));
 }
 
-float Calculator::random_probability() {
+float Calculator::random_float(const float min, const float max) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
-
-    static std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+    std::uniform_real_distribution<float> dis(min, max);
 
     return dis(gen);
 }
-
 
 uint8_t Calculator::calculate_averagable_stat(uint8_t archetype_stat, uint8_t race_stat) {
     return std::min(UINT8_MAX, (archetype_stat + race_stat) / 2);
@@ -95,6 +83,4 @@ uint8_t Calculator::calculate_scalable_stat(uint8_t base, uint8_t level, float m
     return std::min(UINT8_MAX, base + static_cast<uint8_t>(level * multiplier));
 }
 
-bool Calculator::can_dodge(const int agility) { return std::pow(random_probability(), agility) < 0.001f; }
-
-uint16_t Calculator::calculate_unarmed_damage(uint8_t strength) { return strength * random_number(1, 3); }
+bool Calculator::can_dodge(const int agility) { return std::pow(random_float(0.0f, 1.0f), agility) < 0.001f; }

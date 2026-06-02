@@ -4,11 +4,14 @@
 #include <cstdint>
 #include <map>
 
+#include "server/game/stats/stats.h"
+
 #include "equipment.h"
 
 
 class Inventory {
 
+    Stats& stats;
     // Mapa de item_id a cantidad en posesión de ese item
     std::map<uint8_t, uint8_t> item_to_amount_map;
     Equipment equipment;
@@ -17,7 +20,7 @@ class Inventory {
 public:
     // TODO dejar de hardcodear, creo que podría usarse un constructor default, aprovechandose que el NO_ITEM
     // es 0
-    Inventory();
+    explicit Inventory(Stats& stats);
 
     void use_item(uint8_t item);
 
@@ -43,6 +46,8 @@ private:
     void use_usable_item(uint8_t item);
 
     bool is_equipped(uint8_t item);
+
+    void consume_item(uint8_t item);
 };
 
 
