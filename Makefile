@@ -44,13 +44,13 @@ build:
 error:
 	cmake --build $(BUILD_DIR)
 
-client: build
+client:
 	$(BUILD_DIR)/$(CLIENT_EXE) $(CLIENT_FLAGS)
 
-server: build
+server:
 	$(BUILD_DIR)/$(SERVER_EXE) $(SERVER_FLAGS)
 
-editor: build
+editor:
 	$(BUILD_DIR)/$(EDITOR_EXE) $(EDITOR_FLAGS)
 
 test: build
