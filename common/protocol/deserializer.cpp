@@ -37,8 +37,8 @@ CommandType Deserializer::recv_command_type() {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
         case CommandType::MOVE:
-            return static_cast<CommandType>(byte);
         case CommandType::INTERACT:
+        case CommandType::CHAT:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -107,6 +107,8 @@ ActionDTO Deserializer::recv_action() {
     switch (type) {
         case ActionType::DESPAWN:
             return ActionDTO(recv_despawn());
+        case ActionType::MESSAGE:
+            return ActionDTO(recv_chat_message());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -119,6 +121,7 @@ ActionType Deserializer::recv_action_type() {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
         case ActionType::DESPAWN:
+        case ActionType::MESSAGE:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -139,4 +142,28 @@ DespawnDTO Deserializer::recv_despawn() {
     std::string player_despawned = recv_string();
 
     return DespawnDTO(player_despawned);
+}
+
+ChatMessageDTO Deserializer::recv_chat_message() {
+    MessageVisibility visibility = recv_message_visibility();
+    std::string sender = recv_string();
+    std::string receiver = recv_string();
+    std::string content = recv_string();
+
+    return ChatMessageDTO(visibility, sender, receiver, content);
+}
+
+MessageVisibility Deserializer::recv_message_visibility() {
+    uint8_t byte = recv_uint8();
+
+    switch (static_cast<MessageVisibility>(byte)) {
+        // TODO: agregar un case para todos los tipos de comandos existentes,
+        // luego borrar este comentario
+        case MessageVisibility::PRIVATE:
+        case MessageVisibility::CLAN:
+            return static_cast<MessageVisibility>(byte);
+        default:  // Undefined Behavior -> Excepción
+            throw std::invalid_argument("Byte de visibilidad de mensaje no reconocido");
+            // TODO: chequear si es la mejor excepción
+    }
 }

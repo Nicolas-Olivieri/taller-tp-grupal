@@ -21,9 +21,13 @@ private:
 
     ActionType recv_action_type();
 
+    MessageVisibility recv_message_visibility();
+
     AppearanceDTO recv_appearance();
 
     DespawnDTO recv_despawn();
+
+    ChatMessageDTO recv_chat_message();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT

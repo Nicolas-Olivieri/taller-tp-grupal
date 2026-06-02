@@ -4,8 +4,8 @@
 #define TILE_SIZE 25
 #define FPS 30
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 768
 
 #define WORLD_WIDTH 1200
 #define WORLD_HEIGHT 1200

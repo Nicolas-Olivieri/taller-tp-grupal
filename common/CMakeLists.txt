@@ -14,8 +14,10 @@ target_sources(taller_common
         dto/events/moveevent.cpp
         dto/events/interact_event.cpp
         dto/events/command.cpp
+        dto/events/chatevent.cpp
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
+        dto/snapshot/actions/chatmessage.cpp
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/snapshot_builder.cpp
@@ -44,8 +46,10 @@ target_sources(taller_common
         dto/events/moveevent.h
         dto/events/interact_event.h
         dto/events/command.h
+        dto/events/chatevent.h
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h
+        dto/snapshot/actions/chatmessage.h
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/snapshot_builder.h

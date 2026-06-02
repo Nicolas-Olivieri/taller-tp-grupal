@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "common/dto/events/chatevent.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
@@ -54,6 +55,10 @@ public:
     void serialize(const DespawnDTO& despawn);
 
     void serialize(const InteractEventDTO& event);
+
+    void serialize(const ChatMessageDTO& message);
+
+    void serialize(const ChatEventDTO& event);
 };
 
 #endif  // SERIALIZER_H
