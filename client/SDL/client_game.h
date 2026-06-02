@@ -29,12 +29,20 @@ private:
 
     UserInterface ui;
 
+    bool keep_running;
+    bool just_restored;
+    const SDL2pp::Rect minimize_button = {977, 5, 20, 20};
+    const SDL2pp::Rect close_button = {998, 5, 20, 20};
+    const SDL2pp::Rect header_bar = {112, 0, 858, 30};
+
     bool is_chat_active;
     std::string chat_text;
     const SDL2pp::Rect chat_icon = {5, 120, 45, 30};
 
+    // TODO: acá meter las cosas del chat
+
     // Principales
-    int pollEvents();
+    void pollEvents();
 
     void render_ui_and_world();
 
@@ -55,6 +63,9 @@ private:
     void handle_chat_events(const SDL_Event& event);
 
     void send_private_message();
+
+    // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes
+    static SDL_HitTestResult hit_test_callback(SDL_Window*, const SDL_Point* area, void* data);
 
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name);
