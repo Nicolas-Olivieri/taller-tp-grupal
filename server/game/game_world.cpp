@@ -152,7 +152,7 @@ void GameWorld::execute_ally_action(const std::string& player_name, const AllyAc
     const auto ally = player.get_bound_ally();
 
     if (ally == nullptr) {
-        // El jugador no tiene vinculado a ningún sacerdote
+        std::cout << "[World] Jugador " << player_name << " no tiene vinculado a ningún aliado" << std::endl;
         return;
     }
 

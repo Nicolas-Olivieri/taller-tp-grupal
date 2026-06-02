@@ -4,8 +4,6 @@
 
 #include "server/game/player/inventory/item_mapper.h"
 
-// TODO: Todas estas constantes deberían salir del TOML
-
 
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
 // modelo
@@ -35,7 +33,14 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         bound_ally(nullptr) {}
 
 int Player::attack() {
-    unbind_ally();
+    if (bound_ally != nullptr) {
+        unbind_ally();
+    }
+
+    if (not is_alive()) {
+        std::cout << "[Player] Jugador " << player_name << " intentó atacar, pero está muerto" << std::endl;
+        return 0;
+    }
 
     current_attack_cooldown = required_attack_cooldown;
 
@@ -90,10 +95,13 @@ bool Player::can_reach(const Position& other_position) const {
 }
 
 bool Player::interact(Player& attacker) {
-    unbind_ally();
-
     if (not attacker.can_reach(position)) {
         std::cout << "[Player] El objetivo está demasiado lejos" << std::endl;
+        return false;
+    }
+
+    if (not is_alive()) {
+        std::cout << "[Player] Jugador " << player_name << " fue atacado, pero ya está muerto" << std::endl;
         return false;
     }
 
@@ -105,6 +113,10 @@ bool Player::interact(Player& attacker) {
 
     const int damage = attacker.attack();
     std::cout << "[Player] " << player_name << " fue atacado " << std::endl;
+
+    if (bound_ally != nullptr) {
+        unbind_ally();
+    }
 
     if (Calculator::can_dodge(stats.agility)) {
         std::cout << "[Player] " << player_name << " ESQUIVO!" << std::endl;
@@ -147,7 +159,9 @@ bool Player::interact(Player& attacker) {
 }
 
 void Player::update_position(const Position& new_position, const Direction& new_direction) {
-    unbind_ally();
+    if (bound_ally != nullptr) {
+        unbind_ally();
+    }
     Killable::update_position(new_position, new_direction);
 }
 
