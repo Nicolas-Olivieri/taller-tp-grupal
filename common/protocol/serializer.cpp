@@ -55,6 +55,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::RESURRECTION:
             serialize(action.resurrection);
             break;
+        case ActionType::DEATH:
+            serialize(action.death);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -120,3 +123,5 @@ void Serializer::serialize(const ResurrectionDTO& resurrection) {
     serialize(resurrection.player_resurrected);
     serialize(resurrection.original_appearance);
 }
+
+void Serializer::serialize(const DeathDTO& death) { serialize(death.player_dead); }

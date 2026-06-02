@@ -69,6 +69,8 @@ public:
     void serialize(const PlayerStatsDTO& stats);
 
     void serialize(const ResurrectionDTO& resurrection);
+
+    void serialize(const DeathDTO& death);
 };
 
 #endif  // SERIALIZER_H

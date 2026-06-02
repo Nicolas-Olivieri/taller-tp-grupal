@@ -17,6 +17,8 @@ void ResurrectCommand::execute(GameWorld& world) {
 void ResurrectCommand::build_snapshot(SnapshotBuilder& builder) {
     switch (result) {
         case ResurrectResult::PLAYER_RESURRECTED:
+            builder.add_action(ActionDTO(
+                    ChatMessageDTO(MessageVisibility::PRIVATE, "Sacerdote", player_name, "A sus ordenes!")));
             builder.add_action(ActionDTO(ResurrectionDTO(player_name, appearance)));
             break;
         case ResurrectResult::PLAYER_IS_ALIVE:

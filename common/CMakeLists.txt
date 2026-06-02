@@ -19,6 +19,7 @@ target_sources(taller_common
         dto/snapshot/actions/action.cpp
         dto/snapshot/actions/action_types/act_message/chatmessage.cpp
         dto/snapshot/actions/action_types/act_resurrection/resurrection.cpp
+        dto/snapshot/actions/action_types/act_death/death.cpp
 
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
@@ -57,6 +58,7 @@ target_sources(taller_common
         dto/snapshot/actions/action.h
         dto/snapshot/actions/action_types/act_message/chatmessage.h
         dto/snapshot/actions/action_types/act_resurrection/resurrection.h
+        dto/snapshot/actions/action_types/act_death/death.h
 
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h

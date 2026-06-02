@@ -84,6 +84,7 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
             builder.add_action(ActionDTO(
                     ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_attacked,
                                    std::format("{} te mato", player_name, result.attack.damage_dealt))));
+            builder.add_action(ActionDTO(DeathDTO(player_attacked)));
         }
 
         return;

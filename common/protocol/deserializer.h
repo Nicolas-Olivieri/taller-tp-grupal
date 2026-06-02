@@ -42,6 +42,8 @@ private:
 
     ResurrectionDTO recv_resurrection();
 
+    DeathDTO recv_death();
+
 public:
     explicit Deserializer(Socket& socket);  // NOLINT
 
