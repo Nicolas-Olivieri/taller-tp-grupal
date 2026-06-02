@@ -1,0 +1,165 @@
+#include "user_interface.h"
+
+#include <algorithm>
+#include <cassert>
+#include <sstream>
+
+// TODO: revisar constantes
+#define FONT "/augusta.ttf"
+#define box_limit_FONT_SIZE 35
+/* #define CLAN_NAME_FONT_SIZE 24 */
+#define USERNAME_FONT_SIZE 35
+#define MENU_TITLE_FONT_SIZE 20
+#define MENU_FONT_SIZE 19
+#define CHAT_FONT_SIZE 19
+#define LINE_SPACING 21
+
+UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name):
+        renderer(renderer),
+        user_font(DATA_PATH FONT, USERNAME_FONT_SIZE),
+        /* clan_font(DATA_PATH FONT, FONT_SIZE), */
+        menu_title_font(DATA_PATH FONT, MENU_TITLE_FONT_SIZE),
+        menu_font(DATA_PATH FONT, MENU_FONT_SIZE),
+        chat_font(DATA_PATH FONT, CHAT_FONT_SIZE),
+        ui_texture(renderer, DATA_PATH "/interfaz_principal.bmp"),
+        player_name(player_name) {}
+
+void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
+
+void UserInterface::render_fields() {
+    render_text(player_name, username_rect, user_font);
+    render_text("Inventario", inventory_rect, menu_title_font);
+    // TODO: revisar por qué el texto imprime mal las tildes
+    render_text("Estadisticas", stats_rect, menu_title_font);
+
+    for (const auto& [box, value]: recoverable_values) {
+        render_recoverable_value(box, value);
+    }
+}
+
+void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box_limit, SDL2pp::Font& font) {
+    SDL2pp::Texture text_texture(renderer, font.RenderText_Solid(text, text_color));
+
+    int text_w = std::min(text_texture.GetWidth(), box_limit.w);
+    int text_h = std::min(text_texture.GetHeight(), box_limit.h);
+
+    SDL2pp::Rect centered_box = {box_limit.x + (box_limit.w - text_w) / 2,
+                                 box_limit.y + (box_limit.h - text_h) / 2, text_w, text_h};
+
+    renderer.Copy(text_texture, SDL2pp::NullOpt, centered_box);
+}
+
+void UserInterface::render_recoverable_value(const SDL2pp::Rect& box, const RecoverableValue& value) {
+    if (value.max == 0)
+        return;
+
+    renderer.SetDrawColor(30, 30, 30, 255);
+    renderer.FillRect(box);
+
+    float ratio = static_cast<float>(value.current) / static_cast<float>(value.max);
+    int filled_w = static_cast<int>(box.w * ratio);
+
+    SDL2pp::Rect filled_box(box.x, box.y, filled_w, box.h);
+    renderer.SetDrawColor(value.color.r, value.color.g, value.color.b, value.color.a);
+
+    renderer.FillRect(filled_box);
+
+    std::stringstream text;
+    text << value.current << "/" << value.max;
+
+    render_text(text.str(), box, menu_font);
+}
+
+void UserInterface::render_chat_history() {
+    if (chat_history.empty())
+        return;
+
+    for (size_t i = 0; i < chat_history.size(); ++i) {
+        if (chat_history[i].empty())
+            continue;
+
+        SDL2pp::Texture line_texture(renderer, chat_font.RenderText_Solid(chat_history[i], text_color));
+
+        int current_y = history_messages.y + (i * LINE_SPACING);
+        int text_w = line_texture.GetWidth();
+        int text_h = line_texture.GetHeight();
+
+        cut_text_if_necessary(text_w, history_messages.w);
+
+        renderer.Copy(line_texture, SDL2pp::Rect(0, 0, text_w, text_h),
+                      SDL2pp::Rect(history_messages.x, current_y, text_w, text_h));
+    }
+}
+
+void UserInterface::render_chat_input(const std::string& input, bool is_chat_active) {
+    std::string display_text(input);
+
+    if (is_chat_active)
+        add_twinkling_bar(display_text);
+
+    if (display_text.empty())
+        return;
+
+    SDL2pp::Texture text_texture(renderer, chat_font.RenderText_Blended(display_text, text_color));
+
+    int text_w = text_texture.GetWidth();
+    int text_h = text_texture.GetHeight();
+
+    cut_text_if_necessary(text_w, input_box.w);
+
+    renderer.Copy(text_texture, SDL2pp::Rect(0, 0, text_w, text_h),
+                  SDL2pp::Rect(input_box.x, input_box.y, text_w, text_h));
+}
+
+void UserInterface::cut_text_if_necessary(int& text_width, int max_width) {
+    // TODO: esto corta la línea si se pasa del ancho
+    if (text_width > max_width)
+        text_width = max_width;
+}
+
+void UserInterface::add_twinkling_bar(std::string& display_text) {
+    // TODO: cada 500 ms de SDL lo agrega, reemplazar constantes
+    if ((SDL_GetTicks() / 500) % 2 == 0)
+        display_text += "|";
+}
+
+void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& players_information) {
+    for (const auto& player_info: players_information) {
+        if (player_info.name != player_name)
+            continue;
+
+        const PlayerStatsDTO& stats(player_info.stats);
+
+        recoverable_values.clear();
+
+        // TODO: considerar el resto de estadísticas
+        RecoverableValue health_bar = {health_color, stats.current_health, stats.max_health};
+        recoverable_values.push_back(std::pair(health_rect, health_bar));
+
+        RecoverableValue mana_bar = {mana_color, stats.current_mana, stats.max_mana};
+        recoverable_values.push_back(std::pair(mana_rect, mana_bar));
+
+        break;
+    }
+}
+
+void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
+    for (const auto& action: actions) {
+        if (action.action != ActionType::MESSAGE)
+            continue;
+
+        ChatMessageDTO msg = action.chat_message;
+
+        if (msg.visibility == MessageVisibility::PRIVATE &&
+            (player_name == msg.receiver || player_name == msg.sender)) {
+            std::string formatted_msg = "[" + msg.sender + "] " + msg.content;
+            enqueue_message(formatted_msg);
+        }
+    }
+}
+
+void UserInterface::enqueue_message(const std::string& message) {
+    chat_history.push_back(message);
+    if (chat_history.size() > static_cast<size_t>(history_messages.h) / LINE_SPACING)
+        chat_history.pop_front();
+}

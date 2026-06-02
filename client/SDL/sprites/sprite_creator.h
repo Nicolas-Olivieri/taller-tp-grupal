@@ -4,6 +4,7 @@
 #include <string>
 
 #include "common/dto/snapshot/info/appearance.h"
+#include "common/dto/snapshot/info/playerinfo.h"
 
 #include "animation_pool.h"
 #include "sprite.h"
@@ -23,7 +24,11 @@ public:
     SpriteLayer create_sprite_layer(const std::string& category, uint8_t id,
                                     const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
 
-    Sprite create_user(const AppearanceDTO& appearance_data);
+    Sprite create_user(const PlayerInfoDTO& playerInfo);
+
+    void update_appearance(Sprite& player, const AppearanceDTO& appearance);
+
+    void convert_to_ghost(Sprite& player);
 };
 
 

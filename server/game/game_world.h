@@ -2,13 +2,17 @@
 #define GAME_WORLD_H
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
+#include "allies/ally_action.h"
 #include "common/direction.h"
+#include "player/player.h"
+#include "server/command/cmd_results/ally_execute/resurrect_result.h"
 
 #include "grid.h"
-#include "player.h"
 #include "position.h"
 
 
@@ -18,20 +22,34 @@ private:
 
     std::unordered_map<std::string, Player> players;
 
+    std::vector<std::unique_ptr<Ally>> allies;
+
 public:
     explicit GameWorld(int width, int height);
 
     std::unordered_map<std::string, Player> get_players() const;
 
-    void update(int iteration);
+    void update();
 
     void move_player(const std::string& player_name, Direction direction);
 
-    void add_player(const std::string& player_name, const Position& position);
+    void add_player(const std::string& player_name, const PlayerData& data);
 
-    void add_player(const std::string& player_name);
+    std::unordered_map<std::string, Player>::iterator emplace_player(const std::string& player_name,
+                                                                     const PlayerData& data);
 
     void remove_player(const std::string& player_name);
+
+    InteractResult interact(const std::string& player_name, const Position& position);
+
+    ResurrectResult resurrect_player(const std::string& player_name);
+
+    void heal_player(const std::string& player_name);
+
+private:
+    AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyAction& action);
+
+    void init_npc();
 };
 
 

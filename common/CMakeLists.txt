@@ -12,15 +12,28 @@ target_sources(taller_common
         dto/lobby/credentials.cpp
         dto/events/event.cpp
         dto/events/moveevent.cpp
+        dto/events/interact_event.cpp
         dto/events/command.cpp
+        dto/events/chatevent.cpp
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
+        dto/snapshot/actions/action_types/act_message/chatmessage.cpp
+        dto/snapshot/actions/action_types/act_resurrection/resurrection.cpp
+        dto/snapshot/actions/action_types/act_death/death.cpp
+
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/snapshot_builder.cpp
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
+
+        dto/snapshot/actions/action_types/act_despawn/despawn.cpp
+
+        dto/lobby/ally_info.cpp
+
+        dto/snapshot/info/player_stats.cpp
+
     PUBLIC
         # .h files
         liberror.h
@@ -38,13 +51,26 @@ target_sources(taller_common
         dto/lobby/credentials.h
         dto/events/event.h
         dto/events/moveevent.h
+        dto/events/interact_event.h
         dto/events/command.h
+        dto/events/chatevent.h
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h
+        dto/snapshot/actions/action_types/act_message/chatmessage.h
+        dto/snapshot/actions/action_types/act_resurrection/resurrection.h
+        dto/snapshot/actions/action_types/act_death/death.h
+
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/snapshot_builder.h
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h
+
+        dto/snapshot/actions/action_types/act_despawn/despawn.h
+
+        dto/lobby/ally_info.h
+        creature_type.h
+
+        dto/snapshot/info/player_stats.h
     )

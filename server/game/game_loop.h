@@ -7,18 +7,19 @@
 #include "common/queue.h"
 #include "common/thread/thread.h"
 #include "server/command/command.h"
+#include "server/persistance/playerrepository.h"
 
 #include "game_world.h"
-
-
 class GameLoop: public Thread {
 private:
     Queue<std::unique_ptr<Command>>& command_queue;
     GameWorld game_world;
     EventBroadcaster& broadcaster;
+    PlayerRepository& player_repository;
 
 public:
-    explicit GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster);
+    GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster,
+             PlayerRepository& player_repository);
 
     void run() override;
 
@@ -31,7 +32,7 @@ public:
 private:
     void process_commands(SnapshotBuilder& builder);
 
-    void update_world(int iteration);
+    void update_world();
 
     void broadcast(SnapshotBuilder& builder);
 };

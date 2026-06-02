@@ -1,0 +1,8 @@
+[server.stats]
+path = "/server/stats.toml"
+
+[server.cooldowns]
+path = "/server/cooldowns.toml"
+
+[server.items]
+path = "/server/items.toml"

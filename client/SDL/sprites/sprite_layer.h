@@ -12,6 +12,9 @@
 
 
 class SpriteLayer {
+    friend class Sprite;
+    friend class SpriteCreator;
+
 private:
     SDL2pp::Point offset;
     SDL2pp::Rect frame;

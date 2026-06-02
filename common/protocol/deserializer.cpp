@@ -37,6 +37,10 @@ CommandType Deserializer::recv_command_type() {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
         case CommandType::MOVE:
+        case CommandType::INTERACT:
+        case CommandType::CHAT:
+        case CommandType::RESURRECT:
+        case CommandType::HEAL:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -81,8 +85,9 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
     AppearanceDTO appearance = recv_appearance();
+    PlayerStatsDTO stats = recv_player_stats();
 
-    return PlayerInfoDTO(name, direction, x, y, appearance);
+    return PlayerInfoDTO(name, direction, x, y, appearance, stats);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -102,10 +107,18 @@ ActionDTO Deserializer::recv_action() {
     ActionType type = recv_action_type();
     // TODO: recordar modificar esto para recibir la información según el
     // ActionType
-    if (type == ActionType::PLACEHOLDER)
-        return ActionDTO(type);
-
-    throw std::exception();  // TODO: modificar
+    switch (type) {
+        case ActionType::DESPAWN:
+            return ActionDTO(recv_despawn());
+        case ActionType::MESSAGE:
+            return ActionDTO(recv_chat_message());
+        case ActionType::RESURRECTION:
+            return ActionDTO(recv_resurrection());
+        case ActionType::DEATH:
+            return ActionDTO(recv_death());
+        default:
+            throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
+    }
 }
 
 ActionType Deserializer::recv_action_type() {
@@ -114,7 +127,10 @@ ActionType Deserializer::recv_action_type() {
     switch (static_cast<ActionType>(byte)) {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
-        case ActionType::PLACEHOLDER:
+        case ActionType::DESPAWN:
+        case ActionType::MESSAGE:
+        case ActionType::RESURRECTION:
+        case ActionType::DEATH:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -129,4 +145,90 @@ AppearanceDTO Deserializer::recv_appearance() {
     uint8_t head = recv_uint8();
 
     return AppearanceDTO(body, head);
+}
+
+DespawnDTO Deserializer::recv_despawn() {
+    std::string player_despawned = recv_string();
+
+    return DespawnDTO(player_despawned);
+}
+
+std::vector<AllyInfoDTO> Deserializer::recv_allies_information() {
+    const uint16_t size = recv_uint16();
+
+    std::vector<AllyInfoDTO> allies_information;
+    allies_information.reserve(size);
+
+    for (uint16_t i = 0; i < size; ++i) {
+        allies_information.push_back(recv_ally_info());
+    }
+
+    return allies_information;
+}
+
+AllyInfoDTO Deserializer::recv_ally_info() {
+    const AllyType type = recv_ally_type();
+    const uint16_t x = recv_uint16();
+    const uint16_t y = recv_uint16();
+
+    return AllyInfoDTO(type, x, y);
+}
+
+AllyType Deserializer::recv_ally_type() {
+    const uint8_t byte = recv_uint8();
+
+    switch (static_cast<AllyType>(byte)) {
+        case AllyType::PRIEST:
+        case AllyType::MERCHANT:
+        case AllyType::BANKER:
+            return static_cast<AllyType>(byte);
+        default:  // Undefined Behavior -> Excepción
+            throw std::invalid_argument("Byte de aliado no reconocido");
+    }
+}
+
+ChatMessageDTO Deserializer::recv_chat_message() {
+    MessageVisibility visibility = recv_message_visibility();
+    std::string sender = recv_string();
+    std::string receiver = recv_string();
+    std::string content = recv_string();
+
+    return ChatMessageDTO(visibility, sender, receiver, content);
+}
+
+MessageVisibility Deserializer::recv_message_visibility() {
+    uint8_t byte = recv_uint8();
+
+    switch (static_cast<MessageVisibility>(byte)) {
+        // TODO: agregar un case para todos los tipos de comandos existentes,
+        // luego borrar este comentario
+        case MessageVisibility::PRIVATE:
+        case MessageVisibility::CLAN:
+            return static_cast<MessageVisibility>(byte);
+        default:  // Undefined Behavior -> Excepción
+            throw std::invalid_argument("Byte de visibilidad de mensaje no reconocido");
+            // TODO: chequear si es la mejor excepción
+    }
+}
+
+PlayerStatsDTO Deserializer::recv_player_stats() {
+    const uint16_t max_health = recv_uint16();
+    const uint16_t current_health = recv_uint16();
+    const uint16_t max_mana = recv_uint16();
+    const uint16_t current_mana = recv_uint16();
+
+    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana);
+}
+
+ResurrectionDTO Deserializer::recv_resurrection() {
+    std::string name = recv_string();
+    AppearanceDTO appearance = recv_appearance();
+
+    return ResurrectionDTO(name, appearance);
+}
+
+DeathDTO Deserializer::recv_death() {
+    const std::string name = recv_string();
+
+    return DeathDTO(name);
 }

@@ -1,0 +1,29 @@
+#include "playerdata.h"
+
+#include "server/game/player/player.h"
+
+// TODO: el jugador podría empezar con ciertas cosas, como oro o un arma
+// Constructor para registrar un jugador
+PlayerData::PlayerData(uint8_t archetype, uint8_t race, uint8_t body, uint8_t head):
+        xp_level(1), has_played_before(0), archetype(archetype), race(race), body(body), head(head) {}
+
+// TODO: en este constructor, actualizamos la data persistida
+PlayerData::PlayerData(const Player& player) {
+    Stats stats(player.get_stats());
+    Position position(player.get_position());
+
+    current_xp_amount = stats.experience.get_current_amount();
+    current_hp = stats.health.get_current();
+    current_mana = stats.mana.get_current();
+
+    position_x = position.get_x();
+    position_y = position.get_y();
+
+    xp_level = stats.experience.get_level();
+
+    has_played_before = 1;
+    archetype = stats.archetype_id;
+    race = stats.race_id;
+    body = player.get_body();
+    head = player.get_head();
+}

@@ -5,6 +5,7 @@ tags.*
 # IDEs
 .idea
 .code
+.vscode
 
 # Cmake
 cmake-build-debug
@@ -57,3 +58,7 @@ cmake-build-debug
 
 # QT creator
 .qtcreator
+
+# Persistencia
+index.bin
+playerdata.bin

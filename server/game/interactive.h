@@ -2,13 +2,14 @@
 #define INTERACTIVE_H
 
 
+#include "server/command/cmd_results/interact/interact_result.h"
 // forward declaration
 class Player;
 
 
 class Interactive {
 public:
-    virtual void interact(Player&) = 0;
+    virtual InteractResult interact(Player&) = 0;
 
     virtual ~Interactive() = default;
 };

@@ -2,11 +2,13 @@
 
 #include <utility>
 
-#include "server/command/spawn_command.h"
+#include "server/command/cmd_types/cmd_spawn/spawn_command.h"
 
 
-GameAcceptor::GameAcceptor(Queue<ConnectionInfo>& waiting_queue):
-        waiting_queue(waiting_queue), game_loop(command_queue, broadcaster) {}
+GameAcceptor::GameAcceptor(Queue<ConnectionInfo>& waiting_queue, PlayerRepository& player_repository):
+        waiting_queue(waiting_queue),
+        player_repository(player_repository),
+        game_loop(command_queue, broadcaster, player_repository) {}
 
 
 void GameAcceptor::run() {
@@ -17,7 +19,9 @@ void GameAcceptor::run() {
             reap();
             clients.emplace_back(std::move(peer), player_name, command_queue, broadcaster);
             clients.back().start();
-            command_queue.push(std::make_unique<SpawnCommand>(player_name));
+
+            PlayerData data = player_repository.get(player_name);
+            command_queue.push(std::make_unique<SpawnCommand>(player_name, data));
         }
     } catch (const ClosedQueue&) {}
 }

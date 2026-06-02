@@ -1,0 +1,79 @@
+[archetypes.mage]
+id = 0
+health_factor = 0.75
+mana_factor = 0.90
+meditation_factor = 1.50
+agility = 2
+constitution_multiplier = 0.70
+intelligence_multiplier = 0.90
+strength_multiplier = 0.80
+
+[archetypes.cleric]
+id = 1
+health_factor = 0.80
+mana_factor = 0.85
+meditation_factor = 1.20
+agility = 1
+constitution_multiplier = 0.80
+intelligence_multiplier = 0.80
+strength_multiplier = 0.80
+
+[archetypes.paladin]
+id = 2
+health_factor = 0.85
+mana_factor = 0.75
+meditation_factor = 1.00
+agility = 3
+constitution_multiplier = 0.80
+intelligence_multiplier = 0.75
+strength_multiplier = 0.90
+
+[archetypes.warrior]
+id = 3
+health_factor = 0.95
+mana_factor = 0.00
+meditation_factor = 0.00
+agility = 3
+constitution_multiplier = 0.85
+intelligence_multiplier = 0.00
+strength_multiplier = 0.95
+
+[races.human]
+id = 0
+health_factor = 0.80
+mana_factor = 0.80
+recovery_factor = 7
+agility = 3
+constitution = 85
+intelligence = 85
+strength = 7
+
+[races.elf]
+id = 1
+health_factor = 0.70
+mana_factor = 0.90
+recovery_factor = 5
+agility = 5
+constitution = 75
+intelligence = 95
+strength = 5
+
+[races.dwarf]
+id = 2
+health_factor = 0.90
+mana_factor = 0.70
+recovery_factor = 10
+agility = 1
+constitution = 95
+intelligence = 75
+strength = 10
+
+[races.gnome]
+id = 3
+health_factor = 0.85
+mana_factor = 0.85
+recovery_factor = 7
+agility = 2
+constitution = 90
+intelligence = 90
+strength = 5

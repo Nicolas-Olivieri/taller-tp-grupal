@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "server/game/player.h"
+#include "server/game/player/player.h"
 
 #include "snapshot.h"
 

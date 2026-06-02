@@ -8,6 +8,7 @@
 #include "common/queue.h"
 #include "common/socket.h"
 #include "common/thread/thread.h"
+#include "server/persistance/playerrepository.h"
 
 #include "connectioninfo.h"
 #include "lobbyhandler.h"
@@ -17,6 +18,7 @@ private:
     Socket listener;
     std::vector<std::unique_ptr<LobbyHandler>> lobbies;
     Queue<ConnectionInfo>& waiting_players;
+    PlayerRepository& player_repository;
 
     void wait_for_player();
 
@@ -25,7 +27,8 @@ private:
     void send_to_lobby(Socket&& peer);
 
 public:
-    Acceptor(const std::string& servname, Queue<ConnectionInfo>& waiting_players);
+    Acceptor(const std::string& servname, Queue<ConnectionInfo>& waiting_players,
+             PlayerRepository& player_repository);
 
     void run() override;
 
