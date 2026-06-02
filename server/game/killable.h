@@ -33,11 +33,13 @@ public:
 
     bool can_move() const;
 
-    void update_position(const Position& new_position, const Direction& new_direction);
+    virtual void update_position(const Position& new_position, const Direction& new_direction);
 
     Position get_position() const;
 
     Direction get_direction() const;
+
+    bool is_alive() const;
 
     virtual void update();
 

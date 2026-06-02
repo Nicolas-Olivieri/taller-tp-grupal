@@ -2,9 +2,12 @@
 #define GAME_WORLD_H
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
+#include "allies/ally_action.h"
 #include "common/direction.h"
 #include "player/player.h"
 
@@ -17,6 +20,8 @@ private:
     Grid grid;
 
     std::unordered_map<std::string, Player> players;
+
+    std::vector<std::unique_ptr<Ally>> allies;
 
 public:
     explicit GameWorld(int width, int height);
@@ -35,6 +40,15 @@ public:
     void remove_player(const std::string& player_name);
 
     void interact(const std::string& player_name, const Position& position);
+
+    void resurrect_player(const std::string& player_name);
+
+    void heal_player(const std::string& player_name);
+
+private:
+    void execute_ally_action(const std::string& player_name, const AllyAction& action);
+
+    void init_npc();
 };
 
 

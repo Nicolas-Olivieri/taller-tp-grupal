@@ -1,6 +1,6 @@
 #include "receiver.h"
 
-#include "server/command/despawn_command.h"
+#include "server/command/cmd_types/cmd_despawn/despawn_command.h"
 
 
 Receiver::Receiver(Socket& peer, const std::string& player_name,

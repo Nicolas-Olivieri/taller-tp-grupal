@@ -5,7 +5,7 @@
 
 #include "common/direction.h"
 
-enum class CommandType : uint8_t { MOVE, INTERACT, CHAT };
+enum class CommandType : uint8_t { MOVE, INTERACT, CHAT, RESURRECT, HEAL };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a
 // partir de los EventDTO
@@ -30,6 +30,8 @@ struct RequestedCommandDTO {
     RequestedCommandDTO(const CommandType& cmd, int x, int y);
 
     RequestedCommandDTO(const CommandType& cmd, const std::string& receiver, const std::string& content);
+
+    explicit RequestedCommandDTO(const CommandType& cmd);
 };
 
 #endif  // REQUESTEDCOMMANDDTO_H

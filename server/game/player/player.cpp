@@ -17,7 +17,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
-        inventory(stats) {
+        inventory(stats),
+        bound_ally(nullptr) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
 }
@@ -30,10 +31,12 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
-        inventory(stats) {}
-
+        inventory(stats),
+        bound_ally(nullptr) {}
 
 int Player::attack() {
+    unbind_ally();
+
     current_attack_cooldown = required_attack_cooldown;
 
     const int mana_cost = inventory.get_attack_cost();
@@ -87,6 +90,8 @@ bool Player::can_reach(const Position& other_position) const {
 }
 
 bool Player::interact(Player& attacker) {
+    unbind_ally();
+
     if (not attacker.can_reach(position)) {
         std::cout << "[Player] El objetivo está demasiado lejos" << std::endl;
         return false;
@@ -141,4 +146,26 @@ bool Player::interact(Player& attacker) {
     return was_killed;
 }
 
+void Player::update_position(const Position& new_position, const Direction& new_direction) {
+    unbind_ally();
+    Killable::update_position(new_position, new_direction);
+}
+
 void Player::drop() { assert(false); }
+
+void Player::bind_ally(Ally* ally) {
+    std::cout << "[Player] El jugador " << player_name << " se vinculó con un aliado" << std::endl;
+    bound_ally = ally;
+}
+
+Ally* Player::get_bound_ally() const { return bound_ally; }
+
+void Player::unbind_ally() {
+    std::cout << "[Player] El jugador " << player_name << " se desvinculó del aliado" << std::endl;
+    bound_ally = nullptr;
+}
+
+void Player::heal() {
+    stats.health.recover_all();
+    stats.mana.recover_all();
+}

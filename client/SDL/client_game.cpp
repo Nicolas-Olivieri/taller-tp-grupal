@@ -134,6 +134,10 @@ void ClientGame::handle_chat_events(const SDL_Event& event) {
     if (event.key.keysym.sym == SDLK_RETURN) {
         if (!chat_text.empty() && chat_text[0] == '@')
             send_private_message();
+        if (!chat_text.empty() && chat_text == "/resucitar")
+            connection.push_command(std::make_unique<EventDTO>(CommandType::RESURRECT));
+        if (!chat_text.empty() && chat_text == "/curar")
+            connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
         chat_text.clear();
     }
 

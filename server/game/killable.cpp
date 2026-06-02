@@ -43,3 +43,5 @@ void Killable::update() {
         current_move_cooldown = 0;
     }
 }
+
+bool Killable::is_alive() const { return stats.health.get_current() > 0; }

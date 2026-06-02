@@ -27,6 +27,8 @@ target_sources(taller_common
 
         dto/snapshot/actions/despawn.cpp
 
+        dto/lobby/ally_info.cpp
+
     PUBLIC
         # .h files
         liberror.h
@@ -58,4 +60,7 @@ target_sources(taller_common
         protocol/deserializer.h
 
         dto/snapshot/actions/despawn.h
+
+        dto/lobby/ally_info.h
+        creature_type.h
     )

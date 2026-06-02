@@ -111,7 +111,12 @@ if(TALLER_CLIENT OR TALLER_EDITOR)
         URL https://github.com/libSDL2pp/libSDL2pp/archive/cc198c9a5657048bee67ece82de620b2d5661084.zip
     )
 
+    set(SDL2PP_WITH_IMAGE ON CACHE BOOL "Enable SDL2_image support" FORCE)
+    set(SDL2PP_WITH_MIXER ON CACHE BOOL "Enable SDL2_mixer support" FORCE)
+    set(SDL2PP_WITH_TTF   ON CACHE BOOL "Enable SDL2_ttf support" FORCE)
+
     FetchContent_MakeAvailable(SDL2 SDL2_image SDL2_mixer SDL2_ttf libSDL2pp)
+
     # N: Yo lo agrego acá para asegurarme que se compile correctamente en el cmake-build-debug
     option(SDL2PP_WITH_IMAGE "Enable SDL2_image support" ON)
     find_package(SDL2_image REQUIRED)
