@@ -184,7 +184,7 @@
        <enum>QListView::Movement::Static</enum>
       </property>
       <property name="resizeMode">
-       <enum>QListView::ResizeMode::Adjust</enum>
+       <enum>QListView::ResizeMode::Fixed</enum>
       </property>
       <property name="layoutMode">
        <enum>QListView::LayoutMode::SinglePass</enum>
@@ -209,9 +209,6 @@
       </property>
       <property name="selectionRectVisible">
        <bool>true</bool>
-      </property>
-      <property name="itemAlignment">
-       <set>Qt::AlignmentFlag::AlignJustify</set>
       </property>
      </widget>
     </item>

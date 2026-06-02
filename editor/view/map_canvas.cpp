@@ -178,8 +178,8 @@ void MapCanvas::clear_all() {
 
 
 void MapCanvas::set_unwalkable_tiles(const QPoint& clicked_cell, const int tile_id) const {
-    const QPoint unwalkable_offset = drawing_asset.unwalkable_tiles.topLeft();
-    const QSize unwalkable_size = drawing_asset.unwalkable_tiles.size();
+    const QPoint unwalkable_offset = drawing_asset.unwalkable_area.topLeft();
+    const QSize unwalkable_size = drawing_asset.unwalkable_area.size();
 
     const QBrush redBrush(QColor(255, 0, 0, 150));
     const QPen noPen(Qt::NoPen);

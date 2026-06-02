@@ -3,6 +3,8 @@
 #include <QFileDialog>
 #include <iostream>
 
+#include "grid_range.h"
+
 #define WALKABLE 1
 #define UNWALKABLE 0
 #define HEADER 0xFAF4
@@ -62,94 +64,54 @@ void MapSaver::store_offset_and_dimensions_data(QDataStream& stream) const {
     const uint16_t world_width = matrix_size.width();
     const uint16_t world_height = matrix_size.height();
     constexpr uint16_t header = HEADER;
+    constexpr size_t npc_data_size = sizeof(uint8_t) + sizeof(uint16_t) * 2;
 
-    uint16_t npc_amount = 0;
-    for (auto& placement: data.placements) {
-        if (placement.asset.type == ImageType::NPC) {
-            npc_amount++;
-        }
-    }
-
-    const uint16_t server_start =
+    constexpr uint16_t server_start =
             sizeof(header) + sizeof(uint16_t) * 2 + sizeof(world_width) + sizeof(world_height);
 
     const uint16_t server_end = server_start + sizeof(uint8_t) * world_width * world_height +
-                                sizeof(uint16_t) + (sizeof(uint8_t) + sizeof(uint16_t) * 2) * npc_amount;
+                                sizeof(uint16_t) + data.asset_counter[ImageType::NPC] * npc_data_size;
 
     stream << header << server_start << server_end << world_width << world_height;
 }
 
 void MapSaver::store_server_data(QDataStream& stream) const {
-    for (int y = 0; y < matrix_size.height(); y++) {
-        for (int x = 0; x < matrix_size.width(); x++) {
-            uint8_t is_walkable;
-            auto translated_point = QPoint(min_point.x() + x, min_point.y() + y);
+    GridRange grid_range(min_point, matrix_size.width(), matrix_size.height());
 
-            if (data.unwalkable_tiles.contains(translated_point) ||
-                !data.occupied_tiles.contains(translated_point)) {
-                is_walkable = UNWALKABLE;
-            } else {
-                is_walkable = WALKABLE;
-            }
+    for (const auto& cell: grid_range) {
+        uint8_t is_walkable;
 
-            stream << is_walkable;
+        if (data.unwalkable_tiles.contains(cell) || !data.occupied_tiles.contains(cell)) {
+            is_walkable = UNWALKABLE;
+        } else {
+            is_walkable = WALKABLE;
         }
+
+        stream << is_walkable;
     }
 
-    uint16_t npc_amount = 0;
-    QByteArray npc_data;
-    QDataStream npc_stream(&npc_data, QIODevice::WriteOnly);
-    for (const auto& placement: data.placements) {
-        const uint16_t origin_x = placement.origin.x() - min_point.x();
-        const uint16_t origin_y = placement.origin.y() - min_point.y();
-
-        if (placement.asset.type == ImageType::NPC) {
-            const uint8_t id = placement.asset.id;
-            npc_stream << id << origin_x << origin_y;
-            npc_amount++;
-        }
-    }
-    stream << npc_amount;
-    stream.writeRawData(npc_data.constData(), npc_data.size());
+    store_asset_data<uint8_t>(stream, ImageType::NPC);
 }
 
 void MapSaver::store_client_data(QDataStream& stream) const {
-    uint16_t tile_amount = 0;
-    uint16_t collider_amount = 0;
-    uint16_t npc_amount = 0;
+    store_asset_data<uint8_t>(stream, ImageType::TILE);
+    store_asset_data<uint16_t>(stream, ImageType::COLLIDER);
+    store_asset_data<uint8_t>(stream, ImageType::NPC);
+}
 
-    QByteArray tile_data;
-    QByteArray collider_data;
-    QByteArray npc_data;
-    QDataStream tile_stream(&tile_data, QIODevice::WriteOnly);
-    QDataStream collider_stream(&collider_data, QIODevice::WriteOnly);
-    QDataStream npc_stream(&npc_data, QIODevice::WriteOnly);
+template <typename intType>
+void MapSaver::store_asset_data(QDataStream& stream, const ImageType type) const {
+    stream << data.asset_counter[type];
 
     for (const auto& placement: data.placements) {
+        if (placement.asset.type != type) {
+            continue;
+        }
+
         const uint16_t origin_x = placement.origin.x() - min_point.x();
         const uint16_t origin_y = placement.origin.y() - min_point.y();
 
-        if (placement.asset.type == ImageType::TILE) {
-            const uint8_t id = placement.asset.id;
-            tile_stream << id << origin_x << origin_y;
-            tile_amount++;
-
-        } else if (placement.asset.type == ImageType::COLLIDER) {
-            const uint16_t id = placement.asset.id;
-            collider_stream << id << origin_x << origin_y;
-            collider_amount++;
-        }
-        if (placement.asset.type == ImageType::NPC) {
-            const uint8_t id = placement.asset.id;
-            npc_stream << id << origin_x << origin_y;
-            npc_amount++;
-        }
+        const intType id = placement.asset.id;
+        stream << id << origin_x << origin_y;
     }
-
-    stream << tile_amount;
-    stream.writeRawData(tile_data.constData(), tile_data.size());
-    stream << collider_amount;
-    stream.writeRawData(collider_data.constData(), collider_data.size());
-    stream << npc_amount;
-    stream.writeRawData(npc_data.constData(), npc_data.size());
 }

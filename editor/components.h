@@ -14,7 +14,7 @@ struct AssetData {
     ImageType type;  // TILE o COLLIDER o NPC
     int tile_width;
     int tile_height;
-    QRect unwalkable_tiles;
+    QRect unwalkable_area;
 };
 
 

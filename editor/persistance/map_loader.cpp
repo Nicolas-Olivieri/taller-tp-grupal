@@ -29,13 +29,13 @@ bool MapLoader::load(const QString& filename) const {
     file.seek(server_end);
 
     // Cargo los tiles
-    load_assets<uint8_t>(stream, tiles);
+    load_assets<uint8_t>(stream, tiles, ImageType::TILE);
 
     // Cargo los colliders
-    load_assets<uint16_t>(stream, colliders);
+    load_assets<uint16_t>(stream, colliders, ImageType::COLLIDER);
 
     // Cargo los npcs
-    load_assets<uint8_t>(stream, npcs);
+    load_assets<uint8_t>(stream, npcs, ImageType::NPC);
 
     file.close();
     return true;
@@ -43,16 +43,18 @@ bool MapLoader::load(const QString& filename) const {
 
 
 template <typename intType>
-void MapLoader::load_assets(QDataStream& stream, const QHash<intType, AssetData>& lookup_assets_hash) const {
+void MapLoader::load_assets(QDataStream& stream, const QHash<intType, AssetData>& lookup_assets_hash,
+                            const ImageType type) const {
     uint16_t assets_amount;
 
     stream >> assets_amount;
-    for (uint16_t i = 0; i < assets_amount; i++) {
-        intType raw_id;
-        uint16_t origin_x, origin_y;
-        stream >> raw_id >> origin_x >> origin_y;
+    data.asset_counter[type] = assets_amount;
 
-        auto id = static_cast<uint16_t>(raw_id);
+    for (uint16_t i = 0; i < assets_amount; i++) {
+        intType id;
+        uint16_t origin_x, origin_y;
+        stream >> id >> origin_x >> origin_y;
+
         AssetData asset = lookup_assets_hash[id];
         const auto origin = QPoint(origin_x, origin_y);
 

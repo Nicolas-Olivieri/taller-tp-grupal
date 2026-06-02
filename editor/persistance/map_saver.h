@@ -17,6 +17,9 @@ private:
 
     void store_client_data(QDataStream& stream) const;
 
+    template <class intType>
+    void store_asset_data(QDataStream& stream, ImageType type) const;
+
 public:
     explicit MapSaver(MapData& data);
 

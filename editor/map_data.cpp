@@ -1,6 +1,9 @@
 #include "map_data.h"
 
 #include <QSet>
+#include <algorithm>
+
+#include "grid_range.h"
 
 MapData::MapData(): tile_id(0) {}
 
@@ -17,33 +20,27 @@ int MapData::add_asset(const QPoint position, const AssetData& asset_data) {
 }
 
 int MapData::add_tile(const QPoint position, const AssetData& tile_data) {
+    const GridRange grid_range(position, tile_data.tile_width, tile_data.tile_height);
+
     // Chequea colisiones para cada una de las celdas que ocupa
-    for (int i = 0; i < tile_data.tile_width; i++) {
-        for (int j = 0; j < tile_data.tile_height; j++) {
-            if (occupied_tiles.contains(QPoint(position.x() + i, position.y() + j))) {
-                return -1;
-            }
-        }
+    if (std::any_of(grid_range.begin(), grid_range.end(),
+                    [this](const QPoint& cell) { return occupied_tiles.contains(cell); })) {
+        return -1;
     }
 
     // Crea la nueva tile del modelo
     const Placement new_tile = {tile_id, position, tile_data};
 
     // Agrega la tile logica al hash de tiles e indica el id que corresponda en cada celda que ocupe la tile
+    asset_counter[tile_data.type]++;
     placements.insert(tile_id, new_tile);
-    for (int i = 0; i < tile_data.tile_width; i++) {
-        for (int j = 0; j < tile_data.tile_height; j++) {
-            QPoint curr_pos(position.x() + i, position.y() + j);
 
-            // Se puede agregar directamente, porque no debería existir otro valor en el set
-            occupied_tiles.insert(curr_pos, QVector{tile_id});
+    for (const auto& cell: grid_range) {
+        occupied_tiles.insert(cell, QVector{tile_id});
 
-            const QRect& unwalkable_area = tile_data.unwalkable_tiles;
-            if (!unwalkable_area.size().isNull() && unwalkable_area.x() <= i &&
-                i <= unwalkable_area.x() + unwalkable_area.width() && unwalkable_area.y() <= j &&
-                j <= unwalkable_area.y() + unwalkable_area.height()) {
-                unwalkable_tiles[curr_pos].append(tile_id);
-            }
+        const QRect unwalkable_area = tile_data.unwalkable_area.translated(position);
+        if (unwalkable_area.contains(cell)) {
+            unwalkable_tiles[cell].append(tile_id);
         }
     }
 
@@ -52,32 +49,25 @@ int MapData::add_tile(const QPoint position, const AssetData& tile_data) {
 }
 
 int MapData::add_collider(const QPoint position, const AssetData& collider_data) {
-    // Chequea colisiones para cada una de las celdas que ocupa
-    for (int i = 0; i < collider_data.tile_width; i++) {
-        for (int j = 0; j < collider_data.tile_height; j++) {
-            const QPoint curr_pos(position.x() + i, position.y() + j);
-            if (!occupied_tiles.contains(curr_pos) || /* No hay una tile colocada */
-                occupied_tiles[curr_pos].length() == 2) /* Hay tile, pero ya otro collider*/ {
-                return -1;
-            }
-        }
+    const GridRange grid_range(position, collider_data.tile_width, collider_data.tile_height);
+
+    // Chequea que haya una tile por debajo y no colisione con otro elemento
+    if (std::any_of(grid_range.begin(), grid_range.end(), [this](const QPoint& cell) {
+            return !occupied_tiles.contains(cell) || occupied_tiles[cell].length() == 2;
+        })) {
+        return -1;
     }
+
     const Placement new_tile = {tile_id, position, collider_data};
 
     placements.insert(tile_id, new_tile);
-    for (int i = 0; i < collider_data.tile_width; i++) {
-        for (int j = 0; j < collider_data.tile_height; j++) {
-            QPoint curr_pos(position.x() + i, position.y() + j);
+    asset_counter[collider_data.type]++;
+    for (const auto& cell: grid_range) {
+        occupied_tiles[cell].append(tile_id);
 
-            // Se agrega directamente a la posición 1 del vector (si o si hay un elemento)
-            occupied_tiles[curr_pos].append(tile_id);
-
-            // Si corresponde, agrego las celdas no caminables
-            const QRect& unwalkable_area = collider_data.unwalkable_tiles;
-            if (unwalkable_area.x() <= i && i <= unwalkable_area.x() + unwalkable_area.width() &&
-                unwalkable_area.y() <= j && j <= unwalkable_area.y() + unwalkable_area.height()) {
-                unwalkable_tiles[curr_pos].append(tile_id);
-            }
+        const QRect unwalkable = collider_data.unwalkable_area.translated(position);
+        if (unwalkable.contains(cell)) {
+            unwalkable_tiles[cell].append(tile_id);
         }
     }
 
@@ -92,37 +82,29 @@ bool MapData::erase_asset(const int asset_id) {
     const Placement& placement_data = placements[asset_id];
     const AssetData& asset = placement_data.asset;
     const QPoint& position = placement_data.origin;
+    const GridRange grid_range(position, asset.tile_width, asset.tile_height);
 
     // En caso de ser TILE, verifica que no tenga un collider en alguna de sus celdas
     if (asset.type == ImageType::TILE) {
-        for (int i = 0; i < asset.tile_width; i++) {
-            for (int j = 0; j < asset.tile_height; j++) {
-                QPoint curr_pos(position.x() + i, position.y() + j);
-                if (occupied_tiles[curr_pos].length() == 2) {
-                    return false;
-                }
-            }
+        if (std::any_of(grid_range.begin(), grid_range.end(),
+                        [this](const QPoint& cell) { return occupied_tiles[cell].length() == 2; })) {
+            return false;
         }
     }
 
     placements.remove(asset_id);
-    for (int i = 0; i < asset.tile_width; i++) {
-        for (int j = 0; j < asset.tile_height; j++) {
-            QPoint curr_pos(position.x() + i, position.y() + j);
+    asset_counter[asset.type]--;
+    for (const auto& cell: grid_range) {
+        occupied_tiles.remove(cell);
 
-            occupied_tiles.remove(curr_pos);
+        if (unwalkable_tiles.contains(cell) && unwalkable_tiles[cell].contains(asset_id)) {
+            unwalkable_tiles[cell].removeLast();
 
-            if (unwalkable_tiles.contains(curr_pos) && unwalkable_tiles[curr_pos].contains(asset_id)) {
-                unwalkable_tiles[curr_pos].removeLast();
-
-                // Si ya no tiene elementos que bloquean la celda, se elimina la entrada
-                if (unwalkable_tiles[curr_pos].empty()) {
-                    unwalkable_tiles.remove(curr_pos);
-                }
+            if (unwalkable_tiles[cell].empty()) {
+                unwalkable_tiles.remove(cell);
             }
         }
     }
-
     return true;
 }
 

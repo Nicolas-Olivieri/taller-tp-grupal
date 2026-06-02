@@ -18,7 +18,8 @@ private:
     QHash<uint8_t, AssetData>& npcs;
 
     template <class intType>
-    void load_assets(QDataStream& stream, const QHash<intType, AssetData>& lookup_assets_hash) const;
+    void load_assets(QDataStream& stream, const QHash<intType, AssetData>& lookup_assets_hash,
+                     ImageType type) const;
 
 public:
     MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,

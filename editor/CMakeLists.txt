@@ -3,6 +3,7 @@ target_sources(taller_editor
         main.cpp
         editor.cpp
         map_data.cpp
+        grid_range.cpp
 
         view/map_canvas.cpp
         view/asset_selector.cpp
@@ -19,6 +20,7 @@ target_sources(taller_editor
 
         editor.h
         map_data.h
+        grid_range.h
 
         view/map_canvas.h
         view/asset_selector.h
