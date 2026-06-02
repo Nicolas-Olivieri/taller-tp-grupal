@@ -24,7 +24,7 @@ private:
     std::string player_name;
     World world;
     int key_being_pressed;
-    const SDL2pp::Rect game_viewport = {20, 150, 700, 610};
+    const SDL2pp::Rect game_viewport = {10, 220, 735, 500};
     Camera camera;
 
     UserInterface ui;
