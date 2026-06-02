@@ -12,6 +12,7 @@
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
+#include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/snapshot.h"
 
 class Serializer {
@@ -62,6 +63,8 @@ public:
     void serialize(const ChatEventDTO& event);
 
     void serialize(const AllyInfoDTO& info);
+
+    void serialize(const PlayerStatsDTO& stats);
 };
 
 #endif  // SERIALIZER_H

@@ -9,6 +9,7 @@
 #include "common/direction.h"
 #include "common/dto/events/command.h"
 #include "common/dto/snapshot/actions/action.h"
+#include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 #include "common/socket.h"
 
@@ -33,6 +34,8 @@ private:
     DespawnDTO recv_despawn();
 
     ChatMessageDTO recv_chat_message();
+
+    PlayerStatsDTO recv_player_stats();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT

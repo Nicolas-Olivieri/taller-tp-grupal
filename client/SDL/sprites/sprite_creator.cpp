@@ -12,12 +12,23 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
         texture_pool(TexturePool(renderer)), animation_pool(AnimationPool()), renderer(renderer) {}
 
 
+#define GHOST_HEAD_ID 4
+#define GHOST_BODY_ID 3
+
 Sprite SpriteCreator::create_user(const PlayerInfoDTO& playerInfo) {
-    const AppearanceDTO& appearance_data = playerInfo.appearance;
     const SDL2pp::Point position(playerInfo.x, playerInfo.y);
 
-    SpriteLayer head = create_sprite_layer("head", appearance_data.head);
-    SpriteLayer body = create_sprite_layer("body", appearance_data.body, SDL2pp::Point(0, HEAD_OFFSET));
+    const AppearanceDTO& appearance_data = playerInfo.appearance;
+    uint8_t head_id = appearance_data.head;
+    uint8_t body_id = appearance_data.body;
+
+    if (playerInfo.stats.current_health == 0) {
+        head_id = GHOST_HEAD_ID;
+        body_id = GHOST_BODY_ID;
+    }
+
+    SpriteLayer head = create_sprite_layer("head", head_id);
+    SpriteLayer body = create_sprite_layer("body", body_id, SDL2pp::Point(0, HEAD_OFFSET));
 
     const SDL2pp::Point size = body.frame.Union(head.frame).GetSize();
 

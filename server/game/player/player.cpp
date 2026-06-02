@@ -37,10 +37,6 @@ int Player::attack() {
         unbind_ally();
     }
 
-    if (not is_alive()) {
-        std::cout << "[Player] Jugador " << player_name << " intentó atacar, pero está muerto" << std::endl;
-        return 0;
-    }
 
     current_attack_cooldown = required_attack_cooldown;
 
@@ -65,6 +61,11 @@ void Player::earn_xp(uint32_t amount) {
 bool Player::can_attack() const {
     if (current_attack_cooldown != 0)
         return false;
+
+    if (not is_alive()) {
+        std::cout << "[Player] Jugador " << player_name << " intentó atacar, pero está muerto" << std::endl;
+        return false;
+    }
 
     int mana_cost = ItemMapper::get_mana_cost(inventory.get_equipment().weapon);
 
@@ -106,7 +107,7 @@ bool Player::interact(Player& attacker) {
     }
 
     if (not attacker.can_attack()) {
-        std::cout << "[Player] Jugador " << player_name << " fue atacado, pero el enemigo estaba en cooldown"
+        std::cout << "[Player] Jugador " << player_name << " fue atacado, pero el enemigo no podía atacar"
                   << std::endl;
         return false;
     }

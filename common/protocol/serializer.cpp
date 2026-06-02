@@ -38,6 +38,7 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(info.x);
     serialize(info.y);
     serialize(info.appearance);
+    serialize(info.stats);
 }
 
 // TODO: se debería serializar dependiendo de action.action (ActionType)
@@ -103,4 +104,11 @@ void Serializer::serialize(const ChatEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.receiver);
     serialize(event.content);
+}
+
+void Serializer::serialize(const PlayerStatsDTO& stats) {
+    serialize(stats.max_health);
+    serialize(stats.current_health);
+    serialize(stats.max_mana);
+    serialize(stats.current_mana);
 }

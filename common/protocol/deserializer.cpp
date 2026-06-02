@@ -85,8 +85,9 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
     AppearanceDTO appearance = recv_appearance();
+    PlayerStatsDTO stats = recv_player_stats();
 
-    return PlayerInfoDTO(name, direction, x, y, appearance);
+    return PlayerInfoDTO(name, direction, x, y, appearance, stats);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -202,4 +203,13 @@ MessageVisibility Deserializer::recv_message_visibility() {
             throw std::invalid_argument("Byte de visibilidad de mensaje no reconocido");
             // TODO: chequear si es la mejor excepción
     }
+}
+
+PlayerStatsDTO Deserializer::recv_player_stats() {
+    const uint16_t max_health = recv_uint16();
+    const uint16_t current_health = recv_uint16();
+    const uint16_t max_mana = recv_uint16();
+    const uint16_t current_mana = recv_uint16();
+
+    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana);
 }
