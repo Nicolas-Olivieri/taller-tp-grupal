@@ -55,6 +55,66 @@ GameConfig::GameConfig() {
     cooldown_data.attack = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "attack"));
     cooldown_data.move = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "move"));
     cooldowns = cooldown_data;
+
+    const auto items_path = toml::find(paths, "items");
+    const auto items_file = toml::find<std::string>(items_path, "path");
+    const auto items_root = toml::parse(DATA_PATH + items_file);
+    const auto items_potions_table = toml::find(items_root, "potions");
+    for (const auto& [name, value]: items_potions_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        UsableItemData itemData{};
+        itemData.type_effect = static_cast<uint8_t>(toml::find<int>(value, "type"));
+        itemData.effect_amount = static_cast<uint16_t>(toml::find<int>(value, "effect"));
+
+        usable_items[id] = itemData;
+    }
+
+    const auto items_weapons_table = toml::find(items_root, "weapons");
+    for (const auto& [name, value]: items_weapons_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        WeaponItemData itemData{};
+        itemData.itemData.min = static_cast<uint16_t>(toml::find<int>(value, "min_damage"));
+        itemData.itemData.max = static_cast<uint16_t>(toml::find<int>(value, "max_damage"));
+        itemData.range = static_cast<uint8_t>(toml::find<int>(value, "range"));
+        itemData.mana_cost = static_cast<uint16_t>(toml::find<int>(value, "mana_cost"));
+
+        weapons_items[id] = itemData;
+    }
+
+    const auto items_helmets_table = toml::find(items_root, "helmets");
+    for (const auto& [name, value]: items_helmets_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        EquipableItemData itemData{};
+        itemData.min = static_cast<uint16_t>(toml::find<int>(value, "min_defense"));
+        itemData.max = static_cast<uint16_t>(toml::find<int>(value, "max_defense"));
+
+        helmets_items[id] = itemData;
+    }
+
+    const auto items_armors_table = toml::find(items_root, "armors");
+    for (const auto& [name, value]: items_armors_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        EquipableItemData itemData{};
+        itemData.min = static_cast<uint16_t>(toml::find<int>(value, "min_defense"));
+        itemData.max = static_cast<uint16_t>(toml::find<int>(value, "max_defense"));
+
+        armors_items[id] = itemData;
+    }
+
+    const auto items_shields_table = toml::find(items_root, "shields");
+    for (const auto& [name, value]: items_shields_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        EquipableItemData itemData{};
+        itemData.min = static_cast<uint16_t>(toml::find<int>(value, "min_defense"));
+        itemData.max = static_cast<uint16_t>(toml::find<int>(value, "max_defense"));
+
+        shields_items[id] = itemData;
+    }
 }
 
 
@@ -68,3 +128,17 @@ const ArchetypeData& GameConfig::get_archetype(const uint8_t id) const { return 
 const RaceData& GameConfig::get_race(const uint8_t id) const { return this->races.at(id); }
 
 const CooldownData& GameConfig::get_cooldown() const { return this->cooldowns; }
+
+const std::unordered_map<uint8_t, UsableItemData>& GameConfig::get_usables() const { return usable_items; }
+
+const std::unordered_map<uint8_t, WeaponItemData>& GameConfig::get_weapons() const { return weapons_items; }
+
+const std::unordered_map<uint8_t, EquipableItemData>& GameConfig::get_helmets() const {
+    return helmets_items;
+}
+
+const std::unordered_map<uint8_t, EquipableItemData>& GameConfig::get_armors() const { return armors_items; }
+
+const std::unordered_map<uint8_t, EquipableItemData>& GameConfig::get_shields() const {
+    return shields_items;
+}

@@ -1,72 +1,74 @@
+[weapons.bare_hand]
+id = 0
+min_damage = 1
+max_damage = 3
+range = 1
+mana_cost = 0
+
 [weapons.sword]
 id = 1
-type = "melee"
 min_damage = 2
 max_damage = 5
 range = 1
+mana_cost = 0
 
 [weapons.axe]
 id = 2
-type = "melee"
 min_damage = 4
 max_damage = 5
 range = 1
+mana_cost = 0
 
 [weapons.hammer]
 id = 3
-type = "melee"
 min_damage = 1
 max_damage = 9
 range = 1
-
+mana_cost = 0
 
 [weapons.ash_stick]
 id = 4
-type = "magic_damage"
-min_effect = 2
-max_effect = 4
+min_damage = 2
+max_damage = 4
+range = 5
 mana_cost = 5
-range = 5
 
-[weapons.elven_flute]
-id = 5
-type = "magic_healing"
-min_effect = 50
-max_effect = 100
-mana_cost = 100
-range = 5
+# TODO ver como se agregan hechizo curativo
+#[weapons.elven_flute]
+#id = 5
+#type = "magic_healing"
+#min_effect = 50
+#max_effect = 100
+#mana_cost = 100
+#range = 5
 
 [weapons.knotty_staff]
 id = 6
-type = "magic_damage"
-min_effect = 4
-max_effect = 8
-mana_cost = 15
+min_damage = 4
+max_damage = 8
 range = 5
+mana_cost = 15
 
 [weapons.socketed_staff]
 id = 7
-type = "magic_damage"
-min_effect = 8
-max_effect = 20
-mana_cost = 30
+min_damage = 8
+max_damage = 20
 range = 7
-
+mana_cost = 30
 
 [weapons.simple_bow]
 id = 8
-type = "ranged"
-min_effect = 1
-max_effect = 4
+min_damage = 1
+max_damage  = 4
 range = 5
+mana_cost = 0
 
 [weapons.compound_bow]
 id = 9
-type = "ranged"
-min_effect = 4
-max_effect = 16
+min_damage = 4
+max_damage  = 16
 range = 7
-
+mana_cost = 0
 
 [armors.leather]
 id = 10
@@ -113,10 +115,10 @@ max_defense = 4
 
 [potions.health]
 id = 18
-type = "health"
+type = 0
 effect = 100
 
 [potions.mana]
 id = 19
-type = "mana"
+type = 1
 effect = 100

@@ -30,12 +30,34 @@ struct RaceData {
     uint8_t strength;
 };
 
+struct UsableItemData {
+    uint8_t type_effect;     // vida = 0 o mana = 1
+    uint16_t effect_amount;  // 100, 200, etc.
+};
+
+struct EquipableItemData {
+    uint16_t min;
+    uint16_t max;
+};
+
+struct WeaponItemData {
+    EquipableItemData itemData;
+    uint8_t range;
+    uint16_t mana_cost;  // si es 0 -> No es mágico
+};
+
 
 class GameConfig {
 private:
     CooldownData cooldowns{};
     std::unordered_map<uint8_t, ArchetypeData> archetypes;
     std::unordered_map<uint8_t, RaceData> races;
+
+    std::unordered_map<uint8_t, UsableItemData> usable_items;
+    std::unordered_map<uint8_t, WeaponItemData> weapons_items;
+    std::unordered_map<uint8_t, EquipableItemData> helmets_items;
+    std::unordered_map<uint8_t, EquipableItemData> armors_items;
+    std::unordered_map<uint8_t, EquipableItemData> shields_items;
 
     GameConfig();
 
@@ -50,6 +72,16 @@ public:
     const RaceData& get_race(uint8_t id) const;
 
     const CooldownData& get_cooldown() const;
+
+    const std::unordered_map<uint8_t, UsableItemData>& get_usables() const;
+
+    const std::unordered_map<uint8_t, WeaponItemData>& get_weapons() const;
+
+    const std::unordered_map<uint8_t, EquipableItemData>& get_helmets() const;
+
+    const std::unordered_map<uint8_t, EquipableItemData>& get_armors() const;
+
+    const std::unordered_map<uint8_t, EquipableItemData>& get_shields() const;
 };
 
 

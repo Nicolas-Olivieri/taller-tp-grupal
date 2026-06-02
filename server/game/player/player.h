@@ -5,20 +5,43 @@
 
 #include "../killable.h"
 #include "../position.h"
+#include "server/game/attacker.h"
+#include "server/game/player/inventory/inventory.h"
 #include "server/persistance/playerdata.h"
+#include "server/util/calculator.h"
 
 
-class Player: public Killable {
+class Player: public Killable, public Attacker {
 private:
     const std::string player_name;
     const uint8_t body;
     const uint8_t head;
+
+    Inventory inventory;
 
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
 
     Player(const std::string& player_name, const PlayerData& persisted_data,
            const Position& starting_position);
+
+    /// Attacker
+
+    // Devuelve el daño del ataque considerando equipamiento actual
+    // TODO habrá que agregar a la cuenta el daño por estar cerca de compañeros del clan
+    int attack() override;
+
+    bool can_attack() const override;
+
+    bool can_reach(const Position& other_position) const override;
+
+    /// Killable
+
+    void drop() override;
+
+    bool interact(Player& attacker) override;
+
+    /// Player
 
     Stats get_stats() const;
 
@@ -28,7 +51,9 @@ public:
 
     void earn_xp(uint32_t amount);
 
-    void update();
+    void update() override;
+
+    ~Player() override = default;
 };
 
 

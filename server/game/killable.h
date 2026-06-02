@@ -29,23 +29,19 @@ protected:
              Position position);
 
 public:
-    void drop();
-
-    bool interact(Player&) override;
+    virtual void drop() = 0;
 
     bool can_move() const;
 
     void update_position(const Position& new_position, const Direction& new_direction);
 
-    bool can_attack() const;
-
-    void attack();
-
-    int get_strength() const;
-
     Position get_position() const;
 
     Direction get_direction() const;
+
+    virtual void update();
+
+    virtual ~Killable() = default;
 };
 
 

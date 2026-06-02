@@ -2,6 +2,9 @@
 #define CALCULATOR_H
 
 #include <cstdint>
+#include <random>
+
+#include "server/game/player/inventory/equipment.h"
 
 
 class Calculator {
@@ -20,11 +23,27 @@ public:
 
     static uint32_t kill_exp(uint16_t foe_max_health, uint8_t foe_level, uint8_t own_level);
 
-    static uint16_t calculate_unarmed_damage(uint8_t strength);
+    static uint32_t calculate_xp_limit(int level);
+
+    static uint16_t calculate_damage(const uint8_t strength, const Equipment& equipment);
+
+    static uint16_t calculate_defense(const Equipment& equipment);
+
+    static bool can_dodge(const int agility);
 
     static uint8_t calculate_averagable_stat(uint8_t archetype_stat, uint8_t race_stat);
 
     static uint8_t calculate_scalable_stat(uint8_t base, uint8_t level, float multiplier);
+
+private:
+    static uint16_t calculate_unarmed_damage(uint8_t strength);
+
+    static int random_number(const int min, const int max);
+
+    // TODO refactorizar para q reciba max y min asi se puede reutilizar para calcular la xp
+    static float random_probability();
+
+    static int get_random_from_item(const uint8_t item);
 };
 
 
