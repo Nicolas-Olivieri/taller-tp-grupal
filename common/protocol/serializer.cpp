@@ -85,6 +85,7 @@ void Serializer::serialize(const DespawnDTO& despawn) { serialize(despawn.player
 
 void Serializer::serialize(const ChatMessageDTO& message) {
     serialize(static_cast<uint8_t>(message.visibility));
+    serialize(message.sender);
     serialize(message.receiver);
     serialize(message.content);
 }

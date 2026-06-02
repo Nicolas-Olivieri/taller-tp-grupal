@@ -146,10 +146,11 @@ DespawnDTO Deserializer::recv_despawn() {
 
 ChatMessageDTO Deserializer::recv_chat_message() {
     MessageVisibility visibility = recv_message_visibility();
+    std::string sender = recv_string();
     std::string receiver = recv_string();
     std::string content = recv_string();
 
-    return ChatMessageDTO(visibility, receiver, content);
+    return ChatMessageDTO(visibility, sender, receiver, content);
 }
 
 MessageVisibility Deserializer::recv_message_visibility() {

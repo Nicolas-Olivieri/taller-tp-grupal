@@ -5,9 +5,10 @@
 #include <string>
 #include <utility>
 
+#include <SDL2pp/SDLTTF.hh>
+
 #include "SDL/client_game.h"
 #include "client/qt/lobby.h"
-
 
 Client::Client(int argc, char* argv[]): app(argc, argv) {}
 
@@ -21,6 +22,8 @@ int Client::run() {
 
     Socket socket = lobby.get_socket();
     ConnectionHandler connection(std::move(socket));
+
+    SDL2pp::SDLTTF ttf;
 
     std::string player_name = lobby.get_username();
     ClientGame game(connection, player_name);

@@ -23,7 +23,7 @@ size_t ActionDTO::message_size() const {
 void ActionDTO::accept(Serializer& serializer) const { serializer.serialize(*this); }
 
 ActionDTO::ActionDTO(const DespawnDTO& despawn):
-        action(ActionType::DESPAWN), despawn(despawn), chat_message(MessageVisibility::PRIVATE, "", "") {}
+        action(ActionType::DESPAWN), despawn(despawn), chat_message(MessageVisibility::PRIVATE, "", "", "") {}
 
 ActionDTO::ActionDTO(const ChatMessageDTO& message):
         action(ActionType::MESSAGE), despawn(""), chat_message(message) {}

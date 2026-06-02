@@ -9,6 +9,7 @@
 #include <SDL2pp/Window.hh>
 
 #include "../client_constants.h"
+#include "common/dto/events/chatevent.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/util/rate_timer.h"
@@ -28,7 +29,9 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         world(renderer, player_name),
         key_being_pressed(SDLK_UNKNOWN),
         camera(initialize_world_and_camera()),
-        ui(renderer, player_name) {}
+        ui(renderer, player_name),
+        is_chat_active(false),
+        chat_text("") {}
 
 void ClientGame::run() {
 
@@ -85,6 +88,15 @@ int ClientGame::pollEvents() {
             return 1;
         }
 
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            handle_mouse_click(event);
+        }
+
+        if (is_chat_active) {
+            handle_chat_events(event);
+            continue;
+        }
+
         if (event.type == SDL_KEYDOWN) {
             key_was_pressed = true;
             handle_key_down(event);
@@ -94,10 +106,6 @@ int ClientGame::pollEvents() {
         // key_was_pressed == event.key.keysym.sym &&
         if (event.type == SDL_KEYUP && KeyMapper::is_movement_key(event.key.keysym.sym)) {
             key_being_pressed = SDLK_UNKNOWN;
-        }
-
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
-            handle_mouse_click(event);
         }
     }
 
@@ -109,6 +117,43 @@ int ClientGame::pollEvents() {
     return 0;
 }
 
+void ClientGame::handle_chat_events(const SDL_Event& event) {
+    if (event.type == SDL_TEXTINPUT) {
+        chat_text += event.text.text;
+        return;
+    }
+
+    if (event.type != SDL_KEYDOWN)
+        return;
+
+    if (event.key.keysym.sym == SDLK_BACKSPACE && !chat_text.empty()) {
+        chat_text.pop_back();
+        return;
+    }
+
+    if (event.key.keysym.sym == SDLK_RETURN) {
+        if (!chat_text.empty() && chat_text[0] == '@')
+            send_private_message();
+        chat_text.clear();
+    }
+
+    if (event.key.keysym.sym == SDLK_ESCAPE) {
+        is_chat_active = false;
+        SDL_StopTextInput();
+        chat_text.clear();
+    }
+}
+
+void ClientGame::send_private_message() {
+    size_t first_space = chat_text.find(' ');
+
+    if (first_space != std::string::npos) {
+        std::string nick = chat_text.substr(1, first_space - 1);
+        std::string message = chat_text.substr(first_space + 1);
+        connection.push_command(std::make_unique<ChatEventDTO>(nick, message));
+    }
+}
+
 void ClientGame::update_state_from_server() {
     SnapshotDTO snapshot;
     bool updated = false;
@@ -116,7 +161,7 @@ void ClientGame::update_state_from_server() {
     while (connection.try_pop_snapshot(snapshot)) {
         updated = true;
         world.handle_actions(snapshot.actions);
-        //        ui.update_chat(snapshot.actions);
+        ui.update_chat(snapshot.actions);
     }
 
     if (!updated)
@@ -141,7 +186,7 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
 
 void ClientGame::handle_mouse_click(const SDL_Event& event) {
     assert(event.type == SDL_MOUSEBUTTONDOWN);
-    if (is_inside_gameport(event.button.x, event.button.y)) {
+    if (is_inside_viewport(event.button.x, event.button.y, game_viewport)) {
         handle_game_click(event);
     } else {
         handle_ui_click(event);
@@ -150,6 +195,10 @@ void ClientGame::handle_mouse_click(const SDL_Event& event) {
 
 void ClientGame::render_ui_and_world() {
     ui.render();
+
+    ui.render_chat_history();
+
+    ui.render_chat_input(chat_text, is_chat_active);
 
     renderer.SetViewport(game_viewport);
     world.render_in_z_order(camera);
@@ -160,12 +209,29 @@ void ClientGame::render_ui_and_world() {
     //    ui.render_fields(); // o algo asi
 }
 
-bool ClientGame::is_inside_gameport(int x, int y) {
-    return x >= game_viewport.x && x <= (game_viewport.x + game_viewport.w) && y >= game_viewport.y &&
-           y <= (game_viewport.y + game_viewport.h);
+bool ClientGame::is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport) {
+    return x >= viewport.x && x <= (viewport.x + viewport.w) && y >= viewport.y &&
+           y <= (viewport.y + viewport.h);
 }
 
-void ClientGame::handle_ui_click(const SDL_Event& /* event */) {}
+void ClientGame::handle_ui_click(const SDL_Event& event) {
+    if (event.button.button == SDL_BUTTON_LEFT) {
+        // Clic izquierdo sobre el chat
+        if (is_inside_viewport(event.button.x, event.button.y, chat_icon))
+            toggle_chat();
+    }
+}
+
+void ClientGame::toggle_chat() {
+    is_chat_active = !is_chat_active;
+
+    if (is_chat_active) {
+        SDL_StartTextInput();
+    } else {
+        SDL_StopTextInput();
+    }
+    return;
+}
 
 void ClientGame::handle_game_click(const SDL_Event& event) {
     int game_click_x = event.button.x - game_viewport.x;

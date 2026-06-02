@@ -29,6 +29,10 @@ private:
 
     UserInterface ui;
 
+    bool is_chat_active;
+    std::string chat_text;
+    const SDL2pp::Rect chat_icon = {5, 120, 45, 30};
+
     // Principales
     int pollEvents();
 
@@ -44,7 +48,13 @@ private:
 
     void handle_game_click(const SDL_Event& event);
 
-    bool is_inside_gameport(int x, int y);
+    bool is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport);
+
+    void toggle_chat();
+
+    void handle_chat_events(const SDL_Event& event);
+
+    void send_private_message();
 
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name);
