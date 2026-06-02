@@ -67,6 +67,12 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                     sprite_creator.update_appearance(sprite, action.resurrection.original_appearance);
                 }
                 break;
+            case ActionType::DEATH:
+                if (players.contains(action.death.player_dead)) {
+                    Sprite& sprite = players.at(action.death.player_dead);
+                    sprite_creator.convert_to_ghost(sprite);
+                }
+                break;
             default:
                 break;
         }
