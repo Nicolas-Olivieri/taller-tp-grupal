@@ -5,13 +5,13 @@
 
 #include "ui_assetselector.h"
 
-AssetSelector::AssetSelector(const QHash<uint8_t, AssetData>& tiles, const QHash<uint16_t, AssetData>& colliders,
-                             QWidget* parent):
+AssetSelector::AssetSelector(const QHash<uint8_t, AssetData>& tiles,
+                             const QHash<uint16_t, AssetData>& colliders, QWidget* parent):
         QTabWidget(parent), ui(new Ui::AssetSelector), tiles(tiles), colliders(colliders) {
 
     ui->setupUi(this);
 
-    for (const auto& tile_data : tiles) {
+    for (const auto& tile_data: tiles) {
         auto* item = new QListWidgetItem(QIcon(tile_data.img), tile_data.name);
         item->setData(Qt::UserRole, tile_data.id);
         ui->tiles_list->addItem(item);
@@ -28,13 +28,12 @@ AssetSelector::AssetSelector(const QHash<uint8_t, AssetData>& tiles, const QHash
         emit clickedImage(tiles.value(id));
     });
 
-    connect(ui->colliders_list, &QListWidget::itemClicked, this, [this, colliders](const QListWidgetItem* item) {
-        int id = item->data(Qt::UserRole).toInt();
-        emit clickedImage(colliders.value(id));
-    });
+    connect(ui->colliders_list, &QListWidget::itemClicked, this,
+            [this, colliders](const QListWidgetItem* item) {
+                int id = item->data(Qt::UserRole).toInt();
+                emit clickedImage(colliders.value(id));
+            });
 }
 
 
 AssetSelector::~AssetSelector() { delete ui; }
-
-

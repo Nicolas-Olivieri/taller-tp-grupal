@@ -1,21 +1,17 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include <qpixmap.h>
+#include <QPixmap>
 
-enum class EditorMode {
-    DRAW, ERASE, DRAG
-};
+enum class EditorMode { DRAW, ERASE, DRAG };
 
-enum class ImageType {
-    TILE, COLLIDER
-};
+enum class ImageType { TILE, COLLIDER };
 
 struct AssetData {
     uint8_t id;
     QPixmap img;
     QString name;
-    ImageType type; // TILE o COLLIDER
+    ImageType type;  // TILE o COLLIDER
     int tile_width;
     int tile_height;
     QRect unwalkable_tiles;

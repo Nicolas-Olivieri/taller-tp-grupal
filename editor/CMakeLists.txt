@@ -2,23 +2,29 @@ target_sources(taller_editor
     PRIVATE
         main.cpp
         editor.cpp
-        map_canvas.cpp
         map_data.cpp
-        asset_selector.cpp
-        map_saver.cpp
-        map_loader.cpp
+
+        view/map_canvas.cpp
+        view/asset_selector.cpp
+
+        persistance/map_saver.cpp
+        persistance/map_loader.cpp
+
+        ui/mapcanvas.ui
+        ui/editor.ui
+        ui/assetselector.ui
 
     PUBLIC
         components.h
 
         editor.h
-        map_canvas.h
         map_data.h
-        asset_selector.h
-        map_saver.h
-        map_loader.h
 
-        mapcanvas.ui
-        editor.ui
-        assetselector.ui
+        view/map_canvas.h
+        view/asset_selector.h
+
+        persistance/map_saver.h
+        persistance/map_loader.h
+
+        toml/asset_parser.h
 )

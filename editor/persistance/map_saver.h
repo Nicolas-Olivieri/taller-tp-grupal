@@ -3,7 +3,7 @@
 
 #include "map_data.h"
 
-class MapSaver{
+class MapSaver {
 private:
     MapData& data;
     QPoint min_point;
@@ -11,19 +11,19 @@ private:
 
     void get_origin_and_matrix_size();
 
-    void store_offset_and_dimensions_data(QDataStream &stream) const;
+    void store_offset_and_dimensions_data(QDataStream& stream) const;
 
-    void store_server_data(QDataStream &stream) const;
+    void store_server_data(QDataStream& stream) const;
 
-    void store_client_data(QDataStream &stream) const;
+    void store_client_data(QDataStream& stream) const;
 
 public:
     explicit MapSaver(MapData& data);
 
     void save(const QString& user_filename);
 
-    QString format_filename(const QString &filename);
+    QString format_filename(const QString& filename);
 };
 
 
-#endif //MAP_SAVER_H
+#endif  // MAP_SAVER_H

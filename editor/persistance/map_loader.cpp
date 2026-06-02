@@ -5,12 +5,12 @@
 
 #define HEADER 0xFAF4
 
-MapLoader::MapLoader(MapData& data, MapCanvas& canvas,
-                     QHash<uint8_t, AssetData> &tiles, QHash<uint16_t, AssetData>& colliders) :
-    data(data), canvas(canvas), tiles(tiles), colliders(colliders) {}
+MapLoader::MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
+                     QHash<uint16_t, AssetData>& colliders):
+        data(data), canvas(canvas), tiles(tiles), colliders(colliders) {}
 
 
-bool MapLoader::load(const QString &filename) const {
+bool MapLoader::load(const QString& filename) const {
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly)) {
         return false;
@@ -39,25 +39,17 @@ bool MapLoader::load(const QString &filename) const {
 }
 
 
-void MapLoader::reset_editor() const {
-    data.occupied_tiles.clear();
-    data.unwalkable_tiles.clear();
-    data.placements.clear();
-
-    canvas.clear_all();
-}
-
-
 template <typename intType>
-void MapLoader::load_assets(QDataStream& stream, QHash<intType, AssetData>& lookup_assets_hash) const {
+void MapLoader::load_assets(QDataStream& stream, const QHash<intType, AssetData>& lookup_assets_hash) const {
     uint16_t assets_amount;
 
     stream >> assets_amount;
     for (uint16_t i = 0; i < assets_amount; i++) {
-        intType id;
+        intType raw_id;
         uint16_t origin_x, origin_y;
-        stream >> id >> origin_x >> origin_y;
+        stream >> raw_id >> origin_x >> origin_y;
 
+        auto id = static_cast<uint16_t>(raw_id);
         AssetData asset = lookup_assets_hash[id];
         const auto origin = QPoint(origin_x, origin_y);
 

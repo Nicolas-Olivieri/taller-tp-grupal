@@ -3,15 +3,15 @@
 
 #include <QGraphicsView>
 
-#include "components.h"
-#include "map_data.h"
+#include "../components.h"
+#include "../map_data.h"
 
 namespace Ui {
 class MapCanvas;
 }
 
 class MapCanvas: public QGraphicsView {
-friend class MapLoader;
+    friend class MapLoader;
 
     Q_OBJECT
 public:
@@ -30,7 +30,7 @@ private:
     void erase_asset(QPointF clicked_pos) const;
 
 
-void set_unwalkable_tiles(const QPoint &clicked_cell, int tile_id) const;
+    void set_unwalkable_tiles(const QPoint& clicked_cell, int tile_id) const;
     void erase_unwalkable_tiles(int tile_id) const;
 
     QPoint coordinates_to_grid(QPointF coordinates) const;
@@ -41,9 +41,9 @@ public slots:
     void set_visibility_unwalkables() const;
 
 protected:
-    void drawBackground(QPainter *painter, const QRectF &rect) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
+    void drawBackground(QPainter* painter, const QRectF& rect) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
 
 
 private:

@@ -1,0 +1,27 @@
+[[tiles]]
+id = 0
+name = "Agua"
+width = 4
+height = 4
+unwalkable = [0,0,4,4]
+
+[[tiles]]
+id = 1
+name = "Arena"
+width = 4
+height = 4
+unwalkable = [0,0,0,0]
+
+[[tiles]]
+id = 2
+name = "Pasto"
+width = 4
+height = 4
+unwalkable = [0,0,0,0]
+
+[[colliders]]
+id = 0
+name = "Carreta"
+width = 3
+height = 2
+unwalkable = [0,0,3,2]
