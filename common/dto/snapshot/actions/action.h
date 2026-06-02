@@ -25,6 +25,7 @@ struct ActionDTO: public ProtocolMessageDTO {
 
     explicit ActionDTO(const ResurrectionDTO& resurrection);
 
+    // Modificarlo al agregar nuevas actions
     size_t message_size() const override;
 
     void accept(Serializer& serializer) const override;

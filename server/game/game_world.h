@@ -47,7 +47,7 @@ public:
     void heal_player(const std::string& player_name);
 
 private:
-    void execute_ally_action(const std::string& player_name, const AllyAction& action);
+    AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyAction& action);
 
     void init_npc();
 };

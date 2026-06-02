@@ -2,6 +2,7 @@
 #define ALLY_H
 
 #include "common/creature_type.h"
+#include "server/command/cmd_results/ally_execute_result.h"
 #include "server/game/interactive.h"
 #include "server/game/position.h"
 
@@ -24,7 +25,7 @@ public:
 
     virtual AllyType get_type() const = 0;
 
-    virtual void execute(Player& player, const AllyAction& action) = 0;
+    virtual AllyExecuteResult execute(Player& player, const AllyAction& action) = 0;
 
     ~Ally() override = default;
 };

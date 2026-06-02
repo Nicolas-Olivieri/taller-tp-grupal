@@ -9,7 +9,8 @@ struct AllyExecuteResult {
     ResurrectResult resurrect_result;
     // TODO agregar campos faltantes
 
-    explicit AllyExecuteResult(const ResurrectResult result);
+    // Se sobrecarga en función al aliado invocado
+    explicit AllyExecuteResult(const ResurrectResult& result);
 };
 
 #endif  // ALLY_EXECUTE_RESULT_H

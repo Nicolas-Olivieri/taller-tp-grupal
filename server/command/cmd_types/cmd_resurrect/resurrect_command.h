@@ -11,7 +11,7 @@ class ResurrectCommand: public Command {
 private:
     std::string player_name;
     ResurrectResult result;
-    AppearanceDTO appearanceDto;
+    AppearanceDTO appearance;
 
 public:
     explicit ResurrectCommand(const std::string& player_name);

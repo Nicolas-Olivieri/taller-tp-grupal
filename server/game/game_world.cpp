@@ -134,7 +134,7 @@ void GameWorld::interact(const std::string& player_name, const Position& positio
 
 
 ResurrectResult GameWorld::resurrect_player(const std::string& player_name) {
-    execute_ally_action(player_name, AllyAction::RESURRECT);
+    return execute_ally_action(player_name, AllyAction::RESURRECT).resurrect_result;
 }
 
 
@@ -143,9 +143,9 @@ void GameWorld::heal_player(const std::string& player_name) {
 }
 
 
-void GameWorld::execute_ally_action(const std::string& player_name, const AllyAction& action) {
+AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name, const AllyAction& action) {
     if (not players.contains(player_name)) {
-        return;
+        return AllyExecuteResult(ResurrectResult::NO_RESULT);
     }
 
     Player& player = players.at(player_name);
@@ -153,11 +153,21 @@ void GameWorld::execute_ally_action(const std::string& player_name, const AllyAc
 
     if (ally == nullptr) {
         std::cout << "[World] Jugador " << player_name << " no tiene vinculado a ningún aliado" << std::endl;
-        return;
+        return AllyExecuteResult(ResurrectResult::PLAYER_UNBOUNDED);
     }
 
-    ally->execute(player, action);
+    const AllyExecuteResult result = ally->execute(player, action);
+    std::cout << "[World] result: "
+              << (result.resurrect_result == ResurrectResult::NO_RESULT ? " NO_RESULT" : "") << std::endl;
+    std::cout << "[World] result: "
+              << (result.resurrect_result == ResurrectResult::PLAYER_UNBOUNDED ? " PLAYER_UNBOUNDED" : "")
+              << std::endl;
+    std::cout << "[World] result: "
+              << (result.resurrect_result == ResurrectResult::PLAYER_RESURRECTED ? " PLAYER_RESURRECTED" : "")
+              << std::endl;
+
     player.unbind_ally();
+    return result;
 }
 
 

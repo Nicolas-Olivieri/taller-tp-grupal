@@ -1,5 +1,7 @@
 #include "resurrect_command.h"
 
+#include <cassert>
+
 
 ResurrectCommand::ResurrectCommand(const std::string& player_name):
         player_name(player_name), result(ResurrectResult::NO_RESULT) {}
@@ -8,8 +10,11 @@ ResurrectCommand::ResurrectCommand(const std::string& player_name):
 void ResurrectCommand::execute(GameWorld& world) {
     result = world.resurrect_player(player_name);
     if (result == ResurrectResult::PLAYER_RESURRECTED) {
-        appearanceDto = AppearanceDTO(world.get_players().at(player_name).get_body(),
-                                      world.get_players().at(player_name).get_head());
+        const uint8_t body = world.get_players().at(player_name).get_body();
+        const uint8_t head = world.get_players().at(player_name).get_head();
+        std::cout << "[ResurrectCommand] body: " << static_cast<int>(body) << std::endl;
+        std::cout << "[ResurrectCommand] head: " << static_cast<int>(head) << std::endl;
+        appearance = AppearanceDTO(body, head);
     }
 }
 

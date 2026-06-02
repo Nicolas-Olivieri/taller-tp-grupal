@@ -14,6 +14,8 @@ size_t ActionDTO::message_size() const {
             return base + despawn.message_size();
         case ActionType::MESSAGE:
             return base + chat_message.message_size();
+        case ActionType::RESURRECTION:
+            return base + resurrection.message_size();
         default:
             throw std::runtime_error("ActionDTO Descubrió que tiene un tipo de acción desconocido al "
                                      "calcular su message_size");
