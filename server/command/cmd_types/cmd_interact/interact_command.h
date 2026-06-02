@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "command.h"
+#include "server/command/command.h"
 
 
 class InteractCommand: public Command {

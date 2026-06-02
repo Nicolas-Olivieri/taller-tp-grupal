@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "../dto/lobby/ally_info.h"
 #include "common/direction.h"
 #include "common/dto/events/command.h"
 #include "common/dto/snapshot/actions/action.h"
@@ -16,6 +17,10 @@ private:
     Socket& socket;
 
     PlayerInfoDTO recv_player_info();
+
+    AllyInfoDTO recv_ally_info();
+
+    AllyType recv_ally_type();
 
     ActionDTO recv_action();
 
@@ -45,6 +50,8 @@ public:
     std::vector<PlayerInfoDTO> recv_players_information();
 
     std::vector<ActionDTO> recv_actions();
+
+    std::vector<AllyInfoDTO> recv_allies_information();
 };
 
 #endif  // DESERIALIZER_H

@@ -28,6 +28,8 @@ void RecoverableStat::update() {
     }
 }
 
+void RecoverableStat::recover_all() { current_amount = max_amount; }
+
 uint16_t RecoverableStat::get_max() const { return max_amount; }
 
 uint16_t RecoverableStat::get_current() const { return current_amount; }

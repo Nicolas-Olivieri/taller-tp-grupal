@@ -10,3 +10,6 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const int x, co
 RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::string& receiver,
                                          const std::string& content):
         command(cmd), direction(Direction::IDLE), x(0), y(0), receiver(receiver), message(content) {}
+
+RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd):
+        command(cmd), direction(Direction::IDLE), x(0), y(0), receiver(""), message("") {}

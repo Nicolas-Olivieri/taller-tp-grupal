@@ -5,6 +5,7 @@
 
 #include "../killable.h"
 #include "../position.h"
+#include "server/game/allies/ally.h"
 #include "server/game/attacker.h"
 #include "server/game/player/inventory/inventory.h"
 #include "server/persistance/playerdata.h"
@@ -18,6 +19,8 @@ private:
     const uint8_t head;
 
     Inventory inventory;
+
+    Ally* bound_ally;
 
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
@@ -41,6 +44,8 @@ public:
 
     bool interact(Player& attacker) override;
 
+    void update_position(const Position& new_position, const Direction& new_direction) override;
+
     /// Player
 
     Stats get_stats() const;
@@ -54,6 +59,14 @@ public:
     void update() override;
 
     ~Player() override = default;
+
+    void bind_ally(Ally* ally);
+
+    Ally* get_bound_ally() const;
+
+    void unbind_ally();
+
+    void heal();
 };
 
 

@@ -9,6 +9,7 @@
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
+#include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
 #include "common/dto/snapshot/snapshot.h"
@@ -59,6 +60,8 @@ public:
     void serialize(const ChatMessageDTO& message);
 
     void serialize(const ChatEventDTO& event);
+
+    void serialize(const AllyInfoDTO& info);
 };
 
 #endif  // SERIALIZER_H

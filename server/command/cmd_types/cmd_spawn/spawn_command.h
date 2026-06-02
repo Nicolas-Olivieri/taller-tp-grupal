@@ -4,8 +4,7 @@
 #include <string>
 
 #include "common/dto/snapshot/snapshot_builder.h"
-
-#include "command.h"
+#include "server/command/command.h"
 
 
 class SpawnCommand: public Command {

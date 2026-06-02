@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "server/command/spawn_command.h"
+#include "server/command/cmd_types/cmd_spawn/spawn_command.h"
 
 
 GameAcceptor::GameAcceptor(Queue<ConnectionInfo>& waiting_queue, PlayerRepository& player_repository):

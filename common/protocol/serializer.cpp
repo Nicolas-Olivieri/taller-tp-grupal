@@ -86,6 +86,12 @@ void Serializer::serialize(const InteractEventDTO& event) {
 
 void Serializer::serialize(const DespawnDTO& despawn) { serialize(despawn.player_despawned); }
 
+void Serializer::serialize(const AllyInfoDTO& info) {
+    serialize(static_cast<uint8_t>(info.type));
+    serialize(info.x);
+    serialize(info.y);
+}
+
 void Serializer::serialize(const ChatMessageDTO& message) {
     serialize(static_cast<uint8_t>(message.visibility));
     serialize(message.sender);

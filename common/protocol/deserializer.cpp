@@ -39,6 +39,8 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::MOVE:
         case CommandType::INTERACT:
         case CommandType::CHAT:
+        case CommandType::RESURRECT:
+        case CommandType::HEAL:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -142,6 +144,40 @@ DespawnDTO Deserializer::recv_despawn() {
     std::string player_despawned = recv_string();
 
     return DespawnDTO(player_despawned);
+}
+
+std::vector<AllyInfoDTO> Deserializer::recv_allies_information() {
+    const uint16_t size = recv_uint16();
+
+    std::vector<AllyInfoDTO> allies_information;
+    allies_information.reserve(size);
+
+    for (uint16_t i = 0; i < size; ++i) {
+        allies_information.push_back(recv_ally_info());
+    }
+
+    return allies_information;
+}
+
+AllyInfoDTO Deserializer::recv_ally_info() {
+    const AllyType type = recv_ally_type();
+    const uint16_t x = recv_uint16();
+    const uint16_t y = recv_uint16();
+
+    return AllyInfoDTO(type, x, y);
+}
+
+AllyType Deserializer::recv_ally_type() {
+    const uint8_t byte = recv_uint8();
+
+    switch (static_cast<AllyType>(byte)) {
+        case AllyType::PRIEST:
+        case AllyType::MERCHANT:
+        case AllyType::BANKER:
+            return static_cast<AllyType>(byte);
+        default:  // Undefined Behavior -> Excepción
+            throw std::invalid_argument("Byte de aliado no reconocido");
+    }
 }
 
 ChatMessageDTO Deserializer::recv_chat_message() {

@@ -1,7 +1,13 @@
 #include "game_world.h"
 
+#include <utility>
 
-GameWorld::GameWorld(const int width, const int height): grid(width, height) {}
+#include "allies/ally.h"
+#include "allies/ally_action.h"
+#include "allies/priest.h"
+
+
+GameWorld::GameWorld(const int width, const int height): grid(width, height) { init_npc(); }
 
 
 std::unordered_map<std::string, Player> GameWorld::get_players() const { return players; }
@@ -124,4 +130,40 @@ void GameWorld::interact(const std::string& player_name, const Position& positio
     } catch (const std::out_of_range&) {
         // Golpeó el borde del mapa
     }
+}
+
+
+void GameWorld::resurrect_player(const std::string& player_name) {
+    execute_ally_action(player_name, AllyAction::RESURRECT);
+}
+
+
+void GameWorld::heal_player(const std::string& player_name) {
+    execute_ally_action(player_name, AllyAction::HEAL);
+}
+
+
+void GameWorld::execute_ally_action(const std::string& player_name, const AllyAction& action) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+    const auto ally = player.get_bound_ally();
+
+    if (ally == nullptr) {
+        // El jugador no tiene vinculado a ningún sacerdote
+        return;
+    }
+
+    ally->execute(player, action);
+    player.unbind_ally();
+}
+
+
+void GameWorld::init_npc() {
+    Position priest_position(10, 10);
+    auto priest = std::make_unique<Priest>(priest_position);
+    grid.get_tile(priest_position).occupy(priest.get());
+    allies.push_back(std::move(priest));
 }
