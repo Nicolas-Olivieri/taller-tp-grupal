@@ -182,7 +182,7 @@ void ClientGame::update_state_from_server() {
     if (!updated)
         return;
     world.update_players(snapshot.players_information);
-    //     ui.update_player_state(snapshot.players_information);
+    ui.update_player_state(snapshot.players_information);
     // TODO añadir el resto del manejo de sprites
 }
 
@@ -211,6 +211,8 @@ void ClientGame::handle_mouse_click(const SDL_Event& event) {
 void ClientGame::render_ui_and_world() {
     ui.render();
 
+    ui.render_fields();
+
     ui.render_chat_history();
 
     ui.render_chat_input(chat_text, is_chat_active);
@@ -221,7 +223,6 @@ void ClientGame::render_ui_and_world() {
     renderer.SetViewport(SDL2pp::NullOpt);
 
     // TODO actualizar campos de vida, mana en función a que se sabe del personaje, si escribió, etc.
-    //    ui.render_fields(); // o algo asi
 }
 
 bool ClientGame::is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport) {
