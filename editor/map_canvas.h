@@ -5,7 +5,6 @@
 
 #include "components.h"
 #include "map_data.h"
-#include "client/client.h"
 
 namespace Ui {
 class MapCanvas;
@@ -20,15 +19,16 @@ public:
 
     void set_mode(EditorMode new_mode);
 
+    void clear_all();
+
     ~MapCanvas();
 
 private:
     void place_asset(QPointF clicked_pos);
     void add_asset_to_scene(QPoint clicked_cell, int asset_id);
 
-    void erase_asset(QPointF clicked_pos);
+    void erase_asset(QPointF clicked_pos) const;
 
-void erase_all_assets();
 
 void set_unwalkable_tiles(const QPoint &clicked_cell, int tile_id) const;
     void erase_unwalkable_tiles(int tile_id) const;

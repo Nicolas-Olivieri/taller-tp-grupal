@@ -24,7 +24,7 @@ private:
 public:
     MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles, QHash<uint16_t, AssetData>& colliders);
 
-    void load(const QString& filename) const;
+    bool load(const QString &filename) const;
 };
 
 

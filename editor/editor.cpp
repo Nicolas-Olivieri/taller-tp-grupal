@@ -1,6 +1,7 @@
 #include "editor.h"
 
 #include <QFileDialog>
+#include <QMessageBox>
 #include <ui_mapcanvas.h>
 
 #include "ui_editor.h"
@@ -53,15 +54,38 @@ void Editor::set_mode(const EditorMode& new_mode) {
 
 void Editor::prompt_file_saving() {
     const QString filename = QFileDialog::getSaveFileName();
+    if (filename.isEmpty()) { return; }
+
     saver.save(filename);
 }
 
 void Editor::prompt_file_opening() {
+    // Ventana de confirmación
+    const QMessageBox::StandardButton reply =
+        QMessageBox::warning(this,
+                        "Cargar Mapa",
+                        "Al cargar un archivo nuevo se borrará el mapa actual. ¿Deseas continuar?",
+                        QMessageBox::Yes | QMessageBox::No);
+    if (reply != QMessageBox::Yes) { return; }
+
+    // Ventana de buscador de archivos
+    const QString filename = QFileDialog::getOpenFileName(this,tr("Cargar mapa"),"",tr("bin files (*.bin)"));
+    if (filename.isEmpty()) { return; }
+
+    // Reseteo el editor a nivel lógico y visual
+    map_data.clear_all();
+    map_canvas.clear_all();
+
     set_mode(EditorMode::DRAW);
-    const QString fileName = QFileDialog::getOpenFileName(this, tr("Cargar mapa"),
-                                                            QDir::currentPath(),tr("bin files (*.bin)"));
-    loader.load(fileName);
+    const bool loaded = loader.load(filename);
     set_mode(EditorMode::DRAG);
+
+    if (!loaded) {
+        QMessageBox::critical(this,
+                        "Cargar Mapa",
+                        "Hubo un error al cargar el mapa.",
+                        QMessageBox::Ok);
+    }
 }
 
 Editor::~Editor() { delete ui; }

@@ -2,6 +2,7 @@
 #define EDITOR_H
 
 #include <QMainWindow>
+#include <QPushButton>
 
 #include "components.h"
 #include "map_data.h"

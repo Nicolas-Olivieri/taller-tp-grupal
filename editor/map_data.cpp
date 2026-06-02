@@ -126,3 +126,8 @@ bool MapData::erase_asset(const int asset_id) {
     return true;
 }
 
+void MapData::clear_all() {
+    occupied_tiles.clear();
+    placements.clear();
+    unwalkable_tiles.clear();
+}

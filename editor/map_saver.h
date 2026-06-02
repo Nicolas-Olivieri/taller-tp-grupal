@@ -20,8 +20,9 @@ private:
 public:
     explicit MapSaver(MapData& data);
 
-    void save(const QString& filename);
+    void save(const QString& user_filename);
 
+    QString format_filename(const QString &filename);
 };
 
 

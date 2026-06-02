@@ -3,18 +3,25 @@
 #include <QFile>
 #include <QGraphicsItem>
 
+#define HEADER 0xFAF4
+
 MapLoader::MapLoader(MapData& data, MapCanvas& canvas,
                      QHash<uint8_t, AssetData> &tiles, QHash<uint16_t, AssetData>& colliders) :
     data(data), canvas(canvas), tiles(tiles), colliders(colliders) {}
 
 
-void MapLoader::load(const QString& filename) const {
+bool MapLoader::load(const QString &filename) const {
     QFile file(filename);
-    file.open(QIODevice::ReadOnly);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
     QDataStream stream(&file);
 
-    // Borro la información anterior
-    reset_editor();
+    uint16_t header = 0;
+    stream >> header;
+    if (stream.status() != QDataStream::Ok || header != static_cast<uint16_t>(HEADER)) {
+        return false;
+    }
 
     // Skipeo hasta la información que sirve al cliente, que es la que sirve al editor
     uint16_t server_start, server_end;
@@ -28,6 +35,7 @@ void MapLoader::load(const QString& filename) const {
     load_assets<uint16_t>(stream, colliders);
 
     file.close();
+    return true;
 }
 
 
@@ -36,8 +44,9 @@ void MapLoader::reset_editor() const {
     data.unwalkable_tiles.clear();
     data.placements.clear();
 
-    canvas.erase_all_assets();
+    canvas.clear_all();
 }
+
 
 template <typename intType>
 void MapLoader::load_assets(QDataStream& stream, QHash<intType, AssetData>& lookup_assets_hash) const {

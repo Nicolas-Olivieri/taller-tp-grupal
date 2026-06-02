@@ -140,7 +140,7 @@ void MapCanvas::add_asset_to_scene(const QPoint clicked_cell, const int asset_id
     scene->addItem(tile);
 }
 
-void MapCanvas::erase_asset(const QPointF clicked_pos) {
+void MapCanvas::erase_asset(const QPointF clicked_pos) const {
     const QList<QGraphicsItem*> cell_assets = scene->items(clicked_pos);
     if (cell_assets.empty() ||
         !cell_assets.first()->data(0).isValid() ||
@@ -156,7 +156,7 @@ void MapCanvas::erase_asset(const QPointF clicked_pos) {
     delete clicked_asset;
 }
 
-void MapCanvas::erase_all_assets() {
+void MapCanvas::clear_all() {
     QList<QGraphicsItem*> assets = scene->items();
     for (const auto asset : assets) {
         // Evito eliminar los elementos necesarios para el funcionamiento del editor
@@ -189,6 +189,7 @@ void MapCanvas::set_unwalkable_tiles(const QPoint& clicked_cell, const int tile_
 
 void MapCanvas::erase_unwalkable_tiles(const int tile_id) const {
     QList<QGraphicsItem*> marks = unwalkable_tiles->childItems();
+
     for (const auto & mark : marks) {
         if (mark->data(0) == tile_id) {
             unwalkable_tiles->removeFromGroup(mark);
@@ -205,4 +206,10 @@ QPoint MapCanvas::coordinates_to_grid(const QPointF coordinates) const {
     return {x_grid, y_grid};
 }
 
-MapCanvas::~MapCanvas() { delete ui; }
+MapCanvas::~MapCanvas() {
+    for (const auto item : scene->items()) {
+        delete item;
+    }
+
+    delete ui;
+}

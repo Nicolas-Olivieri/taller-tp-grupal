@@ -5,6 +5,7 @@
 
 #define WALKABLE 1
 #define UNWALKABLE 0
+#define HEADER 0xFAF4
 
 MapSaver::MapSaver(MapData& data) : data(data) {}
 
@@ -18,9 +19,14 @@ MapSaver::MapSaver(MapData& data) : data(data) {}
  * <cant tiles uint16_t> [<id uint8_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
  * <cant colliders uint16_t> [<id uint16_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
  */
-void MapSaver::save(const QString& filename) {
+void MapSaver::save(const QString& user_filename) {
+    const QString filename = format_filename(user_filename);
+
     QFile file(filename);
-    file.open(QIODevice::WriteOnly);
+    if (!file.open(QIODevice::WriteOnly)) {
+        return;
+    }
+
     QDataStream stream(&file);
 
     get_origin_and_matrix_size();
@@ -29,6 +35,11 @@ void MapSaver::save(const QString& filename) {
     store_client_data(stream);
 
     file.close();
+}
+
+QString MapSaver::format_filename(const QString& filename) {
+    const QFileInfo file_info(filename);
+    return file_info.path() + "/" + file_info.completeBaseName() + ".bin";
 }
 
 void MapSaver::get_origin_and_matrix_size() {
@@ -49,14 +60,16 @@ void MapSaver::get_origin_and_matrix_size() {
 void MapSaver::store_offset_and_dimensions_data(QDataStream& stream) const {
     const uint16_t world_width = matrix_size.width();
     const uint16_t world_height = matrix_size.height();
+    constexpr uint16_t header = HEADER;
 
-    const uint16_t server_start = sizeof(uint16_t)*2 +
+    const uint16_t server_start = sizeof(header) +
+                                  sizeof(uint16_t)*2 +
                                   sizeof(world_width) + sizeof(world_height);
 
     const uint16_t server_end = server_start +
                                 sizeof(uint8_t)*world_width*world_height;
 
-    stream << server_start << server_end << world_width << world_height;
+    stream << header << server_start << server_end << world_width << world_height;
 }
 
 void MapSaver::store_server_data(QDataStream& stream) const {
