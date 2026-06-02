@@ -35,8 +35,6 @@ void GameWorld::move_player(const std::string& player_name, const Direction dire
 
     const Position current = player.get_position();
 
-    std::cout << "[World] Jugador " << player_name << " intentando moverse " << std::endl;
-
     // calcular coordenada destino
     const Position target = current.move(direction);
 
@@ -157,15 +155,6 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
     }
 
     const AllyExecuteResult result = ally->execute(player, action);
-    std::cout << "[World] result: "
-              << (result.resurrect_result == ResurrectResult::NO_RESULT ? " NO_RESULT" : "") << std::endl;
-    std::cout << "[World] result: "
-              << (result.resurrect_result == ResurrectResult::PLAYER_UNBOUNDED ? " PLAYER_UNBOUNDED" : "")
-              << std::endl;
-    std::cout << "[World] result: "
-              << (result.resurrect_result == ResurrectResult::PLAYER_RESURRECTED ? " PLAYER_RESURRECTED" : "")
-              << std::endl;
-
     player.unbind_ally();
     return result;
 }
