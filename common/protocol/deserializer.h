@@ -9,6 +9,7 @@
 #include "common/direction.h"
 #include "common/dto/events/command.h"
 #include "common/dto/snapshot/actions/action.h"
+#include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 #include "common/socket.h"
@@ -23,8 +24,10 @@ private:
 
     AllyType recv_ally_type();
 
+    // Hay que completarlo al agregar nueva action
     ActionDTO recv_action();
 
+    // Hay que completarlo al agregar nueva action
     ActionType recv_action_type();
 
     MessageVisibility recv_message_visibility();
@@ -36,6 +39,8 @@ private:
     ChatMessageDTO recv_chat_message();
 
     PlayerStatsDTO recv_player_stats();
+
+    ResurrectionDTO recv_resurrection();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT

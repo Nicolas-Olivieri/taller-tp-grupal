@@ -11,6 +11,7 @@ target_sources(taller_server
         command/cmd_types/cmd_move/move_command.cpp
         command/cmd_types/cmd_resurrect/resurrect_command.cpp
         command/cmd_types/cmd_spawn/spawn_command.cpp
+        command/cmd_results/ally_execute_result.cpp
         command/command_factory.cpp
 
         game/game_world.cpp
@@ -46,6 +47,7 @@ target_sources(taller_server
 
         game/allies/ally.cpp
         game/allies/priest.cpp
+
     PUBLIC
         # .h files
         server.h
@@ -56,7 +58,9 @@ target_sources(taller_server
         command/cmd_types/cmd_interact/interact_command.h
         command/cmd_types/cmd_move/move_command.h
         command/cmd_types/cmd_resurrect/resurrect_command.h
+        command/cmd_results/resurrect_result.h
         command/cmd_types/cmd_spawn/spawn_command.h
+        command/cmd_results/ally_execute_result.h
         command/command.h
         command/command_factory.h
 

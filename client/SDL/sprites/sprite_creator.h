@@ -25,6 +25,10 @@ public:
                                     const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
 
     Sprite create_user(const PlayerInfoDTO& playerInfo);
+
+    void update_appearance(Sprite& player, const AppearanceDTO& appearance);
+
+    void convert_to_ghost(Sprite& player);
 };
 
 

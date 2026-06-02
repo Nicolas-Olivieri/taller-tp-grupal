@@ -1,14 +1,34 @@
 #include "resurrect_command.h"
 
 
-ResurrectCommand::ResurrectCommand(const std::string& player_name): player_name(player_name) {}
+ResurrectCommand::ResurrectCommand(const std::string& player_name):
+        player_name(player_name), result(ResurrectResult::NO_RESULT) {}
 
 
-void ResurrectCommand::execute(GameWorld& world) { world.resurrect_player(player_name); }
+void ResurrectCommand::execute(GameWorld& world) {
+    result = world.resurrect_player(player_name);
+    if (result == ResurrectResult::PLAYER_RESURRECTED) {
+        appearanceDto = AppearanceDTO(world.get_players().at(player_name).get_body(),
+                                      world.get_players().at(player_name).get_head());
+    }
+}
 
 
-void ResurrectCommand::build_snapshot(SnapshotBuilder& /* builder */) {
-    // TODO:
-    // `GameWorld::resurrect_player` debería devolver un resultado de la ejecución de la acción
-    // para cargarlo como una acción en la snapshot
+void ResurrectCommand::build_snapshot(SnapshotBuilder& builder) {
+    switch (result) {
+        case ResurrectResult::PLAYER_RESURRECTED:
+            builder.add_action(ActionDTO(ResurrectionDTO(player_name, AppearanceDTO())));
+            break;
+        case ResurrectResult::PLAYER_IS_ALIVE:
+            builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Sacerdote", player_name,
+                                                        "Ya estás vivo!! Avivate")));
+            break;
+        case ResurrectResult::PLAYER_UNBOUNDED:
+            builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name,
+                                                        "No estás vinculado a ningún sacerdote")));
+            break;
+        case ResurrectResult::NO_RESULT:
+        default:
+            throw std::runtime_error("Resurrect cmd no se ejecutó correctamente");
+    }
 }

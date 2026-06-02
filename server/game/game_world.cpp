@@ -133,7 +133,7 @@ void GameWorld::interact(const std::string& player_name, const Position& positio
 }
 
 
-void GameWorld::resurrect_player(const std::string& player_name) {
+ResurrectResult GameWorld::resurrect_player(const std::string& player_name) {
     execute_ally_action(player_name, AllyAction::RESURRECT);
 }
 

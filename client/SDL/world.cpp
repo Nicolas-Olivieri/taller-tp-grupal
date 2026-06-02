@@ -61,6 +61,12 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                     players.extract(action.despawn.player_despawned);
                 }
                 break;
+            case ActionType::RESURRECTION:
+                if (players.contains(action.resurrection.player_resurrected)) {
+                    Sprite& sprite = players.at(action.resurrection.player_resurrected);
+                    sprite_creator.update_appearance(sprite, action.resurrection.original_appearance);
+                }
+                break;
             default:
                 break;
         }

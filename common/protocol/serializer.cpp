@@ -52,6 +52,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::MESSAGE:
             serialize(action.chat_message);
             break;
+        case ActionType::RESURRECTION:
+            serialize(action.resurrection);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -111,4 +114,9 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
     serialize(stats.current_health);
     serialize(stats.max_mana);
     serialize(stats.current_mana);
+}
+
+void Serializer::serialize(const ResurrectionDTO& resurrection) {
+    serialize(resurrection.player_resurrected);
+    serialize(resurrection.original_appearance);
 }

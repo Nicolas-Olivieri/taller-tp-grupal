@@ -10,6 +10,7 @@
 #include "allies/ally_action.h"
 #include "common/direction.h"
 #include "player/player.h"
+#include "server/command/cmd_results/resurrect_result.h"
 
 #include "grid.h"
 #include "position.h"
@@ -41,7 +42,7 @@ public:
 
     void interact(const std::string& player_name, const Position& position);
 
-    void resurrect_player(const std::string& player_name);
+    ResurrectResult resurrect_player(const std::string& player_name);
 
     void heal_player(const std::string& player_name);
 
