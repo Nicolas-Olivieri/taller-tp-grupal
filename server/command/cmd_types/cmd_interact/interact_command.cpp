@@ -5,8 +5,7 @@
 #include <map>
 
 InteractCommand::InteractCommand(const std::string& player_name, const int x, const int y):
-        player_name(player_name), position(x, y), result(0) {}
-
+        player_name(player_name), position(x, y), result(false) {}
 
 void InteractCommand::execute(GameWorld& world) {
     result = world.interact(player_name, position);
@@ -21,7 +20,6 @@ void InteractCommand::execute(GameWorld& world) {
             }
         }
     }
-    //    && result.attack.status == AttackStatus::HIT
 }
 
 
@@ -32,7 +30,7 @@ void InteractCommand::build_snapshot(SnapshotBuilder& builder) {
             break;
         case InteractionType::BIND:
             builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Aliado", player_name,
-                                                        "Te escucho. ¿En que te ayudo?")));
+                                                        "Te escucho. En que te ayudo?")));
             break;
         case InteractionType::MUST_NOT_NOTIFY:
             break;
@@ -63,17 +61,11 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
             handle_hit(builder);
             break;
         case AttackStatus::TARGET_DODGED:
+            handle_dodge(builder);
             break;
         default:
             throw std::runtime_error("InteractCommand recibió un tipo de ataque inválido");
     }
-
-    //    AttackStatus::TARGET_DODGED, "El objetivo esquivo el ataque"
-    assert(status == AttackStatus::HIT);
-
-    // TODO
-
-    return;
 }
 
 void InteractCommand::handle_hit(SnapshotBuilder& builder) {
@@ -81,10 +73,10 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
     if (!player_attacked.empty()) {
         builder.add_action(ActionDTO(ChatMessageDTO(
                 MessageVisibility::PRIVATE, "Mundo", player_name,
-                std::format("Le hiciste {} de daño a {}", result.attack.damage_dealt, player_attacked))));
+                std::format("Le quitaste {} de vida a {}", result.attack.damage_dealt, player_attacked))));
         builder.add_action(ActionDTO(ChatMessageDTO(
                 MessageVisibility::PRIVATE, "Mundo", player_attacked,
-                std::format("{} te hizo {} de daño", player_name, result.attack.damage_dealt))));
+                std::format("{} te quito {} de vida", player_name, result.attack.damage_dealt))));
 
         if (result.attack.was_killed) {
             builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name,
@@ -96,14 +88,31 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
 
         return;
     }
+
+    builder.add_action(ActionDTO(
+            ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name,
+                           std::format("Le quitaste {} vida a la entidad", result.attack.damage_dealt))));
+
+    if (result.attack.was_killed) {
+        builder.add_action(ActionDTO(
+                ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name, "Mataste a la entidad")));
+    }
 }
 
 void InteractCommand::handle_dodge(SnapshotBuilder& builder) {
     const std::string& player_attacked = result.attack.player_attacked;
-    builder.add_action(
-            ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, player_name, player_attacked, "TE PEGO")));
 
-    if (!player_attacked.empty())
+    if (!player_attacked.empty()) {
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name,
+                                                    std::format("{} esquivo tu ataque", player_attacked))));
+        builder.add_action(
+                ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_attacked,
+                                         std::format("Esquivaste el ataque de {}!!", player_name))));
+        return;
+    }
+
+    if (result.attack.was_killed) {
         builder.add_action(ActionDTO(
-                ChatMessageDTO(MessageVisibility::PRIVATE, player_attacked, player_name, "ME PEGASTE")));
+                ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name, "La entidad que Esquivo")));
+    }
 }
