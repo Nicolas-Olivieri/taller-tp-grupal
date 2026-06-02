@@ -35,6 +35,10 @@ target_sources(taller_server
         persistance/playerindex.cpp
         persistance/playerrepository.cpp
         config/game_config.cpp
+
+        game/player/inventory/inventory.cpp
+        game/player/inventory/item_mapper.cpp
+
     PUBLIC
         # .h files
         server.h
@@ -73,4 +77,9 @@ target_sources(taller_server
         persistance/playerindex.h
         persistance/playerrepository.h
         config/game_config.h
+
+        game/player/inventory/inventory.h
+        game/player/inventory/equipment.h
+        game/player/inventory/item_mapper.h
+        game/attacker.h
     )

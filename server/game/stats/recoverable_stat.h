@@ -28,6 +28,8 @@ public:
 
     void set_current(int amount);
 
+    void recover(uint16_t amount);
+
     virtual ~RecoverableStat() = default;
 };
 

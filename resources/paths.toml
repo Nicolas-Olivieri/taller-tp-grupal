@@ -4,6 +4,5 @@ path = "/server/stats.toml"
 [server.cooldowns]
 path = "/server/cooldowns.toml"
 
-# TODO: Implementar la lógica de los ítems
-#[server.items]
-#path = "/server/items.toml"
+[server.items]
+path = "/server/items.toml"

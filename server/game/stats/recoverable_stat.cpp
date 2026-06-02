@@ -38,3 +38,5 @@ void RecoverableStat::set_current(const int amount) {
         current_amount = max_amount;
     }
 }
+
+void RecoverableStat::recover(uint16_t amount) { set_current(current_amount + amount); }
