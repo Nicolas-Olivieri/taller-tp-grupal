@@ -6,14 +6,14 @@
 
 
 Mana::Mana(uint8_t recovery_factor, float factor_class, float factor_race, float factor_class_meditation,
-           uint8_t& intelligence, uint8_t level):
+           uint8_t intelligence, uint8_t level):
         RecoverableStat(recovery_factor, factor_class, factor_race,
                         Calculator::calculate_max_mana(level, intelligence, factor_class, factor_race)),
         intelligence(intelligence),
         factor_class_meditation(factor_class_meditation) {}
 
 
-void Mana::update_max(uint8_t level) {
+void Mana::update_max(uint8_t level, uint8_t intelligence) {
     const int new_max = Calculator::calculate_max_mana(level, intelligence, factor_class, factor_race);
 
     const int difference = new_max - max_amount;
@@ -22,6 +22,8 @@ void Mana::update_max(uint8_t level) {
     if (difference > 0) {
         current_amount += difference;
     }
+
+    this->intelligence = intelligence;
 }
 
 

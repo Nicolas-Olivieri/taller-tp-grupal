@@ -32,6 +32,6 @@ void Stats::upgrade() {
     strength =
             Calculator::calculate_scalable_stat(race().strength, new_level, archetype().strength_multiplier);
 
-    health.update_max(new_level);
-    mana.update_max(new_level);
+    health.update_max(new_level, constitution);
+    mana.update_max(new_level, intelligence);
 }
