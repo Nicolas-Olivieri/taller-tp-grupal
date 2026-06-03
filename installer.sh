@@ -3,7 +3,7 @@
 set -e
 
 REPO_URL="https://github.com/Nicolas-Olivieri/taller-tp-grupal"
-PROJECT_DIR="taller-to-grupal"
+PROJECT_DIR="taller-tp-grupal"
 
 echo " Actualizando repositorios"
 
@@ -24,12 +24,13 @@ sudo apt install -y \
 
 echo " Instalando dependencias SDL_mixer"
 
-sudo apt install -y
+sudo apt install -y \
   libasound2-dev \
   libopus-dev \
   libopusfile-dev \
   libxmp-dev \
   libfluidsynth-dev \
+  fluidsynth \
   libwavpack-dev
 
 echo " Instalando dependencias SDL_ttf"
