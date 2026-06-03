@@ -3,7 +3,7 @@
 #include "server/game/player/player.h"
 
 
-Priest::Priest(const Position& position): Ally(position) {}
+Priest::Priest(const Position& position): Ally(position), items({{4, 100}}) {}
 
 
 AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) {
@@ -13,6 +13,9 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
 
         case AllyAction::RESURRECT:
             return handle_resurrect(player);
+
+        case AllyAction::LIST_ITEMS:
+            return handle_list_items();
 
         case AllyAction::BUY:
             // TODO: Implementar la lógica de comprar hechizos y pociones
@@ -50,4 +53,9 @@ AllyExecuteResult Priest::handle_resurrect(Player& player) {
 
     std::cout << "[Priest] El jugador ya está vivo" << std::endl;
     return AllyExecuteResult(ResurrectResult::PLAYER_IS_ALIVE);
+}
+
+
+AllyExecuteResult Priest::handle_list_items() {
+    return AllyExecuteResult(ListItemsResult(get_type(), items));
 }

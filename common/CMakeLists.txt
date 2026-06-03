@@ -72,7 +72,7 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_despawn/despawn.h
 
         dto/lobby/ally_info.h
-        creature_type.h
+        npc_type.h
 
         dto/snapshot/info/player_stats.h
     )

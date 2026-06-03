@@ -3,6 +3,7 @@
 #include "cmd_types/cmd_chatmessage/chatmessage_command.h"
 #include "cmd_types/cmd_heal/heal_command.h"
 #include "cmd_types/cmd_interact/interact_command.h"
+#include "cmd_types/cmd_list_items/list_items_command.h"
 #include "cmd_types/cmd_move/move_command.h"
 #include "cmd_types/cmd_resurrect/resurrect_command.h"
 
@@ -27,7 +28,10 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
         case CommandType::HEAL:
             return std::make_unique<HealCommand>(player_name);
 
+        case CommandType::LIST_ITEMS:
+            return std::make_unique<ListItemsCommand>(player_name);
+
         default:
-            throw std::invalid_argument("Comando desconocido");
+            throw std::invalid_argument("CommandFactory recibió un comando desconocido");
     }
 }

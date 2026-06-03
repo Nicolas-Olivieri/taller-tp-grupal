@@ -41,6 +41,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHAT:
         case CommandType::RESURRECT:
         case CommandType::HEAL:
+        case CommandType::LIST_ITEMS:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");

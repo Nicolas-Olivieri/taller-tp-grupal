@@ -149,6 +149,8 @@ void ClientGame::handle_chat_events(const SDL_Event& event) {
             connection.push_command(std::make_unique<EventDTO>(CommandType::RESURRECT));
         if (!chat_text.empty() && chat_text == "/curar")
             connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
+        if (!chat_text.empty() && chat_text == "/listar")
+            connection.push_command(std::make_unique<EventDTO>(CommandType::LIST_ITEMS));
         chat_text.clear();
     }
 
