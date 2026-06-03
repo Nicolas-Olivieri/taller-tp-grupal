@@ -16,7 +16,7 @@ protected:
     RecoverableStat(uint8_t recovery_factor, float factor_class, float factor_race, uint8_t max);
 
 public:
-    virtual void update_max(uint8_t level) = 0;
+    virtual void update_max(uint8_t level, uint8_t) = 0;
 
     virtual void update();
 
