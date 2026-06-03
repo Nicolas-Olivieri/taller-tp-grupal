@@ -57,8 +57,12 @@ echo " Compilando el juego"
 
 cmake --build cmake-build-debug -j$(nproc)
 
+cp ./client.sh ../.
+cp ./server.sh ../.
+cp ./editor.sh ../.
+
 echo "========= Instalación finalizada ========="
-echo "Ejecutables generados:"
-echo "  cmake-build-debug/taller_client"
-echo "  cmake-build-debug/taller_server"
-echo "  cmake-build-debug/taller_editor"
+echo " Inicie el Servidor con ./server.sh"
+echo " Comience a jugar con ./client.sh"
+echo " Crea nuevos mundos para jugar con ./editor.sh"
+
