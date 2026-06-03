@@ -15,6 +15,10 @@ public:
     static uint16_t calculate_max_mana(uint8_t level, uint8_t intelligence, float factor_class,
                                        float factor_race);
 
+    static uint16_t calculate_max_gold(uint8_t level);
+
+    static uint16_t calculate_max_excess_gold(uint16_t max_safe_gold);
+
     static int meditation_mana_recovery(uint8_t intelligence, float factor_class_meditation);
 
     static uint32_t calculate_xp_limit(uint8_t level);
