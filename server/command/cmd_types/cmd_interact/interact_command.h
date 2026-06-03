@@ -26,6 +26,8 @@ private:
     void handle_hit(SnapshotBuilder& builder);
 
     void handle_dodge(SnapshotBuilder& builder);
+
+    void handle_bind(SnapshotBuilder& builder);
 };
 
 

@@ -44,6 +44,8 @@ private:
 
     DeathDTO recv_death();
 
+    ChatListDTO recv_chat_list();
+
 public:
     explicit Deserializer(Socket& socket);  // NOLINT
 

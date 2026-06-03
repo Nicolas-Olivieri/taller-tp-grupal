@@ -116,6 +116,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_resurrection());
         case ActionType::DEATH:
             return ActionDTO(recv_death());
+        case ActionType::MESSAGE_LIST:
+            return ActionDTO(recv_chat_list());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -131,6 +133,7 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::MESSAGE:
         case ActionType::RESURRECTION:
         case ActionType::DEATH:
+        case ActionType::MESSAGE_LIST:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -231,4 +234,18 @@ DeathDTO Deserializer::recv_death() {
     const std::string name = recv_string();
 
     return DeathDTO(name);
+}
+
+ChatListDTO Deserializer::recv_chat_list() {
+    std::string receiver = recv_string();
+
+    std::vector<std::string> lines;
+
+    uint16_t size = recv_uint16();
+
+    for (int i = 0; i < size; ++i) {
+        lines.push_back(recv_string());
+    }
+
+    return ChatListDTO(lines, receiver);
 }
