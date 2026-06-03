@@ -175,6 +175,10 @@ if(TALLER_EDITOR)
     # HEY!! TODO XXX: Change the name of the executable to the one you like!
     add_executable(taller_editor)
 
+    set_target_properties(taller_editor PROPERTIES
+            AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/editor/ui"
+    )
+    
     # Make them depend on taller_common lib
     add_dependencies(taller_editor taller_common SDL2pp::SDL2pp Qt6::Widgets)
 
@@ -184,8 +188,11 @@ if(TALLER_EDITOR)
 
     set_project_warnings(taller_editor ${TALLER_MAKE_WARNINGS_AS_ERRORS} FALSE)
 
+    target_include_directories(taller_editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/editor)
+
     # add libSDL2pp's headers
     target_include_directories(taller_editor PRIVATE ${libSDL2pp_SOURCE_DIR})
+    target_include_directories(taller_editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/editor)
 
     # Link the taller_common lib target
     target_link_libraries(taller_editor taller_common SDL2pp::SDL2pp toml11::toml11 Qt6::Widgets)

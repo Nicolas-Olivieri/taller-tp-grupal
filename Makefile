@@ -19,7 +19,7 @@ TESTS_EXE= taller_tests
 # Argumentos para la ejecución de los compilados
 CLIENT_FLAGS= -platform xcb
 SERVER_FLAGS= 5050
-EDITOR_FLAGS= # vacío de momento, agregar los necesarios
+EDITOR_FLAGS= -platform xcb
 TESTS_FLAGS= # vacío de momento, agregar los necesarios
 
 # Archivos a borrar en rutina clean
@@ -44,13 +44,13 @@ build:
 error:
 	cmake --build $(BUILD_DIR)
 
-client: build
+client:
 	$(BUILD_DIR)/$(CLIENT_EXE) $(CLIENT_FLAGS)
 
-server: build
+server:
 	$(BUILD_DIR)/$(SERVER_EXE) $(SERVER_FLAGS)
 
-editor: build
+editor:
 	$(BUILD_DIR)/$(EDITOR_EXE) $(EDITOR_FLAGS)
 
 test: build
