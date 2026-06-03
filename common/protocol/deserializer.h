@@ -53,6 +53,8 @@ public:
 
     uint16_t recv_uint16();
 
+    uint32_t recv_uint32();
+
     CommandType recv_command_type();
 
     Direction recv_direction();

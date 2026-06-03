@@ -30,6 +30,13 @@ uint16_t Deserializer::recv_uint16() {
     return ntohs(bytes);
 }
 
+uint32_t Deserializer::recv_uint32() {
+    uint32_t bytes;
+    this->socket.recvall(&bytes, sizeof(bytes));
+
+    return ntohl(bytes);
+}
+
 CommandType Deserializer::recv_command_type() {
     uint8_t byte = recv_uint8();
 
@@ -216,8 +223,10 @@ PlayerStatsDTO Deserializer::recv_player_stats() {
     const uint16_t current_health = recv_uint16();
     const uint16_t max_mana = recv_uint16();
     const uint16_t current_mana = recv_uint16();
+    const uint8_t xp_level = recv_uint8();
+    const uint32_t current_xp_amount = recv_uint32();
 
-    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana);
+    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana, xp_level, current_xp_amount);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {

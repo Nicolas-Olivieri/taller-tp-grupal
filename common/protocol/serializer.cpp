@@ -72,8 +72,7 @@ void Serializer::serialize(const std::string& value) {
     uint16_t size = static_cast<uint16_t>(value.size());
     serialize(size);
 
-    std::memcpy(&this->buffer[offset], value.data(), size);
-    offset += size;
+    copy_to_buffer(value.data(), size);
 }
 
 void Serializer::serialize(uint8_t value) { this->buffer[this->offset++] = value; }
@@ -81,8 +80,18 @@ void Serializer::serialize(uint8_t value) { this->buffer[this->offset++] = value
 void Serializer::serialize(uint16_t value) {
     uint16_t netvalue = ntohs(value);
 
-    std::memcpy(&this->buffer[this->offset], &netvalue, sizeof(netvalue));
-    offset += sizeof(netvalue);
+    copy_to_buffer(&netvalue, sizeof(netvalue));
+}
+
+void Serializer::serialize(uint32_t value) {
+    uint32_t netvalue = ntohl(value);
+
+    copy_to_buffer(&netvalue, sizeof(netvalue));
+}
+
+void Serializer::copy_to_buffer(const void* data, size_t size) {
+    std::memcpy(&this->buffer[this->offset], data, size);
+    offset += size;
 }
 
 void Serializer::serialize(const InteractEventDTO& event) {
@@ -117,6 +126,8 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
     serialize(stats.current_health);
     serialize(stats.max_mana);
     serialize(stats.current_mana);
+    serialize(stats.xp_level);
+    serialize(stats.current_xp_amount);
 }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {

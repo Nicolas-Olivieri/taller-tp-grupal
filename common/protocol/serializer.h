@@ -27,6 +27,10 @@ private:
 
     void serialize(uint16_t value);
 
+    void serialize(uint32_t value);
+
+    void copy_to_buffer(const void* data, size_t size);
+
     // Generaliza la forma de serializar vectores de cualquier tipo T
     template <typename T>
     void serialize(const std::vector<T>& container) {

@@ -18,5 +18,6 @@ PlayerInfoDTO SnapshotBuilder::convert_to_info(const std::string& player_name, c
     return PlayerInfoDTO(player_name, player.get_direction(), position.get_x(), position.get_y(),
                          AppearanceDTO(player.get_body(), player.get_head()),
                          PlayerStatsDTO(stats.health.get_max(), stats.health.get_current(),
-                                        stats.mana.get_max(), stats.mana.get_current()));
+                                        stats.mana.get_max(), stats.mana.get_current(),
+                                        stats.experience.get_level(), stats.experience.get_current_amount()));
 }
