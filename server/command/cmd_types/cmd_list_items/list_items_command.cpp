@@ -30,14 +30,8 @@ void ListItemsCommand::build_snapshot(SnapshotBuilder& builder) {
         return;
     }
 
-    std::vector<std::string> lines;
     builder.add_action(
             ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, ally_type_to_string.at(result.ally),
                                      player_name, "Tengo los siguientes items:")));
-    for (const auto& [item_id, price]: result.items) {
-        // TODO: Usar ItemMapper para traducir el item_id a su nombre real
-        lines.push_back(std::format("    - {} - Precio: {} monedas de oro", item_id, price));
-    }
-
-    builder.add_action(ActionDTO(ChatListDTO(lines, player_name)));
+    builder.add_action(ActionDTO(ListItemsDTO(result.items, player_name)));
 }

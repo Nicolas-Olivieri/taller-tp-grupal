@@ -1,8 +1,11 @@
 #include "deserializer.h"
 
+#include <map>
 #include <stdexcept>
 
 #include <arpa/inet.h>
+
+#include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 
 Deserializer::Deserializer(Socket& socket): socket(socket) {}
 
@@ -119,6 +122,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_death());
         case ActionType::MESSAGE_LIST:
             return ActionDTO(recv_chat_list());
+        case ActionType::LIST_ITEMS:
+            return ActionDTO(recv_list_items());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -135,6 +140,7 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::RESURRECTION:
         case ActionType::DEATH:
         case ActionType::MESSAGE_LIST:
+        case ActionType::LIST_ITEMS:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -249,4 +255,19 @@ ChatListDTO Deserializer::recv_chat_list() {
     }
 
     return ChatListDTO(lines, receiver);
+}
+
+ListItemsDTO Deserializer::recv_list_items() {
+    const std::string receiver = recv_string();
+
+    const uint16_t size = recv_uint16();
+    std::map<uint8_t, uint16_t> items;
+
+    for (uint16_t i = 0; i < size; ++i) {
+        const uint8_t item_id = recv_uint8();
+        const uint16_t price = recv_uint16();
+        items[item_id] = price;
+    }
+
+    return ListItemsDTO(items, receiver);
 }

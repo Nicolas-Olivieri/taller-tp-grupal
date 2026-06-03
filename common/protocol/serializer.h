@@ -2,6 +2,7 @@
 #define SERIALIZER_H
 
 #include <cstdint>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -13,6 +14,7 @@
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
+#include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/snapshot.h"
@@ -33,6 +35,16 @@ private:
     void serialize(const std::vector<T>& container) {
         serialize(static_cast<uint16_t>(container.size()));
         for (const auto& elem: container) serialize(elem);
+    }
+
+    // Generaliza la forma de serializar mapas con claves K y valores V
+    template <typename K, typename V>
+    void serialize(const std::map<K, V>& container) {
+        serialize(static_cast<uint16_t>(container.size()));
+        for (const auto& [key, value]: container) {
+            serialize(key);
+            serialize(value);
+        }
     }
 
 public:
@@ -74,6 +86,8 @@ public:
     void serialize(const DeathDTO& death);
 
     void serialize(const ChatListDTO& list);
+
+    void serialize(const ListItemsDTO& list);
 };
 
 #endif  // SERIALIZER_H
