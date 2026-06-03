@@ -44,7 +44,7 @@ public:
 
     ResurrectResult resurrect_player(const std::string& player_name);
 
-    void heal_player(const std::string& player_name);
+    HealResult heal_player(const std::string& player_name);
 
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);

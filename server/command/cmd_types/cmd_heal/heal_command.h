@@ -9,6 +9,7 @@
 class HealCommand: public Command {
 private:
     std::string player_name;
+    HealResult result;
 
 public:
     explicit HealCommand(const std::string& player_name);
