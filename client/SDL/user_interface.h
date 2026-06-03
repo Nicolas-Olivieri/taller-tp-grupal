@@ -69,6 +69,8 @@ private:
 
     void handle_chat_list(const ActionDTO& action);
 
+    void handle_list_items(const ActionDTO& action);
+
 public:
     UserInterface(SDL2pp::Renderer& renderer, std::string& player_name);
 

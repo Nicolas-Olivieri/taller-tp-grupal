@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <format>
 #include <sstream>
 
 // TODO: revisar constantes
@@ -152,6 +153,9 @@ void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
             case ActionType::MESSAGE_LIST:
                 handle_chat_list(action);
                 break;
+            case ActionType::LIST_ITEMS:
+                handle_list_items(action);
+                break;
             default:
                 break;
         }
@@ -182,5 +186,21 @@ void UserInterface::handle_chat_list(const ActionDTO& action) {
 
     for (const std::string& line: list.lines) {
         enqueue_message(line);
+    }
+}
+
+void UserInterface::handle_list_items(const ActionDTO& action) {
+    const ListItemsDTO& list = action.items;
+
+    if (list.receiver != player_name) {
+        return;
+    }
+
+    for (const auto& [item_id, price]: list.items) {
+        // TODO: Implementar un ItemMapper para el cliente (o moverlo a common)
+        // std::string item_name = ItemMapper::get_name(item_id);
+
+        std::string item_name = "Item " + std::to_string(item_id);
+        enqueue_message(std::format("    - {} - Precio: {} monedas de oro", item_name, price));
     }
 }
