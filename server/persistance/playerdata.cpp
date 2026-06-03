@@ -9,12 +9,14 @@ PlayerData::PlayerData(uint8_t archetype, uint8_t race, uint8_t body, uint8_t he
 
 // TODO: en este constructor, actualizamos la data persistida
 PlayerData::PlayerData(const Player& player) {
-    Stats stats(player.get_stats());
-    Position position(player.get_position());
+    const Stats& stats(player.get_stats());
+    const Position& position(player.get_position());
 
     current_xp_amount = stats.experience.get_current_amount();
     current_hp = stats.health.get_current();
     current_mana = stats.mana.get_current();
+
+    current_gold = player.get_safe_gold() + player.get_excess_gold();
 
     position_x = position.get_x();
     position_y = position.get_y();

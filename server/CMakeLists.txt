@@ -47,6 +47,7 @@ target_sources(taller_server
 
         game/player/inventory/inventory.cpp
         game/player/inventory/item_mapper.cpp
+        game/player/inventory/goldmanager.cpp
 
         game/allies/ally.cpp
         game/allies/ally_action_payload.cpp
@@ -105,6 +106,8 @@ target_sources(taller_server
         game/player/inventory/inventory.h
         game/player/inventory/equipment.h
         game/player/inventory/item_mapper.h
+        game/player/inventory/goldmanager.h
+        
         game/attacker.h
 
         game/allies/ally.h

@@ -9,8 +9,11 @@ struct PlayerStatsDTO: public ProtocolMessageDTO {
     uint16_t current_health;
     uint16_t max_mana;
     uint16_t current_mana;
+    uint8_t xp_level;
+    uint32_t current_xp_amount;
 
-    PlayerStatsDTO(uint16_t max_health, uint16_t current_health, uint16_t max_mana, uint16_t current_mana);
+    PlayerStatsDTO(uint16_t max_health, uint16_t current_health, uint16_t max_mana, uint16_t current_mana,
+                   uint8_t xp_level, uint32_t current_xp_amount);
 
     size_t message_size() const override;
 
