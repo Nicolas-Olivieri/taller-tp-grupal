@@ -18,6 +18,8 @@ size_t ActionDTO::message_size() const {
             return base + resurrection.message_size();
         case ActionType::DEATH:
             return base + death.message_size();
+        case ActionType::MESSAGE_LIST:
+            return base + list.message_size();
         default:
             throw std::runtime_error("ActionDTO Descubrió que tiene un tipo de acción desconocido al "
                                      "calcular su message_size");
@@ -31,21 +33,37 @@ ActionDTO::ActionDTO(const DespawnDTO& despawn):
         despawn(despawn),
         chat_message(MessageVisibility::PRIVATE, "", "", ""),
         resurrection("", {}),
-        death("") {}
+        death(""),
+        list("", "") {}
 
 ActionDTO::ActionDTO(const ChatMessageDTO& message):
-        action(ActionType::MESSAGE), despawn(""), chat_message(message), resurrection("", {}), death("") {}
+        action(ActionType::MESSAGE),
+        despawn(""),
+        chat_message(message),
+        resurrection("", {}),
+        death(""),
+        list("", "") {}
 
 ActionDTO::ActionDTO(const ResurrectionDTO& resurrection):
         action(ActionType::RESURRECTION),
         despawn(""),
         chat_message(MessageVisibility::PRIVATE, "", "", ""),
         resurrection(resurrection),
-        death("") {}
+        death(""),
+        list("", "") {}
 
 ActionDTO::ActionDTO(const DeathDTO& death):
         action(ActionType::DEATH),
         despawn(""),
         chat_message(MessageVisibility::PRIVATE, "", "", ""),
         resurrection("", {}),
-        death(death) {}
+        death(death),
+        list("", "") {}
+
+ActionDTO::ActionDTO(const ChatListDTO& list):
+        action(ActionType::MESSAGE_LIST),
+        despawn(""),
+        chat_message(MessageVisibility::PRIVATE, "", "", ""),
+        resurrection("", {}),
+        death(""),
+        list(list) {}

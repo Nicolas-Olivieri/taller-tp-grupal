@@ -26,8 +26,7 @@ void ResurrectCommand::build_snapshot(SnapshotBuilder& builder) {
                                                         "Ya estas vivo!! Avivate")));
             break;
         case ResurrectResult::PLAYER_UNBOUNDED:
-            builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name,
-                                                        "No estas vinculado a ningun sacerdote")));
+            builder.add_action(ActionDTO(ChatListDTO("No estas vinculado a ningun sacerdote", player_name)));
             break;
         case ResurrectResult::NO_RESULT:
         default:

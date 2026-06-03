@@ -145,15 +145,15 @@ void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& player
 
 void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
     for (const auto& action: actions) {
-        if (action.action != ActionType::MESSAGE)
-            continue;
-
-        ChatMessageDTO msg = action.chat_message;
-
-        if (msg.visibility == MessageVisibility::PRIVATE &&
-            (player_name == msg.receiver || player_name == msg.sender)) {
-            std::string formatted_msg = "[" + msg.sender + "] " + msg.content;
-            enqueue_message(formatted_msg);
+        switch (action.action) {
+            case ActionType::MESSAGE:
+                handle_chat_message(action);
+                break;
+            case ActionType::MESSAGE_LIST:
+                handle_chat_list(action);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -162,4 +162,25 @@ void UserInterface::enqueue_message(const std::string& message) {
     chat_history.push_back(message);
     if (chat_history.size() > static_cast<size_t>(history_messages.h) / LINE_SPACING)
         chat_history.pop_front();
+}
+
+void UserInterface::handle_chat_message(const ActionDTO& action) {
+    ChatMessageDTO msg = action.chat_message;
+
+    if (msg.visibility == MessageVisibility::PRIVATE &&
+        (player_name == msg.receiver || player_name == msg.sender)) {
+        std::string formatted_msg = "[" + msg.sender + "] " + msg.content;
+        enqueue_message(formatted_msg);
+    }
+}
+
+void UserInterface::handle_chat_list(const ActionDTO& action) {
+    ChatListDTO list = action.list;
+
+    if (list.receiver != player_name)
+        return;
+
+    for (const std::string& line: list.lines) {
+        enqueue_message(line);
+    }
 }

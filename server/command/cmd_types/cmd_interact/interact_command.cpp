@@ -3,6 +3,7 @@
 #include <cassert>
 #include <format>
 #include <map>
+#include <vector>
 
 InteractCommand::InteractCommand(const std::string& player_name, const int x, const int y):
         player_name(player_name), position(x, y), result(false) {}
@@ -29,8 +30,7 @@ void InteractCommand::build_snapshot(SnapshotBuilder& builder) {
             handle_attack(builder);
             break;
         case InteractionType::BIND:
-            builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Aliado", player_name,
-                                                        "Te escucho. En que te ayudo?")));
+            handle_bind(builder);
             break;
         case InteractionType::MUST_NOT_NOTIFY:
             break;
@@ -51,8 +51,7 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
 
     if (status_to_message.contains(status)) {
         const std::string message = status_to_message.at(status);
-        builder.add_action(
-                ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name, message)));
+        builder.add_action(ActionDTO(ChatListDTO(message, player_name)));
         return;
     }
 
@@ -69,51 +68,54 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
 }
 
 void InteractCommand::handle_hit(SnapshotBuilder& builder) {
+    std::vector<std::string> lines;
     const std::string& player_attacked = result.attack.player_attacked;
+
     if (!player_attacked.empty()) {
-        builder.add_action(ActionDTO(ChatMessageDTO(
-                MessageVisibility::PRIVATE, "Mundo", player_name,
-                std::format("Le quitaste {} de vida a {}", result.attack.damage_dealt, player_attacked))));
-        builder.add_action(ActionDTO(ChatMessageDTO(
-                MessageVisibility::PRIVATE, "Mundo", player_attacked,
-                std::format("{} te quito {} de vida", player_name, result.attack.damage_dealt))));
+        std::vector<std::string> lines_to_attacked;
+
+        lines.push_back(
+                std::format("Le quitaste {} de vida a {}", result.attack.damage_dealt, player_attacked));
+        lines_to_attacked.push_back(
+                std::format("{} te quito {} de vida", player_name, result.attack.damage_dealt));
 
         if (result.attack.was_killed) {
-            builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name,
-                                                        std::format("Mataste a {}", player_attacked))));
-            builder.add_action(ActionDTO(
-                    ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_attacked,
-                                   std::format("{} te mato", player_name, result.attack.damage_dealt))));
+            lines.push_back(std::format("Mataste a {}", player_attacked));
+            lines_to_attacked.push_back(std::format("{} te mato", player_name, result.attack.damage_dealt));
+
             builder.add_action(ActionDTO(DeathDTO(player_attacked)));
         }
 
-        return;
+        builder.add_action(ActionDTO(ChatListDTO(lines_to_attacked, player_attacked)));
+    } else {
+
+        lines.push_back(std::format("Le quitaste {} vida a la entidad", result.attack.damage_dealt));
+
+        if (result.attack.was_killed) {
+            lines.push_back("Mataste a la entidad");
+        }
     }
 
-    builder.add_action(ActionDTO(
-            ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name,
-                           std::format("Le quitaste {} vida a la entidad", result.attack.damage_dealt))));
-
-    if (result.attack.was_killed) {
-        builder.add_action(ActionDTO(
-                ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name, "Mataste a la entidad")));
-    }
+    builder.add_action(ActionDTO(ChatListDTO(lines, player_name)));
 }
 
 void InteractCommand::handle_dodge(SnapshotBuilder& builder) {
+    std::vector<std::string> lines;
     const std::string& player_attacked = result.attack.player_attacked;
 
     if (!player_attacked.empty()) {
-        builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name,
-                                                    std::format("{} esquivo tu ataque", player_attacked))));
-        builder.add_action(
-                ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_attacked,
-                                         std::format("Esquivaste el ataque de {}!!", player_name))));
-        return;
+
+        lines.push_back(std::format("{} esquivo tu ataque", player_attacked));
+
+        builder.add_action(ActionDTO(
+                ChatListDTO(std::format("Esquivaste el ataque de {}!!", player_name), player_attacked)));
+    } else {
+        lines.push_back("La entidad te Esquivo");
     }
 
-    if (result.attack.was_killed) {
-        builder.add_action(ActionDTO(
-                ChatMessageDTO(MessageVisibility::PRIVATE, "Mundo", player_name, "La entidad que Esquivo")));
-    }
+    builder.add_action(ActionDTO(ChatListDTO(lines, player_name)));
+}
+
+void InteractCommand::handle_bind(SnapshotBuilder& builder) {
+    builder.add_action(ActionDTO(ChatListDTO("Te escucho. En que te ayudo?", player_name)));
 }

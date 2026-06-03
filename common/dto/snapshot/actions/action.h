@@ -4,10 +4,11 @@
 #include "action_types/act_death/death.h"
 #include "common/dto/message.h"
 #include "common/dto/snapshot/actions/action_types/act_despawn/despawn.h"
+#include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_message/chatmessage.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 
-enum class ActionType : uint8_t { DESPAWN, MESSAGE, RESURRECTION, DEATH };
+enum class ActionType : uint8_t { DESPAWN, MESSAGE, RESURRECTION, DEATH, MESSAGE_LIST };
 
 struct ActionDTO: public ProtocolMessageDTO {
     ActionType action;
@@ -16,6 +17,7 @@ struct ActionDTO: public ProtocolMessageDTO {
     ChatMessageDTO chat_message;
     ResurrectionDTO resurrection;
     DeathDTO death;
+    ChatListDTO list;
 
     // TODO: REVISAR CONSTRUCTOR DEPENDIENDO DE COMO SE MANEJEN LAS ACTION EN EL FUTURO.
     // pueden llegar a no necesitar el ActionType dependiendo del contenido.
@@ -28,6 +30,8 @@ struct ActionDTO: public ProtocolMessageDTO {
     explicit ActionDTO(const ResurrectionDTO& resurrection);
 
     explicit ActionDTO(const DeathDTO& death);
+
+    explicit ActionDTO(const ChatListDTO& list);
 
     // Modificarlo al agregar nuevas actions
     size_t message_size() const override;

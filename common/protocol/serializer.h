@@ -12,6 +12,7 @@
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
+#include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/snapshot.h"
@@ -71,6 +72,8 @@ public:
     void serialize(const ResurrectionDTO& resurrection);
 
     void serialize(const DeathDTO& death);
+
+    void serialize(const ChatListDTO& list);
 };
 
 #endif  // SERIALIZER_H
