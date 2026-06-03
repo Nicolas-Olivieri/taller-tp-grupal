@@ -118,19 +118,19 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
 
 
 ResurrectResult GameWorld::resurrect_player(const std::string& player_name) {
-    return execute_ally_action(player_name, AllyActionPayload(AllyAction::RESURRECT)).resurrect_result;
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::RESURRECT)).resurrect;
 }
 
 
-void GameWorld::heal_player(const std::string& player_name) {
-    execute_ally_action(player_name, AllyActionPayload(AllyAction::HEAL));
+HealResult GameWorld::heal_player(const std::string& player_name) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::HEAL)).heal;
 }
 
 
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {
     if (not players.contains(player_name)) {
-        return AllyExecuteResult(ResurrectResult::NO_RESULT);
+        return AllyExecuteResult();
     }
 
     Player& player = players.at(player_name);
@@ -138,6 +138,9 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
 
     if (ally == nullptr) {
         std::cout << "[World] Jugador " << player_name << " no tiene vinculado a ningún aliado" << std::endl;
+        // TODO: Revisar cómo devolver el resultado de PLAYER_UNBOUNDED (justamente /resucitar es el único
+        //  comando que puede realizarse sin estar vinculado a un sacerdote).
+        //  Mientras que para las otras acciones no se debería devolver algo relacionado al ResurrectResult.
         return AllyExecuteResult(ResurrectResult::PLAYER_UNBOUNDED);
     }
 

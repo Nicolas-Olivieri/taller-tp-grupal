@@ -13,6 +13,11 @@ public:
     AllyType get_type() const override;
 
     ~Priest() override = default;
+
+private:
+    AllyExecuteResult handle_heal(Player& player);
+
+    AllyExecuteResult handle_resurrect(Player& player);
 };
 
 
