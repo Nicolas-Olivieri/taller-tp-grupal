@@ -4,7 +4,6 @@
 #include <utility>
 
 #include "allies/ally.h"
-#include "allies/ally_action.h"
 #include "allies/priest.h"
 
 
@@ -119,16 +118,17 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
 
 
 ResurrectResult GameWorld::resurrect_player(const std::string& player_name) {
-    return execute_ally_action(player_name, AllyAction::RESURRECT).resurrect_result;
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::RESURRECT)).resurrect_result;
 }
 
 
 void GameWorld::heal_player(const std::string& player_name) {
-    execute_ally_action(player_name, AllyAction::HEAL);
+    execute_ally_action(player_name, AllyActionPayload(AllyAction::HEAL));
 }
 
 
-AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name, const AllyAction& action) {
+AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
+                                                 const AllyActionPayload& payload) {
     if (not players.contains(player_name)) {
         return AllyExecuteResult(ResurrectResult::NO_RESULT);
     }
@@ -141,7 +141,7 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
         return AllyExecuteResult(ResurrectResult::PLAYER_UNBOUNDED);
     }
 
-    const AllyExecuteResult result = ally->execute(player, action);
+    const AllyExecuteResult result = ally->execute(player, payload);
     player.unbind_ally();
     return result;
 }

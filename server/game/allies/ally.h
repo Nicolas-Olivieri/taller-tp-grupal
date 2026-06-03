@@ -6,7 +6,7 @@
 #include "server/game/interactive.h"
 #include "server/game/position.h"
 
-#include "ally_action.h"
+#include "ally_action_payload.h"
 
 // Forward declaration
 class Player;
@@ -25,7 +25,7 @@ public:
 
     virtual AllyType get_type() const = 0;
 
-    virtual AllyExecuteResult execute(Player& player, const AllyAction& action) = 0;
+    virtual AllyExecuteResult execute(Player& player, const AllyActionPayload& payload) = 0;
 
     ~Ally() override = default;
 };

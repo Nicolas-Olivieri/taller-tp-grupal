@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "allies/ally_action.h"
+#include "allies/ally_action_payload.h"
 #include "common/direction.h"
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
@@ -47,7 +47,7 @@ public:
     void heal_player(const std::string& player_name);
 
 private:
-    AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyAction& action);
+    AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 
     void init_npc();
 };
