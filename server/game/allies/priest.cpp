@@ -6,7 +6,7 @@
 #include "server/game/player/player.h"
 
 
-Priest::Priest(const Position& position): Ally(position), items({4}) {}
+Priest::Priest(const Position& position): Ally(position), items(ItemMapper::get_random_priest_items()) {}
 
 
 AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) {
