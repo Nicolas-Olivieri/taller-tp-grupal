@@ -5,6 +5,8 @@
 #include <format>
 #include <sstream>
 
+#include "client/config/client_config.h"
+
 // TODO: revisar constantes
 #define FONT "/augusta.ttf"
 #define box_limit_FONT_SIZE 35
@@ -197,10 +199,7 @@ void UserInterface::handle_list_items(const ActionDTO& action) {
     }
 
     for (const auto& [item_id, price]: list.items) {
-        // TODO: Implementar un ItemMapper para el cliente (o moverlo a common)
-        // std::string item_name = ItemMapper::get_name(item_id);
-
-        std::string item_name = "Item " + std::to_string(item_id);
+        std::string item_name = ClientConfig::get().get_item_name(item_id);
         enqueue_message(std::format("    - {} - Precio: {} monedas de oro", item_name, price));
     }
 }
