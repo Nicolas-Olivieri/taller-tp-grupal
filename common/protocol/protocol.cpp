@@ -51,7 +51,8 @@ RequestedCommandDTO Protocol::recv_command() {
         const std::string content = deserializer.recv_string();
 
         return RequestedCommandDTO(command, receiver, content);
-    } else if (command == CommandType::RESURRECT or command == CommandType::HEAL) {
+    } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
+               command == CommandType::LIST_ITEMS) {
         return RequestedCommandDTO(command);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");

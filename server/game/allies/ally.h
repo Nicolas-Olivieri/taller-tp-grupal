@@ -1,7 +1,7 @@
 #ifndef ALLY_H
 #define ALLY_H
 
-#include "common/creature_type.h"
+#include "common/npc_type.h"
 #include "server/command/cmd_results/ally_execute/ally_execute_result.h"
 #include "server/game/interactive.h"
 #include "server/game/position.h"

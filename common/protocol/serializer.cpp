@@ -61,6 +61,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::MESSAGE_LIST:
             serialize(action.list);
             break;
+        case ActionType::LIST_ITEMS:
+            serialize(action.items);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -143,4 +146,9 @@ void Serializer::serialize(const DeathDTO& death) { serialize(death.player_dead)
 void Serializer::serialize(const ChatListDTO& list) {
     serialize(list.receiver);
     serialize(list.lines);
+}
+
+void Serializer::serialize(const ListItemsDTO& list) {
+    serialize(list.receiver);
+    serialize(list.items);
 }

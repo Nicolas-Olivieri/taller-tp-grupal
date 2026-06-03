@@ -2,7 +2,10 @@
 
 #include <algorithm>
 #include <cassert>
+#include <format>
 #include <sstream>
+
+#include "client/config/client_config.h"
 
 // TODO: revisar constantes
 #define FONT "/augusta.ttf"
@@ -152,6 +155,9 @@ void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
             case ActionType::MESSAGE_LIST:
                 handle_chat_list(action);
                 break;
+            case ActionType::LIST_ITEMS:
+                handle_list_items(action);
+                break;
             default:
                 break;
         }
@@ -182,5 +188,18 @@ void UserInterface::handle_chat_list(const ActionDTO& action) {
 
     for (const std::string& line: list.lines) {
         enqueue_message(line);
+    }
+}
+
+void UserInterface::handle_list_items(const ActionDTO& action) {
+    const ListItemsDTO& list = action.items;
+
+    if (list.receiver != player_name) {
+        return;
+    }
+
+    for (const auto& [item_id, price]: list.items) {
+        std::string item_name = ClientConfig::get().get_item_name(item_id);
+        enqueue_message(std::format("    - {} - Precio: {} monedas de oro", item_name, price));
     }
 }

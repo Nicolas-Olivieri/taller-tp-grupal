@@ -9,6 +9,7 @@
 #include "common/direction.h"
 #include "common/dto/events/command.h"
 #include "common/dto/snapshot/actions/action.h"
+#include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/info/playerinfo.h"
@@ -45,6 +46,7 @@ private:
     DeathDTO recv_death();
 
     ChatListDTO recv_chat_list();
+    ListItemsDTO recv_list_items();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT

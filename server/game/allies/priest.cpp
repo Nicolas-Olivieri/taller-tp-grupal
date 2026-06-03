@@ -1,9 +1,12 @@
 #include "priest.h"
 
+#include <map>
+
+#include "server/game/player/inventory/item_mapper.h"
 #include "server/game/player/player.h"
 
 
-Priest::Priest(const Position& position): Ally(position) {}
+Priest::Priest(const Position& position): Ally(position), items(ItemMapper::get_random_priest_items()) {}
 
 
 AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) {
@@ -13,6 +16,9 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
 
         case AllyAction::RESURRECT:
             return handle_resurrect(player);
+
+        case AllyAction::LIST_ITEMS:
+            return handle_list_items();
 
         case AllyAction::BUY:
             // TODO: Implementar la lógica de comprar hechizos y pociones
@@ -50,4 +56,14 @@ AllyExecuteResult Priest::handle_resurrect(Player& player) {
 
     std::cout << "[Priest] El jugador ya está vivo" << std::endl;
     return AllyExecuteResult(ResurrectResult::PLAYER_IS_ALIVE);
+}
+
+
+AllyExecuteResult Priest::handle_list_items() {
+    std::map<uint8_t, uint16_t> items_prices;
+    for (const uint8_t item_id: items) {
+        items_prices[item_id] = ItemMapper::get_price(item_id);
+    }
+
+    return AllyExecuteResult(ListItemsResult(get_type(), items_prices));
 }

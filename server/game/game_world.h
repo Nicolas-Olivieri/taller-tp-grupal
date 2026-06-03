@@ -46,6 +46,8 @@ public:
 
     HealResult heal_player(const std::string& player_name);
 
+    ListItemsResult list_ally_items(const std::string& player_name);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

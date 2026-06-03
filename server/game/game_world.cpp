@@ -127,6 +127,11 @@ HealResult GameWorld::heal_player(const std::string& player_name) {
 }
 
 
+ListItemsResult GameWorld::list_ally_items(const std::string& player_name) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::LIST_ITEMS)).list_items;
+}
+
+
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {
     if (not players.contains(player_name)) {

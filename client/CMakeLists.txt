@@ -24,6 +24,8 @@ target_sources(taller_client
         SDL/key_mapper.cpp
         SDL/user_interface.cpp
 
+        config/client_config.cpp
+
     PUBLIC
         # .h files
         client.h
@@ -50,5 +52,7 @@ target_sources(taller_client
 
         SDL/key_mapper.h
 
-        SDL/user_interface.cpp
+        SDL/user_interface.h
+
+        config/client_config.h
     )
