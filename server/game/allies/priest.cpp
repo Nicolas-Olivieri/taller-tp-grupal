@@ -6,8 +6,8 @@
 Priest::Priest(const Position& position): Ally(position) {}
 
 
-AllyExecuteResult Priest::execute(Player& player, const AllyAction& action) {
-    switch (action) {
+AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) {
+    switch (payload.action) {
         case AllyAction::HEAL:
             if (player.is_alive()) {
                 std::cout << "[Priest] El jugador fue curado" << std::endl;

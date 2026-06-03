@@ -49,6 +49,7 @@ target_sources(taller_server
         game/player/inventory/item_mapper.cpp
 
         game/allies/ally.cpp
+        game/allies/ally_action_payload.cpp
         game/allies/priest.cpp
 
     PUBLIC
@@ -107,5 +108,6 @@ target_sources(taller_server
         game/attacker.h
 
         game/allies/ally.h
+        game/allies/ally_action_payload.h
         game/allies/priest.h
     )
