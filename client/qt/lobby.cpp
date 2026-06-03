@@ -12,7 +12,7 @@
 #define SCREEN_HEIGHT 480
 
 
-Lobby::Lobby(): QMainWindow(nullptr) {
+Lobby::Lobby() {
 
     this->setMinimumSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     // Configuración de la interfaz gráfica (Widgets y Layouts)
@@ -33,7 +33,7 @@ Lobby::Lobby(): QMainWindow(nullptr) {
     layout->addWidget(input_username);
     layout->addWidget(send_button);
 
-    setCentralWidget(central_widget);
+    // setCentralWidget(central_widget);
 
     this->setStyleSheet(style.c_str());
 

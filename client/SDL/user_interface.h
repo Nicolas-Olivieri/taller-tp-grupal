@@ -65,10 +65,6 @@ private:
 
     void render_recoverable_value(const SDL2pp::Rect& box, const RecoverableValue& value);
 
-    void handle_chat_message(const ActionDTO& action);
-
-    void handle_chat_list(const ActionDTO& action);
-
 public:
     UserInterface(SDL2pp::Renderer& renderer, std::string& player_name);
 

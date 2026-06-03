@@ -10,7 +10,7 @@
 
 #include "common/socket.h"
 
-class Lobby: public QMainWindow {
+class Lobby: public QWidget {
     Q_OBJECT  // no borrar la macro, tiene sentido aca
 
             public: Lobby();

@@ -136,7 +136,10 @@ endif()
 # ---------------
 if(TALLER_CLIENT)
     # HEY!! TODO XXX: Change the name of the executable to the one you like!
-    add_executable(taller_client)
+    add_executable(taller_client
+                    resources/lobby/lobby.qrc
+                    resources/lobby/creator.qrc)
+    set(CMAKE_AUTORCC ON)
 
     # Make them depend on taller_common lib
     add_dependencies(taller_client taller_common SDL2pp::SDL2pp Qt6::Widgets)

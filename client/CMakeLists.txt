@@ -16,6 +16,7 @@ target_sources(taller_client
         SDL/sprites/texture_pool.cpp
 
         qt/lobby.cpp
+        qt/lobbywindow.cpp
 
         connection/client_receiver.cpp
         connection/client_sender.cpp
@@ -43,6 +44,8 @@ target_sources(taller_client
         SDL/sprites/texture_pool.h
 
         qt/lobby.h
+        qt/lobbywindow.h
+        qt/lobbywindow.ui
 
         connection/client_receiver.h
         connection/client_sender.h
