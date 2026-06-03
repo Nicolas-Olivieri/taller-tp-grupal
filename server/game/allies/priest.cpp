@@ -1,9 +1,12 @@
 #include "priest.h"
 
+#include <map>
+
+#include "server/game/player/inventory/item_mapper.h"
 #include "server/game/player/player.h"
 
 
-Priest::Priest(const Position& position): Ally(position), items({{4, 100}}) {}
+Priest::Priest(const Position& position): Ally(position), items({4}) {}
 
 
 AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) {
@@ -57,5 +60,10 @@ AllyExecuteResult Priest::handle_resurrect(Player& player) {
 
 
 AllyExecuteResult Priest::handle_list_items() {
-    return AllyExecuteResult(ListItemsResult(get_type(), items));
+    std::map<uint8_t, uint16_t> items_prices;
+    for (const uint8_t item_id: items) {
+        items_prices[item_id] = ItemMapper::get_price(item_id);
+    }
+
+    return AllyExecuteResult(ListItemsResult(get_type(), items_prices));
 }

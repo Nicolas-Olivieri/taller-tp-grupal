@@ -1,14 +1,14 @@
 #ifndef PRIEST_H
 #define PRIEST_H
 
-#include <map>
+#include <vector>
 
 #include "ally.h"
 
 
 class Priest: public Ally {
 private:
-    std::map<uint8_t, uint16_t> items;  // { ID, precio }
+    std::vector<uint8_t> items;  // vector de ID de ítems
 
 public:
     explicit Priest(const Position& position);

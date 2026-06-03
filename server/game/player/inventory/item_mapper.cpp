@@ -97,3 +97,8 @@ uint16_t ItemMapper::get_usable_effect_amount(uint8_t item_id) {
 
     return config.get_usables().find(item_id)->second.effect_amount;
 }
+
+uint16_t ItemMapper::get_price(const uint8_t item_id) {
+    const GameConfig& config = GameConfig::get();
+    return config.get_item_price(item_id);
+}

@@ -2,7 +2,6 @@
 
 #include <format>
 #include <map>
-#include <vector>
 
 
 ListItemsCommand::ListItemsCommand(const std::string& player_name):

@@ -28,6 +28,8 @@ public:
     static uint8_t get_usable_type_effect(uint8_t item_id);
 
     static uint16_t get_usable_effect_amount(uint8_t item_id);
+
+    static uint16_t get_price(uint8_t item_id);
 };
 
 
