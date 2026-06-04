@@ -17,16 +17,27 @@ void SellCommand::build_snapshot(SnapshotBuilder& builder) {
         return;
     }
 
+    static std::map<AllyType, std::string> ally_type_to_string({
+            {AllyType::PRIEST, "Sacerdote"},
+            {AllyType::MERCHANT, "Comerciante"},
+    });
+
+    if (not ally_type_to_string.contains(result.ally)) {
+        throw std::runtime_error("SellCommand recibió un NPC aliado desconocido");
+    }
+
     static std::map<SellStatus, std::string> result_to_message({
             {SellStatus::ITEM_BOUGHT, "Un placer hacer negocios!"},
             {SellStatus::ITEM_NOT_OWNED, "Estas tratando de vender un item que no tenes en tu inventario!"},
             {SellStatus::ITEM_EQUIPPED, "Estas tratando de vender un item que tenes equipado actualmente!"},
+            {SellStatus::ITEM_NOT_ACCEPTED, "Yo no compro ese tipo de item!"},
     });
 
     if (not result_to_message.contains(result.status)) {
         throw std::runtime_error("SellCommand recibió un resultado incorrecto");
     }
 
-    const std::string& message = result_to_message.at(result.status);
-    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ALLY, "Comerciante", player_name, message)));
+    const std::string& sender = ally_type_to_string.at(result.ally);
+    const std::string& content = result_to_message.at(result.status);
+    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ALLY, sender, player_name, content)));
 }
