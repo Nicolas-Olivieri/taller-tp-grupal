@@ -157,3 +157,8 @@ void Serializer::serialize(const ListItemsDTO& list) {
     serialize(list.receiver);
     serialize(list.items);
 }
+
+void Serializer::serialize(const BuyEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
