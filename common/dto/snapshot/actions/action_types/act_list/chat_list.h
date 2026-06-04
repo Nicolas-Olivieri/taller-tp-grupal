@@ -9,12 +9,11 @@
 
 // es una lista de mensajes que le llegan a 1 solo usuario (siempre privada)
 struct ChatListDTO: public ProtocolMessageDTO {
+    MessageType type;
     std::vector<std::string> lines;
     std::string receiver;
 
-    ChatListDTO(const std::vector<std::string>& lines, const std::string& receiver);
-
-    ChatListDTO(const std::string& line, const std::string& receiver);
+    ChatListDTO(const MessageType& type, const std::vector<std::string>& lines, const std::string& receiver);
 
     size_t message_size() const override;
 

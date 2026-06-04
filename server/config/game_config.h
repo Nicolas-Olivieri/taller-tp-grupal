@@ -59,6 +59,8 @@ private:
     std::unordered_map<uint8_t, EquipableItemData> armors_items;
     std::unordered_map<uint8_t, EquipableItemData> shields_items;
 
+    std::unordered_map<uint8_t, uint16_t> item_prices;
+
     GameConfig();
 
 public:
@@ -82,6 +84,8 @@ public:
     const std::unordered_map<uint8_t, EquipableItemData>& get_armors() const;
 
     const std::unordered_map<uint8_t, EquipableItemData>& get_shields() const;
+
+    uint16_t get_item_price(uint8_t item_id) const;
 };
 
 

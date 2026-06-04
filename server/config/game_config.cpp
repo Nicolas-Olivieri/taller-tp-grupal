@@ -63,6 +63,8 @@ GameConfig::GameConfig() {
     for (const auto& [name, value]: items_potions_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
 
+        item_prices[id] = static_cast<uint16_t>(toml::find<int>(value, "price"));
+
         UsableItemData itemData{};
         itemData.type_effect = static_cast<uint8_t>(toml::find<int>(value, "type"));
         itemData.effect_amount = static_cast<uint16_t>(toml::find<int>(value, "effect"));
@@ -73,6 +75,8 @@ GameConfig::GameConfig() {
     const auto items_weapons_table = toml::find(items_root, "weapons");
     for (const auto& [name, value]: items_weapons_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        item_prices[id] = static_cast<uint16_t>(toml::find<int>(value, "price"));
 
         WeaponItemData itemData{};
         itemData.itemData.min = static_cast<uint16_t>(toml::find<int>(value, "min_damage"));
@@ -87,6 +91,8 @@ GameConfig::GameConfig() {
     for (const auto& [name, value]: items_helmets_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
 
+        item_prices[id] = static_cast<uint16_t>(toml::find<int>(value, "price"));
+
         EquipableItemData itemData{};
         itemData.min = static_cast<uint16_t>(toml::find<int>(value, "min_defense"));
         itemData.max = static_cast<uint16_t>(toml::find<int>(value, "max_defense"));
@@ -98,6 +104,8 @@ GameConfig::GameConfig() {
     for (const auto& [name, value]: items_armors_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
 
+        item_prices[id] = static_cast<uint16_t>(toml::find<int>(value, "price"));
+
         EquipableItemData itemData{};
         itemData.min = static_cast<uint16_t>(toml::find<int>(value, "min_defense"));
         itemData.max = static_cast<uint16_t>(toml::find<int>(value, "max_defense"));
@@ -108,6 +116,8 @@ GameConfig::GameConfig() {
     const auto items_shields_table = toml::find(items_root, "shields");
     for (const auto& [name, value]: items_shields_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        item_prices[id] = static_cast<uint16_t>(toml::find<int>(value, "price"));
 
         EquipableItemData itemData{};
         itemData.min = static_cast<uint16_t>(toml::find<int>(value, "min_defense"));
@@ -141,4 +151,14 @@ const std::unordered_map<uint8_t, EquipableItemData>& GameConfig::get_armors() c
 
 const std::unordered_map<uint8_t, EquipableItemData>& GameConfig::get_shields() const {
     return shields_items;
+}
+
+uint16_t GameConfig::get_item_price(const uint8_t item_id) const {
+    if (not item_prices.contains(item_id)) {
+        throw std::out_of_range(
+                "GameConfig recibió un ítem que no se encuentra en la configuración del servidor: " +
+                std::to_string(item_id));
+    }
+
+    return item_prices.at(item_id);
 }

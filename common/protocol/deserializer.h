@@ -9,6 +9,7 @@
 #include "common/direction.h"
 #include "common/dto/events/command.h"
 #include "common/dto/snapshot/actions/action.h"
+#include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/info/playerinfo.h"
@@ -30,7 +31,7 @@ private:
     // Hay que completarlo al agregar nueva action
     ActionType recv_action_type();
 
-    MessageVisibility recv_message_visibility();
+    MessageType recv_message_type();
 
     AppearanceDTO recv_appearance();
 
@@ -45,6 +46,7 @@ private:
     DeathDTO recv_death();
 
     ChatListDTO recv_chat_list();
+    ListItemsDTO recv_list_items();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT
@@ -54,6 +56,8 @@ public:
     uint8_t recv_uint8();
 
     uint16_t recv_uint16();
+
+    uint32_t recv_uint32();
 
     CommandType recv_command_type();
 

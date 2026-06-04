@@ -1,23 +1,24 @@
 #ifndef PRIEST_H
 #define PRIEST_H
 
-#include "ally.h"
+
+#include "vendor_ally.h"
 
 
-class Priest: public Ally {
+class Priest: public VendorAlly {
 public:
     explicit Priest(const Position& position);
 
-    AllyExecuteResult execute(Player& player, const AllyActionPayload& payload) override;
-
-    AllyType get_type() const override;
+    AllyExecuteResult execute(Player& player, const AllyActionPayload& payload) const override;
 
     ~Priest() override = default;
 
 private:
-    AllyExecuteResult handle_heal(Player& player);
+    AllyExecuteResult handle_heal(Player& player) const;
 
-    AllyExecuteResult handle_resurrect(Player& player);
+    AllyExecuteResult handle_resurrect(Player& player) const;
+
+    AllyExecuteResult handle_sell_item() const;
 };
 
 

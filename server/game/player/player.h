@@ -7,6 +7,7 @@
 #include "../position.h"
 #include "server/game/allies/ally.h"
 #include "server/game/attacker.h"
+#include "server/game/player/inventory/goldmanager.h"
 #include "server/game/player/inventory/inventory.h"
 #include "server/persistance/playerdata.h"
 #include "server/util/calculator.h"
@@ -19,6 +20,7 @@ private:
     const uint8_t head;
 
     Inventory inventory;
+    GoldManager gold_manager;
 
     Ally* bound_ally;
 
@@ -54,6 +56,10 @@ public:
 
     uint8_t get_head() const;
 
+    uint16_t get_safe_gold() const;
+
+    uint16_t get_excess_gold() const;
+
     void earn_xp(uint32_t amount);
 
     void update() override;
@@ -67,6 +73,14 @@ public:
     void unbind_ally();
 
     void heal();
+
+    void spend_gold(uint16_t amount);
+
+    void add_gold(uint16_t amount);
+
+    void acquire_item(uint8_t item_id);
+
+    void drop_item(uint8_t item_id);
 };
 
 

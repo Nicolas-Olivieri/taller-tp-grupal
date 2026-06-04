@@ -2,19 +2,23 @@
 #define SERIALIZER_H
 
 #include <cstdint>
+#include <map>
 #include <string>
 #include <vector>
 
+#include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
+#include "common/dto/events/sell_event.h"
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
 #include "common/dto/lobby/create_player.h"
 #include "common/dto/lobby/existence.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
+#include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/snapshot.h"
@@ -30,11 +34,25 @@ private:
 
     void serialize(uint16_t value);
 
+    void serialize(uint32_t value);
+
+    void copy_to_buffer(const void* data, size_t size);
+
     // Generaliza la forma de serializar vectores de cualquier tipo T
     template <typename T>
     void serialize(const std::vector<T>& container) {
         serialize(static_cast<uint16_t>(container.size()));
         for (const auto& elem: container) serialize(elem);
+    }
+
+    // Generaliza la forma de serializar mapas con claves K y valores V
+    template <typename K, typename V>
+    void serialize(const std::map<K, V>& container) {
+        serialize(static_cast<uint16_t>(container.size()));
+        for (const auto& [key, value]: container) {
+            serialize(key);
+            serialize(value);
+        }
     }
 
 public:
@@ -80,6 +98,12 @@ public:
     void serialize(const DeathDTO& death);
 
     void serialize(const ChatListDTO& list);
+
+    void serialize(const ListItemsDTO& list);
+
+    void serialize(const BuyEventDTO& event);
+
+    void serialize(const SellEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

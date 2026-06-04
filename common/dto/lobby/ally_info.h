@@ -3,8 +3,8 @@
 
 #include <cstdint>
 
-#include "common/creature_type.h"
 #include "common/dto/message.h"
+#include "common/npc_type.h"
 
 
 struct AllyInfoDTO: public ProtocolMessageDTO {

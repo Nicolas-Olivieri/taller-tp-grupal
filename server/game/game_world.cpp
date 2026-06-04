@@ -1,9 +1,9 @@
 #include "game_world.h"
 
-#include <cassert>
 #include <utility>
 
 #include "allies/ally.h"
+#include "allies/merchant.h"
 #include "allies/priest.h"
 
 
@@ -98,7 +98,7 @@ void GameWorld::remove_player(const std::string& player_name) {
 
 InteractResult GameWorld::interact(const std::string& player_name, const Position& position) {
     if (!players.contains(player_name))
-        return InteractResult(false);
+        return InteractResult();
 
     Player& player = players.at(player_name);
 
@@ -113,7 +113,7 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
     } catch (const std::out_of_range&) {
         // Golpeó el borde del mapa
     }
-    return InteractResult(false);
+    return InteractResult();
 }
 
 
@@ -127,10 +127,23 @@ HealResult GameWorld::heal_player(const std::string& player_name) {
 }
 
 
+ListItemsResult GameWorld::list_ally_items(const std::string& player_name) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::LIST_ITEMS)).list_items;
+}
+
+BuyResult GameWorld::buy_item(const std::string& player_name, const uint8_t item_id) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::BUY, item_id)).buy;
+}
+
+SellResult GameWorld::sell_item(const std::string& player_name, const uint8_t item_id) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::SELL, item_id)).sell;
+}
+
+
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {
     if (not players.contains(player_name)) {
-        return AllyExecuteResult();
+        return AllyExecuteResult(true);
     }
 
     Player& player = players.at(player_name);
@@ -141,11 +154,10 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
         // TODO: Revisar cómo devolver el resultado de PLAYER_UNBOUNDED (justamente /resucitar es el único
         //  comando que puede realizarse sin estar vinculado a un sacerdote).
         //  Mientras que para las otras acciones no se debería devolver algo relacionado al ResurrectResult.
-        return AllyExecuteResult(ResurrectResult::PLAYER_UNBOUNDED);
+        return AllyExecuteResult(false);
     }
 
     const AllyExecuteResult result = ally->execute(player, payload);
-    player.unbind_ally();
     return result;
 }
 
@@ -155,4 +167,9 @@ void GameWorld::init_npc() {
     auto priest = std::make_unique<Priest>(priest_position);
     grid.get_tile(priest_position).occupy(priest.get());
     allies.push_back(std::move(priest));
+
+    Position merchant_position(15, 10);
+    auto merchant = std::make_unique<Merchant>(merchant_position);
+    grid.get_tile(merchant_position).occupy(merchant.get());
+    allies.push_back(std::move(merchant));
 }

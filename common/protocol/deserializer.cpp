@@ -1,8 +1,11 @@
 #include "deserializer.h"
 
+#include <map>
 #include <stdexcept>
 
 #include <arpa/inet.h>
+
+#include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 
 Deserializer::Deserializer(Socket& socket): socket(socket) {}
 
@@ -30,6 +33,13 @@ uint16_t Deserializer::recv_uint16() {
     return ntohs(bytes);
 }
 
+uint32_t Deserializer::recv_uint32() {
+    uint32_t bytes;
+    this->socket.recvall(&bytes, sizeof(bytes));
+
+    return ntohl(bytes);
+}
+
 CommandType Deserializer::recv_command_type() {
     uint8_t byte = recv_uint8();
 
@@ -41,6 +51,9 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHAT:
         case CommandType::RESURRECT:
         case CommandType::HEAL:
+        case CommandType::LIST_ITEMS:
+        case CommandType::BUY_ITEM:
+        case CommandType::SELL_ITEM:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -84,10 +97,12 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
+    uint16_t safe_gold = recv_uint16();
+    uint16_t excess_gold = recv_uint16();
     AppearanceDTO appearance = recv_appearance();
     PlayerStatsDTO stats = recv_player_stats();
 
-    return PlayerInfoDTO(name, direction, x, y, appearance, stats);
+    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -118,6 +133,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_death());
         case ActionType::MESSAGE_LIST:
             return ActionDTO(recv_chat_list());
+        case ActionType::LIST_ITEMS:
+            return ActionDTO(recv_list_items());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -134,6 +151,7 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::RESURRECTION:
         case ActionType::DEATH:
         case ActionType::MESSAGE_LIST:
+        case ActionType::LIST_ITEMS:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -191,23 +209,27 @@ AllyType Deserializer::recv_ally_type() {
 }
 
 ChatMessageDTO Deserializer::recv_chat_message() {
-    MessageVisibility visibility = recv_message_visibility();
+    MessageType type = recv_message_type();
     std::string sender = recv_string();
     std::string receiver = recv_string();
     std::string content = recv_string();
 
-    return ChatMessageDTO(visibility, sender, receiver, content);
+    return ChatMessageDTO(type, sender, receiver, content);
 }
 
-MessageVisibility Deserializer::recv_message_visibility() {
+MessageType Deserializer::recv_message_type() {
     uint8_t byte = recv_uint8();
 
-    switch (static_cast<MessageVisibility>(byte)) {
+    switch (static_cast<MessageType>(byte)) {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
-        case MessageVisibility::PRIVATE:
-        case MessageVisibility::CLAN:
-            return static_cast<MessageVisibility>(byte);
+        case MessageType::SYSTEM:
+        case MessageType::PRIVATE:
+        case MessageType::GLOBAL:
+        case MessageType::CLAN:
+        case MessageType::ERROR:
+        case MessageType::ALLY:
+            return static_cast<MessageType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de visibilidad de mensaje no reconocido");
             // TODO: chequear si es la mejor excepción
@@ -219,8 +241,12 @@ PlayerStatsDTO Deserializer::recv_player_stats() {
     const uint16_t current_health = recv_uint16();
     const uint16_t max_mana = recv_uint16();
     const uint16_t current_mana = recv_uint16();
+    const uint8_t xp_level = recv_uint8();
+    const uint32_t current_xp_amount = recv_uint32();
+    const uint32_t max_xp_amount = recv_uint32();
 
-    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana);
+    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana, xp_level, current_xp_amount,
+                          max_xp_amount);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {
@@ -237,6 +263,7 @@ DeathDTO Deserializer::recv_death() {
 }
 
 ChatListDTO Deserializer::recv_chat_list() {
+    MessageType type = recv_message_type();
     std::string receiver = recv_string();
 
     std::vector<std::string> lines;
@@ -247,5 +274,21 @@ ChatListDTO Deserializer::recv_chat_list() {
         lines.push_back(recv_string());
     }
 
-    return ChatListDTO(lines, receiver);
+    return ChatListDTO(type, lines, receiver);
+}
+
+ListItemsDTO Deserializer::recv_list_items() {
+    MessageType type = recv_message_type();
+    const std::string receiver = recv_string();
+
+    const uint16_t size = recv_uint16();
+    std::map<uint8_t, uint16_t> items;
+
+    for (uint16_t i = 0; i < size; ++i) {
+        const uint8_t item_id = recv_uint8();
+        const uint16_t price = recv_uint16();
+        items[item_id] = price;
+    }
+
+    return ListItemsDTO(type, items, receiver);
 }

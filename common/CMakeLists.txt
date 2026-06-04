@@ -10,17 +10,22 @@ target_sources(taller_common
         util/rate_timer.cpp
         logger.cpp
         dto/lobby/credentials.cpp
+
+        dto/events/buy_event.cpp
         dto/events/event.cpp
         dto/events/moveevent.cpp
         dto/events/interact_event.cpp
         dto/events/command.cpp
         dto/events/chatevent.cpp
+        dto/events/sell_event.cpp
+
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
         dto/snapshot/actions/action_types/act_message/chatmessage.cpp
         dto/snapshot/actions/action_types/act_resurrection/resurrection.cpp
         dto/snapshot/actions/action_types/act_death/death.cpp
         dto/snapshot/actions/action_types/act_list/chat_list.cpp
+        dto/snapshot/actions/action_types/act_list_items/list_items.cpp
 
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
@@ -34,6 +39,8 @@ target_sources(taller_common
         dto/lobby/ally_info.cpp
 
         dto/snapshot/info/player_stats.cpp
+
+        util/string_utils.cpp
 
         dto/lobby/existence.cpp
         dto/lobby/create_player.cpp
@@ -53,17 +60,22 @@ target_sources(taller_common
         logger.h
         dto/message.h
         dto/lobby/credentials.h
+
+        dto/events/buy_event.h
         dto/events/event.h
         dto/events/moveevent.h
         dto/events/interact_event.h
         dto/events/command.h
         dto/events/chatevent.h
+        dto/events/sell_event.h
+
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h
         dto/snapshot/actions/action_types/act_message/chatmessage.h
         dto/snapshot/actions/action_types/act_resurrection/resurrection.h
         dto/snapshot/actions/action_types/act_death/death.h
         dto/snapshot/actions/action_types/act_list/chat_list.h
+        dto/snapshot/actions/action_types/act_list_items/list_items.h
 
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
@@ -75,9 +87,11 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_despawn/despawn.h
 
         dto/lobby/ally_info.h
-        creature_type.h
+        npc_type.h
 
         dto/snapshot/info/player_stats.h
+
+        util/string_utils.h
 
         dto/lobby/existence.h
         dto/lobby/create_player.h

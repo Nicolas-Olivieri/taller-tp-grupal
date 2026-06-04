@@ -22,6 +22,11 @@ uint16_t Calculator::calculate_max_mana(uint8_t level, uint8_t intelligence, flo
     return intelligence * factor_class * factor_race * level;
 }
 
+uint16_t Calculator::calculate_max_gold(uint8_t level) {
+    return static_cast<uint16_t>(100 * std::pow(level, 1.1));
+}
+
+uint16_t Calculator::calculate_max_excess_gold(uint16_t max_safe_gold) { return max_safe_gold / 2; }
 
 int Calculator::meditation_mana_recovery(uint8_t intelligence, float factor_class_meditation) {
     if (factor_class_meditation == 0) {

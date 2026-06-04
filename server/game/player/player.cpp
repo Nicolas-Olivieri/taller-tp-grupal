@@ -16,6 +16,7 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         body(persisted_data.body),
         head(persisted_data.head),
         inventory(stats),
+        gold_manager(persisted_data.current_gold, persisted_data.xp_level),
         bound_ally(nullptr) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
@@ -30,6 +31,7 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         body(persisted_data.body),
         head(persisted_data.head),
         inventory(stats),
+        gold_manager(persisted_data.current_gold, persisted_data.xp_level),
         bound_ally(nullptr) {}
 
 int Player::attack() {
@@ -52,6 +54,10 @@ Stats Player::get_stats() const { return stats; }
 uint8_t Player::get_body() const { return body; }
 
 uint8_t Player::get_head() const { return head; }
+
+uint16_t Player::get_safe_gold() const { return gold_manager.get_safe_gold(); }
+
+uint16_t Player::get_excess_gold() const { return gold_manager.get_excess_gold(); }
 
 void Player::earn_xp(uint32_t amount) {
     if (stats.experience.earn_xp(amount))
@@ -98,7 +104,7 @@ bool Player::can_reach(const Position& other_position) const {
 InteractResult Player::interact(Player& attacker) {
     if (position == attacker.get_position()) {
         std::cout << "[Player] Jugador " << player_name << " intentó atacarse a sí mismo" << std::endl;
-        return InteractResult(false);
+        return InteractResult();
     }
 
     if (not attacker.can_reach(position)) {
@@ -171,7 +177,14 @@ void Player::update_position(const Position& new_position, const Direction& new_
     Killable::update_position(new_position, new_direction);
 }
 
-void Player::drop() { assert(false); }
+void Player::drop() {
+    uint16_t excess_gold = gold_manager.get_excess_gold();
+    gold_manager.spend(excess_gold);
+
+    // TODO: hacer que se dropeen
+
+    assert(false);
+}
 
 void Player::bind_ally(Ally* ally) {
     std::cout << "[Player] El jugador " << player_name << " se vinculó con un aliado" << std::endl;
@@ -189,3 +202,11 @@ void Player::heal() {
     stats.health.recover_all();
     stats.mana.recover_all();
 }
+
+void Player::spend_gold(const uint16_t amount) { gold_manager.spend(amount); }
+
+void Player::add_gold(const uint16_t amount) { gold_manager.add(amount); }
+
+void Player::acquire_item(const uint8_t item_id) { inventory.acquire_item(item_id); }
+
+void Player::drop_item(const uint8_t item_id) { inventory.drop_item(item_id); }

@@ -13,7 +13,7 @@ protected:
     uint16_t current_amount;
     int tick_accumulator;
 
-    RecoverableStat(uint8_t recovery_factor, float factor_class, float factor_race, uint8_t max);
+    RecoverableStat(uint8_t recovery_factor, float factor_class, float factor_race, uint16_t max);
 
 public:
     virtual void update_max(uint8_t level, uint8_t) = 0;

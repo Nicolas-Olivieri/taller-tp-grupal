@@ -6,7 +6,7 @@
 #include <vector>
 
 InteractCommand::InteractCommand(const std::string& player_name, const int x, const int y):
-        player_name(player_name), position(x, y), result(false) {}
+        player_name(player_name), position(x, y), result() {}
 
 void InteractCommand::execute(GameWorld& world) {
     result = world.interact(player_name, position);
@@ -51,7 +51,7 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
 
     if (status_to_message.contains(status)) {
         const std::string message = status_to_message.at(status);
-        builder.add_action(ActionDTO(ChatListDTO(message, player_name)));
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, message)));
         return;
     }
 
@@ -86,7 +86,7 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
             builder.add_action(ActionDTO(DeathDTO(player_attacked)));
         }
 
-        builder.add_action(ActionDTO(ChatListDTO(lines_to_attacked, player_attacked)));
+        builder.add_action(ActionDTO(ChatListDTO(MessageType::SYSTEM, lines_to_attacked, player_attacked)));
     } else {
 
         lines.push_back(std::format("Le quitaste {} vida a la entidad", result.attack.damage_dealt));
@@ -96,7 +96,7 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
         }
     }
 
-    builder.add_action(ActionDTO(ChatListDTO(lines, player_name)));
+    builder.add_action(ActionDTO(ChatListDTO(MessageType::SYSTEM, lines, player_name)));
 }
 
 void InteractCommand::handle_dodge(SnapshotBuilder& builder) {
@@ -107,15 +107,33 @@ void InteractCommand::handle_dodge(SnapshotBuilder& builder) {
 
         lines.push_back(std::format("{} esquivo tu ataque", player_attacked));
 
-        builder.add_action(ActionDTO(
-                ChatListDTO(std::format("Esquivaste el ataque de {}!!", player_name), player_attacked)));
+        builder.add_action(
+                ActionDTO(ChatMessageDTO(MessageType::SYSTEM, player_attacked,
+                                         std::format("Esquivaste el ataque de {}!!", player_name))));
     } else {
         lines.push_back("La entidad te Esquivo");
     }
 
-    builder.add_action(ActionDTO(ChatListDTO(lines, player_name)));
+    builder.add_action(ActionDTO(ChatListDTO(MessageType::SYSTEM, lines, player_name)));
 }
 
 void InteractCommand::handle_bind(SnapshotBuilder& builder) {
-    builder.add_action(ActionDTO(ChatListDTO("Te escucho. En que te ayudo?", player_name)));
+    std::string msg = "Estas hablando con el ";
+
+    switch (result.bind) {
+        case BindResult::PRIEST:
+            msg += "Sacerdote";
+            break;
+        case BindResult::MERCHANT:
+            msg += "Comerciante";
+            break;
+        case BindResult::BANKER:
+            msg += "Banquero";
+            break;
+        default:
+            throw std::runtime_error(
+                    "Interact command recibió una interacción de un tipo de aliado desconocido");
+    }
+
+    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, player_name, msg)));
 }

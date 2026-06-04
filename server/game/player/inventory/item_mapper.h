@@ -2,6 +2,7 @@
 #define ITEM_MAPPER_H
 
 #include <cstdint>
+#include <vector>
 
 // Clase con metodos estáticos que llaman al config internamente
 class ItemMapper {
@@ -28,6 +29,12 @@ public:
     static uint8_t get_usable_type_effect(uint8_t item_id);
 
     static uint16_t get_usable_effect_amount(uint8_t item_id);
+
+    static uint16_t get_price(uint8_t item_id);
+
+    static std::vector<uint8_t> get_random_priest_items();
+
+    static std::vector<uint8_t> get_random_merchant_items();
 };
 
 

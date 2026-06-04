@@ -51,6 +51,8 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(static_cast<uint8_t>(info.direction));
     serialize(info.x);
     serialize(info.y);
+    serialize(info.safe_gold);
+    serialize(info.excess_gold);
     serialize(info.appearance);
     serialize(info.stats);
 }
@@ -75,6 +77,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::MESSAGE_LIST:
             serialize(action.list);
             break;
+        case ActionType::LIST_ITEMS:
+            serialize(action.items);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -89,8 +94,7 @@ void Serializer::serialize(const std::string& value) {
     uint16_t size = static_cast<uint16_t>(value.size());
     serialize(size);
 
-    std::memcpy(&this->buffer[offset], value.data(), size);
-    offset += size;
+    copy_to_buffer(value.data(), size);
 }
 
 void Serializer::serialize(uint8_t value) { this->buffer[this->offset++] = value; }
@@ -98,8 +102,18 @@ void Serializer::serialize(uint8_t value) { this->buffer[this->offset++] = value
 void Serializer::serialize(uint16_t value) {
     uint16_t netvalue = ntohs(value);
 
-    std::memcpy(&this->buffer[this->offset], &netvalue, sizeof(netvalue));
-    offset += sizeof(netvalue);
+    copy_to_buffer(&netvalue, sizeof(netvalue));
+}
+
+void Serializer::serialize(uint32_t value) {
+    uint32_t netvalue = ntohl(value);
+
+    copy_to_buffer(&netvalue, sizeof(netvalue));
+}
+
+void Serializer::copy_to_buffer(const void* data, size_t size) {
+    std::memcpy(&this->buffer[this->offset], data, size);
+    offset += size;
 }
 
 void Serializer::serialize(const InteractEventDTO& event) {
@@ -117,7 +131,7 @@ void Serializer::serialize(const AllyInfoDTO& info) {
 }
 
 void Serializer::serialize(const ChatMessageDTO& message) {
-    serialize(static_cast<uint8_t>(message.visibility));
+    serialize(static_cast<uint8_t>(message.type));
     serialize(message.sender);
     serialize(message.receiver);
     serialize(message.content);
@@ -134,6 +148,9 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
     serialize(stats.current_health);
     serialize(stats.max_mana);
     serialize(stats.current_mana);
+    serialize(stats.xp_level);
+    serialize(stats.current_xp_amount);
+    serialize(stats.max_xp_amount);
 }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {
@@ -144,6 +161,23 @@ void Serializer::serialize(const ResurrectionDTO& resurrection) {
 void Serializer::serialize(const DeathDTO& death) { serialize(death.player_dead); }
 
 void Serializer::serialize(const ChatListDTO& list) {
+    serialize(static_cast<uint8_t>(list.type));
     serialize(list.receiver);
     serialize(list.lines);
+}
+
+void Serializer::serialize(const ListItemsDTO& list) {
+    serialize(static_cast<uint8_t>(list.type));
+    serialize(list.receiver);
+    serialize(list.items);
+}
+
+void Serializer::serialize(const BuyEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
+
+void Serializer::serialize(const SellEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
 }
