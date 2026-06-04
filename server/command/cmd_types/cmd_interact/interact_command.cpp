@@ -117,19 +117,17 @@ void InteractCommand::handle_dodge(SnapshotBuilder& builder) {
 }
 
 void InteractCommand::handle_bind(SnapshotBuilder& builder) {
-    std::string msg;
+    std::string msg = "Estas hablando con el ";
 
     switch (result.bind) {
         case BindResult::PRIEST:
-            msg += "Estas hablando con el Sacerdote";
+            msg += "Sacerdote";
             break;
         case BindResult::MERCHANT:
-            throw std::runtime_error("Interact command recibió una interacción de merchant y no se "
-                                     "implementó su handle en handle_bind()");
+            msg += "Comerciante";
             break;
         case BindResult::BANKER:
-            throw std::runtime_error("Interact command recibió una interacción de banker y no se implementó "
-                                     "su handle en handle_bind()");
+            msg += "Banquero";
             break;
         default:
             throw std::runtime_error(
