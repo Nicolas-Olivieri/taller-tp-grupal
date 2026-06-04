@@ -5,13 +5,13 @@
 #include <QCoreApplication>
 
 #include "SDL/client_game.h"
-#include "client/qt/lobby.h"
 #include "common/socket.h"
+#include "qt/login_window.h"
 
 class Client {
 private:
     QApplication app;
-    Lobby lobby;
+    LoginWindow lobby;
 
 public:
     Client(int argc, char* argv[]);

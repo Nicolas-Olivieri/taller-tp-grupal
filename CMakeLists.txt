@@ -136,10 +136,17 @@ endif()
 # ---------------
 if(TALLER_CLIENT)
     # HEY!! TODO XXX: Change the name of the executable to the one you like!
-    add_executable(taller_client)
+    add_executable(taller_client
+                    resources/lobby/lobby.qrc
+                    resources/lobby/creator.qrc)
+    set(CMAKE_AUTORCC ON)
 
     # Make them depend on taller_common lib
     add_dependencies(taller_client taller_common SDL2pp::SDL2pp Qt6::Widgets)
+
+    set_target_properties(taller_client PROPERTIES
+            AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/client/qt/ui"
+    )
 
     # Add source files and enable warnings
     # HEY!! TODO XXX: add more subfolders here

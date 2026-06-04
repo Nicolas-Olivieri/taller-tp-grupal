@@ -12,8 +12,8 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
         texture_pool(TexturePool(renderer)), animation_pool(AnimationPool()), renderer(renderer) {}
 
 
-#define GHOST_HEAD_ID 4
-#define GHOST_BODY_ID 3
+#define GHOST_HEAD_ID 0
+#define GHOST_BODY_ID 0
 
 Sprite SpriteCreator::create_user(const PlayerInfoDTO& playerInfo) {
     const SDL2pp::Point position(playerInfo.x, playerInfo.y);
