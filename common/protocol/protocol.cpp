@@ -30,6 +30,29 @@ CredentialsDTO Protocol::recv_credentials() {
     return CredentialsDTO(username, password);
 }
 
+ExistenceDTO Protocol::recv_existence() {
+    check_header_message_byte(Message::EXISTENCE);
+
+    Deserializer deserializer(this->socket);
+
+    const uint8_t exists = deserializer.recv_uint8();
+
+    return ExistenceDTO(exists);
+}
+
+CreatePlayerDTO Protocol::recv_appearance() {
+    check_header_message_byte(Message::CREATE_PLAYER);
+
+    Deserializer deserializer(this->socket);
+
+    const uint8_t body = deserializer.recv_uint8();
+    const uint8_t head = deserializer.recv_uint8();
+    const uint8_t archetype = deserializer.recv_uint8();
+    const uint8_t race = deserializer.recv_uint8();
+
+    return CreatePlayerDTO(body, head, archetype, race);
+}
+
 RequestedCommandDTO Protocol::recv_command() {
     check_header_message_byte(Message::COMMAND);
 

@@ -35,6 +35,9 @@ target_sources(taller_common
 
         dto/snapshot/info/player_stats.cpp
 
+        dto/lobby/existence.cpp
+        dto/lobby/create_player.cpp
+
     PUBLIC
         # .h files
         liberror.h
@@ -75,4 +78,7 @@ target_sources(taller_common
         creature_type.h
 
         dto/snapshot/info/player_stats.h
+
+        dto/lobby/existence.h
+        dto/lobby/create_player.h
     )

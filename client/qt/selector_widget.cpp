@@ -44,4 +44,8 @@ void SelectorWidget::on_right_clicked() {
     emit option_changed(ui->optionBox->value());
 }
 
+uint8_t SelectorWidget::get_value() const {
+    return ui->optionBox->value();
+}
+
 SelectorWidget::~SelectorWidget() { delete ui; }

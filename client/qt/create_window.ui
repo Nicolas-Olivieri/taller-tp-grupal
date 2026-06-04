@@ -124,7 +124,7 @@
     <item>
      <layout class="QGridLayout" name="class_group">
       <item row="0" column="1">
-       <widget class="QPushButton" name="btnClerigo">
+       <widget class="QPushButton" name="btnCleric">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -173,10 +173,16 @@ QPushButton:hover:!checked {
         <property name="flat">
          <bool>false</bool>
         </property>
+        <property name="archetype_id" stdset="0">
+         <number>1</number>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">archetypes_buttons</string>
+        </attribute>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QPushButton" name="btnMago">
+       <widget class="QPushButton" name="btnMage">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -225,6 +231,12 @@ QPushButton:hover:!checked {
         <property name="flat">
          <bool>false</bool>
         </property>
+        <property name="archetype_id" stdset="0">
+         <number>0</number>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">archetypes_buttons</string>
+        </attribute>
        </widget>
       </item>
       <item row="1" column="0">
@@ -293,10 +305,16 @@ QPushButton:hover:!checked {
         <property name="flat">
          <bool>false</bool>
         </property>
+        <property name="archetype_id" stdset="0">
+         <number>2</number>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">archetypes_buttons</string>
+        </attribute>
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QPushButton" name="btnGuerrero">
+       <widget class="QPushButton" name="btnWarrior">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -345,6 +363,12 @@ QPushButton:hover:!checked {
         <property name="flat">
          <bool>false</bool>
         </property>
+        <property name="archetype_id" stdset="0">
+         <number>3</number>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">archetypes_buttons</string>
+        </attribute>
        </widget>
       </item>
       <item row="1" column="1">
@@ -464,8 +488,72 @@ QPushButton:hover:!checked {
     </item>
     <item>
      <layout class="QGridLayout" name="races_group">
+      <item row="1" column="3">
+       <widget class="QLabel" name="label_9">
+        <property name="font">
+         <font>
+          <family>Nimbus Roman [UKWN]</family>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Gnomo</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="font">
+         <font>
+          <family>Nimbus Roman [UKWN]</family>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Humano</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_7">
+        <property name="font">
+         <font>
+          <family>Nimbus Roman [UKWN]</family>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Enano</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_8">
+        <property name="font">
+         <font>
+          <family>Nimbus Roman [UKWN]</family>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Elfo</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="3">
-       <widget class="QPushButton" name="btnGnomo">
+       <widget class="QPushButton" name="btnGnome">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -514,26 +602,16 @@ QPushButton:hover:!checked {
         <property name="autoExclusive">
          <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_7">
-        <property name="font">
-         <font>
-          <family>Nimbus Roman [UKWN]</family>
-          <pointsize>14</pointsize>
-         </font>
+        <property name="race_id" stdset="0">
+         <number>3</number>
         </property>
-        <property name="text">
-         <string>Enano</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
-        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">races_buttons</string>
+        </attribute>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QPushButton" name="btnHumano">
+       <widget class="QPushButton" name="btnHuman">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -582,10 +660,16 @@ QPushButton:hover:!checked {
         <property name="autoExclusive">
          <bool>true</bool>
         </property>
+        <property name="race_id" stdset="0">
+         <number>0</number>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">races_buttons</string>
+        </attribute>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="btnElfo">
+       <widget class="QPushButton" name="btnElf">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -636,10 +720,16 @@ QPushButton:hover:!checked {
         <property name="autoExclusive">
          <bool>true</bool>
         </property>
+        <property name="race_id" stdset="0">
+         <number>1</number>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">races_buttons</string>
+        </attribute>
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QPushButton" name="btnEnano">
+       <widget class="QPushButton" name="btnDwarf">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -688,54 +778,12 @@ QPushButton:hover:!checked {
         <property name="autoExclusive">
          <bool>true</bool>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="font">
-         <font>
-          <family>Nimbus Roman [UKWN]</family>
-          <pointsize>14</pointsize>
-         </font>
+        <property name="race_id" stdset="0">
+         <number>2</number>
         </property>
-        <property name="text">
-         <string>Humano</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="label_9">
-        <property name="font">
-         <font>
-          <family>Nimbus Roman [UKWN]</family>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Gnomo</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="label_8">
-        <property name="font">
-         <font>
-          <family>Nimbus Roman [UKWN]</family>
-          <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Elfo</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
-        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">races_buttons</string>
+        </attribute>
        </widget>
       </item>
      </layout>
@@ -753,9 +801,44 @@ QPushButton:hover:!checked {
    </property>
    <layout class="QGridLayout" name="preview"/>
   </widget>
+  <widget class="QLabel" name="validation_err">
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>811</x>
+     <y>615</y>
+     <width>181</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Nimbus Roman [urw]</family>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(192, 28, 40)</string>
+   </property>
+   <property name="text">
+    <string>Falta seleccionar raza o clase</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../../resources/lobby/creator.qrc"/>
  </resources>
  <connections/>
+ <buttongroups>
+  <buttongroup name="races_buttons"/>
+  <buttongroup name="archetypes_buttons"/>
+ </buttongroups>
 </ui>

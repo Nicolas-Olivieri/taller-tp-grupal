@@ -6,7 +6,7 @@
 #include "selector_widget.h"
 #include "ui_create_window.h"
 
-CreateWindow::CreateWindow(QWidget* parent):
+CreateWindow::CreateWindow(const QString& username, QWidget* parent):
     QWidget(parent), ui(new Ui::CreateWindow) {
     ui->setupUi(this);
 
@@ -19,11 +19,13 @@ CreateWindow::CreateWindow(QWidget* parent):
     ui->appearence_selectors->addWidget(body_selector, 0, 1);
 
     // Seteo preview de apariencia
+    ui->username->setText(username);
     preview = new PreviewWidget(skins_paths);
     ui->preview->addWidget(preview, 0, 0);
 
     connect(body_selector, &SelectorWidget::option_changed, preview, &PreviewWidget::change_body);
     connect(head_selector, &SelectorWidget::option_changed, preview, &PreviewWidget::change_head);
+    connect(ui->btnStart, &QPushButton::clicked, this, &CreateWindow::start_game);
 }
 
 void CreateWindow::load_skins_data() {
@@ -45,6 +47,24 @@ void CreateWindow::load_skins_data() {
         skin_ranges.insert(category, {start, finish});
         skins_paths.insert(category, category_options);
     }
+}
+
+
+void CreateWindow::start_game() {
+    if (validate_data()) {
+        const uint8_t body = body_selector->get_value();
+        const uint8_t head = head_selector->get_value();
+        const uint8_t race = ui->races_buttons->checkedButton()->property("race_id").toInt();
+        const uint8_t archetype = ui->archetypes_buttons->checkedButton()->property("archetype_id").toInt();
+
+        emit finish_creation(CreatePlayerDTO(body, head, archetype, race));
+    } else {
+        ui->validation_err->show();
+    }
+}
+
+bool CreateWindow::validate_data() {
+    return ui->races_buttons->checkedButton() && ui->archetypes_buttons->checkedButton();
 }
 
 CreateWindow::~CreateWindow() { delete ui; }

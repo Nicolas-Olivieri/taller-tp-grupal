@@ -24,9 +24,6 @@ LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::Login
     ui->conn_err->hide();
     ui->name_err->hide();
 
-    creator = new CreateWindow(this);
-    setCentralWidget(creator);
-
     connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::conect_match);
 }
 
@@ -42,21 +39,27 @@ void LoginWindow::conect_match() {
     Protocol protocol(socket.value());
 
     const CredentialsDTO message(username);
-
     protocol.send(message);
-    close();
 
-    // TODO falta el download del mapa
-}
+    const ExistenceDTO confirmation = protocol.recv_existence();
+    if (!confirmation.user_exists) {
+        const auto creator = new CreateWindow(QString::fromStdString(username));
+        connect(creator, &CreateWindow::finish_creation, this, &LoginWindow::send_creation_data);
 
-Socket LoginWindow::get_socket() {
-    if (!socket) {
-        throw std::runtime_error("No se pudo conectar correctamente con el servidor");
+        setCentralWidget(creator);
+
+    } else {
+        close();
     }
-    return std::move(socket.value());
 }
 
-std::string LoginWindow::get_username() { return username; }
+void LoginWindow::send_creation_data(const CreatePlayerDTO &player_data) {
+    Protocol protocol(socket.value());
+
+    protocol.send(player_data);
+
+    close();
+}
 
 bool LoginWindow::can_create_session() {
     // TODO agregar validación de usuario desde el servidor y modificar el mensaje de error en caso de no
@@ -85,5 +88,14 @@ bool LoginWindow::can_create_session() {
     }
     return true;
 }
+
+Socket LoginWindow::get_socket() {
+    if (!socket) {
+        throw std::runtime_error("No se pudo conectar correctamente con el servidor");
+    }
+    return std::move(socket.value());
+}
+
+std::string LoginWindow::get_username() { return username; }
 
 LoginWindow::~LoginWindow() { delete ui; }

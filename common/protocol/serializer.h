@@ -12,6 +12,8 @@
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
+#include "common/dto/lobby/create_player.h"
+#include "common/dto/lobby/existence.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
@@ -49,6 +51,10 @@ public:
     void serialize(const MoveEventDTO& event);
 
     void serialize(const SnapshotDTO& snapshot);
+
+    void serialize(const ExistenceDTO& existence);
+
+    void serialize(const CreatePlayerDTO& player_data);
 
     void serialize(const PlayerInfoDTO& info);
 

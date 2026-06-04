@@ -28,12 +28,12 @@ public:
 private slots:
     void conect_match();
 
+    void send_creation_data(const CreatePlayerDTO &player_data);
+
 private:
     Ui::LoginWindow* ui;
     std::optional<Socket> socket;
     std::string username;
-
-    CreateWindow* creator;
 
     bool can_create_session();
 };

@@ -15,8 +15,7 @@ public:
 
     ~SelectorWidget();
 
-    void on_left_clicked();
-    void on_right_clicked();
+    uint8_t get_value() const;
 
 signals:
     void option_changed(int new_id);
@@ -24,6 +23,10 @@ signals:
 private:
     Ui::SelectorWidget* ui;
     QString label;
+
+    void on_left_clicked();
+    void on_right_clicked();
+
 };
 
 #endif  // SELECTOR_WIDGET_H
