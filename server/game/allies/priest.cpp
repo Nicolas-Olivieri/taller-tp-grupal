@@ -67,5 +67,5 @@ AllyExecuteResult Priest::handle_list_items() {
         items_prices[item_id] = ItemMapper::get_price(item_id);
     }
 
-    return AllyExecuteResult(ListItemsResult(get_type(), items_prices));
+    return AllyExecuteResult(ListItemsResult(true, get_type(), items_prices));
 }
