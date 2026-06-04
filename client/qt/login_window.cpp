@@ -1,9 +1,8 @@
 #include "login_window.h"
 
 #include <QMainWindow>
-#include <QMovie>
 #include <QMoveEvent>
-
+#include <QMovie>
 #include <string>
 #include <utility>
 
@@ -60,7 +59,7 @@ void LoginWindow::conect_match() {
     }
 }
 
-void LoginWindow::send_creation_data(const CreatePlayerDTO &player_data) {
+void LoginWindow::send_creation_data(const CreatePlayerDTO& player_data) {
     Protocol protocol(socket.value());
 
     protocol.send(player_data);
@@ -104,14 +103,14 @@ Socket LoginWindow::get_socket() {
 std::string LoginWindow::get_username() { return username; }
 
 
-void LoginWindow::mousePressEvent(QMouseEvent *event) {
+void LoginWindow::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         drag_offset = event->globalPosition().toPoint() - frameGeometry().topLeft();
         event->accept();
     }
 }
 
-void LoginWindow::mouseMoveEvent(QMouseEvent *event) {
+void LoginWindow::mouseMoveEvent(QMouseEvent* event) {
     if (event->buttons() & Qt::LeftButton) {
         move(event->globalPosition().toPoint() - drag_offset);
         event->accept();

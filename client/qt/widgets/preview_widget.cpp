@@ -3,10 +3,8 @@
 #include "ui_preview_widget.h"
 
 PreviewWidget::PreviewWidget(QHash<QString, QHash<int, QString>>& skins_paths, QWidget* parent):
-    QWidget(parent), ui(new Ui::PreviewWidget), skins_paths(skins_paths) {
+        QWidget(parent), ui(new Ui::PreviewWidget), skins_paths(skins_paths) {
     ui->setupUi(this);
-
-
 }
 
 void PreviewWidget::change_body(const int new_id) const {

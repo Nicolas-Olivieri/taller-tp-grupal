@@ -41,7 +41,7 @@ void LobbyHandler::run() {
     move_into_waiting_queue(credentials.username);
 }
 
-void LobbyHandler::create_player(const std::string& username, CreatePlayerDTO& player_data) {
+void LobbyHandler::create_player(const std::string& username, const CreatePlayerDTO& player_data) {
     auto [appearance, archetype, race] = player_data;
     auto [body, head] = appearance;
     player_repository.create(username, archetype, race, body, head);

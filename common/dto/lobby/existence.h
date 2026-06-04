@@ -3,15 +3,15 @@
 #include "common/dto/message.h"
 
 
-struct ExistenceDTO : public ProtocolMessageDTO {
+struct ExistenceDTO: public ProtocolMessageDTO {
     uint8_t user_exists;
 
     explicit ExistenceDTO(uint8_t user_exists);
 
     size_t message_size() const override;
 
-    void accept(Serializer &serializer) const override;
+    void accept(Serializer& serializer) const override;
 };
 
 
-#endif //EXISTENCE_DTO_H
+#endif  // EXISTENCE_DTO_H

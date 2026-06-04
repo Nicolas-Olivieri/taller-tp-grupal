@@ -4,13 +4,13 @@
 #include <mutex>
 #include <string>
 
+#include "common/dto/lobby/create_player.h"
 #include "common/queue.h"
 #include "common/socket.h"
 #include "common/thread/thread.h"
 #include "server/persistance/playerrepository.h"
 
 #include "connectioninfo.h"
-#include "common/dto/lobby/create_player.h"
 
 class LobbyHandler: public Thread {
 private:
@@ -25,7 +25,7 @@ private:
     void shutdown_if_blocked();
 
     // TOOD: de momento es solo para crear jugadores con skins random, después se borra o cambia cómo funciona
-    void create_player(const std::string &username, CreatePlayerDTO &player_data);
+    void create_player(const std::string& username, const CreatePlayerDTO& player_data);
 
 public:
     LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players,

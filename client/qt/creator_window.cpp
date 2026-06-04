@@ -1,14 +1,17 @@
 #include "creator_window.h"
 
-#include <QButtonGroup>
 #include <QMoveEvent>
+#include <string>
+#include <vector>
+
 #include <toml.hpp>
 
 #include "widgets/selector_widget.h"
+
 #include "ui_creator_window.h"
 
 CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
-    QWidget(parent), ui(new Ui::CreatorWindow) {
+        QWidget(parent), ui(new Ui::CreatorWindow) {
     ui->setupUi(this);
 
     // Seteo borde de ventana custom
@@ -19,8 +22,8 @@ CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
     load_skins_data();
 
     // Seteo sliders de personalizacion
-    head_selector = new SelectorWidget("Cabeza", skin_ranges["head"][0],skin_ranges["head"][1]);
-    body_selector = new SelectorWidget("Vestuario",skin_ranges["body"][0],skin_ranges["body"][1]);
+    head_selector = new SelectorWidget("Cabeza", skin_ranges["head"][0], skin_ranges["head"][1]);
+    body_selector = new SelectorWidget("Vestuario", skin_ranges["body"][0], skin_ranges["body"][1]);
     ui->appearence_selectors->addWidget(head_selector, 0, 0);
     ui->appearence_selectors->addWidget(body_selector, 0, 1);
 
@@ -38,9 +41,9 @@ void CreatorWindow::load_skins_data() {
     auto root = toml::parse(DATA_PATH "/texture_files.toml");
     std::vector<std::string> categories = {"body", "head"};
 
-    for (const auto& cat : categories) {
+    for (const auto& cat: categories) {
         auto ids = toml::find<std::vector<int>>(root, "file_ids", cat);
-        const int start = ids[0]+1;
+        const int start = ids[0] + 1;
         const int finish = ids[1];
         auto category = QString::fromStdString(cat);
 

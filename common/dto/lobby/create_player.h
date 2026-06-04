@@ -4,7 +4,7 @@
 #include "common/dto/snapshot/info/appearance.h"
 
 
-struct CreatePlayerDTO : public ProtocolMessageDTO {
+struct CreatePlayerDTO: public ProtocolMessageDTO {
     AppearanceDTO appearance;
     uint8_t archetype;
     uint8_t race;
@@ -13,8 +13,8 @@ struct CreatePlayerDTO : public ProtocolMessageDTO {
 
     size_t message_size() const override;
 
-    void accept(Serializer &serializer) const override;
+    void accept(Serializer& serializer) const override;
 };
 
 
-#endif //CREATE_APPEARANCE_H
+#endif  // CREATE_APPEARANCE_H

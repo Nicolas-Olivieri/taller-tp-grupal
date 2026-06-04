@@ -4,9 +4,9 @@
 #include <QLabel>
 #include <QWidget>
 
+#include "common/dto/lobby/create_player.h"
 #include "widgets/preview_widget.h"
 #include "widgets/selector_widget.h"
-#include "common/dto/lobby/create_player.h"
 
 namespace Ui {
 class CreatorWindow;

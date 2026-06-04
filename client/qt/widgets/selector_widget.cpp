@@ -1,12 +1,12 @@
 #include "selector_widget.h"
 
-#include <iostream>
 #include <QToolButton>
+#include <iostream>
 
 #include "ui_selector_widget.h"
 
 SelectorWidget::SelectorWidget(const QString& label, const int min, const int max, QWidget* parent):
-    QWidget(parent), ui(new Ui::SelectorWidget), label(label){
+        QWidget(parent), ui(new Ui::SelectorWidget), label(label) {
 
     ui->setupUi(this);
 
@@ -44,8 +44,6 @@ void SelectorWidget::on_right_clicked() {
     emit option_changed(ui->optionBox->value());
 }
 
-uint8_t SelectorWidget::get_value() const {
-    return ui->optionBox->value();
-}
+uint8_t SelectorWidget::get_value() const { return ui->optionBox->value(); }
 
 SelectorWidget::~SelectorWidget() { delete ui; }

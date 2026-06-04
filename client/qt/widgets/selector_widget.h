@@ -26,7 +26,6 @@ private:
 
     void on_left_clicked();
     void on_right_clicked();
-
 };
 
 #endif  // SELECTOR_WIDGET_H

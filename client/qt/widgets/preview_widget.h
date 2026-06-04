@@ -11,7 +11,7 @@ class PreviewWidget: public QWidget {
     Q_OBJECT
 
 public:
-    PreviewWidget(QHash<QString, QHash<int, QString>>& skins_paths, QWidget* parent = nullptr);
+    explicit PreviewWidget(QHash<QString, QHash<int, QString>>& skins_paths, QWidget* parent = nullptr);
 
     ~PreviewWidget();
 

@@ -3,11 +3,13 @@
 
 #include <QMainWindow>
 #include <string>
+
 #include <ui_creator_window.h>
 #include <ui_login_window.h>
 
-#include "creator_window.h"
 #include "common/socket.h"
+
+#include "creator_window.h"
 
 namespace Ui {
 class LoginWindow;
@@ -27,13 +29,13 @@ public:
 
 protected:
     // Para permitir el borde custom
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
 
 private slots:
     void conect_match();
 
-    void send_creation_data(const CreatePlayerDTO &player_data);
+    void send_creation_data(const CreatePlayerDTO& player_data);
 
 private:
     Ui::LoginWindow* ui;
