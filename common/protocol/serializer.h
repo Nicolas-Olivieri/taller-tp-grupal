@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
@@ -92,6 +93,8 @@ public:
     void serialize(const ChatListDTO& list);
 
     void serialize(const ListItemsDTO& list);
+
+    void serialize(const BuyEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

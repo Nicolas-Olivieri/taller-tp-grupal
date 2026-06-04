@@ -54,6 +54,9 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS) {
         return RequestedCommandDTO(command);
+    } else if (command == CommandType::BUY_ITEM) {
+        const uint8_t item_id = deserializer.recv_uint8();
+        return RequestedCommandDTO(command, item_id);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }

@@ -10,11 +10,14 @@ target_sources(taller_common
         util/rate_timer.cpp
         logger.cpp
         dto/lobby/credentials.cpp
+
+        dto/events/buy_event.cpp
         dto/events/event.cpp
         dto/events/moveevent.cpp
         dto/events/interact_event.cpp
         dto/events/command.cpp
         dto/events/chatevent.cpp
+
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
         dto/snapshot/actions/action_types/act_message/chatmessage.cpp
@@ -36,6 +39,8 @@ target_sources(taller_common
 
         dto/snapshot/info/player_stats.cpp
 
+        util/string_utils.cpp
+
     PUBLIC
         # .h files
         liberror.h
@@ -51,11 +56,14 @@ target_sources(taller_common
         logger.h
         dto/message.h
         dto/lobby/credentials.h
+
+        dto/events/buy_event.h
         dto/events/event.h
         dto/events/moveevent.h
         dto/events/interact_event.h
         dto/events/command.h
         dto/events/chatevent.h
+
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h
         dto/snapshot/actions/action_types/act_message/chatmessage.h
@@ -77,4 +85,6 @@ target_sources(taller_common
         npc_type.h
 
         dto/snapshot/info/player_stats.h
+
+        util/string_utils.h
     )

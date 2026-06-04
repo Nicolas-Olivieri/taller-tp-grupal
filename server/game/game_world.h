@@ -48,6 +48,8 @@ public:
 
     ListItemsResult list_ally_items(const std::string& player_name);
 
+    BuyResult buy_item(const std::string& player_name, uint8_t item_id);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

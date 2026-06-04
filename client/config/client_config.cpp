@@ -4,6 +4,8 @@
 
 #include <toml.hpp>
 
+#include "common/util/string_utils.h"
+
 #define CLIENT_ITEMS_PATH "/client/items.toml"
 
 
@@ -34,6 +36,18 @@ std::string ClientConfig::get_item_name(const uint8_t item_id) const {
     }
 
     return items_data.at(item_id).name;
+}
+
+
+std::optional<uint8_t> ClientConfig::get_item_id(const std::string& item_name) const {
+    const std::string target_name = string_utils::to_lowercase(item_name);
+    for (const auto& [id, data]: items_data) {
+        if (string_utils::to_lowercase(data.name) == target_name) {
+            return id;
+        }
+    }
+
+    return std::nullopt;
 }
 
 

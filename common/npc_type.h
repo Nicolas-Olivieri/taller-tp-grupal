@@ -6,6 +6,7 @@ enum class AllyType {
     PRIEST,
     MERCHANT,
     BANKER,
+    NO_ALLY,
 };
 
 
