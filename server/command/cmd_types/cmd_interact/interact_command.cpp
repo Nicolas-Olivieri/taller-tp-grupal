@@ -51,7 +51,7 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
 
     if (status_to_message.contains(status)) {
         const std::string message = status_to_message.at(status);
-        builder.add_action(ActionDTO(ChatListDTO(message, player_name)));
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, message, player_name)));
         return;
     }
 
@@ -86,7 +86,7 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
             builder.add_action(ActionDTO(DeathDTO(player_attacked)));
         }
 
-        builder.add_action(ActionDTO(ChatListDTO(lines_to_attacked, player_attacked)));
+        builder.add_action(ActionDTO(ChatListDTO(MessageType::SYSTEM, lines_to_attacked, player_attacked)));
     } else {
 
         lines.push_back(std::format("Le quitaste {} vida a la entidad", result.attack.damage_dealt));
@@ -96,7 +96,7 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
         }
     }
 
-    builder.add_action(ActionDTO(ChatListDTO(lines, player_name)));
+    builder.add_action(ActionDTO(ChatListDTO(MessageType::SYSTEM, lines, player_name)));
 }
 
 void InteractCommand::handle_dodge(SnapshotBuilder& builder) {
@@ -107,13 +107,14 @@ void InteractCommand::handle_dodge(SnapshotBuilder& builder) {
 
         lines.push_back(std::format("{} esquivo tu ataque", player_attacked));
 
-        builder.add_action(ActionDTO(
-                ChatListDTO(std::format("Esquivaste el ataque de {}!!", player_name), player_attacked)));
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM,
+                                                    std::format("Esquivaste el ataque de {}!!", player_name),
+                                                    player_attacked)));
     } else {
         lines.push_back("La entidad te Esquivo");
     }
 
-    builder.add_action(ActionDTO(ChatListDTO(lines, player_name)));
+    builder.add_action(ActionDTO(ChatListDTO(MessageType::SYSTEM, lines, player_name)));
 }
 
 void InteractCommand::handle_bind(SnapshotBuilder& builder) {
@@ -134,5 +135,5 @@ void InteractCommand::handle_bind(SnapshotBuilder& builder) {
                     "Interact command recibió una interacción de un tipo de aliado desconocido");
     }
 
-    builder.add_action(ActionDTO(ChatListDTO(msg, player_name)));
+    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, msg, player_name)));
 }

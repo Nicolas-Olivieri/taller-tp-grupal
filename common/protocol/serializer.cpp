@@ -115,7 +115,7 @@ void Serializer::serialize(const AllyInfoDTO& info) {
 }
 
 void Serializer::serialize(const ChatMessageDTO& message) {
-    serialize(static_cast<uint8_t>(message.visibility));
+    serialize(static_cast<uint8_t>(message.type));
     serialize(message.sender);
     serialize(message.receiver);
     serialize(message.content);
@@ -144,11 +144,13 @@ void Serializer::serialize(const ResurrectionDTO& resurrection) {
 void Serializer::serialize(const DeathDTO& death) { serialize(death.player_dead); }
 
 void Serializer::serialize(const ChatListDTO& list) {
+    serialize(static_cast<uint8_t>(list.type));
     serialize(list.receiver);
     serialize(list.lines);
 }
 
 void Serializer::serialize(const ListItemsDTO& list) {
+    serialize(static_cast<uint8_t>(list.type));
     serialize(list.receiver);
     serialize(list.items);
 }

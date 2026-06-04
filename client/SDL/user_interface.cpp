@@ -173,8 +173,7 @@ void UserInterface::enqueue_message(const std::string& message) {
 void UserInterface::handle_chat_message(const ActionDTO& action) {
     ChatMessageDTO msg = action.chat_message;
 
-    if (msg.visibility == MessageVisibility::PRIVATE &&
-        (player_name == msg.receiver || player_name == msg.sender)) {
+    if (msg.type == MessageType::PRIVATE && (player_name == msg.receiver || player_name == msg.sender)) {
         std::string formatted_msg = "[" + msg.sender + "] " + msg.content;
         enqueue_message(formatted_msg);
     }

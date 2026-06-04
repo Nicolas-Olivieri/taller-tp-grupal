@@ -205,23 +205,27 @@ AllyType Deserializer::recv_ally_type() {
 }
 
 ChatMessageDTO Deserializer::recv_chat_message() {
-    MessageVisibility visibility = recv_message_visibility();
+    MessageType type = recv_message_type();
     std::string sender = recv_string();
     std::string receiver = recv_string();
     std::string content = recv_string();
 
-    return ChatMessageDTO(visibility, sender, receiver, content);
+    return ChatMessageDTO(type, sender, receiver, content);
 }
 
-MessageVisibility Deserializer::recv_message_visibility() {
+MessageType Deserializer::recv_message_type() {
     uint8_t byte = recv_uint8();
 
-    switch (static_cast<MessageVisibility>(byte)) {
+    switch (static_cast<MessageType>(byte)) {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
-        case MessageVisibility::PRIVATE:
-        case MessageVisibility::CLAN:
-            return static_cast<MessageVisibility>(byte);
+        case MessageType::SYSTEM:
+        case MessageType::PRIVATE:
+        case MessageType::GLOBAL:
+        case MessageType::CLAN:
+        case MessageType::ERROR:
+        case MessageType::ALLY:
+            return static_cast<MessageType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de visibilidad de mensaje no reconocido");
             // TODO: chequear si es la mejor excepción
@@ -253,6 +257,7 @@ DeathDTO Deserializer::recv_death() {
 }
 
 ChatListDTO Deserializer::recv_chat_list() {
+    MessageType type = recv_message_type();
     std::string receiver = recv_string();
 
     std::vector<std::string> lines;
@@ -263,10 +268,11 @@ ChatListDTO Deserializer::recv_chat_list() {
         lines.push_back(recv_string());
     }
 
-    return ChatListDTO(lines, receiver);
+    return ChatListDTO(type, lines, receiver);
 }
 
 ListItemsDTO Deserializer::recv_list_items() {
+    MessageType type = recv_message_type();
     const std::string receiver = recv_string();
 
     const uint16_t size = recv_uint16();
@@ -278,5 +284,5 @@ ListItemsDTO Deserializer::recv_list_items() {
         items[item_id] = price;
     }
 
-    return ListItemsDTO(items, receiver);
+    return ListItemsDTO(type, items, receiver);
 }

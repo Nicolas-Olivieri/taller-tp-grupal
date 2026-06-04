@@ -33,10 +33,10 @@ void ActionDTO::accept(Serializer& serializer) const { serializer.serialize(*thi
 ActionDTO::ActionDTO(const DespawnDTO& despawn):
         action(ActionType::DESPAWN),
         despawn(despawn),
-        chat_message(MessageVisibility::PRIVATE, "", "", ""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection("", {}),
         death(""),
-        list("", "") {}
+        list(MessageType::SYSTEM, {}, "") {}
 
 ActionDTO::ActionDTO(const ChatMessageDTO& message):
         action(ActionType::MESSAGE),
@@ -44,28 +44,28 @@ ActionDTO::ActionDTO(const ChatMessageDTO& message):
         chat_message(message),
         resurrection("", {}),
         death(""),
-        list("", "") {}
+        list(MessageType::SYSTEM, {}, "") {}
 
 ActionDTO::ActionDTO(const ResurrectionDTO& resurrection):
         action(ActionType::RESURRECTION),
         despawn(""),
-        chat_message(MessageVisibility::PRIVATE, "", "", ""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection(resurrection),
         death(""),
-        list("", "") {}
+        list(MessageType::SYSTEM, {}, "") {}
 
 ActionDTO::ActionDTO(const DeathDTO& death):
         action(ActionType::DEATH),
         despawn(""),
-        chat_message(MessageVisibility::PRIVATE, "", "", ""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection("", {}),
         death(death),
-        list("", "") {}
+        list(MessageType::SYSTEM, {}, "") {}
 
 ActionDTO::ActionDTO(const ChatListDTO& list):
         action(ActionType::MESSAGE_LIST),
         despawn(""),
-        chat_message(MessageVisibility::PRIVATE, "", "", ""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection("", {}),
         death(""),
         list(list) {}
@@ -73,8 +73,8 @@ ActionDTO::ActionDTO(const ChatListDTO& list):
 ActionDTO::ActionDTO(const ListItemsDTO& items):
         action(ActionType::LIST_ITEMS),
         despawn(""),
-        chat_message(MessageVisibility::PRIVATE, "", "", ""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection("", {}),
         death(""),
-        list("", ""),
+        list(MessageType::SYSTEM, {}, ""),
         items(items) {}

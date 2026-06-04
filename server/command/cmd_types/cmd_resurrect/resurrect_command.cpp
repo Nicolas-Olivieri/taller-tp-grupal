@@ -17,16 +17,17 @@ void ResurrectCommand::execute(GameWorld& world) {
 void ResurrectCommand::build_snapshot(SnapshotBuilder& builder) {
     switch (result) {
         case ResurrectResult::PLAYER_RESURRECTED:
-            builder.add_action(ActionDTO(
-                    ChatMessageDTO(MessageVisibility::PRIVATE, "Sacerdote", player_name, "A sus ordenes!")));
+            builder.add_action(
+                    ActionDTO(ChatMessageDTO(MessageType::ALLY, "Sacerdote", player_name, "A sus ordenes!")));
             builder.add_action(ActionDTO(ResurrectionDTO(player_name, appearance)));
             break;
         case ResurrectResult::PLAYER_IS_ALIVE:
-            builder.add_action(ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Sacerdote", player_name,
-                                                        "Ya estas vivo!! Avivate")));
+            builder.add_action(ActionDTO(
+                    ChatMessageDTO(MessageType::ALLY, "Sacerdote", player_name, "Ya estas vivo!! Avivate")));
             break;
         case ResurrectResult::PLAYER_UNBOUNDED:
-            builder.add_action(ActionDTO(ChatListDTO("No estas vinculado a ningun sacerdote", player_name)));
+            builder.add_action(ActionDTO(ChatMessageDTO(
+                    MessageType::ERROR, "No estas vinculado a ningun sacerdote", player_name)));
             break;
         case ResurrectResult::NO_RESULT:
         default:
