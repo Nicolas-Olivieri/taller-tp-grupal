@@ -32,17 +32,17 @@ private:
     SDL2pp::Texture ui_texture;
     std::string& player_name;
 
-    std::deque<std::string> chat_history;
+    std::deque<std::pair<std::string, SDL_Color>> chat_history;
 
     /* std::vector<std::pair<SDL2pp::Rect, std::string>> fixed_values; */
     std::vector<std::pair<SDL2pp::Rect, RecoverableValue>> recoverable_values;
 
-    // Blanco
-    SDL_Color text_color = {255, 255, 255, 255};
-    // Verde
-    SDL_Color health_color = {62, 174, 57, 255};
-    // Azul
-    SDL_Color mana_color = {13, 134, 213, 255};
+    SDL_Color yellow = {235, 224, 70, 255};
+    SDL_Color grey = {255, 255, 255, 140};
+    SDL_Color white = {255, 255, 255, 255};
+    SDL_Color green = {44, 230, 66, 140};
+    SDL_Color red = {214, 30, 30, 255};
+    SDL_Color light_blue = {44, 172, 230, 140};
 
     SDL2pp::Rect history_messages = {20, 35, 600, 147};
     SDL2pp::Rect input_box = {45, 190, 580, 25};
@@ -55,7 +55,7 @@ private:
     SDL2pp::Rect health_rect = {790, 596, 220, 20};
     SDL2pp::Rect mana_rect = {790, 625, 220, 20};
 
-    void enqueue_message(const std::string& message);
+    void enqueue_message(const std::string& message, SDL_Color color);
 
     void cut_text_if_necessary(int& text_width, int max_width);
 
@@ -70,6 +70,12 @@ private:
     void handle_chat_list(const ActionDTO& action);
 
     void handle_list_items(const ActionDTO& action);
+
+    SDL_Color assign_message_color(const MessageType& type);
+
+    bool is_receiver_or_sender(const MessageType& type);
+
+    bool is_receiver(const MessageType& type);
 
 public:
     UserInterface(SDL2pp::Renderer& renderer, std::string& player_name);

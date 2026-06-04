@@ -146,11 +146,13 @@ void ClientGame::handle_chat_events(const SDL_Event& event) {
         if (chat_text.empty())
             return;
 
-        if (chat_text[0] == '@')
+        if (chat_text[0] == '@') {
             send_private_message();
-
-        if (chat_text[0] == '/')
+        } else if (chat_text[0] == '/') {
             handle_text_command(chat_text);
+        } else {
+            connection.push_command(std::make_unique<ChatEventDTO>("", chat_text));
+        }
 
         chat_text.clear();
     }
