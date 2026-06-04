@@ -39,6 +39,8 @@ target_sources(taller_common
 
         dto/snapshot/info/player_stats.cpp
 
+        util/string_utils.cpp
+
     PUBLIC
         # .h files
         liberror.h
@@ -83,4 +85,6 @@ target_sources(taller_common
         npc_type.h
 
         dto/snapshot/info/player_stats.h
+
+        util/string_utils.h
     )
