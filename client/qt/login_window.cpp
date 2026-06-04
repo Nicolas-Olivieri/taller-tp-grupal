@@ -1,6 +1,8 @@
 #include "login_window.h"
 
+#include <QMainWindow>
 #include <QMovie>
+#include <QMoveEvent>
 
 #include <string>
 #include <utility>
@@ -14,6 +16,11 @@
 
 LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow) {
     ui->setupUi(this);
+
+    // Seteo borde de ventana custom
+    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+    connect(ui->btnClose, &QPushButton::clicked, this, &QWidget::close);
+    connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
 
     // Configuro la pantalla de LOGIN
     qApp->setStyleSheet("QToolTip { background-color: #1a0f05; color: #f7e5b3; border: 2px solid #c9a87c; "
@@ -43,8 +50,8 @@ void LoginWindow::conect_match() {
 
     const ExistenceDTO confirmation = protocol.recv_existence();
     if (!confirmation.user_exists) {
-        const auto creator = new CreateWindow(QString::fromStdString(username));
-        connect(creator, &CreateWindow::finish_creation, this, &LoginWindow::send_creation_data);
+        const auto creator = new CreatorWindow(QString::fromStdString(username));
+        connect(creator, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
 
         setCentralWidget(creator);
 
@@ -62,18 +69,16 @@ void LoginWindow::send_creation_data(const CreatePlayerDTO &player_data) {
 }
 
 bool LoginWindow::can_create_session() {
-    // TODO agregar validación de usuario desde el servidor y modificar el mensaje de error en caso de no
-    // existir el user
     if (ui->user->text().isEmpty()) {
         ui->name_err->show();
         return false;
     }
 
     // TODO borrar, es el default
-    // if (ui->host->text().isEmpty() || ui->port->text().isEmpty()) {
-    //     socket.emplace("127.0.0.1", "5050");
-    //     return true;
-    // }
+    if (ui->host->text().isEmpty() || ui->port->text().isEmpty()) {
+        socket.emplace("127.0.0.1", "5050");
+        return true;
+    }
 
     const char* hostname = ui->host->text().trimmed().toUtf8().constData();
     const char* servname = ui->port->text().trimmed().toUtf8().constData();
@@ -97,5 +102,20 @@ Socket LoginWindow::get_socket() {
 }
 
 std::string LoginWindow::get_username() { return username; }
+
+
+void LoginWindow::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        drag_offset = event->globalPosition().toPoint() - frameGeometry().topLeft();
+        event->accept();
+    }
+}
+
+void LoginWindow::mouseMoveEvent(QMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton) {
+        move(event->globalPosition().toPoint() - drag_offset);
+        event->accept();
+    }
+}
 
 LoginWindow::~LoginWindow() { delete ui; }

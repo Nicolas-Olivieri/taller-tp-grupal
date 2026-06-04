@@ -16,9 +16,9 @@ target_sources(taller_client
         SDL/sprites/texture_pool.cpp
 
         qt/login_window.cpp
-        qt/create_window.cpp
-        qt/selector_widget.cpp
-        qt/preview_widget.cpp
+        qt/creator_window.cpp
+        qt/widgets/selector_widget.cpp
+        qt/widgets/preview_widget.cpp
 
         connection/client_receiver.cpp
         connection/client_sender.cpp
@@ -46,13 +46,13 @@ target_sources(taller_client
         SDL/sprites/texture_pool.h
 
         qt/login_window.h
-        qt/login_window.ui
-        qt/create_window.h
-        qt/create_window.ui
-        qt/selector_widget.h
-        qt/selector_widget.ui
-        qt/preview_widget.h
-        qt/preview_widget.ui
+        qt/ui/login_window.ui
+        qt/creator_window.h
+        qt/ui/creator_window.ui
+        qt/widgets/selector_widget.h
+        qt/ui/selector_widget.ui
+        qt/widgets/preview_widget.h
+        qt/ui/preview_widget.ui
 
         connection/client_receiver.h
         connection/client_sender.h

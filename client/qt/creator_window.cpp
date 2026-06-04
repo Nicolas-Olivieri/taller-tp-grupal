@@ -1,14 +1,20 @@
-#include "create_window.h"
+#include "creator_window.h"
 
 #include <QButtonGroup>
+#include <QMoveEvent>
 #include <toml.hpp>
 
-#include "selector_widget.h"
-#include "ui_create_window.h"
+#include "widgets/selector_widget.h"
+#include "ui_creator_window.h"
 
-CreateWindow::CreateWindow(const QString& username, QWidget* parent):
-    QWidget(parent), ui(new Ui::CreateWindow) {
+CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
+    QWidget(parent), ui(new Ui::CreatorWindow) {
     ui->setupUi(this);
+
+    // Seteo borde de ventana custom
+    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+    connect(ui->btnClose, &QPushButton::clicked, this, &QWidget::close);
+    connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
 
     load_skins_data();
 
@@ -25,10 +31,10 @@ CreateWindow::CreateWindow(const QString& username, QWidget* parent):
 
     connect(body_selector, &SelectorWidget::option_changed, preview, &PreviewWidget::change_body);
     connect(head_selector, &SelectorWidget::option_changed, preview, &PreviewWidget::change_head);
-    connect(ui->btnStart, &QPushButton::clicked, this, &CreateWindow::start_game);
+    connect(ui->btnStart, &QPushButton::clicked, this, &CreatorWindow::start_game);
 }
 
-void CreateWindow::load_skins_data() {
+void CreatorWindow::load_skins_data() {
     auto root = toml::parse(DATA_PATH "/texture_files.toml");
     std::vector<std::string> categories = {"body", "head"};
 
@@ -49,8 +55,7 @@ void CreateWindow::load_skins_data() {
     }
 }
 
-
-void CreateWindow::start_game() {
+void CreatorWindow::start_game() {
     if (validate_data()) {
         const uint8_t body = body_selector->get_value();
         const uint8_t head = head_selector->get_value();
@@ -63,8 +68,8 @@ void CreateWindow::start_game() {
     }
 }
 
-bool CreateWindow::validate_data() {
+bool CreatorWindow::validate_data() {
     return ui->races_buttons->checkedButton() && ui->archetypes_buttons->checkedButton();
 }
 
-CreateWindow::~CreateWindow() { delete ui; }
+CreatorWindow::~CreatorWindow() { delete ui; }

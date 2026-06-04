@@ -21,5 +21,7 @@
         <file>creator/partes_user/head_2.png</file>
         <file>creator/partes_user/head_3.png</file>
         <file>creator/partes_user/head_4.png</file>
+        <file>btn_cerrar.png</file>
+        <file>btn_minimizar.png</file>
     </qresource>
 </RCC>

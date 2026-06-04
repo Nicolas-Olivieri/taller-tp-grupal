@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CreateWindow</class>
+ <class>CreatorWindow</class>
  <widget class="QWidget" name="CreateWindow">
   <property name="geometry">
    <rect>
@@ -802,9 +802,6 @@ QPushButton:hover:!checked {
    <layout class="QGridLayout" name="preview"/>
   </widget>
   <widget class="QLabel" name="validation_err">
-   <property name="visible">
-    <bool>false</bool>
-   </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -822,6 +819,9 @@ QPushButton:hover:!checked {
      <bold>false</bold>
     </font>
    </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
    <property name="styleSheet">
     <string notr="true">color: rgb(192, 28, 40)</string>
    </property>
@@ -832,8 +832,58 @@ QPushButton:hover:!checked {
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QPushButton" name="btnClose">
+   <property name="geometry">
+    <rect>
+     <x>997</x>
+     <y>6</y>
+     <width>21</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="../../resources/lobby/lobby.qrc">
+     <normaloff>:/images/btn_cerrar.png</normaloff>:/images/btn_cerrar.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>21</width>
+     <height>21</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnMinimize">
+   <property name="geometry">
+    <rect>
+     <x>973</x>
+     <y>6</y>
+     <width>21</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="../../resources/lobby/lobby.qrc">
+     <normaloff>:/images/btn_minimizar.png</normaloff>:/images/btn_minimizar.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>21</width>
+     <height>21</height>
+    </size>
+   </property>
+  </widget>
  </widget>
  <resources>
+  <include location="../../resources/lobby/lobby.qrc"/>
   <include location="../../resources/lobby/creator.qrc"/>
  </resources>
  <connections/>

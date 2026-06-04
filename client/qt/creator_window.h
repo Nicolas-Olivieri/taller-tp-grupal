@@ -1,33 +1,30 @@
-#ifndef CREATE_WINDOW_H
-#define CREATE_WINDOW_H
+#ifndef CREATOR_WINDOW_H
+#define CREATOR_WINDOW_H
 
-#include <QButtonGroup>
 #include <QLabel>
-#include <QPushButton>
 #include <QWidget>
 
-#include "preview_widget.h"
-#include "selector_widget.h"
-#include "common/socket.h"
+#include "widgets/preview_widget.h"
+#include "widgets/selector_widget.h"
 #include "common/dto/lobby/create_player.h"
 
 namespace Ui {
-class CreateWindow;
+class CreatorWindow;
 }
 
-class CreateWindow: public QWidget {
+class CreatorWindow: public QWidget {
     Q_OBJECT
 
 public:
-    explicit CreateWindow(const QString& username, QWidget* parent = nullptr);
+    explicit CreatorWindow(const QString& username, QWidget* parent = nullptr);
 
-    ~CreateWindow();
+    ~CreatorWindow();
 
 signals:
     void finish_creation(CreatePlayerDTO player_data);
 
 private:
-    Ui::CreateWindow* ui;
+    Ui::CreatorWindow* ui;
     SelectorWidget* head_selector;
     SelectorWidget* body_selector;
     PreviewWidget* preview;
@@ -42,4 +39,4 @@ private:
     bool validate_data();
 };
 
-#endif  // CREATE_WINDOW_H
+#endif  // CREATOR_WINDOW_H

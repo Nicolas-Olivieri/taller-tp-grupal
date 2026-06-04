@@ -151,7 +151,7 @@ border: none;</string>
       <x>433</x>
       <y>658</y>
       <width>331</width>
-      <height>16</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
@@ -166,6 +166,9 @@ border: none;</string>
     </property>
     <property name="frame">
      <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
     </property>
     <property name="readOnly">
      <bool>false</bool>
@@ -367,6 +370,55 @@ p {
      <string>El host y/o puerto no son válidos</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="btnMinimize">
+    <property name="geometry">
+     <rect>
+      <x>974</x>
+      <y>5</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../../resources/lobby/lobby.qrc">
+      <normaloff>:/images/btn_minimizar.png</normaloff>:/images/btn_minimizar.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>21</width>
+      <height>21</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnClose">
+    <property name="geometry">
+     <rect>
+      <x>998</x>
+      <y>5</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../../resources/lobby/lobby.qrc">
+      <normaloff>:/images/btn_cerrar.png</normaloff>:/images/btn_cerrar.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>21</width>
+      <height>21</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
    <zorder>animation</zorder>
    <zorder>frame</zorder>
    <zorder>connectBtn</zorder>
@@ -379,6 +431,8 @@ p {
    <zorder>l_name</zorder>
    <zorder>name_err</zorder>
    <zorder>conn_err</zorder>
+   <zorder>btnMinimize</zorder>
+   <zorder>btnClose</zorder>
   </widget>
  </widget>
  <resources>

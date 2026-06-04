@@ -7,5 +7,7 @@
         <file>login/btn_info.png</file>
         <file>login/fondo_input.png</file>
         <file>login/interfaz.png</file>
+        <file>btn_cerrar.png</file>
+        <file>btn_minimizar.png</file>
     </qresource>
 </RCC>

@@ -3,10 +3,10 @@
 
 #include <QMainWindow>
 #include <string>
-#include <ui_create_window.h>
+#include <ui_creator_window.h>
 #include <ui_login_window.h>
 
-#include "create_window.h"
+#include "creator_window.h"
 #include "common/socket.h"
 
 namespace Ui {
@@ -25,6 +25,11 @@ public:
 
     ~LoginWindow();
 
+protected:
+    // Para permitir el borde custom
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
 private slots:
     void conect_match();
 
@@ -34,6 +39,8 @@ private:
     Ui::LoginWindow* ui;
     std::optional<Socket> socket;
     std::string username;
+
+    QPoint drag_offset;
 
     bool can_create_session();
 };
