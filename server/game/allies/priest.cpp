@@ -1,5 +1,6 @@
 #include "priest.h"
 
+#include <algorithm>
 #include <map>
 
 #include "server/game/player/inventory/item_mapper.h"
@@ -23,7 +24,7 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
             return handle_list_items();
 
         case AllyAction::BUY:
-            // TODO: Implementar la lógica de comprar hechizos y pociones
+            return handle_buy_item(player, payload.item_id);
 
         default:
             // El sacerdote ignora los comandos de venta
@@ -68,4 +69,23 @@ AllyExecuteResult Priest::handle_list_items() {
     }
 
     return AllyExecuteResult(ListItemsResult(true, get_type(), items_prices));
+}
+
+
+AllyExecuteResult Priest::handle_buy_item(Player& player, const uint8_t item_id) {
+    if (std::ranges::find(items, item_id) == items.end()) {
+        return AllyExecuteResult(BuyResult(BuyStatus::ITEM_NOT_SOLD, type));
+    }
+
+    try {
+        const uint16_t price = ItemMapper::get_price(item_id);
+        player.spend_gold(price);
+        player.acquire_item(item_id);
+
+        std::cout << "[Priest] Venta exitosa del ítem " << static_cast<int>(item_id) << std::endl;
+        return AllyExecuteResult(BuyResult(BuyStatus::ITEM_SOLD, type));
+
+    } catch (const NotEnoughGold&) {
+        return AllyExecuteResult(BuyResult(BuyStatus::NOT_ENOUGH_GOLD, type));
+    }
 }

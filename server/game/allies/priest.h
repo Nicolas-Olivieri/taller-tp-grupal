@@ -25,6 +25,8 @@ private:
     AllyExecuteResult handle_resurrect(Player& player);
 
     AllyExecuteResult handle_list_items();
+
+    AllyExecuteResult handle_buy_item(Player& player, uint8_t item_id);
 };
 
 

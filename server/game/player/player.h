@@ -73,6 +73,10 @@ public:
     void unbind_ally();
 
     void heal();
+
+    void spend_gold(uint16_t amount);
+
+    void acquire_item(uint8_t item_id);
 };
 
 
