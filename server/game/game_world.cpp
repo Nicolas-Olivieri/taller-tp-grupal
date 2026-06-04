@@ -135,6 +135,10 @@ BuyResult GameWorld::buy_item(const std::string& player_name, const uint8_t item
     return execute_ally_action(player_name, AllyActionPayload(AllyAction::BUY, item_id)).buy;
 }
 
+SellResult GameWorld::sell_item(const std::string& player_name, const uint8_t item_id) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::SELL, item_id)).sell;
+}
+
 
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {

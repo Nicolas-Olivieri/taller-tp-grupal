@@ -3,10 +3,21 @@
 
 #include <cstdint>
 #include <map>
+#include <stdexcept>
 
 #include "server/game/stats/stats.h"
 
 #include "equipment.h"
+
+
+struct ItemNotOwned: public std::runtime_error {
+    ItemNotOwned(): std::runtime_error("The player does not have this item in the inventory.") {}
+};
+
+
+struct ItemEquipped: public std::runtime_error {
+    ItemEquipped(): std::runtime_error("The player has this item equipped.") {}
+};
 
 
 class Inventory {
