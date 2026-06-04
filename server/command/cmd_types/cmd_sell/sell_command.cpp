@@ -12,7 +12,7 @@ void SellCommand::execute(GameWorld& world) { result = world.sell_item(player_na
 
 void SellCommand::build_snapshot(SnapshotBuilder& builder) {
     if (result.status == SellStatus::PLAYER_UNBOUNDED) {
-        const std::string& error_message = "Tenes que hablarle a un comerciante para poder vender un item";
+        const std::string& error_message = "Hablale a un comerciante para poder vender un item";
         builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, error_message)));
         return;
     }
@@ -27,10 +27,10 @@ void SellCommand::build_snapshot(SnapshotBuilder& builder) {
     }
 
     static std::map<SellStatus, std::string> result_to_message({
-            {SellStatus::ITEM_BOUGHT, "Un placer hacer negocios!"},
-            {SellStatus::ITEM_NOT_OWNED, "Estas tratando de vender un item que no tenes en tu inventario!"},
-            {SellStatus::ITEM_EQUIPPED, "Estas tratando de vender un item que tenes equipado actualmente!"},
-            {SellStatus::ITEM_NOT_ACCEPTED, "Yo no compro ese tipo de item!"},
+            {SellStatus::ITEM_BOUGHT, "Un placer hacer negocios"},
+            {SellStatus::ITEM_NOT_OWNED, "Estas tratando de vender un item que no tenes en tu inventario"},
+            {SellStatus::ITEM_EQUIPPED, "Estas tratando de vender un item que tenes equipado"},
+            {SellStatus::ACTION_NOT_ACCEPTED, "Perdon, yo no puedo hacer eso"},
     });
 
     if (not result_to_message.contains(result.status)) {

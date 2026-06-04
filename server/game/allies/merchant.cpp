@@ -19,6 +19,12 @@ AllyExecuteResult Merchant::execute(Player& player, const AllyActionPayload& pay
         case AllyAction::SELL:
             return handle_sell_item(player, payload.item_id);
 
+        case AllyAction::HEAL:
+            return handle_heal();
+
+        case AllyAction::RESURRECT:
+            return handle_resurrect();
+
         default:
             break;
     }
@@ -44,4 +50,14 @@ AllyExecuteResult Merchant::handle_sell_item(Player& player, const uint8_t item_
     } catch (const ItemEquipped&) {
         return AllyExecuteResult(SellResult(SellStatus::ITEM_EQUIPPED, type));
     }
+}
+
+
+AllyExecuteResult Merchant::handle_heal() const {
+    return AllyExecuteResult(HealResult(HealStatus::ACTION_NOT_ACCEPTED, type));
+}
+
+
+AllyExecuteResult Merchant::handle_resurrect() const {
+    return AllyExecuteResult(ResurrectResult(ResurrectStatus::ACTION_NOT_ACCEPTED, type));
 }
