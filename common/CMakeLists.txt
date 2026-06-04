@@ -17,6 +17,7 @@ target_sources(taller_common
         dto/events/interact_event.cpp
         dto/events/command.cpp
         dto/events/chatevent.cpp
+        dto/events/sell_event.cpp
 
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
@@ -63,6 +64,7 @@ target_sources(taller_common
         dto/events/interact_event.h
         dto/events/command.h
         dto/events/chatevent.h
+        dto/events/sell_event.h
 
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h

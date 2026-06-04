@@ -76,7 +76,11 @@ public:
 
     void spend_gold(uint16_t amount);
 
+    void add_gold(uint16_t amount);
+
     void acquire_item(uint8_t item_id);
+
+    void drop_item(uint8_t item_id);
 };
 
 

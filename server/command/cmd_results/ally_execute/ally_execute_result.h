@@ -5,6 +5,7 @@
 #include "heal_result.h"
 #include "list_items_result.h"
 #include "resurrect_result.h"
+#include "sell_result.h"
 
 
 // Resultado devuelto por ally.execute()
@@ -15,6 +16,7 @@ struct AllyExecuteResult {
     HealResult heal;
     ListItemsResult list_items;
     ResurrectResult resurrect;
+    SellResult sell;
 
     // Se sobrecarga en función al aliado invocado
     explicit AllyExecuteResult(const bool was_bounded);
@@ -26,6 +28,8 @@ struct AllyExecuteResult {
     explicit AllyExecuteResult(const ListItemsResult& result);
 
     explicit AllyExecuteResult(const ResurrectResult& result);
+
+    explicit AllyExecuteResult(const SellResult& result);
 };
 
 

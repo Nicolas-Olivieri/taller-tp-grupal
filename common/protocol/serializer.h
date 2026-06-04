@@ -11,6 +11,7 @@
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
+#include "common/dto/events/sell_event.h"
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/message.h"
@@ -95,6 +96,8 @@ public:
     void serialize(const ListItemsDTO& list);
 
     void serialize(const BuyEventDTO& event);
+
+    void serialize(const SellEventDTO& event);
 };
 
 #endif  // SERIALIZER_H
