@@ -5,7 +5,17 @@
 
 #include "common/direction.h"
 
-enum class CommandType : uint8_t { MOVE, INTERACT, CHAT, RESURRECT, HEAL, LIST_ITEMS, BUY_ITEM, SELL_ITEM };
+enum class CommandType : uint8_t {
+    MOVE,
+    INTERACT,
+    CHAT,
+    RESURRECT,
+    HEAL,
+    LIST_ITEMS,
+    BUY_ITEM,
+    SELL_ITEM,
+    DEPOSIT_ITEM,
+};
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a
 // partir de los EventDTO

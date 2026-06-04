@@ -54,6 +54,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::LIST_ITEMS:
         case CommandType::BUY_ITEM:
         case CommandType::SELL_ITEM:
+        case CommandType::DEPOSIT_ITEM:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");

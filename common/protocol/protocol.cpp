@@ -77,7 +77,8 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS) {
         return RequestedCommandDTO(command);
-    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM) {
+    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
+               command == CommandType::DEPOSIT_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
     } else {

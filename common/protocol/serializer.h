@@ -8,6 +8,7 @@
 
 #include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
+#include "common/dto/events/deposit_item_event.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
@@ -104,6 +105,8 @@ public:
     void serialize(const BuyEventDTO& event);
 
     void serialize(const SellEventDTO& event);
+
+    void serialize(const DepositItemEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

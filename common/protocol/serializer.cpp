@@ -181,3 +181,8 @@ void Serializer::serialize(const SellEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.item_id);
 }
+
+void Serializer::serialize(const DepositItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
