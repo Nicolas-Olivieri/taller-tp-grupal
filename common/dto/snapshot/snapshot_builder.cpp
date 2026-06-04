@@ -19,5 +19,6 @@ PlayerInfoDTO SnapshotBuilder::convert_to_info(const std::string& player_name, c
                          AppearanceDTO(player.get_body(), player.get_head()),
                          PlayerStatsDTO(stats.health.get_max(), stats.health.get_current(),
                                         stats.mana.get_max(), stats.mana.get_current(),
-                                        stats.experience.get_level(), stats.experience.get_current_amount()));
+                                        stats.experience.get_level(), stats.experience.get_current_amount(),
+                                        Calculator::calculate_xp_limit(stats.experience.get_level())));
 }

@@ -22,7 +22,10 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         menu_font(DATA_PATH FONT, MENU_FONT_SIZE),
         chat_font(DATA_PATH FONT, CHAT_FONT_SIZE),
         ui_texture(renderer, DATA_PATH "/interfaz_principal.bmp"),
-        player_name(player_name) {}
+        player_name(player_name),
+        health_texture(renderer, DATA_PATH "/barra_vida.bmp"),
+        mana_texture(renderer, DATA_PATH "/barra_mana.bmp"),
+        xp_texture(renderer, DATA_PATH "/barra_experiencia.bmp") {}
 
 void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
 
@@ -49,7 +52,7 @@ void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box
     renderer.Copy(text_texture, SDL2pp::NullOpt, centered_box);
 }
 
-void UserInterface::render_recoverable_value(const SDL2pp::Rect& box, const RecoverableValue& value) {
+void UserInterface::render_recoverable_value(const SDL2pp::Rect& box, const BarValue& value) {
     if (value.max == 0)
         return;
 
@@ -59,10 +62,8 @@ void UserInterface::render_recoverable_value(const SDL2pp::Rect& box, const Reco
     float ratio = static_cast<float>(value.current) / static_cast<float>(value.max);
     int filled_w = static_cast<int>(box.w * ratio);
 
-    SDL2pp::Rect filled_box(box.x, box.y, filled_w, box.h);
-    renderer.SetDrawColor(value.color.r, value.color.g, value.color.b, value.color.a);
-
-    renderer.FillRect(filled_box);
+    renderer.Copy(value.texture, SDL2pp::Rect(0, 0, filled_w, value.texture.GetHeight()),
+                  SDL2pp::Rect(box.x, box.y, filled_w, box.h));
 
     std::stringstream text;
     text << value.current << "/" << value.max;
@@ -133,11 +134,14 @@ void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& player
         recoverable_values.clear();
 
         // TODO: considerar el resto de estadísticas
-        RecoverableValue health_bar = {health_color, stats.current_health, stats.max_health};
+        BarValue health_bar = {health_texture, stats.current_health, stats.max_health};
         recoverable_values.push_back(std::pair(health_rect, health_bar));
 
-        RecoverableValue mana_bar = {mana_color, stats.current_mana, stats.max_mana};
+        BarValue mana_bar = {mana_texture, stats.current_mana, stats.max_mana};
         recoverable_values.push_back(std::pair(mana_rect, mana_bar));
+
+        BarValue xp_bar = {xp_texture, stats.current_xp_amount, stats.max_xp_amount};
+        recoverable_values.push_back(std::pair(xp_rect, xp_bar));
 
         break;
     }

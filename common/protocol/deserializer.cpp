@@ -228,8 +228,10 @@ PlayerStatsDTO Deserializer::recv_player_stats() {
     const uint16_t current_mana = recv_uint16();
     const uint8_t xp_level = recv_uint8();
     const uint32_t current_xp_amount = recv_uint32();
+    const uint32_t max_xp_amount = recv_uint32();
 
-    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana, xp_level, current_xp_amount);
+    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana, xp_level, current_xp_amount,
+                          max_xp_amount);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {

@@ -131,6 +131,7 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
     serialize(stats.current_mana);
     serialize(stats.xp_level);
     serialize(stats.current_xp_amount);
+    serialize(stats.max_xp_amount);
 }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {
