@@ -135,7 +135,7 @@ ListItemsResult GameWorld::list_ally_items(const std::string& player_name) {
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {
     if (not players.contains(player_name)) {
-        return AllyExecuteResult();
+        return AllyExecuteResult(true);
     }
 
     Player& player = players.at(player_name);
@@ -146,7 +146,7 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
         // TODO: Revisar cómo devolver el resultado de PLAYER_UNBOUNDED (justamente /resucitar es el único
         //  comando que puede realizarse sin estar vinculado a un sacerdote).
         //  Mientras que para las otras acciones no se debería devolver algo relacionado al ResurrectResult.
-        return AllyExecuteResult(ResurrectResult::PLAYER_UNBOUNDED);
+        return AllyExecuteResult(false);
     }
 
     const AllyExecuteResult result = ally->execute(player, payload);

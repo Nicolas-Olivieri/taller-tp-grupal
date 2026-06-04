@@ -15,7 +15,7 @@ struct AllyExecuteResult {
     ResurrectResult resurrect;
 
     // Se sobrecarga en función al aliado invocado
-    AllyExecuteResult();
+    explicit AllyExecuteResult(const bool was_bounded);
 
     explicit AllyExecuteResult(const HealResult& result);
 
