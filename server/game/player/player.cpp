@@ -104,7 +104,7 @@ bool Player::can_reach(const Position& other_position) const {
 InteractResult Player::interact(Player& attacker) {
     if (position == attacker.get_position()) {
         std::cout << "[Player] Jugador " << player_name << " intentó atacarse a sí mismo" << std::endl;
-        return InteractResult(false);
+        return InteractResult();
     }
 
     if (not attacker.can_reach(position)) {

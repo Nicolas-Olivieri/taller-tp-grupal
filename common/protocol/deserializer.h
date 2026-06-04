@@ -31,7 +31,7 @@ private:
     // Hay que completarlo al agregar nueva action
     ActionType recv_action_type();
 
-    MessageVisibility recv_message_visibility();
+    MessageType recv_message_type();
 
     AppearanceDTO recv_appearance();
 

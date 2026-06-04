@@ -5,15 +5,17 @@
 #include <string>
 
 #include "common/dto/message.h"
-
+#include "common/dto/snapshot/actions/action_types/act_message/chatmessage.h"
 
 struct ListItemsDTO: public ProtocolMessageDTO {
+    MessageType type;
     std::map<uint8_t, uint16_t> items;
     std::string receiver;
 
     ListItemsDTO() = default;
 
-    ListItemsDTO(const std::map<uint8_t, uint16_t>& items, const std::string& receiver);
+    ListItemsDTO(const MessageType& type, const std::map<uint8_t, uint16_t>& items,
+                 const std::string& receiver);
 
     size_t message_size() const override;
 

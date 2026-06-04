@@ -17,8 +17,7 @@ void HealCommand::build_snapshot(SnapshotBuilder& builder) {
 
     if (result_to_message.contains(result)) {
         const std::string& message = result_to_message.at(result);
-        builder.add_action(
-                ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, "Sacerdote", player_name, message)));
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ALLY, "Sacerdote", player_name, message)));
         return;
     }
 

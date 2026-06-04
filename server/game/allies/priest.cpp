@@ -6,7 +6,9 @@
 #include "server/game/player/player.h"
 
 
-Priest::Priest(const Position& position): Ally(position), items(ItemMapper::get_random_priest_items()) {}
+Priest::Priest(const Position& position): Ally(position), items(ItemMapper::get_random_priest_items()) {
+    type = AllyType::PRIEST;
+}
 
 
 AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) {
@@ -32,7 +34,7 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
 }
 
 
-AllyType Priest::get_type() const { return AllyType::PRIEST; }
+AllyType Priest::get_type() const { return type; }
 
 
 AllyExecuteResult Priest::handle_heal(Player& player) {

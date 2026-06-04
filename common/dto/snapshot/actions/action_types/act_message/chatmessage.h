@@ -5,16 +5,18 @@
 
 #include "common/dto/message.h"
 
-enum class MessageVisibility : uint8_t { PRIVATE, CLAN };
+enum class MessageType : uint8_t { SYSTEM, PRIVATE, GLOBAL, CLAN, ERROR, ALLY };
 
 struct ChatMessageDTO: public ProtocolMessageDTO {
-    MessageVisibility visibility;
+    MessageType type;
     std::string sender;
     std::string receiver;
     std::string content;
 
-    ChatMessageDTO(MessageVisibility visibility, const std::string& sender, const std::string& receiver,
+    ChatMessageDTO(const MessageType& type, const std::string& sender, const std::string& receiver,
                    const std::string& content);
+
+    ChatMessageDTO(const MessageType& type, const std::string& receiver, const std::string& content);
 
     size_t message_size() const override;
 

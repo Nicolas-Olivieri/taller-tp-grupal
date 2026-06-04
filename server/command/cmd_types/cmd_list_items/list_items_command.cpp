@@ -24,13 +24,12 @@ void ListItemsCommand::build_snapshot(SnapshotBuilder& builder) {
 
     if (result.items.empty()) {
         builder.add_action(
-                ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, ally_type_to_string.at(result.ally),
-                                         player_name, "No tengo items para mostrar en este momento")));
+                ActionDTO(ChatMessageDTO(MessageType::ALLY, ally_type_to_string.at(result.ally), player_name,
+                                         "No tengo items para mostrar en este momento")));
         return;
     }
 
-    builder.add_action(
-            ActionDTO(ChatMessageDTO(MessageVisibility::PRIVATE, ally_type_to_string.at(result.ally),
-                                     player_name, "Tengo los siguientes items:")));
-    builder.add_action(ActionDTO(ListItemsDTO(result.items, player_name)));
+    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ALLY, ally_type_to_string.at(result.ally),
+                                                player_name, "Tengo los siguientes items:")));
+    builder.add_action(ActionDTO(ListItemsDTO(MessageType::ALLY, result.items, player_name)));
 }
