@@ -15,8 +15,10 @@ target_sources(taller_client
         SDL/sprites/sprite_creator.cpp
         SDL/sprites/texture_pool.cpp
 
-        qt/lobby.cpp
-        qt/lobbywindow.cpp
+        qt/login_window.cpp
+        qt/create_window.cpp
+        qt/selector_widget.cpp
+        qt/preview_widget.cpp
 
         connection/client_receiver.cpp
         connection/client_sender.cpp
@@ -43,9 +45,14 @@ target_sources(taller_client
         SDL/sprites/sprite_creator.h
         SDL/sprites/texture_pool.h
 
-        qt/lobby.h
-        qt/lobbywindow.h
-        qt/lobbywindow.ui
+        qt/login_window.h
+        qt/login_window.ui
+        qt/create_window.h
+        qt/create_window.ui
+        qt/selector_widget.h
+        qt/selector_widget.ui
+        qt/preview_widget.h
+        qt/preview_widget.ui
 
         connection/client_receiver.h
         connection/client_sender.h

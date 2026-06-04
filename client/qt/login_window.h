@@ -3,32 +3,37 @@
 
 #include <QMainWindow>
 #include <string>
+#include <ui_create_window.h>
+#include <ui_login_window.h>
 
+#include "create_window.h"
 #include "common/socket.h"
 
 namespace Ui {
-class LobbyWindow;
+class LoginWindow;
 }
 
-class LobbyWindow: public QMainWindow {
+class LoginWindow: public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit LobbyWindow(QWidget* parent = nullptr);
+    explicit LoginWindow(QWidget* parent = nullptr);
 
     Socket get_socket();
 
     std::string get_username();
 
-    ~LobbyWindow();
+    ~LoginWindow();
 
 private slots:
     void conect_match();
 
 private:
-    Ui::LobbyWindow* ui;
+    Ui::LoginWindow* ui;
     std::optional<Socket> socket;
     std::string username;
+
+    CreateWindow* creator;
 
     bool can_create_session();
 };

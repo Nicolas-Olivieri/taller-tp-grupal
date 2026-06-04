@@ -1,7 +1,7 @@
-#include "lobbywindow.h"
+#include "login_window.h"
 
-#include <QFontDatabase>
 #include <QMovie>
+
 #include <string>
 #include <utility>
 
@@ -10,9 +10,9 @@
 #include "common/protocol/protocol.h"
 #include "common/socket.h"
 
-#include "ui_lobbywindow.h"
+#include "ui_login_window.h"
 
-LobbyWindow::LobbyWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LobbyWindow) {
+LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow) {
     ui->setupUi(this);
 
     // Configuro la pantalla de LOGIN
@@ -24,10 +24,13 @@ LobbyWindow::LobbyWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::Lobby
     ui->conn_err->hide();
     ui->name_err->hide();
 
-    connect(ui->connectBtn, &QPushButton::clicked, this, &LobbyWindow::conect_match);
+    creator = new CreateWindow(this);
+    setCentralWidget(creator);
+
+    connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::conect_match);
 }
 
-void LobbyWindow::conect_match() {
+void LoginWindow::conect_match() {
     ui->conn_err->hide();
     ui->name_err->hide();
 
@@ -46,16 +49,16 @@ void LobbyWindow::conect_match() {
     // TODO falta el download del mapa
 }
 
-Socket LobbyWindow::get_socket() {
+Socket LoginWindow::get_socket() {
     if (!socket) {
         throw std::runtime_error("No se pudo conectar correctamente con el servidor");
     }
     return std::move(socket.value());
 }
 
-std::string LobbyWindow::get_username() { return username; }
+std::string LoginWindow::get_username() { return username; }
 
-bool LobbyWindow::can_create_session() {
+bool LoginWindow::can_create_session() {
     // TODO agregar validación de usuario desde el servidor y modificar el mensaje de error en caso de no
     // existir el user
     if (ui->user->text().isEmpty()) {
@@ -83,4 +86,4 @@ bool LobbyWindow::can_create_session() {
     return true;
 }
 
-LobbyWindow::~LobbyWindow() { delete ui; }
+LoginWindow::~LoginWindow() { delete ui; }

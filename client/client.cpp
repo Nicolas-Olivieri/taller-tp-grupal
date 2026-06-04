@@ -8,7 +8,7 @@
 #include <SDL2pp/SDLTTF.hh>
 
 #include "SDL/client_game.h"
-#include "client/qt/lobbywindow.h"
+#include "client/qt/login_window.h"
 
 Client::Client(int argc, char* argv[]): app(argc, argv) {}
 

@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>creator/ui/btn_der.png</file>
+        <file>creator/ui/btn_izq.png</file>
+        <file>creator/ui/fondo_opc.png</file>
+        <file>creator/ui/btn_comenzar.png</file>
+        <file>creator/ui/fondo_btn.png</file>
+        <file>creator/interfaz.png</file>
+        <file>creator/ui/clerigo.png</file>
+        <file>creator/ui/elfo.png</file>
+        <file>creator/ui/enano.png</file>
+        <file>creator/ui/gnomo.png</file>
+        <file>creator/ui/guerrero.png</file>
+        <file>creator/ui/humano.png</file>
+        <file>creator/ui/mago.png</file>
+        <file>creator/ui/paladin.png</file>
+        <file>creator/partes_user/body_1.png</file>
+        <file>creator/partes_user/body_2.png</file>
+        <file>creator/partes_user/body_3.png</file>
+        <file>creator/partes_user/head_1.png</file>
+        <file>creator/partes_user/head_2.png</file>
+        <file>creator/partes_user/head_3.png</file>
+        <file>creator/partes_user/head_4.png</file>
+    </qresource>
+</RCC>
