@@ -81,17 +81,18 @@ else
     exit 1
 fi
 
+# No debería de ser debug, pero de momento rompe si no lo ponemos como tal
 echo -e "${GREEN}[5/6] Compilando el proyecto...${NC}"
-cmake -S . -B cmake-build-release -G Ninja -DCMAKE_BUILD_TYPE=Release \
+cmake -S . -B cmake-build-debug -G Ninja -DCMAKE_BUILD_TYPE=Debug\
         -DCONFIG_PATH="${INSTALL_CONFIG}" \
         -DDATA_PATH="${INSTALL_DATA}/resources"
 
-cmake --build cmake-build-release -j$(nproc)
+cmake --build cmake-build-debug -j$(nproc)
 
 echo -e "${GREEN}    Instalando binarios en ${INSTALL_BIN}...${NC}"
-sudo cp cmake-build-release/taller_client "$INSTALL_BIN"
-sudo cp cmake-build-release/taller_server "$INSTALL_BIN"
-sudo cp cmake-build-release/taller_editor "$INSTALL_BIN"
+sudo cp cmake-build-debug/taller_client "$INSTALL_BIN"
+sudo cp cmake-build-debug/taller_server "$INSTALL_BIN"
+sudo cp cmake-build-debug/taller_editor "$INSTALL_BIN"
 
 echo -e "${GREEN}[6/6] Copiando lanzadores al escritorio...${NC}"
 cp "$PROJECT_DIR/client.sh" "$DESKTOP_DIR/"
