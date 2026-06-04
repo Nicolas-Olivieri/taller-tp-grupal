@@ -4,7 +4,14 @@
 #include "common/npc_type.h"
 
 
-enum class BuyStatus { ITEM_SOLD, ITEM_NOT_SOLD, NOT_ENOUGH_GOLD, PLAYER_UNBOUNDED, NO_RESULT };
+enum class BuyStatus {
+    ITEM_SOLD,
+    ITEM_NOT_SOLD,
+    NOT_ENOUGH_GOLD,
+    ACTION_NOT_ACCEPTED,
+    PLAYER_UNBOUNDED,
+    NO_RESULT,
+};
 
 
 struct BuyResult {

@@ -40,11 +40,11 @@ AllyExecuteResult Priest::handle_heal(Player& player) const {
     if (player.is_alive()) {
         std::cout << "[Priest] El jugador fue curado" << std::endl;
         player.heal();
-        return AllyExecuteResult(HealResult::PLAYER_HEALED);
+        return AllyExecuteResult(HealResult(HealStatus::PLAYER_HEALED, type));
     }
 
     std::cout << "[Priest] El jugador está muerto" << std::endl;
-    return AllyExecuteResult(HealResult::PLAYER_IS_DEAD);
+    return AllyExecuteResult(HealResult(HealStatus::PLAYER_IS_DEAD, type));
 }
 
 
@@ -52,14 +52,14 @@ AllyExecuteResult Priest::handle_resurrect(Player& player) const {
     if (not player.is_alive()) {
         std::cout << "[Priest] El jugador fue resucitado" << std::endl;
         player.heal();
-        return AllyExecuteResult(ResurrectResult::PLAYER_RESURRECTED);
+        return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_RESURRECTED, type));
     }
 
     std::cout << "[Priest] El jugador ya está vivo" << std::endl;
-    return AllyExecuteResult(ResurrectResult::PLAYER_IS_ALIVE);
+    return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_IS_ALIVE, type));
 }
 
 
 AllyExecuteResult Priest::handle_sell_item() const {
-    return AllyExecuteResult(SellResult(SellStatus::ITEM_NOT_ACCEPTED, type));
+    return AllyExecuteResult(SellResult(SellStatus::ACTION_NOT_ACCEPTED, type));
 }

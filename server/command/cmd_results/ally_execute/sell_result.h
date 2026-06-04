@@ -6,7 +6,7 @@ enum class SellStatus {
     ITEM_BOUGHT,
     ITEM_NOT_OWNED,
     ITEM_EQUIPPED,
-    ITEM_NOT_ACCEPTED,
+    ACTION_NOT_ACCEPTED,
     PLAYER_UNBOUNDED,
     NO_RESULT,
 };

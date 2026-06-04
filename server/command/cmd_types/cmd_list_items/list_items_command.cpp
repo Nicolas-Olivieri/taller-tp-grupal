@@ -13,9 +13,8 @@ void ListItemsCommand::execute(GameWorld& world) { result = world.list_ally_item
 
 void ListItemsCommand::build_snapshot(SnapshotBuilder& builder) {
     if (not result.was_player_bounded) {
-        builder.add_action(ActionDTO(
-                ChatMessageDTO(MessageType::ERROR, player_name,
-                               "Tenes que hablarle a un npc aliado para pedirle su lista de items")));
+        const std::string& error_message = "Hablale a un NPC aliado para pedirle su lista de items";
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, error_message)));
         return;
     }
 

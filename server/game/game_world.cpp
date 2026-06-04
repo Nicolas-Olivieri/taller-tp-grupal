@@ -147,18 +147,20 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
     }
 
     Player& player = players.at(player_name);
-    const auto ally = player.get_bound_ally();
 
+    const auto ally = player.get_bound_ally();
     if (ally == nullptr) {
+        if (payload.action == AllyAction::RESURRECT) {
+            // TODO: Implementar lógica de detener al jugador un tiempo proporcional a la distancia con el
+            //  sacerdote más cercano, para luego hacer que aparezca junto al mismo
+            return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_RESURRECTED, AllyType::PRIEST));
+        }
+
         std::cout << "[World] Jugador " << player_name << " no tiene vinculado a ningún aliado" << std::endl;
-        // TODO: Revisar cómo devolver el resultado de PLAYER_UNBOUNDED (justamente /resucitar es el único
-        //  comando que puede realizarse sin estar vinculado a un sacerdote).
-        //  Mientras que para las otras acciones no se debería devolver algo relacionado al ResurrectResult.
         return AllyExecuteResult(false);
     }
 
-    const AllyExecuteResult result = ally->execute(player, payload);
-    return result;
+    return ally->execute(player, payload);
 }
 
 
