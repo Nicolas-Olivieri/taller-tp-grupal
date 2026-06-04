@@ -14,13 +14,16 @@ struct PlayerInfoDTO: public ProtocolMessageDTO {
     Direction direction;
     uint16_t x;
     uint16_t y;
+    uint16_t safe_gold;
+    uint16_t excess_gold;
     AppearanceDTO appearance;
     PlayerStatsDTO stats;
     // PlayersStatsDTO stats; TODO: agregar esto Y NO OLVIDAR MODIFICAR LOS
     // MÉTODOS PARA TENERLO EN CUENTA
 
     PlayerInfoDTO(const std::string& name, const Direction& direction, uint16_t x, uint16_t y,
-                  const AppearanceDTO& appearance, const PlayerStatsDTO& stats);
+                  uint16_t safe_gold, uint16_t excess_gold, const AppearanceDTO& appearance,
+                  const PlayerStatsDTO& stats);
 
     size_t message_size() const override;
 

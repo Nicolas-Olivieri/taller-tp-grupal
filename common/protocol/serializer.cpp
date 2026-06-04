@@ -37,6 +37,8 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(static_cast<uint8_t>(info.direction));
     serialize(info.x);
     serialize(info.y);
+    serialize(info.safe_gold);
+    serialize(info.excess_gold);
     serialize(info.appearance);
     serialize(info.stats);
 }
@@ -134,6 +136,7 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
     serialize(stats.current_mana);
     serialize(stats.xp_level);
     serialize(stats.current_xp_amount);
+    serialize(stats.max_xp_amount);
 }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {

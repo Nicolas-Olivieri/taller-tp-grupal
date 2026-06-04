@@ -4,7 +4,7 @@
 
 #include "server/util/calculator.h"
 
-GoldManager::GoldManager(uint16_t gold_amount, uint8_t level) {
+GoldManager::GoldManager(uint16_t gold_amount, uint8_t level): current_gold(0) {
     update_max(level);
     add(gold_amount);
 }

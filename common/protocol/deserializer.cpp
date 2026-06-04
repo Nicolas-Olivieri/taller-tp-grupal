@@ -95,10 +95,12 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
+    uint16_t safe_gold = recv_uint16();
+    uint16_t excess_gold = recv_uint16();
     AppearanceDTO appearance = recv_appearance();
     PlayerStatsDTO stats = recv_player_stats();
 
-    return PlayerInfoDTO(name, direction, x, y, appearance, stats);
+    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -239,8 +241,10 @@ PlayerStatsDTO Deserializer::recv_player_stats() {
     const uint16_t current_mana = recv_uint16();
     const uint8_t xp_level = recv_uint8();
     const uint32_t current_xp_amount = recv_uint32();
+    const uint32_t max_xp_amount = recv_uint32();
 
-    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana, xp_level, current_xp_amount);
+    return PlayerStatsDTO(max_health, current_health, max_mana, current_mana, xp_level, current_xp_amount,
+                          max_xp_amount);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {

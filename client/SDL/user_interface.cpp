@@ -13,7 +13,7 @@
 /* #define CLAN_NAME_FONT_SIZE 24 */
 #define USERNAME_FONT_SIZE 35
 #define MENU_TITLE_FONT_SIZE 20
-#define MENU_FONT_SIZE 19
+#define MENU_FONT_SIZE 17.5
 #define CHAT_FONT_SIZE 19
 #define LINE_SPACING 21
 
@@ -25,7 +25,10 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         menu_font(DATA_PATH FONT, MENU_FONT_SIZE),
         chat_font(DATA_PATH FONT, CHAT_FONT_SIZE),
         ui_texture(renderer, DATA_PATH "/interfaz_principal.bmp"),
-        player_name(player_name) {}
+        player_name(player_name),
+        health_texture(renderer, DATA_PATH "/barra_vida.bmp"),
+        mana_texture(renderer, DATA_PATH "/barra_mana.bmp"),
+        xp_texture(renderer, DATA_PATH "/barra_experiencia.bmp") {}
 
 void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
 
@@ -35,8 +38,12 @@ void UserInterface::render_fields() {
     // TODO: revisar por qué el texto imprime mal las tildes
     render_text("Estadisticas", stats_rect, menu_title_font);
 
-    for (const auto& [box, value]: recoverable_values) {
-        render_recoverable_value(box, value);
+    for (const auto& [box, value]: bar_values) {
+        render_bar_value(box, value);
+    }
+
+    for (const auto& [box, value]: field_values) {
+        render_text(value, box, menu_font);
     }
 }
 
@@ -52,23 +59,18 @@ void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box
     renderer.Copy(text_texture, SDL2pp::NullOpt, centered_box);
 }
 
-void UserInterface::render_recoverable_value(const SDL2pp::Rect& box, const RecoverableValue& value) {
+void UserInterface::render_bar_value(const SDL2pp::Rect& box, const BarValue& value) {
     if (value.max == 0)
         return;
-
-    renderer.SetDrawColor(30, 30, 30, 255);
-    renderer.FillRect(box);
 
     float ratio = static_cast<float>(value.current) / static_cast<float>(value.max);
     int filled_w = static_cast<int>(box.w * ratio);
 
-    SDL2pp::Rect filled_box(box.x, box.y, filled_w, box.h);
-    renderer.SetDrawColor(value.color.r, value.color.g, value.color.b, value.color.a);
-
-    renderer.FillRect(filled_box);
+    renderer.Copy(value.texture, SDL2pp::Rect(0, 0, filled_w, value.texture.GetHeight()),
+                  SDL2pp::Rect(box.x, box.y, filled_w, box.h));
 
     std::stringstream text;
-    text << value.current << "/" << value.max;
+    text << value.current << " / " << value.max;
 
     render_text(text.str(), box, menu_font);
 }
@@ -135,14 +137,22 @@ void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& player
 
         const PlayerStatsDTO& stats(player_info.stats);
 
-        recoverable_values.clear();
+        bar_values.clear();
+        field_values.clear();
 
         // TODO: considerar el resto de estadísticas
-        RecoverableValue health_bar = {green, stats.current_health, stats.max_health};
-        recoverable_values.push_back(std::pair(health_rect, health_bar));
+        BarValue health_bar = {health_texture, stats.current_health, stats.max_health};
+        bar_values.push_back(std::pair(health_rect, health_bar));
 
-        RecoverableValue mana_bar = {light_blue, stats.current_mana, stats.max_mana};
-        recoverable_values.push_back(std::pair(mana_rect, mana_bar));
+        BarValue mana_bar = {mana_texture, stats.current_mana, stats.max_mana};
+        bar_values.push_back(std::pair(mana_rect, mana_bar));
+
+        BarValue xp_bar = {xp_texture, stats.current_xp_amount, stats.max_xp_amount};
+        bar_values.push_back(std::pair(xp_rect, xp_bar));
+
+        field_values.push_back(std::pair(xp_level_rect, std::to_string(stats.xp_level)));
+        field_values.push_back(std::pair(safe_gold_rect, std::to_string(player_info.safe_gold)));
+        field_values.push_back(std::pair(excess_gold_rect, std::to_string(player_info.excess_gold)));
 
         break;
     }
