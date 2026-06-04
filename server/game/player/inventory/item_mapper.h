@@ -33,6 +33,8 @@ public:
     static uint16_t get_price(uint8_t item_id);
 
     static std::vector<uint8_t> get_random_priest_items();
+
+    static std::vector<uint8_t> get_random_merchant_items();
 };
 
 

@@ -54,7 +54,9 @@ target_sources(taller_server
 
         game/allies/ally.cpp
         game/allies/ally_action_payload.cpp
+        game/allies/merchant.cpp
         game/allies/priest.cpp
+        game/allies/vendor_ally.cpp
 
     PUBLIC
         # .h files
@@ -124,5 +126,7 @@ target_sources(taller_server
 
         game/allies/ally.h
         game/allies/ally_action_payload.h
+        game/allies/merchant.h
         game/allies/priest.h
+        game/allies/vendor_ally.h
     )

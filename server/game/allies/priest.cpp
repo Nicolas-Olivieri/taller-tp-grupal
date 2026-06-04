@@ -7,12 +7,11 @@
 #include "server/game/player/player.h"
 
 
-Priest::Priest(const Position& position): Ally(position), items(ItemMapper::get_random_priest_items()) {
-    type = AllyType::PRIEST;
-}
+Priest::Priest(const Position& position):
+        VendorAlly(position, AllyType::PRIEST, ItemMapper::get_random_priest_items()) {}
 
 
-AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) {
+AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) const {
     switch (payload.action) {
         case AllyAction::HEAL:
             return handle_heal(player);
@@ -26,8 +25,10 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
         case AllyAction::BUY:
             return handle_buy_item(player, payload.item_id);
 
+        case AllyAction::SELL:
+            return handle_sell_item();
+
         default:
-            // El sacerdote ignora los comandos de venta
             break;
     }
 
@@ -35,10 +36,7 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
 }
 
 
-AllyType Priest::get_type() const { return type; }
-
-
-AllyExecuteResult Priest::handle_heal(Player& player) {
+AllyExecuteResult Priest::handle_heal(Player& player) const {
     if (player.is_alive()) {
         std::cout << "[Priest] El jugador fue curado" << std::endl;
         player.heal();
@@ -50,7 +48,7 @@ AllyExecuteResult Priest::handle_heal(Player& player) {
 }
 
 
-AllyExecuteResult Priest::handle_resurrect(Player& player) {
+AllyExecuteResult Priest::handle_resurrect(Player& player) const {
     if (not player.is_alive()) {
         std::cout << "[Priest] El jugador fue resucitado" << std::endl;
         player.heal();
@@ -62,30 +60,6 @@ AllyExecuteResult Priest::handle_resurrect(Player& player) {
 }
 
 
-AllyExecuteResult Priest::handle_list_items() {
-    std::map<uint8_t, uint16_t> items_prices;
-    for (const uint8_t item_id: items) {
-        items_prices[item_id] = ItemMapper::get_price(item_id);
-    }
-
-    return AllyExecuteResult(ListItemsResult(true, get_type(), items_prices));
-}
-
-
-AllyExecuteResult Priest::handle_buy_item(Player& player, const uint8_t item_id) {
-    if (std::ranges::find(items, item_id) == items.end()) {
-        return AllyExecuteResult(BuyResult(BuyStatus::ITEM_NOT_SOLD, type));
-    }
-
-    try {
-        const uint16_t price = ItemMapper::get_price(item_id);
-        player.spend_gold(price);
-        player.acquire_item(item_id);
-
-        std::cout << "[Priest] Venta exitosa del ítem " << static_cast<int>(item_id) << std::endl;
-        return AllyExecuteResult(BuyResult(BuyStatus::ITEM_SOLD, type));
-
-    } catch (const NotEnoughGold&) {
-        return AllyExecuteResult(BuyResult(BuyStatus::NOT_ENOUGH_GOLD, type));
-    }
+AllyExecuteResult Priest::handle_sell_item() const {
+    return AllyExecuteResult(SellResult(SellStatus::ITEM_NOT_ACCEPTED, type));
 }

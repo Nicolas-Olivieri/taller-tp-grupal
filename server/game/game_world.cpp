@@ -1,9 +1,9 @@
 #include "game_world.h"
 
-#include <cassert>
 #include <utility>
 
 #include "allies/ally.h"
+#include "allies/merchant.h"
 #include "allies/priest.h"
 
 
@@ -167,4 +167,9 @@ void GameWorld::init_npc() {
     auto priest = std::make_unique<Priest>(priest_position);
     grid.get_tile(priest_position).occupy(priest.get());
     allies.push_back(std::move(priest));
+
+    Position merchant_position(15, 10);
+    auto merchant = std::make_unique<Merchant>(merchant_position);
+    grid.get_tile(merchant_position).occupy(merchant.get());
+    allies.push_back(std::move(merchant));
 }

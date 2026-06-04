@@ -134,3 +134,44 @@ std::vector<uint8_t> ItemMapper::get_random_priest_items() {
 
     return selected_items;
 }
+
+std::vector<uint8_t> ItemMapper::get_random_merchant_items() {
+    const GameConfig& config = GameConfig::get();
+    std::vector<uint8_t> pool;
+
+    for (const auto& [id, weapon]: config.get_weapons()) {
+        if (not is_magic(id)) {
+            pool.push_back(id);
+        }
+    }
+
+    for (const auto& [id, weapon]: config.get_armors()) {
+        pool.push_back(id);
+    }
+
+    for (const auto& [id, weapon]: config.get_helmets()) {
+        pool.push_back(id);
+    }
+
+    for (const auto& [id, weapon]: config.get_shields()) {
+        pool.push_back(id);
+    }
+
+    for (const auto& [id, usable]: config.get_usables()) {
+        pool.push_back(id);
+    }
+
+    // TODO: Aprovechar el método Calculator::random_number (debería ser público)
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    // TODO: Cambiar estos números mágicos por valores leídos de un TOML (mín y máx artículos a la venta)
+    std::uniform_int_distribution<size_t> dis(3, 6);
+
+    const size_t amount_to_pick = std::min(dis(gen), pool.size());
+
+    std::vector<uint8_t> selected_items;
+    std::ranges::sample(pool, std::back_inserter(selected_items), amount_to_pick, gen);
+
+    return selected_items;
+}
