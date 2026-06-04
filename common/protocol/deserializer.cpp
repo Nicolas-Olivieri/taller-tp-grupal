@@ -91,10 +91,12 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
+    uint16_t safe_gold = recv_uint16();
+    uint16_t excess_gold = recv_uint16();
     AppearanceDTO appearance = recv_appearance();
     PlayerStatsDTO stats = recv_player_stats();
 
-    return PlayerInfoDTO(name, direction, x, y, appearance, stats);
+    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
