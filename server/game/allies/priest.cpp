@@ -30,7 +30,7 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
             break;
     }
 
-    return AllyExecuteResult();
+    return AllyExecuteResult(true);
 }
 
 
