@@ -87,7 +87,7 @@ void ClientGame::pollEvents() {
     bool key_was_pressed = false;
 
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+        if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESTORED) {
             just_restored = true;
         }
 
@@ -143,14 +143,15 @@ void ClientGame::handle_chat_events(const SDL_Event& event) {
     }
 
     if (event.key.keysym.sym == SDLK_RETURN) {
-        if (!chat_text.empty() && chat_text[0] == '@')
+        if (chat_text.empty())
+            return;
+
+        if (chat_text[0] == '@')
             send_private_message();
-        if (!chat_text.empty() && chat_text == "/resucitar")
-            connection.push_command(std::make_unique<EventDTO>(CommandType::RESURRECT));
-        if (!chat_text.empty() && chat_text == "/curar")
-            connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
-        if (!chat_text.empty() && chat_text == "/listar")
-            connection.push_command(std::make_unique<EventDTO>(CommandType::LIST_ITEMS));
+
+        if (chat_text[0] == '/')
+            handle_text_command(chat_text);
+
         chat_text.clear();
     }
 
@@ -159,6 +160,17 @@ void ClientGame::handle_chat_events(const SDL_Event& event) {
         SDL_StopTextInput();
         chat_text.clear();
     }
+}
+
+void ClientGame::handle_text_command(const std::string& text) {
+    assert(!text.empty());
+
+    if (text == "/resucitar")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::RESURRECT));
+    if (text == "/curar")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
+    if (text == "/listar")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::LIST_ITEMS));
 }
 
 void ClientGame::send_private_message() {
