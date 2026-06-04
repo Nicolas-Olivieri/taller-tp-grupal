@@ -14,8 +14,8 @@
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 
-struct RecoverableValue {
-    SDL_Color color;
+struct BarValue {
+    SDL2pp::Texture& texture;
     size_t current;
     size_t max;
 };
@@ -34,8 +34,8 @@ private:
 
     std::deque<std::string> chat_history;
 
-    /* std::vector<std::pair<SDL2pp::Rect, std::string>> fixed_values; */
-    std::vector<std::pair<SDL2pp::Rect, RecoverableValue>> recoverable_values;
+    std::vector<std::pair<SDL2pp::Rect, std::string>> field_values;
+    std::vector<std::pair<SDL2pp::Rect, BarValue>> bar_values;
 
     // Blanco
     SDL_Color text_color = {255, 255, 255, 255};
@@ -52,8 +52,16 @@ private:
     SDL2pp::Rect inventory_rect = {770, 157, 240, 35};
     SDL2pp::Rect stats_rect = {770, 519, 240, 35};
 
-    SDL2pp::Rect health_rect = {790, 596, 220, 20};
-    SDL2pp::Rect mana_rect = {790, 625, 220, 20};
+    SDL2pp::Rect health_rect = {791, 599, 216, 15};
+    SDL2pp::Texture health_texture;
+    SDL2pp::Rect mana_rect = {791, 627, 216, 15};
+    SDL2pp::Texture mana_texture;
+    SDL2pp::Rect xp_rect = {837, 657, 171, 15};
+    SDL2pp::Texture xp_texture;
+
+    SDL2pp::Rect safe_gold_rect = {791, 562, 90, 16};
+    SDL2pp::Rect excess_gold_rect = {918, 562, 90, 16};
+    SDL2pp::Rect xp_level_rect = {787, 657, 37, 16};
 
     void enqueue_message(const std::string& message);
 
@@ -63,7 +71,7 @@ private:
 
     void render_text(const std::string& text, const SDL2pp::Rect& box_limit, SDL2pp::Font& font);
 
-    void render_recoverable_value(const SDL2pp::Rect& box, const RecoverableValue& value);
+    void render_bar_value(const SDL2pp::Rect& box, const BarValue& value);
 
     void handle_chat_message(const ActionDTO& action);
 
