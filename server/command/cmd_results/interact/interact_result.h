@@ -1,7 +1,10 @@
 #ifndef INTERACT_RESULT_H
 #define INTERACT_RESULT_H
 
+#include "common/npc_type.h"
+
 #include "attack_result.h"
+#include "bind_result.h"
 
 enum class InteractionType { ATTACK, BIND, MUST_NOT_NOTIFY };
 
@@ -9,12 +12,12 @@ struct InteractResult {
     InteractionType type;
 
     AttackResult attack;
+    BindResult bind;
 
 
-    // TODO para bind podríamos pasar las coordenadas para q brille el ally
-    //  El constructor default equivaldría a MUST NOT NOTIFY (actual false)
-    //  Y el constructor que recibe una Position o un (x,y) es de BIND (actual)
-    explicit InteractResult(const bool is_bind);
+    InteractResult();
+
+    explicit InteractResult(const AllyType& allyType);
 
     explicit InteractResult(const AttackStatus attackStatus);
 

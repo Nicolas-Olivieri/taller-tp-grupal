@@ -98,7 +98,7 @@ void GameWorld::remove_player(const std::string& player_name) {
 
 InteractResult GameWorld::interact(const std::string& player_name, const Position& position) {
     if (!players.contains(player_name))
-        return InteractResult(false);
+        return InteractResult();
 
     Player& player = players.at(player_name);
 
@@ -113,7 +113,7 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
     } catch (const std::out_of_range&) {
         // Golpeó el borde del mapa
     }
-    return InteractResult(false);
+    return InteractResult();
 }
 
 

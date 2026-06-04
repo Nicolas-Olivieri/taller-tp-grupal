@@ -15,6 +15,7 @@ class Player;
 class Ally: public Interactive {
 protected:
     const Position position;
+    AllyType type;
 
 public:
     explicit Ally(const Position& position);

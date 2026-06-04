@@ -6,7 +6,7 @@
 #include <vector>
 
 InteractCommand::InteractCommand(const std::string& player_name, const int x, const int y):
-        player_name(player_name), position(x, y), result(false) {}
+        player_name(player_name), position(x, y), result() {}
 
 void InteractCommand::execute(GameWorld& world) {
     result = world.interact(player_name, position);
@@ -117,5 +117,24 @@ void InteractCommand::handle_dodge(SnapshotBuilder& builder) {
 }
 
 void InteractCommand::handle_bind(SnapshotBuilder& builder) {
-    builder.add_action(ActionDTO(ChatListDTO("Te escucho. En que te ayudo?", player_name)));
+    std::string msg;
+
+    switch (result.bind) {
+        case BindResult::PRIEST:
+            msg += "Estas hablando con el Sacerdote";
+            break;
+        case BindResult::MERCHANT:
+            throw std::runtime_error("Interact command recibió una interacción de merchant y no se "
+                                     "implementó su handle en handle_bind()");
+            break;
+        case BindResult::BANKER:
+            throw std::runtime_error("Interact command recibió una interacción de banker y no se implementó "
+                                     "su handle en handle_bind()");
+            break;
+        default:
+            throw std::runtime_error(
+                    "Interact command recibió una interacción de un tipo de aliado desconocido");
+    }
+
+    builder.add_action(ActionDTO(ChatListDTO(msg, player_name)));
 }
