@@ -150,7 +150,6 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
     }
 
     const AllyExecuteResult result = ally->execute(player, payload);
-    player.unbind_ally();
     return result;
 }
 
