@@ -28,7 +28,7 @@ void Inventory::drop_item(Equipment& equipment, uint8_t item) {
         throw ItemNotOwned();
     }
 
-    if (is_equipped(item)) {
+    if (is_equipped(equipment, item)) {
         throw ItemEquipped();
     }
 

@@ -8,8 +8,6 @@
 #include "server/game/equipment.h"
 #include "server/game/stats/stats.h"
 
-#include "equipment.h"
-
 
 struct ItemNotOwned: public std::runtime_error {
     ItemNotOwned(): std::runtime_error("The player does not have this item in the inventory.") {}
