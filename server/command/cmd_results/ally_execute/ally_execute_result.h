@@ -8,6 +8,7 @@
 #include "list_items_result.h"
 #include "resurrect_result.h"
 #include "sell_result.h"
+#include "withdraw_gold_result.h"
 #include "withdraw_item_result.h"
 
 
@@ -22,6 +23,7 @@ struct AllyExecuteResult {
     ListItemsResult list_items;
     ResurrectResult resurrect;
     SellResult sell;
+    WithdrawGoldResult withdraw_gold;
     WithdrawItemResult withdraw_item;
 
     // Se sobrecarga en función al aliado invocado
@@ -42,6 +44,8 @@ struct AllyExecuteResult {
     explicit AllyExecuteResult(const WithdrawItemResult& result);
 
     explicit AllyExecuteResult(const DepositGoldResult& result);
+
+    explicit AllyExecuteResult(const WithdrawGoldResult& result);
 };
 
 

@@ -10,6 +10,7 @@ AllyExecuteResult::AllyExecuteResult(const bool was_bounded):
         list_items(was_bounded),
         resurrect(was_bounded ? ResurrectStatus::NO_RESULT : ResurrectStatus::PLAYER_UNBOUNDED),
         sell(was_bounded ? SellStatus::NO_RESULT : SellStatus::PLAYER_UNBOUNDED),
+        withdraw_gold(was_bounded ? WithdrawGoldStatus::NO_RESULT : WithdrawGoldStatus::PLAYER_UNBOUNDED),
         withdraw_item(was_bounded ? WithdrawItemStatus::NO_RESULT : WithdrawItemStatus::PLAYER_UNBOUNDED) {}
 
 
@@ -35,3 +36,6 @@ AllyExecuteResult::AllyExecuteResult(const WithdrawItemResult& result): withdraw
 
 
 AllyExecuteResult::AllyExecuteResult(const DepositGoldResult& result): deposit_gold(result) {}
+
+
+AllyExecuteResult::AllyExecuteResult(const WithdrawGoldResult& result): withdraw_gold(result) {}
