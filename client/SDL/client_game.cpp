@@ -12,9 +12,13 @@
 #include "client/config/client_config.h"
 #include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
+#include "common/dto/events/deposit_gold_event.h"
+#include "common/dto/events/deposit_item_event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/events/sell_event.h"
+#include "common/dto/events/withdraw_gold_event.h"
+#include "common/dto/events/withdraw_item_event.h"
 #include "common/util/rate_timer.h"
 #include "sprites/sprite.h"
 
@@ -180,6 +184,16 @@ void ClientGame::handle_text_command(const std::string& text) {
         handle_buy_item_command(text);
     if (text.starts_with("/vender "))
         handle_sell_item_command(text);
+
+    if (text.starts_with("/depositar oro "))
+        handle_deposit_gold_command(text);
+    else if (text.starts_with("/depositar "))
+        handle_deposit_item_command(text);
+
+    if (text.starts_with("/retirar oro "))
+        handle_withdraw_gold_command(text);
+    else if (text.starts_with("/retirar "))
+        handle_withdraw_item_command(text);
 }
 
 void ClientGame::handle_buy_item_command(const std::string& text) {
@@ -202,6 +216,86 @@ void ClientGame::handle_sell_item_command(const std::string& text) {
         std::vector<ActionDTO> local_error;
         local_error.push_back(
                 ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, "Item desconocido.")));
+        ui.update_chat(local_error);
+    }
+}
+
+void ClientGame::handle_deposit_gold_command(const std::string& text) {
+    std::string amount = text.substr(15);
+
+    if (amount.empty() || not std::ranges::all_of(amount, ::isdigit)) {
+        std::vector<ActionDTO> local_error;
+        local_error.push_back(
+                ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name,
+                                         "La cantidad ingresada debe ser un numero entero positivo")));
+        ui.update_chat(local_error);
+        return;
+    }
+
+    try {
+        const auto gold_amount = std::stoul(amount);
+        if (gold_amount >= UINT16_MAX) {
+            throw std::out_of_range("Cantidad de oro fuera de los limites permitidos.");
+        }
+
+        connection.push_command(std::make_unique<DepositGoldEventDTO>(static_cast<uint16_t>(gold_amount)));
+
+    } catch (const std::out_of_range&) {
+        std::vector<ActionDTO> local_error;
+        local_error.push_back(ActionDTO(ChatMessageDTO(
+                MessageType::ERROR, player_name, "La cantidad ingresada supera el limite de la boveda")));
+        ui.update_chat(local_error);
+    }
+}
+
+void ClientGame::handle_deposit_item_command(const std::string& text) {
+    std::optional<uint8_t> opt_item_id = ClientConfig::get().get_item_id(text.substr(11));
+    if (opt_item_id.has_value()) {
+        connection.push_command(std::make_unique<DepositItemEventDTO>(opt_item_id.value()));
+
+    } else {
+        std::vector<ActionDTO> local_error;
+        local_error.push_back(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, "Item desconocido")));
+        ui.update_chat(local_error);
+    }
+}
+
+void ClientGame::handle_withdraw_gold_command(const std::string& text) {
+    std::string amount = text.substr(13);
+
+    if (amount.empty() || not std::ranges::all_of(amount, ::isdigit)) {
+        std::vector<ActionDTO> local_error;
+        local_error.push_back(
+                ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name,
+                                         "La cantidad ingresada debe ser un numero entero positivo")));
+        ui.update_chat(local_error);
+        return;
+    }
+
+    try {
+        const auto gold_amount = std::stoul(amount);
+        if (gold_amount >= UINT16_MAX) {
+            throw std::out_of_range("Cantidad de oro fuera de los limites permitidos.");
+        }
+
+        connection.push_command(std::make_unique<WithdrawGoldEventDTO>(static_cast<uint16_t>(gold_amount)));
+
+    } catch (const std::out_of_range&) {
+        std::vector<ActionDTO> local_error;
+        local_error.push_back(ActionDTO(ChatMessageDTO(
+                MessageType::ERROR, player_name, "La cantidad ingresada supera el limite de la boveda")));
+        ui.update_chat(local_error);
+    }
+}
+
+void ClientGame::handle_withdraw_item_command(const std::string& text) {
+    std::optional<uint8_t> opt_item_id = ClientConfig::get().get_item_id(text.substr(9));
+    if (opt_item_id.has_value()) {
+        connection.push_command(std::make_unique<WithdrawItemEventDTO>(opt_item_id.value()));
+
+    } else {
+        std::vector<ActionDTO> local_error;
+        local_error.push_back(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, "Item desconocido")));
         ui.update_chat(local_error);
     }
 }

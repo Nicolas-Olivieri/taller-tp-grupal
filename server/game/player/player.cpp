@@ -16,6 +16,7 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         body(persisted_data.body),
         head(persisted_data.head),
         inventory(equipment),
+        bank(persisted_data.bank_gold, persisted_data.bank, persisted_data.bank_amounts),
         gold_manager(persisted_data.current_gold, persisted_data.xp_level),
         bound_ally(nullptr) {
     stats.health.set_current(persisted_data.current_hp);
@@ -31,6 +32,7 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         body(persisted_data.body),
         head(persisted_data.head),
         inventory(equipment),
+        bank(persisted_data.bank_gold, persisted_data.bank, persisted_data.bank_amounts),
         gold_manager(persisted_data.current_gold, persisted_data.xp_level),
         bound_ally(nullptr) {}
 
@@ -160,3 +162,45 @@ void Player::add_gold(const uint16_t amount) { gold_manager.add(amount); }
 void Player::acquire_item(const uint8_t item_id) { inventory.acquire_item(item_id); }
 
 void Player::drop_item(const uint8_t item_id) { inventory.drop_item(equipment, item_id); }
+
+uint16_t Player::get_bank_gold() const { return bank.get_gold(); }
+
+void Player::deposit_gold_to_bank(const uint16_t amount) {
+    gold_manager.spend(amount);
+    try {
+        bank.deposit_gold(amount);
+
+    } catch (const BankFull&) {
+        gold_manager.add(amount);
+        throw;
+    }
+}
+
+void Player::withdraw_gold_from_bank(const uint16_t amount) {
+    bank.withdraw_gold(amount);
+    gold_manager.add(amount);
+}
+
+const std::map<uint8_t, uint8_t>& Player::get_bank_items() const { return bank.get_items(); }
+
+void Player::deposit_item_to_bank(const uint8_t item_id) {
+    inventory.drop_item(equipment, item_id);
+    try {
+        bank.deposit_item(item_id);
+
+    } catch (const BankFull&) {
+        inventory.acquire_item(item_id);
+        throw;
+    }
+}
+
+void Player::withdraw_item_from_bank(const uint8_t item_id) {
+    bank.withdraw_item(item_id);
+    try {
+        inventory.acquire_item(item_id);
+
+    } catch (const InventoryFull&) {
+        bank.deposit_item(item_id);
+        throw;
+    }
+}

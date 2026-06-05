@@ -5,7 +5,20 @@
 
 #include "common/direction.h"
 
-enum class CommandType : uint8_t { MOVE, INTERACT, CHAT, RESURRECT, HEAL, LIST_ITEMS, BUY_ITEM, SELL_ITEM };
+enum class CommandType : uint8_t {
+    MOVE,
+    INTERACT,
+    CHAT,
+    RESURRECT,
+    HEAL,
+    LIST_ITEMS,
+    BUY_ITEM,
+    SELL_ITEM,
+    DEPOSIT_ITEM,
+    WITHDRAW_ITEM,
+    DEPOSIT_GOLD,
+    WITHDRAW_GOLD,
+};
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a
 // partir de los EventDTO
@@ -22,6 +35,8 @@ struct RequestedCommandDTO {
 
     uint8_t item_id;
 
+    uint16_t gold_amount;
+
     /* TODO: agregar los siguientes al implementar los correspondientes comandos
     clan_name
     */
@@ -36,6 +51,8 @@ struct RequestedCommandDTO {
     explicit RequestedCommandDTO(const CommandType& cmd);
 
     RequestedCommandDTO(const CommandType& cmd, uint8_t item_id);
+
+    RequestedCommandDTO(const CommandType& cmd, uint16_t gold_amount);
 };
 
 #endif  // REQUESTEDCOMMANDDTO_H

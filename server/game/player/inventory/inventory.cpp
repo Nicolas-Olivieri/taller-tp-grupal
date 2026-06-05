@@ -4,6 +4,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "server/persistance/playerdata.h"
+
 #include "item_mapper.h"
 
 // ver comentario en el .h
@@ -38,13 +40,20 @@ void Inventory::drop_item(Equipment& equipment, uint8_t item) {
 
 void Inventory::acquire_item(uint8_t item) {
     if (!item_to_amount_map.contains(item)) {
-        aquire_new_item(item);
+        acquire_new_item(item);
         return;
     }
     item_to_amount_map[item]++;
 }
 
-void Inventory::aquire_new_item(uint8_t item) { item_to_amount_map[item] = 1; }
+void Inventory::acquire_new_item(const uint8_t item) {
+    // TODO: INVENTORY_AMOUNT debería recuperase de un archivo TOML
+    if (item_to_amount_map.size() >= INVENTORY_AMOUNT) {
+        throw InventoryFull();
+    }
+
+    item_to_amount_map[item] = 1;
+}
 
 void Inventory::equip_item(Equipment& equipment, uint8_t item) {
     // TODO: considerar todas las ranuras

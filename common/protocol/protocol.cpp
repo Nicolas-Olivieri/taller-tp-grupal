@@ -77,9 +77,13 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS) {
         return RequestedCommandDTO(command);
-    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM) {
+    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
+               command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
+    } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD) {
+        const uint16_t gold_amount = deserializer.recv_uint16();
+        return RequestedCommandDTO(command, gold_amount);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }

@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "allies/ally.h"
+#include "allies/banker.h"
 #include "allies/merchant.h"
 #include "allies/priest.h"
 
@@ -204,8 +205,26 @@ HealResult GameWorld::heal_player(const std::string& player_name) {
 }
 
 
-ListItemsResult GameWorld::list_ally_items(const std::string& player_name) {
-    return execute_ally_action(player_name, AllyActionPayload(AllyAction::LIST_ITEMS)).list_items;
+std::unique_ptr<ListOutcome> GameWorld::list_ally_items(const std::string& player_name) {
+    const AllyExecuteResult result =
+            execute_ally_action(player_name, AllyActionPayload(AllyAction::LIST_ITEMS));
+
+    if (result.list_bank.was_player_bounded) {
+        auto bank_vault = std::make_unique<BankVaultOutcome>();
+        bank_vault->ally = result.list_bank.ally;
+        bank_vault->gold = result.list_bank.gold;
+        bank_vault->items = result.list_bank.items;
+        return bank_vault;
+    }
+
+    if (result.list_items.was_player_bounded) {
+        auto vendor_list = std::make_unique<VendorListOutcome>();
+        vendor_list->ally = result.list_items.ally;
+        vendor_list->items = result.list_items.items;
+        return vendor_list;
+    }
+
+    return std::make_unique<PlayerUnboundOutcome>();
 }
 
 BuyResult GameWorld::buy_item(const std::string& player_name, const uint8_t item_id) {
@@ -214,6 +233,26 @@ BuyResult GameWorld::buy_item(const std::string& player_name, const uint8_t item
 
 SellResult GameWorld::sell_item(const std::string& player_name, const uint8_t item_id) {
     return execute_ally_action(player_name, AllyActionPayload(AllyAction::SELL, item_id)).sell;
+}
+
+DepositItemResult GameWorld::deposit_item(const std::string& player_name, const uint8_t item_id) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::DEPOSIT_ITEM, item_id))
+            .deposit_item;
+}
+
+WithdrawItemResult GameWorld::withdraw_item(const std::string& player_name, const uint8_t item_id) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::WITHDRAW_ITEM, item_id))
+            .withdraw_item;
+}
+
+DepositGoldResult GameWorld::deposit_gold(const std::string& player_name, const uint16_t gold_amount) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::DEPOSIT_GOLD, gold_amount))
+            .deposit_gold;
+}
+
+WithdrawGoldResult GameWorld::withdraw_gold(const std::string& player_name, const uint16_t gold_amount) {
+    return execute_ally_action(player_name, AllyActionPayload(AllyAction::WITHDRAW_GOLD, gold_amount))
+            .withdraw_gold;
 }
 
 
@@ -251,6 +290,11 @@ void GameWorld::init_npc() {
     auto merchant = std::make_unique<Merchant>(merchant_position);
     grid.get_tile(merchant_position).occupy(merchant.get());
     allies.push_back(std::move(merchant));
+
+    Position banker_position(15, 15);
+    auto banker = std::make_unique<Banker>(banker_position);
+    grid.get_tile(banker_position).occupy(banker.get());
+    allies.push_back(std::move(banker));
 }
 
 void GameWorld::init_creature() {

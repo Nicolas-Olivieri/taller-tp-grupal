@@ -9,6 +9,11 @@
 #include "server/game/stats/stats.h"
 
 
+struct InventoryFull: public std::runtime_error {
+    InventoryFull(): std::runtime_error("The player's inventory is full.") {}
+};
+
+
 struct ItemNotOwned: public std::runtime_error {
     ItemNotOwned(): std::runtime_error("The player does not have this item in the inventory.") {}
 };
@@ -42,7 +47,7 @@ public:
     int get_attack_cost(const Equipment& equipment) const;
 
 private:
-    void aquire_new_item(uint8_t item);
+    void acquire_new_item(uint8_t item);
 
     // TODO actualizar los métodos -> ahora son solo equipar y desequipar el arma
     void equip_item(Equipment& equipment, uint8_t item);

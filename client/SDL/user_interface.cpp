@@ -170,6 +170,9 @@ void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
             case ActionType::LIST_ITEMS:
                 handle_list_items(action);
                 break;
+            case ActionType::LIST_BANK:
+                handle_list_bank(action);
+                break;
             default:
                 break;
         }
@@ -207,6 +210,21 @@ void UserInterface::handle_chat_list(const ActionDTO& action) {
 
     for (const std::string& line: list.lines) {
         enqueue_message(line, color);
+    }
+}
+
+void UserInterface::handle_list_bank(const ActionDTO& action) {
+    const ListBankDTO& bank = action.bank;
+    if (bank.receiver != player_name) {
+        return;
+    }
+
+    const SDL_Color color = assign_message_color(bank.type);
+
+    enqueue_message(std::format("    - Oro - Cantidad: {}", bank.gold), color);
+    for (const auto& [item_id, amount]: bank.items) {
+        std::string item_name = ClientConfig::get().get_item_name(item_id);
+        enqueue_message(std::format("    - {} - Cantidad: {}", item_name, amount), color);
     }
 }
 

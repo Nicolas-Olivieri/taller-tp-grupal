@@ -1,8 +1,5 @@
 #include "priest.h"
 
-#include <algorithm>
-#include <map>
-
 #include "server/game/player/inventory/item_mapper.h"
 #include "server/game/player/player.h"
 
@@ -13,20 +10,32 @@ Priest::Priest(const Position& position):
 
 AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) const {
     switch (payload.action) {
+        case AllyAction::BUY:
+            return handle_buy_item(player, payload.item_id);
+
+        case AllyAction::DEPOSIT_GOLD:
+            return handle_action_not_accepted<DepositGoldResult>(DepositGoldStatus::ACTION_NOT_ACCEPTED);
+
+        case AllyAction::DEPOSIT_ITEM:
+            return handle_action_not_accepted<DepositItemResult>(DepositItemStatus::ACTION_NOT_ACCEPTED);
+
         case AllyAction::HEAL:
             return handle_heal(player);
-
-        case AllyAction::RESURRECT:
-            return handle_resurrect(player);
 
         case AllyAction::LIST_ITEMS:
             return handle_list_items();
 
-        case AllyAction::BUY:
-            return handle_buy_item(player, payload.item_id);
+        case AllyAction::RESURRECT:
+            return handle_resurrect(player);
 
         case AllyAction::SELL:
-            return handle_sell_item();
+            return handle_action_not_accepted<SellResult>(SellStatus::ACTION_NOT_ACCEPTED);
+
+        case AllyAction::WITHDRAW_GOLD:
+            return handle_action_not_accepted<WithdrawGoldResult>(WithdrawGoldStatus::ACTION_NOT_ACCEPTED);
+
+        case AllyAction::WITHDRAW_ITEM:
+            return handle_action_not_accepted<WithdrawItemResult>(WithdrawItemStatus::ACTION_NOT_ACCEPTED);
 
         default:
             break;
@@ -57,9 +66,4 @@ AllyExecuteResult Priest::handle_resurrect(Player& player) const {
 
     std::cout << "[Priest] El jugador ya está vivo" << std::endl;
     return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_IS_ALIVE, type));
-}
-
-
-AllyExecuteResult Priest::handle_sell_item() const {
-    return AllyExecuteResult(SellResult(SellStatus::ACTION_NOT_ACCEPTED, type));
 }

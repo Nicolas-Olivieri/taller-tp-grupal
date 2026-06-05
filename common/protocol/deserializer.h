@@ -49,6 +49,9 @@ private:
     DeathDTO recv_death();
 
     ChatListDTO recv_chat_list();
+
+    ListBankDTO recv_list_bank();
+
     ListItemsDTO recv_list_items();
 
 public:
