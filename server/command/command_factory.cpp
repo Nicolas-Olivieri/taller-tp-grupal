@@ -9,6 +9,7 @@
 #include "cmd_types/cmd_move/move_command.h"
 #include "cmd_types/cmd_resurrect/resurrect_command.h"
 #include "cmd_types/cmd_sell/sell_command.h"
+#include "cmd_types/cmd_withdraw_item/withdraw_item_command.h"
 
 
 CommandFactory::CommandFactory(const std::string& player_name): player_name(player_name) {}
@@ -42,6 +43,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::DEPOSIT_ITEM:
             return std::make_unique<DepositItemCommand>(player_name, dto.item_id);
+
+        case CommandType::WITHDRAW_ITEM:
+            return std::make_unique<WithdrawItemCommand>(player_name, dto.item_id);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");
