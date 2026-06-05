@@ -81,6 +81,9 @@ RequestedCommandDTO Protocol::recv_command() {
                command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
+    } else if (command == CommandType::DEPOSIT_GOLD) {
+        const uint16_t gold_amount = deserializer.recv_uint16();
+        return RequestedCommandDTO(command, gold_amount);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }

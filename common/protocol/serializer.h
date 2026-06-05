@@ -8,6 +8,7 @@
 
 #include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
+#include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/events/deposit_item_event.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
@@ -110,6 +111,8 @@ public:
     void serialize(const DepositItemEventDTO& event);
 
     void serialize(const WithdrawItemEventDTO& event);
+
+    void serialize(const DepositGoldEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

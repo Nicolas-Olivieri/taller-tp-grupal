@@ -5,6 +5,7 @@
 
 #include <arpa/inet.h>
 
+#include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/lobby/existence.h"
 
 Serializer::Serializer(std::vector<uint8_t>& buffer): buffer(buffer), offset(0) {}
@@ -190,4 +191,9 @@ void Serializer::serialize(const DepositItemEventDTO& event) {
 void Serializer::serialize(const WithdrawItemEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.item_id);
+}
+
+void Serializer::serialize(const DepositGoldEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.gold_amount);
 }
