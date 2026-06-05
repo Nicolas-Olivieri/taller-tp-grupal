@@ -8,7 +8,7 @@
 #include "../../TOML/animation_parser.h"
 
 AnimationPool::AnimationPool() {
-    auto root = toml::parse(DATA_PATH "/animations.toml");
+    auto root = toml::parse(CONFIG_PATH "/animations.toml");
     auto [animations_data] = toml::find<AnimationData>(root, "animations");
 
     this->animations = std::move(animations_data);

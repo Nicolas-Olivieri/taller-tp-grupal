@@ -8,7 +8,7 @@
 
 
 TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
-    auto root = toml::parse(DATA_PATH "/texture_files.toml");
+    auto root = toml::parse(CONFIG_PATH "/texture_files.toml");
     auto files = toml::find(root, "file_ids");
 
     for (const auto& [category, ids]: files.as_table()) {
