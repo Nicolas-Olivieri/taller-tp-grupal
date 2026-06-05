@@ -37,7 +37,9 @@ ExistenceDTO Protocol::recv_existence() {
 
     const uint8_t exists = deserializer.recv_uint8();
 
-    return ExistenceDTO(exists);
+    const uint8_t connected = deserializer.recv_uint8();
+
+    return ExistenceDTO(exists, connected);
 }
 
 CreatePlayerDTO Protocol::recv_appearance() {

@@ -17,6 +17,7 @@ void GameAcceptor::run() {
         while (should_keep_running()) {
             auto [player_name, peer] = waiting_queue.pop();
             reap();
+            player_repository.connect(player_name);
             clients.emplace_back(std::move(peer), player_name, command_queue, broadcaster);
             clients.back().start();
 
@@ -31,6 +32,7 @@ void GameAcceptor::reap() {
     auto it = clients.begin();
     while (it != clients.end()) {
         if (not it->is_alive()) {
+            player_repository.desconnect(it->get_name());
             it = clients.erase(it);
         } else {
             ++it;

@@ -7,7 +7,10 @@
 #include "allies/priest.h"
 
 
-GameWorld::GameWorld(const int width, const int height): grid(width, height) { init_npc(); }
+GameWorld::GameWorld(const int width, const int height, PlayerRepository& player_repository):
+        grid(width, height), player_repository(player_repository) {
+    init_npc();
+}
 
 
 std::unordered_map<std::string, Player> GameWorld::get_players() const { return players; }
@@ -92,6 +95,7 @@ void GameWorld::remove_player(const std::string& player_name) {
         return;
     }
     grid.get_tile(it->second.get_position()).occupy(nullptr);
+    player_repository.desconnect(player_name);
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
 }

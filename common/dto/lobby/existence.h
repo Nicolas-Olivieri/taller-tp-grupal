@@ -5,8 +5,9 @@
 
 struct ExistenceDTO: public ProtocolMessageDTO {
     uint8_t user_exists;
+    uint8_t user_connected;
 
-    explicit ExistenceDTO(uint8_t user_exists);
+    explicit ExistenceDTO(const uint8_t user_exists, const uint8_t user_connected);
 
     size_t message_size() const override;
 
