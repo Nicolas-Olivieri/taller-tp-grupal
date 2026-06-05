@@ -23,8 +23,8 @@ EDITOR_FLAGS= -platform xcb
 TESTS_FLAGS= # vacío de momento, agregar los necesarios
 
 # Archivos a borrar en rutina clean
-CLEAN_FILES= ./index.bin
-CLEAN_FILES+= ./playerdata.bin
+CLEAN_FILES= ./resources/index.bin
+CLEAN_FILES+= ./resources/playerdata.bin
 
 # Identificadores para las bitácoras de eventos
 SERVER_ID= "Argentum-Online-server"
