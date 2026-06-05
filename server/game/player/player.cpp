@@ -184,7 +184,7 @@ void Player::withdraw_gold_from_bank(const uint16_t amount) {
 const std::map<uint8_t, uint8_t>& Player::get_bank_items() const { return bank.get_items(); }
 
 void Player::deposit_item_to_bank(const uint8_t item_id) {
-    inventory.drop_item(item_id);
+    inventory.drop_item(equipment, item_id);
     try {
         bank.deposit_item(item_id);
 
