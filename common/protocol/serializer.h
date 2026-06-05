@@ -103,6 +103,8 @@ public:
 
     void serialize(const ChatListDTO& list);
 
+    void serialize(const ListBankDTO& bank);
+
     void serialize(const ListItemsDTO& list);
 
     void serialize(const BuyEventDTO& event);

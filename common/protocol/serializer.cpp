@@ -81,6 +81,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::LIST_ITEMS:
             serialize(action.items);
             break;
+        case ActionType::LIST_BANK:
+            serialize(action.bank);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -165,6 +168,13 @@ void Serializer::serialize(const ChatListDTO& list) {
     serialize(static_cast<uint8_t>(list.type));
     serialize(list.receiver);
     serialize(list.lines);
+}
+
+void Serializer::serialize(const ListBankDTO& bank) {
+    serialize(static_cast<uint8_t>(bank.type));
+    serialize(bank.receiver);
+    serialize(bank.gold);
+    serialize(bank.items);
 }
 
 void Serializer::serialize(const ListItemsDTO& list) {
