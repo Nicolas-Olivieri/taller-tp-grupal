@@ -35,7 +35,12 @@ bool ClientHandler::is_alive() const { return sender.is_alive() or receiver.is_a
 void ClientHandler::polite_kill() {
     sender.stop();
     receiver.stop();
-    peer.shutdown(SHUT_RDWR);
+
+    if (!peer.is_stream_send_closed())
+        peer.shutdown(SHUT_WR);
+    if (!peer.is_stream_recv_closed())
+        peer.shutdown(SHUT_RD);
+
     peer.close();
     client_queue.close();
 }
