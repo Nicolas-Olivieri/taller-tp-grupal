@@ -89,6 +89,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/heal_result.h
         command/cmd_results/ally_execute/list_bank_result.h
         command/cmd_results/ally_execute/list_items_result.h
+        command/cmd_results/ally_execute/list_outcomes.h
         command/cmd_results/ally_execute/resurrect_result.h
         command/cmd_results/ally_execute/sell_result.h
         command/cmd_results/ally_execute/withdraw_gold_result.h

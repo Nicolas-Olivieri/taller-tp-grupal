@@ -128,8 +128,26 @@ HealResult GameWorld::heal_player(const std::string& player_name) {
 }
 
 
-ListItemsResult GameWorld::list_ally_items(const std::string& player_name) {
-    return execute_ally_action(player_name, AllyActionPayload(AllyAction::LIST_ITEMS)).list_items;
+std::unique_ptr<ListOutcome> GameWorld::list_ally_items(const std::string& player_name) {
+    const AllyExecuteResult result =
+            execute_ally_action(player_name, AllyActionPayload(AllyAction::LIST_ITEMS));
+
+    if (result.list_bank.was_player_bounded) {
+        auto bank_vault = std::make_unique<BankVaultOutcome>();
+        bank_vault->ally = result.list_bank.ally;
+        bank_vault->gold = result.list_bank.gold;
+        bank_vault->items = result.list_bank.items;
+        return bank_vault;
+    }
+
+    if (result.list_items.was_player_bounded) {
+        auto vendor_list = std::make_unique<VendorListOutcome>();
+        vendor_list->ally = result.list_items.ally;
+        vendor_list->items = result.list_items.items;
+        return vendor_list;
+    }
+
+    return std::make_unique<PlayerUnboundOutcome>();
 }
 
 BuyResult GameWorld::buy_item(const std::string& player_name, const uint8_t item_id) {

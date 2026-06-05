@@ -10,6 +10,7 @@
 #include "allies/ally_action_payload.h"
 #include "common/direction.h"
 #include "player/player.h"
+#include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
 
 #include "grid.h"
@@ -46,7 +47,7 @@ public:
 
     HealResult heal_player(const std::string& player_name);
 
-    ListItemsResult list_ally_items(const std::string& player_name);
+    std::unique_ptr<ListOutcome> list_ally_items(const std::string& player_name);
 
     BuyResult buy_item(const std::string& player_name, uint8_t item_id);
 
