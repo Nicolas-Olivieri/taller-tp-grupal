@@ -78,7 +78,7 @@ RequestedCommandDTO Protocol::recv_command() {
                command == CommandType::LIST_ITEMS) {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
-               command == CommandType::DEPOSIT_ITEM) {
+               command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
     } else {

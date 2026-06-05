@@ -19,6 +19,7 @@ target_sources(taller_common
         dto/events/chatevent.cpp
         dto/events/deposit_item_event.cpp
         dto/events/sell_event.cpp
+        dto/events/withdraw_item_event.cpp
 
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
@@ -70,6 +71,7 @@ target_sources(taller_common
         dto/events/chatevent.h
         dto/events/deposit_item_event.h
         dto/events/sell_event.h
+        dto/events/withdraw_item_event.h
 
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h

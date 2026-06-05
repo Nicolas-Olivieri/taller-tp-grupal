@@ -15,6 +15,7 @@ enum class CommandType : uint8_t {
     BUY_ITEM,
     SELL_ITEM,
     DEPOSIT_ITEM,
+    WITHDRAW_ITEM,
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a

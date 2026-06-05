@@ -13,6 +13,7 @@
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/events/sell_event.h"
+#include "common/dto/events/withdraw_item_event.h"
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/create_player.h"
 #include "common/dto/lobby/credentials.h"
@@ -107,6 +108,8 @@ public:
     void serialize(const SellEventDTO& event);
 
     void serialize(const DepositItemEventDTO& event);
+
+    void serialize(const WithdrawItemEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

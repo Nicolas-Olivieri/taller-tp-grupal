@@ -186,3 +186,8 @@ void Serializer::serialize(const DepositItemEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.item_id);
 }
+
+void Serializer::serialize(const WithdrawItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
