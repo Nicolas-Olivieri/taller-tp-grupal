@@ -50,7 +50,7 @@ public:
 
     /// Player
 
-    Stats get_stats() const;
+    const Stats& get_stats() const;
 
     uint8_t get_body() const;
 

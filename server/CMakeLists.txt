@@ -31,6 +31,12 @@ target_sources(taller_server
         game/killable.cpp
         game/loot.cpp
         game/tile.cpp
+
+        game/creatures/creature.cpp
+        game/creatures/state/idlestate.cpp
+        game/creatures/state/followingstate.cpp
+        game/creatures/state/attackingstate.cpp
+
         connection/acceptor.cpp
         connection/lobbyhandler.cpp
         connection/game_acceptor.cpp
@@ -92,6 +98,13 @@ target_sources(taller_server
         game/killable.h
         game/loot.h
         game/tile.h
+
+        game/creatures/creature.h
+        game/creatures/state/creaturestate.h
+        game/creatures/state/idlestate.h
+        game/creatures/state/followingstate.h
+        game/creatures/state/attackingstate.h
+
         connection/acceptor.h
         connection/lobbyhandler.h
         connection/connectioninfo.h
@@ -109,7 +122,7 @@ target_sources(taller_server
         config/game_config.h
 
         game/player/inventory/inventory.h
-        game/player/inventory/equipment.h
+        game/equipment.h
         game/player/inventory/item_mapper.h
         game/player/inventory/goldmanager.h
         

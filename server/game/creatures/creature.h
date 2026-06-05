@@ -1,0 +1,60 @@
+#ifndef CREATURE_H
+#define CREATURE_H
+
+#include <memory>
+
+#include "server/command/cmd_results/interact/interact_result.h"
+#include "server/game/attacker.h"
+#include "server/game/equipment.h"
+#include "server/game/killable.h"
+#include "server/game/position.h"
+#include "state/creaturestate.h"
+
+class Creature: public Killable, public Attacker {
+private:
+    const uint32_t sub_id;
+    std::unique_ptr<CreatureState> state;
+
+    Player* target;
+
+public:
+    // TODO: mover métodos que no son públicos a la sección private
+
+    Creature(const uint32_t sub_id, const uint8_t race, const uint8_t variation, const Position& position);
+
+    void drop() override;
+
+    InteractResult update_state(const Position& position, const Direction& direction);
+
+    InteractResult interact(Player&) override;
+
+    InteractResult attack_player();
+
+    int attack() override;
+
+    bool can_attack() const override;
+
+    bool can_reach(const Position& other_position) const override;
+
+    bool can_target(const Position& other_position) const;
+
+    bool should_stop_targeting() const;
+
+    void stop_targeting();
+
+    void target_player(Player& player);
+
+    bool is_targeting_someone() const;
+
+    bool is_target_alive() const;
+
+    void set_state(std::unique_ptr<CreatureState> state);
+
+    bool can_reach_target();
+
+    Position get_target_position() const;
+
+    bool is_targeting(const Player& playter) const;
+};
+
+#endif  // CREATURE_H
