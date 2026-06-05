@@ -30,10 +30,10 @@ LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::Login
     ui->conn_err->hide();
     ui->name_err->hide();
 
-    connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::conect_match);
+    connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::connect_match);
 }
 
-void LoginWindow::conect_match() {
+void LoginWindow::connect_match() {
     ui->conn_err->hide();
     ui->name_err->hide();
 

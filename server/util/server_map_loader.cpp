@@ -11,15 +11,15 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
     try {
         map.open(map_path, std::ios::binary);
     } catch (std::ifstream::failure& e) {
-        throw MapFileNotFound();
+        throw MapFileNotFound(map_path);
     }
 
     // Leo el magic number (2 bytes) y los 4 bytes de offset (inicio y fin de bytes del servidor)
     parse_int<uint16_t>(map);
     parse_int<uint32_t>(map);
 
-    uint16_t width = parse_int<uint16_t>(map);
-    uint16_t height = parse_int<uint16_t>(map);
+    auto width = parse_int<uint16_t>(map);
+    auto height = parse_int<uint16_t>(map);
 
     std::vector<std::vector<bool>> grid_values;
     for (int y = 0; y < height; y++) {
@@ -32,20 +32,60 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
     }
     GridMatrixDTO grid(grid_values);
 
-    uint16_t npc_amount = parse_int<uint16_t>(map);
+    auto npc_amount = parse_int<uint16_t>(map);
     std::vector<AllyInfoDTO> npcs;
     for (int i = 0; i < npc_amount; i++) {
-        uint8_t id = parse_int<uint8_t>(map);
-        uint16_t x = parse_int<uint16_t>(map);
-        uint16_t y = parse_int<uint16_t>(map);
+        auto id = parse_int<uint8_t>(map);
+        auto x = parse_int<uint16_t>(map);
+        auto y = parse_int<uint16_t>(map);
 
-        npcs.push_back(AllyInfoDTO{static_cast<AllyType>(id),x,y});
+        npcs.emplace_back(static_cast<AllyType>(id),x,y);
     }
 
     return {width,height,grid,npcs};
 }
 
+ClientMapDataDTO ServerMapLoader::get_client_data() {
+    std::ifstream map;
 
+    try {
+        map.open(map_path, std::ios::binary);
+    } catch (std::ifstream::failure& e) {
+        throw MapFileNotFound(map_path);
+    }
+
+    // Leo el magic number (2 bytes)
+    parse_int<uint16_t>(map);
+    auto server_start = parse_int<uint16_t>(map);
+    auto server_end = parse_int<uint16_t>(map);
+
+    auto width = parse_int<uint16_t>(map);
+    auto height = parse_int<uint16_t>(map);
+
+    // Salteo la parte
+    map.ignore(server_end-server_start);
+
+    std::vector<AssetInfoDTO> tiles = get_assets(map);
+    std::vector<AssetInfoDTO> colliders = get_assets(map);
+    std::vector<AssetInfoDTO> npcs = get_assets(map);
+
+    return {width, height, tiles,colliders,npcs};
+}
+
+
+std::vector<AssetInfoDTO> ServerMapLoader::get_assets(std::ifstream& map) {
+    const auto size = parse_int<uint16_t>(map);
+    std::vector<AssetInfoDTO> assets;
+    for (int i = 0; i < size; i++) {
+        auto id = parse_int<uint8_t>(map);
+        auto x = parse_int<uint16_t>(map);
+        auto y = parse_int<uint16_t>(map);
+
+        assets.emplace_back(id, x, y);
+    }
+
+    return assets;
+}
 
 template <typename intType>
 intType ServerMapLoader::parse_int(std::ifstream& file) {

@@ -7,6 +7,7 @@
 #include "common/dto/lobby/existence.h"
 #include "common/dto/message.h"
 #include "common/dto/snapshot/snapshot.h"
+#include "common/dto/snapshot/map/client_map_data.h"
 #include "common/socket.h"
 
 class Protocol {
@@ -25,6 +26,8 @@ public:
     CredentialsDTO recv_credentials();
 
     ExistenceDTO recv_existence();
+
+    ClientMapDataDTO recv_map();
 
     CreatePlayerDTO recv_appearance();
 

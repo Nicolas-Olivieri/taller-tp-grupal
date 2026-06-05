@@ -5,7 +5,9 @@
 
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/lobby/existence.h"
+#include "common/dto/snapshot/map/client_map_data.h"
 #include "common/protocol/protocol.h"
+#include "server/util/server_map_loader.h"
 
 LobbyHandler::LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players,
                            PlayerRepository& player_repository):
@@ -38,6 +40,9 @@ void LobbyHandler::run() {
     }
 
     // envío de información del mundo + snapshot inicial
+    ServerMapLoader loader;
+    protocol.send(loader.get_client_data());
+
     move_into_waiting_queue(credentials.username);
 }
 

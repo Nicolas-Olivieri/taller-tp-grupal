@@ -20,7 +20,7 @@ MapSaver::MapSaver(MapData& data): data(data) {}
  * <cant npcs uint16_t> [<id uint8_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
  *
  * <cant tiles uint16_t> [<id uint8_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
- * <cant colliders uint16_t> [<id uint16_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
+ * <cant colliders uint16_t> [<id uint8_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
  * <cant npcs uint16_t> [<id uint8_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
  */
 void MapSaver::save(const QString& user_filename) {
@@ -90,16 +90,15 @@ void MapSaver::store_server_data(QDataStream& stream) const {
         stream << is_walkable;
     }
 
-    store_asset_data<uint8_t>(stream, ImageType::NPC);
+    store_asset_data(stream, ImageType::NPC);
 }
 
 void MapSaver::store_client_data(QDataStream& stream) const {
-    store_asset_data<uint8_t>(stream, ImageType::TILE);
-    store_asset_data<uint16_t>(stream, ImageType::COLLIDER);
-    store_asset_data<uint8_t>(stream, ImageType::NPC);
+    store_asset_data(stream, ImageType::TILE);
+    store_asset_data(stream, ImageType::COLLIDER);
+    store_asset_data(stream, ImageType::NPC);
 }
 
-template <typename intType>
 void MapSaver::store_asset_data(QDataStream& stream, const ImageType type) const {
     stream << data.asset_counter[type];
 
@@ -111,7 +110,7 @@ void MapSaver::store_asset_data(QDataStream& stream, const ImageType type) const
         const uint16_t origin_x = placement.origin.x() - min_point.x();
         const uint16_t origin_y = placement.origin.y() - min_point.y();
 
-        const intType id = placement.asset.id;
+        const uint8_t id = placement.asset.id;
         stream << id << origin_x << origin_y;
     }
 }

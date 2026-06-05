@@ -29,7 +29,7 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name):
         renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         connection(connection),
         player_name(player_name),
-        world(renderer, player_name),
+        world(renderer, connection.receive_map(), player_name),
         key_being_pressed(SDLK_UNKNOWN),
         camera(initialize_world_and_camera()),
         ui(renderer, player_name),

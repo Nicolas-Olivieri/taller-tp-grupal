@@ -169,7 +169,7 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
 void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
     // TODO ir agregando tipos y borrar defaults de prueba
     for (const auto& npc : npcs) {
-        Position position(npc.x, npc.y);
+        Position position(npc.x, npc.y+1);
 
         switch (npc.type) {
             case AllyType::PRIEST: {

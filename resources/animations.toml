@@ -12,6 +12,14 @@
 2 = [1, 0, 128, 27, 64]
 3 = [1, 0, 192, 27, 64]
 
-[sprites]
-0 = [0, 0, 50, 20]      # el obstacle 0 es de 50x20px
-1 = [0, 0, 128, 128]    # el obstacle 1 es de 128x128px
+
+[animations.tiles]
+0 = [1, 0, 0, 128, 128]
+1 = [1, 0, 0, 128, 128]
+2 = [1, 0, 0, 128, 128]
+
+[animations.colliders]
+0 = [1, 0, 0, 96, 64]
+
+[animations.npcs]
+0 = [1, 0, 0, 32, 64]

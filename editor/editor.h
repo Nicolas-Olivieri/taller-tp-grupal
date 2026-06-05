@@ -36,7 +36,7 @@ private slots:
 private:
     Ui::Editor* ui;
     QHash<uint8_t, AssetData> tiles;
-    QHash<uint16_t, AssetData> colliders;
+    QHash<uint8_t, AssetData> colliders;
     QHash<uint8_t, AssetData> npcs;
 
     MapData map_data;
@@ -47,8 +47,7 @@ private:
     MapLoader loader;
     MapSaver saver;
 
-    template <class intType>
-    QHash<intType, AssetData> populate_hash(const std::string& category_name, ImageType type);
+    QHash<uint8_t, AssetData> populate_hash(const std::string& category_name, ImageType type);
 };
 
 #endif  // EDITOR_H

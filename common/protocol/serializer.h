@@ -22,6 +22,7 @@
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/snapshot.h"
+#include "common/dto/snapshot/map/client_map_data.h"
 
 class Serializer {
 private:
@@ -67,6 +68,10 @@ public:
     void serialize(const EventDTO& event);
 
     void serialize(const MoveEventDTO& event);
+
+    void serialize(const AssetInfoDTO& asset);
+
+    void serialize(const ClientMapDataDTO& map);
 
     void serialize(const SnapshotDTO& snapshot);
 

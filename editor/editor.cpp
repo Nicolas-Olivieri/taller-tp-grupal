@@ -14,9 +14,9 @@
 Editor::Editor(QWidget* parent):
         QMainWindow(parent),
         ui(new Ui::Editor),
-        tiles(populate_hash<uint8_t>("tiles", ImageType::TILE)),
-        colliders(populate_hash<uint16_t>("colliders", ImageType::COLLIDER)),
-        npcs(populate_hash<uint8_t>("npcs", ImageType::NPC)),
+        tiles(populate_hash("tiles", ImageType::TILE)),
+        colliders(populate_hash("colliders", ImageType::COLLIDER)),
+        npcs(populate_hash("npcs", ImageType::NPC)),
         map_data(MapData()),
         map_canvas(MapCanvas(this->map_data)),
         asset_selector(this->tiles, this->colliders, this->npcs),
@@ -45,18 +45,18 @@ Editor::Editor(QWidget* parent):
 }
 
 
-template <typename intType>
-QHash<intType, AssetData> Editor::populate_hash(const std::string& category_name, const ImageType type) {
+
+QHash<uint8_t, AssetData> Editor::populate_hash(const std::string& category_name, const ImageType type) {
     const auto data = toml::parse(DATA_PATH "/assets_info.toml");
     auto assets = toml::find<std::vector<AssetData>>(data, category_name);
 
-    QHash<intType, AssetData> hash;
+    QHash<uint8_t, AssetData> hash;
     for (auto& tile: assets) {
         auto path = QString("%1/%2/%3.png").arg(DATA_PATH).arg(category_name.data()).arg(tile.id);
         tile.type = type;
         tile.img = QPixmap(path);
 
-        hash.insert({{intType(tile.id), tile}});
+        hash.insert({{tile.id, tile}});
     }
 
     return hash;

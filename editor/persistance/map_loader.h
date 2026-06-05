@@ -14,18 +14,17 @@ private:
     MapCanvas& canvas;
 
     QHash<uint8_t, AssetData>& tiles;
-    QHash<uint16_t, AssetData>& colliders;
+    QHash<uint8_t, AssetData>& colliders;
     QHash<uint8_t, AssetData>& npcs;
 
-    template <class intType>
-    void load_assets(QDataStream& stream, const QHash<intType, AssetData>& lookup_assets_hash,
-                     ImageType type) const;
+    void load_assets(QDataStream &stream, const QHash<uint8_t, AssetData> &lookup_assets_hash, ImageType type) const;
 
 public:
     MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
-              QHash<uint16_t, AssetData>& colliders, QHash<uint8_t, AssetData>& npcs);
+              QHash<uint8_t, AssetData>& colliders, QHash<uint8_t, AssetData>& npcs);
 
     bool load(const QString& filename) const;
+
 };
 
 

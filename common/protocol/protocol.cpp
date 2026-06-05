@@ -40,6 +40,21 @@ ExistenceDTO Protocol::recv_existence() {
     return ExistenceDTO(exists);
 }
 
+ClientMapDataDTO Protocol::recv_map() {
+    check_header_message_byte(Message::MAP);
+
+    Deserializer deserializer(this->socket);
+
+    const uint16_t width = deserializer.recv_uint16();
+    const uint16_t height = deserializer.recv_uint16();
+
+    const std::vector<AssetInfoDTO> tiles = deserializer.recv_assets_information();
+    const std::vector<AssetInfoDTO> colliders = deserializer.recv_assets_information();
+    const std::vector<AssetInfoDTO> npcs = deserializer.recv_assets_information();
+
+    return ClientMapDataDTO(width, height, tiles, colliders, npcs);
+}
+
 CreatePlayerDTO Protocol::recv_appearance() {
     check_header_message_byte(Message::CREATE_PLAYER);
 

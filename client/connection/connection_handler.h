@@ -22,6 +22,8 @@ public:
 
     void stop();
 
+    ClientMapDataDTO receive_map();
+
     bool try_pop_snapshot(SnapshotDTO& snapshot);
 
     SnapshotDTO pop_snapshot();

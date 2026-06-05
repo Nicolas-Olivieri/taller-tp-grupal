@@ -10,6 +10,7 @@
 #include "sprite.h"
 #include "sprite_layer.h"
 #include "texture_pool.h"
+#include "common/dto/snapshot/map/asset_info.h"
 
 
 class SpriteCreator {
@@ -24,7 +25,9 @@ public:
     SpriteLayer create_sprite_layer(const std::string& category, uint8_t id,
                                     const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
 
-    Sprite create_user(const PlayerInfoDTO& playerInfo);
+    Sprite create_user(const PlayerInfoDTO& player_info);
+
+    Sprite create_asset(const std::string &category, const AssetInfoDTO &asset_info);
 
     void update_appearance(Sprite& player, const AppearanceDTO& appearance);
 

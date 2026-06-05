@@ -12,6 +12,7 @@
 #include "sprites/texture_pool.h"
 
 #include "camera.h"
+#include "common/dto/snapshot/map/client_map_data.h"
 
 class World {
 private:
@@ -21,21 +22,27 @@ private:
 
     SDL2pp::Rect world_view;
     std::string player_name;
-    std::map<std::string, Sprite> players;
+    std::map<std::string, std::shared_ptr<Sprite>> players;
+
+    std::vector<std::shared_ptr<Sprite>> map_tiles;
+    std::vector<std::shared_ptr<Sprite>> map_items;
+
+    void init_assets(const ClientMapDataDTO &map_data);
 
     void add_new_player(const PlayerInfoDTO& info);
 
 public:
-    World(SDL2pp::Renderer& renderer, std::string& player_name);
+    World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name);
+
 
     void update_players(const std::vector<PlayerInfoDTO>& players_information);
     void handle_actions(const std::vector<ActionDTO>& actions);
 
     void update_visuals(int iteration);
 
-    void render_in_z_order(const Camera& camera);
+    void render_in_z_order(const Camera& camera) const;
 
-    std::vector<Sprite> filter_viewed_sprites(const Camera& camera);
+    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(const Camera &camera) const;
 
     Sprite& get_client_player();
 

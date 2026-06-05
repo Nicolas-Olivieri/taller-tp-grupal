@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "sprite_layer.h"
+#include "common/dto/snapshot/map/asset_info.h"
 
 #define HEAD_OFFSET 21
 
@@ -15,9 +16,9 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
 #define GHOST_HEAD_ID 0
 #define GHOST_BODY_ID 0
 
-Sprite SpriteCreator::create_user(const PlayerInfoDTO& playerInfo) {
-    const SDL2pp::Point position(playerInfo.x, playerInfo.y);
-    const AppearanceDTO& appearance_data = playerInfo.appearance;
+Sprite SpriteCreator::create_user(const PlayerInfoDTO& player_info) {
+    const SDL2pp::Point position(player_info.x, player_info.y);
+    const AppearanceDTO& appearance_data = player_info.appearance;
 
     SpriteLayer head = create_sprite_layer("head", appearance_data.head);
     SpriteLayer body = create_sprite_layer("body", appearance_data.body, SDL2pp::Point(0, HEAD_OFFSET));
@@ -27,10 +28,18 @@ Sprite SpriteCreator::create_user(const PlayerInfoDTO& playerInfo) {
     Sprite sprite(std::move(body), position, Direction::IDLE, size);
     sprite.add_layer(Layer::HEAD, std::move(head));
 
-    if (playerInfo.stats.current_health == 0)
+    if (player_info.stats.current_health == 0)
         convert_to_ghost(sprite);
 
     return sprite;
+}
+
+Sprite SpriteCreator::create_asset(const std::string& category, const AssetInfoDTO& asset_info) {
+    const SDL2pp::Point position(asset_info.x, asset_info.y);
+    SpriteLayer base = create_sprite_layer(category, asset_info.id);
+
+    Sprite asset(std::move(base), position, Direction::IDLE, base.frame.GetSize());
+    return asset;
 }
 
 SpriteLayer SpriteCreator::create_sprite_layer(const std::string& category, const uint8_t id,

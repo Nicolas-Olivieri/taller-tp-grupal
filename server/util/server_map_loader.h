@@ -8,7 +8,8 @@
 #include "common/dto/snapshot/map/server_map_data.h"
 
 struct MapFileNotFound: public std::invalid_argument {
-    MapFileNotFound(): std::invalid_argument(std::format("No map.bin file found at folder {}/map/.", DATA_PATH)) {}
+    explicit MapFileNotFound(std::string path) :
+        std::invalid_argument(std::format("No map.bin file found at folder {}", path)) {}
 };
 
 class ServerMapLoader {
@@ -24,6 +25,8 @@ public:
     ServerMapDataDTO get_server_data();
 
     ClientMapDataDTO get_client_data();
+
+    std::vector<AssetInfoDTO> get_assets(std::ifstream &map);
 };
 
 
