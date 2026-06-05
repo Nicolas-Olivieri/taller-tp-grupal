@@ -6,7 +6,7 @@
 
 // TODO: constantes temporales, sincronizar dependencias
 #define INVENTORY_AMOUNT 9
-#define BANK_AMOUNT 16
+#define BANK_AMOUNT 5
 #define CLAN_NAME 15
 
 // Forward Declaration para evitar dependencia circular

@@ -1,10 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <map>
 #include <string>
 
 #include "../killable.h"
 #include "../position.h"
+#include "bank/bank.h"
 #include "server/game/allies/ally.h"
 #include "server/game/attacker.h"
 #include "server/game/player/inventory/goldmanager.h"
@@ -20,6 +22,7 @@ private:
     const uint8_t head;
 
     Inventory inventory;
+    Bank bank;
     GoldManager gold_manager;
 
     Ally* bound_ally;
@@ -81,6 +84,18 @@ public:
     void acquire_item(uint8_t item_id);
 
     void drop_item(uint8_t item_id);
+
+    uint16_t get_bank_gold() const;
+
+    void deposit_gold_to_bank(uint16_t amount);
+
+    void withdraw_gold_from_bank(uint16_t amount);
+
+    const std::map<uint8_t, uint8_t>& get_bank_items() const;
+
+    void deposit_item_to_bank(uint8_t item_id);
+
+    void withdraw_item_from_bank(uint8_t item_id);
 };
 
 

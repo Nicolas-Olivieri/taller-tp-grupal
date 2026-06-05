@@ -52,6 +52,7 @@ target_sources(taller_server
         persistance/playerrepository.cpp
         config/game_config.cpp
 
+        game/player/bank/bank.cpp
         game/player/inventory/inventory.cpp
         game/player/inventory/item_mapper.cpp
         game/player/inventory/goldmanager.cpp
@@ -129,6 +130,7 @@ target_sources(taller_server
         persistance/playerrepository.h
         config/game_config.h
 
+        game/player/bank/bank.h
         game/player/inventory/inventory.h
         game/player/inventory/equipment.h
         game/player/inventory/item_mapper.h
