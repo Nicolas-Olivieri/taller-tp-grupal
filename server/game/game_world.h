@@ -52,6 +52,14 @@ public:
 
     SellResult sell_item(const std::string& player_name, uint8_t item_id);
 
+    DepositItemResult deposit_item(const std::string& player_name, uint8_t item_id);
+
+    WithdrawItemResult withdraw_item(const std::string& player_name, uint8_t item_id);
+
+    DepositGoldResult deposit_gold(const std::string& player_name, uint16_t gold_amount);
+
+    WithdrawGoldResult withdraw_gold(const std::string& player_name, uint16_t gold_amount);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

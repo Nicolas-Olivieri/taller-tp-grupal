@@ -5,6 +5,7 @@
 #include "deposit_gold_result.h"
 #include "deposit_item_result.h"
 #include "heal_result.h"
+#include "list_bank_result.h"
 #include "list_items_result.h"
 #include "resurrect_result.h"
 #include "sell_result.h"
@@ -20,6 +21,7 @@ struct AllyExecuteResult {
     DepositItemResult deposit_item;
     DepositGoldResult deposit_gold;
     HealResult heal;
+    ListBankResult list_bank;
     ListItemsResult list_items;
     ResurrectResult resurrect;
     SellResult sell;
@@ -34,6 +36,8 @@ struct AllyExecuteResult {
     explicit AllyExecuteResult(const HealResult& result);
 
     explicit AllyExecuteResult(const ListItemsResult& result);
+
+    explicit AllyExecuteResult(const ListBankResult& result);
 
     explicit AllyExecuteResult(const ResurrectResult& result);
 

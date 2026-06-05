@@ -59,6 +59,7 @@ target_sources(taller_server
 
         game/allies/ally.cpp
         game/allies/ally_action_payload.cpp
+        game/allies/banker.cpp
         game/allies/merchant.cpp
         game/allies/priest.cpp
         game/allies/vendor_ally.cpp
@@ -86,6 +87,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/deposit_gold_result.h
         command/cmd_results/ally_execute/deposit_item_result.h
         command/cmd_results/ally_execute/heal_result.h
+        command/cmd_results/ally_execute/list_bank_result.h
         command/cmd_results/ally_execute/list_items_result.h
         command/cmd_results/ally_execute/resurrect_result.h
         command/cmd_results/ally_execute/sell_result.h
@@ -140,6 +142,7 @@ target_sources(taller_server
 
         game/allies/ally.h
         game/allies/ally_action_payload.h
+        game/allies/banker.h
         game/allies/merchant.h
         game/allies/priest.h
         game/allies/vendor_ally.h

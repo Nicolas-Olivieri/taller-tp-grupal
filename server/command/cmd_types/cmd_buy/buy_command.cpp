@@ -19,6 +19,7 @@ void BuyCommand::build_snapshot(SnapshotBuilder& builder) {
     static std::map<AllyType, std::string> ally_type_to_string({
             {AllyType::PRIEST, "Sacerdote"},
             {AllyType::MERCHANT, "Comerciante"},
+            {AllyType::BANKER, "Banquero"},
     });
 
     if (not ally_type_to_string.contains(result.ally)) {

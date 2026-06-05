@@ -1,6 +1,5 @@
 #include "priest.h"
 
-
 #include "server/game/player/inventory/item_mapper.h"
 #include "server/game/player/player.h"
 

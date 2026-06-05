@@ -7,6 +7,7 @@ AllyExecuteResult::AllyExecuteResult(const bool was_bounded):
         deposit_item(was_bounded ? DepositItemStatus::NO_RESULT : DepositItemStatus::PLAYER_UNBOUNDED),
         deposit_gold(was_bounded ? DepositGoldStatus::NO_RESULT : DepositGoldStatus::PLAYER_UNBOUNDED),
         heal(was_bounded ? HealStatus::NO_RESULT : HealStatus::PLAYER_UNBOUNDED),
+        list_bank(was_bounded),
         list_items(was_bounded),
         resurrect(was_bounded ? ResurrectStatus::NO_RESULT : ResurrectStatus::PLAYER_UNBOUNDED),
         sell(was_bounded ? SellStatus::NO_RESULT : SellStatus::PLAYER_UNBOUNDED),
@@ -21,6 +22,9 @@ AllyExecuteResult::AllyExecuteResult(const HealResult& result): heal(result) {}
 
 
 AllyExecuteResult::AllyExecuteResult(const ListItemsResult& result): list_items(result) {}
+
+
+AllyExecuteResult::AllyExecuteResult(const ListBankResult& result): list_bank(result) {}
 
 
 AllyExecuteResult::AllyExecuteResult(const ResurrectResult& result): resurrect(result) {}
