@@ -4,6 +4,7 @@
 // Interacción sin resultado
 AllyExecuteResult::AllyExecuteResult(const bool was_bounded):
         buy(was_bounded ? BuyStatus::NO_RESULT : BuyStatus::PLAYER_UNBOUNDED),
+        deposit_item(was_bounded ? DepositItemStatus::NO_RESULT : DepositItemStatus::PLAYER_UNBOUNDED),
         heal(was_bounded ? HealStatus::NO_RESULT : HealStatus::PLAYER_UNBOUNDED),
         list_items(was_bounded),
         resurrect(was_bounded ? ResurrectStatus::NO_RESULT : ResurrectStatus::PLAYER_UNBOUNDED),
@@ -23,3 +24,6 @@ AllyExecuteResult::AllyExecuteResult(const ResurrectResult& result): resurrect(r
 
 
 AllyExecuteResult::AllyExecuteResult(const SellResult& result): sell(result) {}
+
+
+AllyExecuteResult::AllyExecuteResult(const DepositItemResult& result): deposit_item(result) {}

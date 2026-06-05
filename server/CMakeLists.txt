@@ -6,6 +6,7 @@ target_sources(taller_server
 
         command/cmd_types/cmd_buy/buy_command.cpp
         command/cmd_types/cmd_chatmessage/chatmessage_command.cpp
+        command/cmd_types/cmd_deposit_item/deposit_item_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
         command/cmd_types/cmd_heal/heal_command.cpp
         command/cmd_types/cmd_interact/interact_command.cpp
@@ -64,6 +65,7 @@ target_sources(taller_server
 
         command/cmd_types/cmd_buy/buy_command.h
         command/cmd_types/cmd_chatmessage/chatmessage_command.h
+        command/cmd_types/cmd_deposit_item/deposit_item_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
         command/cmd_types/cmd_heal/heal_command.h
         command/cmd_types/cmd_interact/interact_command.h
@@ -74,6 +76,7 @@ target_sources(taller_server
         command/cmd_types/cmd_resurrect/resurrect_command.h
 
         command/cmd_results/ally_execute/buy_result.h
+        command/cmd_results/ally_execute/deposit_item_result.h
         command/cmd_results/ally_execute/heal_result.h
         command/cmd_results/ally_execute/list_items_result.h
         command/cmd_results/ally_execute/resurrect_result.h

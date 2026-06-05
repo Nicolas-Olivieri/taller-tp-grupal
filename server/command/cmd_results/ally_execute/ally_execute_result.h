@@ -2,6 +2,7 @@
 #define ALLY_EXECUTE_RESULT_H
 
 #include "buy_result.h"
+#include "deposit_item_result.h"
 #include "heal_result.h"
 #include "list_items_result.h"
 #include "resurrect_result.h"
@@ -13,6 +14,7 @@
 struct AllyExecuteResult {
     // TODO agregar campos faltantes
     BuyResult buy;
+    DepositItemResult deposit_item;
     HealResult heal;
     ListItemsResult list_items;
     ResurrectResult resurrect;
@@ -30,6 +32,8 @@ struct AllyExecuteResult {
     explicit AllyExecuteResult(const ResurrectResult& result);
 
     explicit AllyExecuteResult(const SellResult& result);
+
+    explicit AllyExecuteResult(const DepositItemResult& result);
 };
 
 
