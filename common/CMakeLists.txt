@@ -29,7 +29,14 @@ target_sources(taller_common
 
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
+
+        dto/snapshot/map/asset_info.cpp
+        dto/snapshot/map/client_map_data.cpp
+        dto/snapshot/map/grid_matrix.cpp
+        dto/snapshot/map/server_map_data.cpp
+
         dto/snapshot/snapshot_builder.cpp
+
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
@@ -79,7 +86,14 @@ target_sources(taller_common
 
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
+
+        dto/snapshot/map/asset_info.h
+        dto/snapshot/map/client_map_data.h
+        dto/snapshot/map/grid_matrix.h
+        dto/snapshot/map/server_map_data.h
+
         dto/snapshot/snapshot_builder.h
+
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h

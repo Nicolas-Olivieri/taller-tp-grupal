@@ -14,6 +14,7 @@
 
 #include "grid.h"
 #include "position.h"
+#include "common/dto/snapshot/map/server_map_data.h"
 
 
 class GameWorld {
@@ -25,7 +26,7 @@ private:
     std::vector<std::unique_ptr<Ally>> allies;
 
 public:
-    explicit GameWorld(int width, int height);
+    explicit GameWorld(const ServerMapDataDTO& data);
 
     std::unordered_map<std::string, Player> get_players() const;
 
@@ -55,7 +56,7 @@ public:
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 
-    void init_npc();
+    void init_npc(const std::vector<AllyInfoDTO> &npcs);
 };
 
 

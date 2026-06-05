@@ -7,7 +7,9 @@
 #include "allies/priest.h"
 
 
-GameWorld::GameWorld(const int width, const int height): grid(width, height) { init_npc(); }
+GameWorld::GameWorld(const ServerMapDataDTO& data) : grid(data.width, data.height, data.grid) {
+    init_npc(data.npcs);
+}
 
 
 std::unordered_map<std::string, Player> GameWorld::get_players() const { return players; }
@@ -164,7 +166,25 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
 }
 
 
-void GameWorld::init_npc() {
+void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
+    // TODO ir agregando tipos y borrar defaults de prueba
+    for (const auto& npc : npcs) {
+        Position position(npc.x, npc.y);
+
+        switch (npc.type) {
+            case AllyType::PRIEST: {
+                auto priest = std::make_unique<Priest>(position);
+                grid.get_tile(position).occupy(priest.get());
+                allies.push_back(std::move(priest));
+                break;
+            }
+            case AllyType::MERCHANT:
+            case AllyType::BANKER:
+            case AllyType::NO_ALLY:
+                break;
+        }
+    }
+
     Position priest_position(10, 10);
     auto priest = std::make_unique<Priest>(priest_position);
     grid.get_tile(priest_position).occupy(priest.get());

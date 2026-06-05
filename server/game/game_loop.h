@@ -10,8 +10,11 @@
 #include "server/persistance/playerrepository.h"
 
 #include "game_world.h"
+#include "server/util/server_map_loader.h"
+
 class GameLoop: public Thread {
 private:
+    ServerMapLoader map_loader;
     Queue<std::unique_ptr<Command>>& command_queue;
     GameWorld game_world;
     EventBroadcaster& broadcaster;

@@ -58,6 +58,8 @@ target_sources(taller_server
         game/allies/priest.cpp
         game/allies/vendor_ally.cpp
 
+        util/server_map_loader.cpp
+
     PUBLIC
         # .h files
         server.h
@@ -129,4 +131,6 @@ target_sources(taller_server
         game/allies/merchant.h
         game/allies/priest.h
         game/allies/vendor_ally.h
+
+        util/server_map_loader.h
     )

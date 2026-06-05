@@ -9,8 +9,9 @@
 
 GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster,
                    PlayerRepository& player_repository):
+        map_loader(ServerMapLoader()),
         command_queue(command_queue),
-        game_world(39, 76),
+        game_world(map_loader.get_server_data()),
         broadcaster(broadcaster),
         player_repository(player_repository) {}
 

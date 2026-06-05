@@ -1,7 +1,7 @@
 #ifndef CLIENT_CONSTANTS_H
 #define CLIENT_CONSTANTS_H
 
-#define TILE_SIZE 25
+#define TILE_SIZE 32
 #define FPS 30
 
 #define SCREEN_WIDTH 1024
