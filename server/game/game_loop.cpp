@@ -63,6 +63,8 @@ void GameLoop::update_world(SnapshotBuilder& builder) {
             continue;
         std::string msg = format_creature_attack_message(status);
 
+        if (status.killed_target)
+            builder.add_action(ActionDTO(DeathDTO(status.player_name)));
         builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, status.player_name, msg)));
     }
 }
@@ -79,7 +81,8 @@ std::string GameLoop::format_creature_attack_message(const CreatureUpdateStatus&
         return std::format("{} te mato", creature_to_name.at(status.creature_id));
     }
 
-    return std::format("{} te quito {} de vida", creature_to_name.at(status.creature_id), status.damage_dealt);
+    return std::format("{} te quito {} de vida", creature_to_name.at(status.creature_id),
+                       status.damage_dealt);
 }
 
 void GameLoop::broadcast(SnapshotBuilder& builder) {
