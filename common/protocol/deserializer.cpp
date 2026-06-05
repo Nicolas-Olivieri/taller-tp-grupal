@@ -92,6 +92,19 @@ std::vector<PlayerInfoDTO> Deserializer::recv_players_information() {
     return players_information;
 }
 
+std::vector<CreatureInfoDTO> Deserializer::recv_creatures_information() {
+    uint16_t size = recv_uint16();
+
+    std::vector<CreatureInfoDTO> creature_information;
+    creature_information.reserve(size);
+
+    for (uint16_t i = 0; i < size; ++i) {
+        creature_information.push_back(recv_creature_info());
+    }
+
+    return creature_information;
+}
+
 PlayerInfoDTO Deserializer::recv_player_info() {
     std::string name = recv_string();
     Direction direction = recv_direction();
@@ -104,6 +117,18 @@ PlayerInfoDTO Deserializer::recv_player_info() {
 
     return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats);
 }
+
+CreatureInfoDTO Deserializer::recv_creature_info() {
+    uint8_t creature_id = recv_uint8();
+    uint8_t variation_id = recv_uint8();
+    uint16_t sub_id = recv_uint16();
+    Direction direction = recv_direction();
+    uint16_t x = recv_uint16();
+    uint16_t y = recv_uint16();
+
+    return CreatureInfoDTO(creature_id, variation_id, sub_id, direction, x, y);
+}
+
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
     uint16_t size = recv_uint16();

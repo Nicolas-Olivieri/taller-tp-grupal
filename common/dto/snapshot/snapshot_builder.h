@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "server/game/creatures/creature.h"
 #include "server/game/player/player.h"
 
 #include "snapshot.h"
@@ -14,6 +15,7 @@
 class SnapshotBuilder {
 
     std::vector<PlayerInfoDTO> players_info;
+    std::vector<CreatureInfoDTO> creatures_info;
     std::vector<ActionDTO> actions;
 
 public:
@@ -22,6 +24,8 @@ public:
     SnapshotDTO build() const;
 
     void add_players(const std::unordered_map<std::string, Player>& players);
+
+    void add_creatures(const std::unordered_map<uint16_t, Creature>& creatures);
 
     void add_action(const ActionDTO& action);
 
@@ -33,6 +37,8 @@ public:
 
 private:
     PlayerInfoDTO convert_to_info(const std::string& player_name, const Player& player);
+
+    CreatureInfoDTO convert_to_info(uint16_t sub_id, const Creature& creature);
 };
 
 

@@ -25,9 +25,15 @@ struct Stats {
 
     Stats(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t xp_level);
 
+    Stats(uint8_t race_id, uint8_t variation_id, uint8_t xp_level);
+
     const ArchetypeData& archetype() const;
 
     const RaceData& race() const;
+
+    const RaceData& creature() const;
+
+    const VariationData& variation() const;
 
     void upgrade();
 };

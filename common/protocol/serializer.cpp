@@ -43,6 +43,7 @@ void Serializer::serialize(const CreatePlayerDTO& player_data) {
 void Serializer::serialize(const SnapshotDTO& snapshot) {
     serialize(static_cast<uint8_t>(Message::SNAPSHOT));
     serialize(snapshot.players_information);
+    serialize(snapshot.creatures_information);
     serialize(snapshot.actions);
 }
 
@@ -56,6 +57,16 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(info.appearance);
     serialize(info.stats);
 }
+
+void Serializer::serialize(const CreatureInfoDTO& info) {
+    serialize(info.creature);
+    serialize(info.variation);
+    serialize(info.sub_id);
+    serialize(static_cast<uint8_t>(info.direction));
+    serialize(info.x);
+    serialize(info.y);
+}
+
 
 // TODO: se debería serializar dependiendo de action.action (ActionType)
 void Serializer::serialize(const ActionDTO& action) {

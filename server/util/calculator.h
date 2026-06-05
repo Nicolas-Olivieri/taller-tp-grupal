@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <random>
 
-#include "server/game/player/inventory/equipment.h"
+#include "server/game/equipment.h"
 
 
 class Calculator {
