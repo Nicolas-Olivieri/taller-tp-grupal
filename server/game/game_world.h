@@ -23,18 +23,20 @@ private:
 
     std::unordered_map<std::string, Player> players;
 
-    std::unordered_map<uint32_t, Creature> creatures;
+    std::unordered_map<uint16_t, Creature> creatures;
 
     std::vector<std::unique_ptr<Ally>> allies;
 
 public:
     explicit GameWorld(int width, int height);
 
-    std::unordered_map<std::string, Player> get_players() const;
+    const std::unordered_map<std::string, Player>& get_players() const;
 
-    void update();
+    const std::unordered_map<uint16_t, Creature>& get_creatures() const;
 
-    InteractResult move_creature(Creature& creature, const Direction& direction);
+    std::vector<CreatureUpdateStatus> update();
+
+    CreatureUpdateStatus move_creature(Creature& creature, const Direction& direction);
 
     void move_player(const std::string& player_name, Direction direction);
 

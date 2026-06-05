@@ -7,14 +7,15 @@
 #include "attackingstate.h"
 #include "idlestate.h"
 
-InteractResult FollowingState::act(Creature& creature, const Position& position, const Direction& direction) {
+CreatureUpdateStatus FollowingState::act(Creature& creature, const Position& position,
+                                         const Direction& direction) {
     if (creature.can_move()) {
         std::cout << "siguiendote: creature se mueve a x: " << position.get_x() << " y: " << position.get_y()
                   << std::endl;
         creature.update_position(position, direction);
     }
 
-    return InteractResult();
+    return CreatureUpdateStatus();
 }
 
 void FollowingState::next(Creature& creature) {

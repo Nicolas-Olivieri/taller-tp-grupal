@@ -1,5 +1,8 @@
 #include "game_loop.h"
 
+#include <unordered_map>
+#include <vector>
+
 #include "common/dto/snapshot/snapshot_builder.h"
 #include "common/util/rate_timer.h"
 
@@ -25,7 +28,7 @@ void GameLoop::run() {
 
         process_commands(builder);
         for (int i = 0; i < current_iteration - last_iteration; ++i) {
-            update_world();
+            update_world(builder);
         }
 
         broadcast(builder);
@@ -51,11 +54,37 @@ void GameLoop::process_commands(SnapshotBuilder& builder) {
 }
 
 
-void GameLoop::update_world() { game_world.update(); }
+void GameLoop::update_world(SnapshotBuilder& builder) {
+    std::vector<CreatureUpdateStatus> creatures_status = game_world.update();
 
+    // TODO: no sé si esta responsabilidad va acá
+    for (const auto& status: creatures_status) {
+        if (!status.did_attack)
+            continue;
+        std::string msg = format_creature_attack_message(status);
+
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, status.player_name, msg)));
+    }
+}
+
+// TODO: no sé si esta responsabilidad va acá
+std::string GameLoop::format_creature_attack_message(const CreatureUpdateStatus& status) {
+    // TODO: los númeritos...
+    static std::unordered_map<uint8_t, std::string> creature_to_name = {
+            {0, "Goblin"}, {1, "Esqueleto"}, {2, "Zombie"}, {3, "Araña"}, {4, "Orco"}, {5, "Golem"}};
+
+    if (status.damage_dealt == 0) {
+        return std::format("Esquivaste el ataque de {}!!", creature_to_name.at(status.creature_id));
+    } else if (status.killed_target) {
+        return std::format("{} te mato", creature_to_name.at(status.creature_id));
+    }
+
+    return std::format("{} te quito {} de vida", creature_to_name.at(status.creature_id), status.damage_dealt);
+}
 
 void GameLoop::broadcast(SnapshotBuilder& builder) {
     builder.add_players(game_world.get_players());
+    builder.add_creatures(game_world.get_creatures());
     broadcaster.broadcast(builder.build());
 }
 

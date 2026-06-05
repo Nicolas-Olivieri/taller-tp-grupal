@@ -13,15 +13,17 @@ GameWorld::GameWorld(const int width, const int height): grid(width, height) {
 }
 
 
-std::unordered_map<std::string, Player> GameWorld::get_players() const { return players; }
+const std::unordered_map<std::string, Player>& GameWorld::get_players() const { return players; }
 
+const std::unordered_map<uint16_t, Creature>& GameWorld::get_creatures() const { return creatures; }
 
-void GameWorld::update() {
+std::vector<CreatureUpdateStatus> GameWorld::update() {
     for (auto& [name, player]: players) {
         player.update();
     }
 
     remove_dead_creatures();
+    std::vector<CreatureUpdateStatus> creatures_status(creatures.size());
 
     for (auto& [id, creature]: creatures) {
         creature.update();
@@ -37,8 +39,10 @@ void GameWorld::update() {
             }
         }
 
-        move_creature(creature, direction);
+        creatures_status.push_back(move_creature(creature, direction));
     }
+
+    return creatures_status;
 }
 
 Direction GameWorld::next_movement(const Creature& creature) {
@@ -47,7 +51,7 @@ Direction GameWorld::next_movement(const Creature& creature) {
                                              grid.random_movement(current);
 }
 
-InteractResult GameWorld::move_creature(Creature& creature, const Direction& direction) {
+CreatureUpdateStatus GameWorld::move_creature(Creature& creature, const Direction& direction) {
     Position current = creature.get_position();
 
     if (direction == Direction::IDLE || !creature.can_move()) {
@@ -71,7 +75,7 @@ InteractResult GameWorld::move_creature(Creature& creature, const Direction& dir
         creature.update_state(current, Direction::IDLE);
     }
 
-    return InteractResult();
+    return CreatureUpdateStatus();
 }
 
 void GameWorld::move_player(const std::string& player_name, const Direction direction) {

@@ -33,6 +33,7 @@ target_sources(taller_server
         game/tile.cpp
 
         game/creatures/creature.cpp
+        game/creatures/updatestatus.cpp
         game/creatures/state/idlestate.cpp
         game/creatures/state/followingstate.cpp
         game/creatures/state/attackingstate.cpp
@@ -100,6 +101,7 @@ target_sources(taller_server
         game/tile.h
 
         game/creatures/creature.h
+        game/creatures/updatestatus.h
         game/creatures/state/creaturestate.h
         game/creatures/state/idlestate.h
         game/creatures/state/followingstate.h

@@ -68,6 +68,8 @@ public:
 
     void serialize(const PlayerInfoDTO& info);
 
+    void serialize(const CreatureInfoDTO& info);
+
     // Es el que se sigue expandiendo al agregar una action nueva
     void serialize(const ActionDTO& action);
 

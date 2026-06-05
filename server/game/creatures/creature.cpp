@@ -13,7 +13,7 @@
 
 // TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
 // ditintos niveles
-Creature::Creature(const uint32_t sub_id, const uint8_t race, const uint8_t variation,
+Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
                    const Position& position):
         Killable(variation, race, 0, 5, position),
         sub_id(sub_id),
@@ -22,8 +22,8 @@ Creature::Creature(const uint32_t sub_id, const uint8_t race, const uint8_t vari
 
 void Creature::drop() { assert(false); }
 
-InteractResult Creature::update_state(const Position& position, const Direction& direction) {
-    InteractResult result = this->state->act(*this, position, direction);
+CreatureUpdateStatus Creature::update_state(const Position& position, const Direction& direction) {
+    CreatureUpdateStatus result = this->state->act(*this, position, direction);
     this->state->next(*this);
 
     return result;
@@ -34,16 +34,16 @@ InteractResult Creature::interact(Player& attacker) {
     return Killable::interact(attacker);
 }
 
-InteractResult Creature::attack_player() {
+CreatureUpdateStatus Creature::attack_player() {
     assert(can_reach(target->get_position()) && can_attack());
 
     if (Calculator::can_dodge(target->get_stats().agility))
-        return InteractResult(AttackStatus::TARGET_DODGED);
+        return CreatureUpdateStatus(stats.race_id, target->get_name(), 0, false);
 
     const uint16_t damage_applied = target->receive_damage(*this);
     const bool was_killed = !target->is_alive();
 
-    return InteractResult(damage_applied, was_killed);
+    return CreatureUpdateStatus(stats.race_id, target->get_name(), damage_applied, was_killed);
 }
 
 int Creature::attack() {
@@ -108,3 +108,5 @@ Position Creature::get_target_position() const {
 }
 
 bool Creature::is_targeting(const Player& player) const { return target == &player; }
+
+const Stats& Creature::get_stats() const { return stats; }

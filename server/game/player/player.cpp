@@ -50,6 +50,8 @@ int Player::attack() {
 
 const Stats& Player::get_stats() const { return stats; }
 
+const std::string& Player::get_name() const { return player_name; }
+
 uint8_t Player::get_body() const { return body; }
 
 uint8_t Player::get_head() const { return head; }

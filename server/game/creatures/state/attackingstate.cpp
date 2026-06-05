@@ -6,7 +6,8 @@
 
 #include "followingstate.h"
 
-InteractResult AttackingState::act(Creature& creature, const Position& position, const Direction& direction) {
+CreatureUpdateStatus AttackingState::act(Creature& creature, const Position& position,
+                                         const Direction& direction) {
     if (creature.can_move()) {
         std::cout << "creature se acerca" << std::endl;
         creature.update_position(position, direction);
@@ -17,7 +18,7 @@ InteractResult AttackingState::act(Creature& creature, const Position& position,
         return creature.attack_player();
     }
 
-    return InteractResult();
+    return CreatureUpdateStatus();
 }
 
 void AttackingState::next(Creature& creature) {

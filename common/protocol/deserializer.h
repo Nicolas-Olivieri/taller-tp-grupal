@@ -11,6 +11,7 @@
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
+#include "common/dto/snapshot/info/creatureinfo.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 #include "common/socket.h"
@@ -20,6 +21,8 @@ private:
     Socket& socket;
 
     PlayerInfoDTO recv_player_info();
+
+    CreatureInfoDTO recv_creature_info();
 
     AllyInfoDTO recv_ally_info();
 
@@ -64,6 +67,8 @@ public:
     Direction recv_direction();
 
     std::vector<PlayerInfoDTO> recv_players_information();
+
+    std::vector<CreatureInfoDTO> recv_creatures_information();
 
     std::vector<ActionDTO> recv_actions();
 

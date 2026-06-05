@@ -52,6 +52,8 @@ public:
 
     const Stats& get_stats() const;
 
+    const std::string& get_name() const;
+
     uint8_t get_body() const;
 
     uint8_t get_head() const;

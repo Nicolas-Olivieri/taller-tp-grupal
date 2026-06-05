@@ -10,9 +10,11 @@
 #include "server/game/position.h"
 #include "state/creaturestate.h"
 
+#include "updatestatus.h"
+
 class Creature: public Killable, public Attacker {
 private:
-    const uint32_t sub_id;
+    const uint16_t sub_id;
     std::unique_ptr<CreatureState> state;
 
     Player* target;
@@ -20,15 +22,15 @@ private:
 public:
     // TODO: mover métodos que no son públicos a la sección private
 
-    Creature(const uint32_t sub_id, const uint8_t race, const uint8_t variation, const Position& position);
+    Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation, const Position& position);
 
     void drop() override;
 
-    InteractResult update_state(const Position& position, const Direction& direction);
+    CreatureUpdateStatus update_state(const Position& position, const Direction& direction);
 
     InteractResult interact(Player&) override;
 
-    InteractResult attack_player();
+    CreatureUpdateStatus attack_player();
 
     int attack() override;
 
@@ -55,6 +57,8 @@ public:
     Position get_target_position() const;
 
     bool is_targeting(const Player& playter) const;
+
+    const Stats& get_stats() const;
 };
 
 #endif  // CREATURE_H
