@@ -2,7 +2,9 @@
 #define PROTOCOL_H
 
 #include "common/dto/events/command.h"
+#include "common/dto/lobby/create_player.h"
 #include "common/dto/lobby/credentials.h"
+#include "common/dto/lobby/existence.h"
 #include "common/dto/message.h"
 #include "common/dto/snapshot/snapshot.h"
 #include "common/socket.h"
@@ -21,6 +23,10 @@ public:
     // TODO: en un futuro podría considerarse cambiar cada recv_x por un recv
     // único + patrón factory de DTOs
     CredentialsDTO recv_credentials();
+
+    ExistenceDTO recv_existence();
+
+    CreatePlayerDTO recv_appearance();
 
     SnapshotDTO recv_snapshot();
 

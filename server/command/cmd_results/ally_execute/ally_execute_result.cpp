@@ -3,18 +3,23 @@
 
 // Interacción sin resultado
 AllyExecuteResult::AllyExecuteResult(const bool was_bounded):
-        heal(was_bounded ? HealResult::NO_RESULT : HealResult::PLAYER_UNBOUNDED),
-        list_items(),
-        resurrect(was_bounded ? ResurrectResult::NO_RESULT : ResurrectResult::PLAYER_UNBOUNDED) {}
+        buy(was_bounded ? BuyStatus::NO_RESULT : BuyStatus::PLAYER_UNBOUNDED),
+        heal(was_bounded ? HealStatus::NO_RESULT : HealStatus::PLAYER_UNBOUNDED),
+        list_items(was_bounded),
+        resurrect(was_bounded ? ResurrectStatus::NO_RESULT : ResurrectStatus::PLAYER_UNBOUNDED),
+        sell(was_bounded ? SellStatus::NO_RESULT : SellStatus::PLAYER_UNBOUNDED) {}
 
 
-AllyExecuteResult::AllyExecuteResult(const HealResult& result):
-        heal(result), list_items(), resurrect(ResurrectResult::NO_RESULT) {}
+AllyExecuteResult::AllyExecuteResult(const BuyResult& result): buy(result) {}
 
 
-AllyExecuteResult::AllyExecuteResult(const ListItemsResult& result):
-        heal(HealResult::NO_RESULT), list_items(result), resurrect(ResurrectResult::NO_RESULT) {}
+AllyExecuteResult::AllyExecuteResult(const HealResult& result): heal(result) {}
 
 
-AllyExecuteResult::AllyExecuteResult(const ResurrectResult& result):
-        heal(HealResult::NO_RESULT), list_items(), resurrect(result) {}
+AllyExecuteResult::AllyExecuteResult(const ListItemsResult& result): list_items(result) {}
+
+
+AllyExecuteResult::AllyExecuteResult(const ResurrectResult& result): resurrect(result) {}
+
+
+AllyExecuteResult::AllyExecuteResult(const SellResult& result): sell(result) {}

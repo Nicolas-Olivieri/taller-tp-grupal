@@ -4,6 +4,7 @@
 #include <utility>
 
 #include "common/dto/lobby/credentials.h"
+#include "common/dto/lobby/existence.h"
 #include "common/protocol/protocol.h"
 
 LobbyHandler::LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players,
@@ -23,32 +24,27 @@ void LobbyHandler::run() {
     // si es registro, recibir personalización del personaje + persistencia
     if (!player_repository.exists(credentials.username)) {
         try {
-            create_player(credentials.username);
+            protocol.send(ExistenceDTO(false));
+            CreatePlayerDTO appearance = protocol.recv_appearance();
+            create_player(credentials.username, appearance);
+
         } catch (const PlayerAlreadyExists& errror) {
             // TODO: un jugador se puso el nombre que este quería justo al mismo tiempo y se lo sacó
             std::cout << "[Lobby] " << credentials.username << " is already taken" << std::endl;
             return;
         }
+    } else {
+        protocol.send(ExistenceDTO(true));
     }
 
     // envío de información del mundo + snapshot inicial
-
     move_into_waiting_queue(credentials.username);
 }
 
-void LobbyHandler::create_player(const std::string& username) {
-    std::random_device rd;
-    std::default_random_engine generator(rd());
-
-    std::uniform_int_distribution get_random_body(0, 2);
-    std::uniform_int_distribution get_random_head(0, 3);
-
-    uint8_t body, head;
-
-    body = get_random_body(generator);
-    head = get_random_head(generator);
-
-    player_repository.create(username, 0, 0, body, head);
+void LobbyHandler::create_player(const std::string& username, const CreatePlayerDTO& player_data) {
+    auto [appearance, archetype, race] = player_data;
+    auto [body, head] = appearance;
+    player_repository.create(username, archetype, race, body, head);
 }
 
 void LobbyHandler::move_into_waiting_queue(const std::string& username) {

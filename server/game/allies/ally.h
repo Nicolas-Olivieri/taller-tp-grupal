@@ -8,6 +8,7 @@
 
 #include "ally_action_payload.h"
 
+
 // Forward declaration
 class Player;
 
@@ -18,15 +19,15 @@ protected:
     AllyType type;
 
 public:
-    explicit Ally(const Position& position);
+    explicit Ally(const Position& position, const AllyType& type);
 
     InteractResult interact(Player& player) override;  // bind
 
     Position get_position() const;
 
-    virtual AllyType get_type() const = 0;
+    AllyType get_type() const;
 
-    virtual AllyExecuteResult execute(Player& player, const AllyActionPayload& payload) = 0;
+    virtual AllyExecuteResult execute(Player& player, const AllyActionPayload& payload) const = 0;
 
     ~Ally() override = default;
 };

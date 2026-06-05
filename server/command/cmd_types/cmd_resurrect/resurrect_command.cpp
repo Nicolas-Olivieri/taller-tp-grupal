@@ -1,13 +1,13 @@
 #include "resurrect_command.h"
 
+#include <map>
 
-ResurrectCommand::ResurrectCommand(const std::string& player_name):
-        player_name(player_name), result(ResurrectResult::NO_RESULT) {}
+ResurrectCommand::ResurrectCommand(const std::string& player_name): player_name(player_name), result() {}
 
 
 void ResurrectCommand::execute(GameWorld& world) {
     result = world.resurrect_player(player_name);
-    if (result == ResurrectResult::PLAYER_RESURRECTED) {
+    if (result.status == ResurrectStatus::PLAYER_RESURRECTED) {
         appearance = AppearanceDTO(world.get_players().at(player_name).get_body(),
                                    world.get_players().at(player_name).get_head());
     }
@@ -15,22 +15,29 @@ void ResurrectCommand::execute(GameWorld& world) {
 
 
 void ResurrectCommand::build_snapshot(SnapshotBuilder& builder) {
-    switch (result) {
-        case ResurrectResult::PLAYER_RESURRECTED:
-            builder.add_action(
-                    ActionDTO(ChatMessageDTO(MessageType::ALLY, "Sacerdote", player_name, "A sus ordenes!")));
-            builder.add_action(ActionDTO(ResurrectionDTO(player_name, appearance)));
-            break;
-        case ResurrectResult::PLAYER_IS_ALIVE:
-            builder.add_action(ActionDTO(
-                    ChatMessageDTO(MessageType::ALLY, "Sacerdote", player_name, "Ya estas vivo!! Avivate")));
-            break;
-        case ResurrectResult::PLAYER_UNBOUNDED:
-            builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name,
-                                                        "No estas vinculado a ningun sacerdote")));
-            break;
-        case ResurrectResult::NO_RESULT:
-        default:
-            throw std::runtime_error("Resurrect cmd no se ejecutó correctamente");
+    static std::map<AllyType, std::string> ally_type_to_string({
+            {AllyType::PRIEST, "Sacerdote"},
+            {AllyType::MERCHANT, "Comerciante"},
+    });
+
+    if (not ally_type_to_string.contains(result.ally)) {
+        throw std::runtime_error("ResurrectCommand recibió un NPC aliado desconocido");
+    }
+
+    static std::map<ResurrectStatus, std::string> result_to_message(
+            {{ResurrectStatus::PLAYER_RESURRECTED, "A sus ordenes! Bienvenido de nuevo a la vida"},
+             {ResurrectStatus::PLAYER_IS_ALIVE, "Ya estas vivo! Avivate"},
+             {ResurrectStatus::ACTION_NOT_ACCEPTED, "Perdon, yo no puedo hacer eso"}});
+
+    if (not result_to_message.contains(result.status)) {
+        throw std::runtime_error("ResurrectCommand recibió un resultado incorrecto");
+    }
+
+    const std::string& sender = ally_type_to_string.at(result.ally);
+    const std::string& content = result_to_message.at(result.status);
+    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ALLY, sender, player_name, content)));
+
+    if (result.status == ResurrectStatus::PLAYER_RESURRECTED) {
+        builder.add_action(ActionDTO(ResurrectionDTO(player_name, appearance)));
     }
 }

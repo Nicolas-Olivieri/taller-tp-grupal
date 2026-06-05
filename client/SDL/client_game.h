@@ -64,6 +64,10 @@ private:
 
     void handle_text_command(const std::string& text);
 
+    void handle_buy_item_command(const std::string& text);
+
+    void handle_sell_item_command(const std::string& text);
+
     void send_private_message();
 
     // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes

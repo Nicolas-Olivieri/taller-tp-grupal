@@ -8,9 +8,9 @@
 
 
 struct ListItemsResult {
-    bool was_player_bounded = false;
-    AllyType ally;
-    std::map<uint8_t, uint16_t> items;
+    bool was_player_bounded{false};
+    AllyType ally{AllyType::NO_ALLY};
+    std::map<uint8_t, uint16_t> items{};
 };
 
 

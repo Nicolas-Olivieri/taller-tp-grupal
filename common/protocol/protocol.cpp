@@ -30,6 +30,29 @@ CredentialsDTO Protocol::recv_credentials() {
     return CredentialsDTO(username, password);
 }
 
+ExistenceDTO Protocol::recv_existence() {
+    check_header_message_byte(Message::EXISTENCE);
+
+    Deserializer deserializer(this->socket);
+
+    const uint8_t exists = deserializer.recv_uint8();
+
+    return ExistenceDTO(exists);
+}
+
+CreatePlayerDTO Protocol::recv_appearance() {
+    check_header_message_byte(Message::CREATE_PLAYER);
+
+    Deserializer deserializer(this->socket);
+
+    const uint8_t body = deserializer.recv_uint8();
+    const uint8_t head = deserializer.recv_uint8();
+    const uint8_t archetype = deserializer.recv_uint8();
+    const uint8_t race = deserializer.recv_uint8();
+
+    return CreatePlayerDTO(body, head, archetype, race);
+}
+
 RequestedCommandDTO Protocol::recv_command() {
     check_header_message_byte(Message::COMMAND);
 
@@ -54,6 +77,9 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS) {
         return RequestedCommandDTO(command);
+    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM) {
+        const uint8_t item_id = deserializer.recv_uint8();
+        return RequestedCommandDTO(command, item_id);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }

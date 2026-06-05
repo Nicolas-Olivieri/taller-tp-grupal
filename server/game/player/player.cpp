@@ -152,3 +152,11 @@ void Player::heal() {
     stats.health.recover_all();
     stats.mana.recover_all();
 }
+
+void Player::spend_gold(const uint16_t amount) { gold_manager.spend(amount); }
+
+void Player::add_gold(const uint16_t amount) { gold_manager.add(amount); }
+
+void Player::acquire_item(const uint8_t item_id) { inventory.acquire_item(item_id); }
+
+void Player::drop_item(const uint8_t item_id) { inventory.drop_item(item_id); }

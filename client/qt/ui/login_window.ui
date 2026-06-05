@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoginWindow</class>
+ <widget class="QMainWindow" name="LoginWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>726</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>726</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1024</width>
+    <height>726</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1024</width>
+      <height>726</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../../resources/lobby/lobby.qrc">:/images/login/interfaz.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="animation">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>1041</width>
+      <height>501</height>
+     </rect>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap resource="../../resources/lobby/lobby.qrc">:/images/login/animacion.gif</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="connectBtn">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>644</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../../resources/lobby/lobby.qrc">
+      <normaloff>:/images/login/btn_conectar.png</normaloff>:/images/login/btn_conectar.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>161</width>
+      <height>39</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="host">
+    <property name="geometry">
+     <rect>
+      <x>432</x>
+      <y>580</y>
+      <width>151</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Nimbus Roman [UKWN]</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;
+border: none;</string>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="port">
+    <property name="geometry">
+     <rect>
+      <x>607</x>
+      <y>580</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Nimbus Roman [UKWN]</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;
+border: none;</string>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="user">
+    <property name="geometry">
+     <rect>
+      <x>433</x>
+      <y>658</y>
+      <width>331</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Nimbus Roman [UKWN]</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;
+border: none;</string>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="info">
+    <property name="geometry">
+     <rect>
+      <x>742</x>
+      <y>576</y>
+      <width>31</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
+    </property>
+    <property name="toolTip">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot; /&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+/* Fondo completamente oscuro, estilo pergamino quemado / madera */
+body {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #2c1a0c, stop:1 #0f0803);
+    font-family: 'Times New Roman', 'Georgia', serif;
+    font-size: 11pt;
+    font-weight: normal;
+    color: #f7e5b3;  /* Texto base dorado claro */
+    margin: 8px 16px;  /* Más margen a los costados */
+    padding: 10px 18px; /* Más relleno interior */
+    border: 2px solid #c9a87c; /* Borde dorado/marfil */
+    border-radius: 10px;
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.6);
+}
+p {
+    margin: 6px 0;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p align=&quot;center&quot; style=&quot;margin-top:0; margin-bottom:6px;&quot;&gt;
+&lt;span style=&quot;font-size:13pt; font-weight:bold; color:#ffe7a3;&quot;&gt;✦ Pedile a tu amigx que corre el servidor, la dirección IP y puerto en el que lo ejecutó ✦&lt;/span&gt;
+&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;margin-bottom:0;&quot;&gt;
+&lt;span style=&quot;font-size:11pt; color:#e3c78a;&quot;&gt;Si están conectados en distintas redes, es importante que tu amigx exponga el puerto.&lt;/span&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+    </property>
+    <property name="toolTipDuration">
+     <number>20000</number>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../../resources/lobby/lobby.qrc">
+      <normaloff>:/images/login/btn_info.png</normaloff>:/images/login/btn_info.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>31</width>
+      <height>28</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QLabel" name="l_host">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>551</y>
+      <width>49</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Nimbus Roman [UKWN]</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>HOST</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::TextFormat::RichText</enum>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="l_port">
+    <property name="geometry">
+     <rect>
+      <x>603</x>
+      <y>551</y>
+      <width>73</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Nimbus Roman [UKWN]</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>PUERTO</string>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="l_name">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>629</y>
+      <width>83</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Nimbus Roman [UKWN]</family>
+      <pointsize>14</pointsize>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
+    <property name="text">
+     <string>USUARIO</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::TextFormat::RichText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="name_err">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>681</y>
+      <width>191</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Nimbus Roman [urw]</family>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(192, 28, 40)</string>
+    </property>
+    <property name="text">
+     <string>Ingresá un nombre de usuario!</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="conn_err">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>603</y>
+      <width>211</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Nimbus Roman [urw]</family>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(192, 28, 40)</string>
+    </property>
+    <property name="text">
+     <string>El host y/o puerto no son válidos</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnMinimize">
+    <property name="geometry">
+     <rect>
+      <x>974</x>
+      <y>5</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../../resources/lobby/lobby.qrc">
+      <normaloff>:/images/btn_minimizar.png</normaloff>:/images/btn_minimizar.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>21</width>
+      <height>21</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnClose">
+    <property name="geometry">
+     <rect>
+      <x>998</x>
+      <y>5</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../../resources/lobby/lobby.qrc">
+      <normaloff>:/images/btn_cerrar.png</normaloff>:/images/btn_cerrar.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>21</width>
+      <height>21</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <zorder>animation</zorder>
+   <zorder>frame</zorder>
+   <zorder>connectBtn</zorder>
+   <zorder>host</zorder>
+   <zorder>port</zorder>
+   <zorder>user</zorder>
+   <zorder>info</zorder>
+   <zorder>l_host</zorder>
+   <zorder>l_port</zorder>
+   <zorder>l_name</zorder>
+   <zorder>name_err</zorder>
+   <zorder>conn_err</zorder>
+   <zorder>btnMinimize</zorder>
+   <zorder>btnClose</zorder>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../../resources/lobby/lobby.qrc"/>
+ </resources>
+ <connections/>
+</ui>

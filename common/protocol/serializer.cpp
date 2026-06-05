@@ -5,6 +5,8 @@
 
 #include <arpa/inet.h>
 
+#include "common/dto/lobby/existence.h"
+
 Serializer::Serializer(std::vector<uint8_t>& buffer): buffer(buffer), offset(0) {}
 
 // Double dispatch para definir cómo se serializa cada DTO
@@ -24,6 +26,18 @@ void Serializer::serialize(const EventDTO& event) {
 void Serializer::serialize(const MoveEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(static_cast<uint8_t>(event.direction));
+}
+
+void Serializer::serialize(const ExistenceDTO& existence) {
+    serialize(static_cast<uint8_t>(Message::EXISTENCE));
+    serialize(existence.user_exists);
+}
+
+void Serializer::serialize(const CreatePlayerDTO& player_data) {
+    serialize(static_cast<uint8_t>(Message::CREATE_PLAYER));
+    serialize(player_data.appearance);
+    serialize(player_data.archetype);
+    serialize(player_data.race);
 }
 
 void Serializer::serialize(const SnapshotDTO& snapshot) {
@@ -167,4 +181,14 @@ void Serializer::serialize(const ListItemsDTO& list) {
     serialize(static_cast<uint8_t>(list.type));
     serialize(list.receiver);
     serialize(list.items);
+}
+
+void Serializer::serialize(const BuyEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
+
+void Serializer::serialize(const SellEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
 }

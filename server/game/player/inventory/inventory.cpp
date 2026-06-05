@@ -25,8 +25,11 @@ void Inventory::use_item(Stats& stats, Equipment& equipment, uint8_t item) {
 
 void Inventory::drop_item(Equipment& equipment, uint8_t item) {
     if (!item_to_amount_map.contains(item)) {
-        // TODO se quiso soltar un item q no tengo -> Excepción?
-        return;
+        throw ItemNotOwned();
+    }
+
+    if (is_equipped(item)) {
+        throw ItemEquipped();
     }
 
     consume_item(equipment, item);

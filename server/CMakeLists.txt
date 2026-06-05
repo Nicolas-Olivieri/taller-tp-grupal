@@ -4,6 +4,7 @@ target_sources(taller_server
         main.cpp
         server.cpp
 
+        command/cmd_types/cmd_buy/buy_command.cpp
         command/cmd_types/cmd_chatmessage/chatmessage_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
         command/cmd_types/cmd_heal/heal_command.cpp
@@ -11,10 +12,11 @@ target_sources(taller_server
         command/cmd_types/cmd_list_items/list_items_command.cpp
         command/cmd_types/cmd_move/move_command.cpp
         command/cmd_types/cmd_resurrect/resurrect_command.cpp
+        command/cmd_types/cmd_sell/sell_command.cpp
         command/cmd_types/cmd_spawn/spawn_command.cpp
+
         command/cmd_results/ally_execute/ally_execute_result.cpp
         command/cmd_results/interact/interact_result.cpp
-
 
         command/command_factory.cpp
 
@@ -59,23 +61,30 @@ target_sources(taller_server
 
         game/allies/ally.cpp
         game/allies/ally_action_payload.cpp
+        game/allies/merchant.cpp
         game/allies/priest.cpp
+        game/allies/vendor_ally.cpp
 
     PUBLIC
         # .h files
         server.h
 
+        command/cmd_types/cmd_buy/buy_command.h
         command/cmd_types/cmd_chatmessage/chatmessage_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
         command/cmd_types/cmd_heal/heal_command.h
         command/cmd_types/cmd_interact/interact_command.h
         command/cmd_types/cmd_list_items/list_items_command.h
         command/cmd_types/cmd_move/move_command.h
+        command/cmd_types/cmd_sell/sell_command.h
+        command/cmd_types/cmd_spawn/spawn_command.h
         command/cmd_types/cmd_resurrect/resurrect_command.h
+
+        command/cmd_results/ally_execute/buy_result.h
         command/cmd_results/ally_execute/heal_result.h
         command/cmd_results/ally_execute/list_items_result.h
         command/cmd_results/ally_execute/resurrect_result.h
-        command/cmd_types/cmd_spawn/spawn_command.h
+        command/cmd_results/ally_execute/sell_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
 
         command/cmd_results/interact/attack_result.h
@@ -132,5 +141,7 @@ target_sources(taller_server
 
         game/allies/ally.h
         game/allies/ally_action_payload.h
+        game/allies/merchant.h
         game/allies/priest.h
+        game/allies/vendor_ally.h
     )

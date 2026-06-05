@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>login/animacion.gif</file>
+        <file>login/borde.png</file>
+        <file>login/btn_conectar.png</file>
+        <file>login/btn_crear.png</file>
+        <file>login/btn_info.png</file>
+        <file>login/fondo_input.png</file>
+        <file>login/interfaz.png</file>
+        <file>btn_cerrar.png</file>
+        <file>btn_minimizar.png</file>
+    </qresource>
+</RCC>

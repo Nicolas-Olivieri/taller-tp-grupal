@@ -1,17 +1,17 @@
 #include "priest.h"
 
+#include <algorithm>
 #include <map>
 
 #include "server/game/player/inventory/item_mapper.h"
 #include "server/game/player/player.h"
 
 
-Priest::Priest(const Position& position): Ally(position), items(ItemMapper::get_random_priest_items()) {
-    type = AllyType::PRIEST;
-}
+Priest::Priest(const Position& position):
+        VendorAlly(position, AllyType::PRIEST, ItemMapper::get_random_priest_items()) {}
 
 
-AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) {
+AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) const {
     switch (payload.action) {
         case AllyAction::HEAL:
             return handle_heal(player);
@@ -23,10 +23,12 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
             return handle_list_items();
 
         case AllyAction::BUY:
-            // TODO: Implementar la lógica de comprar hechizos y pociones
+            return handle_buy_item(player, payload.item_id);
+
+        case AllyAction::SELL:
+            return handle_sell_item();
 
         default:
-            // El sacerdote ignora los comandos de venta
             break;
     }
 
@@ -34,38 +36,30 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
 }
 
 
-AllyType Priest::get_type() const { return type; }
-
-
-AllyExecuteResult Priest::handle_heal(Player& player) {
+AllyExecuteResult Priest::handle_heal(Player& player) const {
     if (player.is_alive()) {
         std::cout << "[Priest] El jugador fue curado" << std::endl;
         player.heal();
-        return AllyExecuteResult(HealResult::PLAYER_HEALED);
+        return AllyExecuteResult(HealResult(HealStatus::PLAYER_HEALED, type));
     }
 
     std::cout << "[Priest] El jugador está muerto" << std::endl;
-    return AllyExecuteResult(HealResult::PLAYER_IS_DEAD);
+    return AllyExecuteResult(HealResult(HealStatus::PLAYER_IS_DEAD, type));
 }
 
 
-AllyExecuteResult Priest::handle_resurrect(Player& player) {
+AllyExecuteResult Priest::handle_resurrect(Player& player) const {
     if (not player.is_alive()) {
         std::cout << "[Priest] El jugador fue resucitado" << std::endl;
         player.heal();
-        return AllyExecuteResult(ResurrectResult::PLAYER_RESURRECTED);
+        return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_RESURRECTED, type));
     }
 
     std::cout << "[Priest] El jugador ya está vivo" << std::endl;
-    return AllyExecuteResult(ResurrectResult::PLAYER_IS_ALIVE);
+    return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_IS_ALIVE, type));
 }
 
 
-AllyExecuteResult Priest::handle_list_items() {
-    std::map<uint8_t, uint16_t> items_prices;
-    for (const uint8_t item_id: items) {
-        items_prices[item_id] = ItemMapper::get_price(item_id);
-    }
-
-    return AllyExecuteResult(ListItemsResult(true, get_type(), items_prices));
+AllyExecuteResult Priest::handle_sell_item() const {
+    return AllyExecuteResult(SellResult(SellStatus::ACTION_NOT_ACCEPTED, type));
 }

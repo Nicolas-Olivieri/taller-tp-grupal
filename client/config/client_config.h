@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <map>
+#include <optional>
 #include <string>
 
 #include "toml11/types.hpp"
@@ -28,6 +29,8 @@ public:
     const ItemDisplayData& get_item_data(uint8_t item_id) const;
 
     std::string get_item_name(uint8_t item_id) const;
+
+    std::optional<uint8_t> get_item_id(const std::string& item_name) const;
 
 private:
     ClientConfig();
