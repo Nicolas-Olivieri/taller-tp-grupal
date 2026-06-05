@@ -77,6 +77,8 @@ private:
 
     void handle_chat_list(const ActionDTO& action);
 
+    void handle_list_bank(const ActionDTO& action);
+
     void handle_list_items(const ActionDTO& action);
 
     SDL_Color assign_message_color(const MessageType& type);
