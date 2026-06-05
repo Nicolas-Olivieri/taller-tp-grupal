@@ -2,6 +2,7 @@
 
 #include "cmd_types/cmd_buy/buy_command.h"
 #include "cmd_types/cmd_chatmessage/chatmessage_command.h"
+#include "cmd_types/cmd_deposit_gold/deposit_gold_command.h"
 #include "cmd_types/cmd_deposit_item/deposit_item_command.h"
 #include "cmd_types/cmd_heal/heal_command.h"
 #include "cmd_types/cmd_interact/interact_command.h"
@@ -46,6 +47,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::WITHDRAW_ITEM:
             return std::make_unique<WithdrawItemCommand>(player_name, dto.item_id);
+
+        case CommandType::DEPOSIT_GOLD:
+            return std::make_unique<DepositGoldCommand>(player_name, dto.gold_amount);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

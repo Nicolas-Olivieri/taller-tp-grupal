@@ -6,6 +6,7 @@ target_sources(taller_server
 
         command/cmd_types/cmd_buy/buy_command.cpp
         command/cmd_types/cmd_chatmessage/chatmessage_command.cpp
+        command/cmd_types/cmd_deposit_gold/deposit_gold_command.cpp
         command/cmd_types/cmd_deposit_item/deposit_item_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
         command/cmd_types/cmd_heal/heal_command.cpp
@@ -66,6 +67,7 @@ target_sources(taller_server
 
         command/cmd_types/cmd_buy/buy_command.h
         command/cmd_types/cmd_chatmessage/chatmessage_command.h
+        command/cmd_types/cmd_deposit_gold/deposit_gold_command.h
         command/cmd_types/cmd_deposit_item/deposit_item_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
         command/cmd_types/cmd_heal/heal_command.h
@@ -78,6 +80,7 @@ target_sources(taller_server
         command/cmd_types/cmd_resurrect/resurrect_command.h
 
         command/cmd_results/ally_execute/buy_result.h
+        command/cmd_results/ally_execute/deposit_gold_result.h
         command/cmd_results/ally_execute/deposit_item_result.h
         command/cmd_results/ally_execute/heal_result.h
         command/cmd_results/ally_execute/list_items_result.h
@@ -127,7 +130,7 @@ target_sources(taller_server
         game/player/inventory/equipment.h
         game/player/inventory/item_mapper.h
         game/player/inventory/goldmanager.h
-        
+
         game/attacker.h
 
         game/allies/ally.h
