@@ -31,7 +31,6 @@ void Health::update() {
     RecoverableStat::update();
 }
 
-
 bool Health::loose(uint16_t amount) {
     if (current_amount == 0) {
         return false;

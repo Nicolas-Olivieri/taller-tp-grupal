@@ -1,5 +1,6 @@
 #include "position.h"
 
+#include <cmath>
 
 Position::Position(const int x, const int y): x(x), y(y) {}
 
@@ -31,6 +32,9 @@ int Position::get_x() const { return x; }
 
 int Position::get_y() const { return y; }
 
+float Position::distance_to(const Position& position) const {
+    return std::sqrt(std::pow(x - position.x, 2) + std::pow(y - position.y, 2));
+}
 
 std::ostream& operator<<(std::ostream& os, const Position& position) {
     os << "(" << position.x << ", " << position.y << ")";

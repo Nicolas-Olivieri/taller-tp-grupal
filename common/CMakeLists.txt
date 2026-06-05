@@ -34,6 +34,7 @@ target_sources(taller_common
 
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
+        dto/snapshot/info/creatureinfo.cpp
         dto/snapshot/snapshot_builder.cpp
         protocol/protocol.cpp
         protocol/serializer.cpp
@@ -89,6 +90,7 @@ target_sources(taller_common
 
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
+        dto/snapshot/info/creatureinfo.h
         dto/snapshot/snapshot_builder.h
         protocol/protocol.h
         protocol/serializer.h

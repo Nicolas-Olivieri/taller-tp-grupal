@@ -1,6 +1,7 @@
 #include "inventory.h"
 
 #include <cassert>
+#include <iostream>
 #include <stdexcept>
 
 #include "server/persistance/playerdata.h"
@@ -8,33 +9,32 @@
 #include "item_mapper.h"
 
 // ver comentario en el .h
-Inventory::Inventory(Stats& stats): stats(stats), equipment({NO_ITEM, NO_ITEM, NO_ITEM, 1}) {
-    item_to_amount_map[1] = 1;
+Inventory::Inventory(const Equipment& equipment) {
+    item_to_amount_map[equipment.weapon] = 1;  // TODO: sacar este hardcodeo
 }
 
-void Inventory::use_item(uint8_t item) {
+void Inventory::use_item(Stats& stats, Equipment& equipment, uint8_t item) {
     if (!item_to_amount_map.contains(item)) {
         return;
     }
 
     if (ItemMapper::is_equipable(item)) {
-        equip_item(item);
-    }
-    if (ItemMapper::is_usable(item)) {
-        use_usable_item(item);
+        equip_item(equipment, item);
+    } else if (ItemMapper::is_usable(item)) {
+        use_usable_item(stats, equipment, item);
     }
 }
 
-void Inventory::drop_item(uint8_t item) {
+void Inventory::drop_item(Equipment& equipment, uint8_t item) {
     if (!item_to_amount_map.contains(item)) {
         throw ItemNotOwned();
     }
 
-    if (is_equipped(item)) {
+    if (is_equipped(equipment, item)) {
         throw ItemEquipped();
     }
 
-    consume_item(item);
+    consume_item(equipment, item);
     // TODO lo debería soltar/devolver??
 }
 
@@ -55,21 +55,23 @@ void Inventory::acquire_new_item(const uint8_t item) {
     item_to_amount_map[item] = 1;
 }
 
-void Inventory::equip_item(uint8_t item) { equipment.weapon = item; }
+void Inventory::equip_item(Equipment& equipment, uint8_t item) {
+    // TODO: considerar todas las ranuras
+    equipment.weapon = item;
+}
 
-void Inventory::unequip_item(uint8_t /* item */) {
+void Inventory::unequip_item(Equipment& equipment, uint8_t /* item */) {
     // TODO debería verificar que lo tengo equipado antes
+    // TODO: considerar todas las ranuras
     equipment.weapon = NO_ITEM;
 }
 
-bool Inventory::is_equipped(uint8_t item) {
+bool Inventory::is_equipped(const Equipment& equipment, uint8_t item) {
     return equipment.armor == item || equipment.shield == item || equipment.helmet == item ||
            equipment.weapon == item;
 }
 
-Equipment Inventory::get_equipment() const { return equipment; }
-
-void Inventory::use_usable_item(uint8_t item) {
+void Inventory::use_usable_item(Stats& stats, Equipment& equpiment, uint8_t item) {
     assert(ItemMapper::is_usable(item));
     assert(item_to_amount_map.contains(item));
 
@@ -86,26 +88,28 @@ void Inventory::use_usable_item(uint8_t item) {
             throw std::runtime_error("Inventory encontró un tipo inválido de efecto de usable");
     }
 
-    consume_item(item);
+    consume_item(equpiment, item);
 }
 
-int Inventory::get_range() const {
+int Inventory::get_range(const Equipment& equipment) const {
     if (equipment.weapon == NO_ITEM)
         return 1;
 
     return ItemMapper::get_range(equipment.weapon);
 }
 
-int Inventory::get_attack_cost() const { return ItemMapper::get_mana_cost(equipment.weapon); }
+int Inventory::get_attack_cost(const Equipment& equipment) const {
+    return ItemMapper::get_mana_cost(equipment.weapon);
+}
 
-void Inventory::consume_item(uint8_t item) {
+void Inventory::consume_item(Equipment& equipment, uint8_t item) {
     assert(item_to_amount_map.contains(item));
 
     item_to_amount_map[item]--;
 
     if (item_to_amount_map[item] == 0) {
-        if (is_equipped(item)) {
-            unequip_item(item);
+        if (is_equipped(equipment, item)) {
+            unequip_item(equipment, item);
         }
         item_to_amount_map.extract(item);
     }

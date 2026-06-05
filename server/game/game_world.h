@@ -9,6 +9,7 @@
 
 #include "allies/ally_action_payload.h"
 #include "common/direction.h"
+#include "creatures/creature.h"
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
@@ -23,14 +24,20 @@ private:
 
     std::unordered_map<std::string, Player> players;
 
+    std::unordered_map<uint16_t, Creature> creatures;
+
     std::vector<std::unique_ptr<Ally>> allies;
 
 public:
     explicit GameWorld(int width, int height);
 
-    std::unordered_map<std::string, Player> get_players() const;
+    const std::unordered_map<std::string, Player>& get_players() const;
 
-    void update();
+    const std::unordered_map<uint16_t, Creature>& get_creatures() const;
+
+    std::vector<CreatureUpdateStatus> update();
+
+    CreatureUpdateStatus move_creature(Creature& creature, const Direction& direction);
 
     void move_player(const std::string& player_name, Direction direction);
 
@@ -64,7 +71,13 @@ public:
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 
+    Direction next_movement(const Creature& creature);
+
     void init_npc();
+
+    void init_creature();
+
+    void remove_dead_creatures();
 };
 
 

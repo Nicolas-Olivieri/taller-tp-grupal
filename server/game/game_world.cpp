@@ -8,18 +8,76 @@
 #include "allies/priest.h"
 
 
-GameWorld::GameWorld(const int width, const int height): grid(width, height) { init_npc(); }
+GameWorld::GameWorld(const int width, const int height): grid(width, height) {
+    init_npc();
+    init_creature();
+}
 
 
-std::unordered_map<std::string, Player> GameWorld::get_players() const { return players; }
+const std::unordered_map<std::string, Player>& GameWorld::get_players() const { return players; }
 
+const std::unordered_map<uint16_t, Creature>& GameWorld::get_creatures() const { return creatures; }
 
-void GameWorld::update() {
+std::vector<CreatureUpdateStatus> GameWorld::update() {
     for (auto& [name, player]: players) {
         player.update();
     }
+
+    remove_dead_creatures();
+    std::vector<CreatureUpdateStatus> creatures_status(creatures.size());
+
+    for (auto& [id, creature]: creatures) {
+        creature.update();
+
+        Direction direction = next_movement(creature);
+
+        if (!creature.is_targeting_someone()) {
+            for (auto& [name, player]: players) {
+                if (player.is_alive() && creature.can_target(player.get_position())) {
+                    creature.target_player(player);
+                    break;
+                }
+            }
+        }
+
+        creatures_status.push_back(move_creature(creature, direction));
+    }
+
+    return creatures_status;
 }
 
+Direction GameWorld::next_movement(const Creature& creature) {
+    const Position& current = creature.get_position();
+    return creature.is_targeting_someone() ? grid.closest_movement(current, creature.get_target_position()) :
+                                             grid.random_movement(current);
+}
+
+CreatureUpdateStatus GameWorld::move_creature(Creature& creature, const Direction& direction) {
+    Position current = creature.get_position();
+
+    if (direction == Direction::IDLE || !creature.can_move()) {
+        return creature.update_state(current, Direction::IDLE);
+    }
+
+    Position target = current.move(direction);
+
+    try {
+        Tile& tile = grid.get_tile(target);
+
+        if (tile.is_walkable() && tile.occupant() == nullptr) {
+            grid.get_tile(current).occupy(nullptr);
+            tile.occupy(&creature);
+
+            creature.update_state(target, direction);
+        } else {
+            creature.update_state(current, Direction::IDLE);
+        }
+    } catch (const std::out_of_range& _) {
+        creature.update_state(current, Direction::IDLE);
+    }
+
+    return CreatureUpdateStatus();
+}
 
 void GameWorld::move_player(const std::string& player_name, const Direction direction) {
     // buscar al jugador
@@ -87,12 +145,31 @@ std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(cons
     }
 }
 
+void GameWorld::remove_dead_creatures() {
+    for (auto it = creatures.begin(); it != creatures.end();) {
+        const Creature& creature = it->second;
+
+        if (!creature.is_alive()) {
+            grid.get_tile(creature.get_position()).occupy(nullptr);
+            it = creatures.erase(it);
+        } else {
+            it++;
+        }
+    }
+}
+
 void GameWorld::remove_player(const std::string& player_name) {
     const auto it = players.find(player_name);
     if (it == players.end()) {
         return;
     }
     grid.get_tile(it->second.get_position()).occupy(nullptr);
+
+    for (auto& [id, creature]: creatures) {
+        if (creature.is_targeting(it->second))
+            creature.stop_targeting();
+    }
+
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
 }
@@ -218,4 +295,10 @@ void GameWorld::init_npc() {
     auto banker = std::make_unique<Banker>(banker_position);
     grid.get_tile(banker_position).occupy(banker.get());
     allies.push_back(std::move(banker));
+}
+
+void GameWorld::init_creature() {
+    Position goblin_position(30, 30);
+    creatures.emplace(1, Creature(1, 0, 0, goblin_position));
+    grid.get_tile(goblin_position).occupy(&creatures.at(1));
 }

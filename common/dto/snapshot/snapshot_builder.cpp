@@ -1,11 +1,17 @@
 
 #include "snapshot_builder.h"
 
-SnapshotDTO SnapshotBuilder::build() const { return SnapshotDTO(players_info, actions); }
+SnapshotDTO SnapshotBuilder::build() const { return SnapshotDTO(players_info, creatures_info, actions); }
 
 void SnapshotBuilder::add_players(const std::unordered_map<std::string, Player>& players) {
     for (const auto& [player_name, player]: players) {
         players_info.push_back(convert_to_info(player_name, player));
+    }
+}
+
+void SnapshotBuilder::add_creatures(const std::unordered_map<uint16_t, Creature>& creatures) {
+    for (const auto& [sub_id, creature]: creatures) {
+        creatures_info.push_back(convert_to_info(sub_id, creature));
     }
 }
 
@@ -22,4 +28,12 @@ PlayerInfoDTO SnapshotBuilder::convert_to_info(const std::string& player_name, c
                                         stats.mana.get_max(), stats.mana.get_current(),
                                         stats.experience.get_level(), stats.experience.get_current_amount(),
                                         Calculator::calculate_xp_limit(stats.experience.get_level())));
+}
+
+CreatureInfoDTO SnapshotBuilder::convert_to_info(uint16_t sub_id, const Creature& creature) {
+    Position position = creature.get_position();
+    Stats stats = creature.get_stats();
+
+    return CreatureInfoDTO(stats.race_id, stats.archetype_id, sub_id, creature.get_direction(),
+                           position.get_x(), position.get_y());
 }

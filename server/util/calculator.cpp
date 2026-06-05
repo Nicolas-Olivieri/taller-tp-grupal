@@ -4,7 +4,6 @@
 #include <cmath>
 #include <random>
 
-#include "server/game/player/inventory/equipment.h"
 #include "server/game/player/inventory/item_mapper.h"
 
 uint16_t Calculator::calculate_max_health(uint8_t level, uint8_t constitution, float factor_class,
