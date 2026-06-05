@@ -18,6 +18,11 @@ protected:
     const Position position;
     AllyType type;
 
+    template <typename TResult, typename TStatus>
+    AllyExecuteResult handle_action_not_accepted(TStatus not_accepted_status) const {
+        return AllyExecuteResult(TResult(not_accepted_status, type));
+    }
+
 public:
     explicit Ally(const Position& position, const AllyType& type);
 
