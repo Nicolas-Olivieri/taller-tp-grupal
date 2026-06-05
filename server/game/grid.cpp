@@ -72,9 +72,10 @@ Direction Grid::closest_movement(const Position& current, const Position& target
 Direction Grid::random_movement(const Position& current) const {
     static std::random_device rd;
     static std::default_random_engine generator(rd());
-    std::uniform_int_distribution<int> get_random_width(0, directions.size() - 1);
+    std::uniform_int_distribution<size_t> get_random_width(0, directions.size() + 4);
 
-    Direction direction = directions[get_random_width(generator)];
+    size_t index = get_random_width(generator);
+    Direction direction = index < directions.size() ? directions[index] : Direction::IDLE;
     Position position = current.move(direction);
 
     return is_tile_available(position.get_x(), position.get_y()) ? direction : Direction::IDLE;

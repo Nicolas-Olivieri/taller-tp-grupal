@@ -81,14 +81,16 @@ GameConfig::GameConfig() {
         variations[id] = variation;
     }
 
-    CooldownData cooldown_data{};
     const auto cooldowns_path = toml::find(paths, "cooldowns");
     const auto cooldowns_file = toml::find<std::string>(cooldowns_path, "path");
     const auto cooldowns_root = toml::parse(DATA_PATH + cooldowns_file);
     const auto cooldowns_table = toml::find(cooldowns_root, "cooldowns");
-    cooldown_data.attack = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "attack"));
-    cooldown_data.move = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "move"));
-    cooldowns = cooldown_data;
+
+    player_cooldowns.attack = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "player", "attack"));
+    player_cooldowns.move = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "player", "move"));
+
+    creature_cooldowns.attack = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "creature", "attack"));
+    creature_cooldowns.move = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "creature", "move"));
 
     const auto items_path = toml::find(paths, "items");
     const auto items_file = toml::find<std::string>(items_path, "path");
@@ -175,7 +177,9 @@ const RaceData& GameConfig::get_creature(uint8_t id) const { return this->creatu
 
 const VariationData& GameConfig::get_variation(uint8_t id) const { return this->variations.at(id); }
 
-const CooldownData& GameConfig::get_cooldown() const { return this->cooldowns; }
+const CooldownData& GameConfig::get_player_cooldown() const { return this->player_cooldowns; }
+
+const CooldownData& GameConfig::get_creature_cooldown() const { return this->creature_cooldowns; }
 
 const std::unordered_map<uint8_t, UsableItemData>& GameConfig::get_usables() const { return usable_items; }
 

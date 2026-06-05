@@ -57,7 +57,8 @@ struct WeaponItemData {
 
 class GameConfig {
 private:
-    CooldownData cooldowns{};
+    CooldownData player_cooldowns;
+    CooldownData creature_cooldowns;
     std::unordered_map<uint8_t, ArchetypeData> archetypes;
     std::unordered_map<uint8_t, RaceData> races;
 
@@ -88,7 +89,9 @@ public:
 
     const VariationData& get_variation(uint8_t id) const;
 
-    const CooldownData& get_cooldown() const;
+    const CooldownData& get_player_cooldown() const;
+
+    const CooldownData& get_creature_cooldown() const;
 
     const std::unordered_map<uint8_t, UsableItemData>& get_usables() const;
 
