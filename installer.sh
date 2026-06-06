@@ -32,14 +32,16 @@ sudo apt install -y \
     git cmake build-essential ninja-build pkg-config \
     qt6-base-dev \
     libasound2-dev libopus-dev libopusfile-dev libxmp-dev \
-    libfluidsynth-dev fluidsynth libwavpack-dev libfreetype-dev
-
-# Puedo instalarlas, pero debería de hacerlo el Cmake
-#    libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+    libfluidsynth-dev fluidsynth libwavpack-dev libfreetype-dev \
+    libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
 
 echo -e "${GREEN}[3/6] Clonando repositorio...${NC}"
 if [ ! -d "$PROJECT_DIR" ]; then
   git clone "$REPO_URL" "$PROJECT_DIR"
+  cd "$PROJECT_DIR"
+  git fetch --all
+  git switch feat/Install_integration
+  cd ..
 else
   cd "$PROJECT_DIR"
   git pull
@@ -93,6 +95,8 @@ echo -e "${GREEN}    Instalando binarios en ${INSTALL_BIN}...${NC}"
 sudo cp cmake-build-debug/taller_client "$INSTALL_BIN"
 sudo cp cmake-build-debug/taller_server "$INSTALL_BIN"
 sudo cp cmake-build-debug/taller_editor "$INSTALL_BIN"
+
+cd ..
 
 echo -e "${GREEN}[6/6] Copiando lanzadores al escritorio...${NC}"
 cp "$PROJECT_DIR/client.sh" "$DESKTOP_DIR/"
