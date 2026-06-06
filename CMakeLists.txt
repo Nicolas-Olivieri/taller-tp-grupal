@@ -150,16 +150,18 @@ if(TALLER_CLIENT OR TALLER_EDITOR)
     set(CMAKE_AUTORCC ON)
 
     # TODO agregar tmb a servidor si hace falta
-    if(NOT DEFINED DATA_PATH)
-        set(DATA_PATH "${PROJECT_SOURCE_DIR}/resources")
-    endif()
-    if(NOT DEFINED CONFIG_PATH)
-        set(CONFIG_PATH "${PROJECT_SOURCE_DIR}/resources")
-    endif()
-
-    add_definitions(-DDATA_PATH="${DATA_PATH}")
-    add_definitions(-DCONFIG_PATH="${CONFIG_PATH}")
 endif()
+
+
+if(NOT DEFINED DATA_PATH)
+    set(DATA_PATH "${PROJECT_SOURCE_DIR}/resources")
+endif()
+if(NOT DEFINED CONFIG_PATH)
+    set(CONFIG_PATH "${PROJECT_SOURCE_DIR}/resources")
+endif()
+
+add_definitions(-DDATA_PATH="${DATA_PATH}")
+add_definitions(-DCONFIG_PATH="${CONFIG_PATH}")
 
 # Program section
 # ---------------
