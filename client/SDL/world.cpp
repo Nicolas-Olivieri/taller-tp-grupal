@@ -1,5 +1,6 @@
 #include "world.h"
 
+#include <unordered_set>
 #include <vector>
 
 #include "camera.h"
@@ -15,6 +16,11 @@ void World::update_visuals(const int it) {
     for (auto& [name, entity]: players) {
         entity.update_visual_position();
         entity.update_frame(it);
+    }
+
+    for (auto& [sub_id, creature]: creatures) {
+        creature.update_visual_position();
+        creature.update_frame(it);
     }
 }
 
@@ -37,6 +43,13 @@ std::vector<Sprite> World::filter_viewed_sprites(const Camera& camera) {
             viewed_sprites.push_back(entity);
         }
     }
+
+    for (auto& [sub_id, creature]: creatures) {
+        if (creature.intersects(camera.get_view(), camera.get_view().GetTopLeft())) {
+            viewed_sprites.push_back(creature);
+        }
+    }
+
     return viewed_sprites;
 }
 
@@ -51,6 +64,35 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
         players.at(player_info.name).set_target_position(player_info.direction, position);
     }
 }
+
+void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_information) {
+    erase_dead_creatures(creatures_information);
+
+    for (const CreatureInfoDTO& creature_info: creatures_information) {
+        if (!creatures.contains(creature_info.sub_id)) {
+            add_new_creature(creature_info);
+        }
+
+        SDL2pp::Point position(creature_info.x, creature_info.y);
+        creatures.at(creature_info.sub_id).set_target_position(creature_info.direction, position);
+    }
+}
+
+void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_information) {
+    std::unordered_set<uint16_t> sub_ids;
+    for (const auto& info: creatures_information) {
+        sub_ids.insert(info.sub_id);
+    }
+
+    for (auto it = creatures.begin(); it != creatures.end();) {
+        if (!sub_ids.contains(it->first)) {
+            it = creatures.erase(it);
+        } else {
+            it++;
+        }
+    }
+}
+
 
 void World::handle_actions(const std::vector<ActionDTO>& actions) {
     // TODO agregar todos los tipos que vayamos agregando
@@ -85,6 +127,10 @@ void World::add_new_player(const PlayerInfoDTO& info) {
     players.insert({{info.name, user}});
 }
 
+void World::add_new_creature(const CreatureInfoDTO& info) {
+    Sprite creature = sprite_creator.create_creature(info);
+    creatures.insert({{info.sub_id, creature}});
+}
 
 Sprite& World::get_client_player() { return players.at(player_name); }
 

@@ -17,8 +17,6 @@ private:
     AllyExecuteResult handle_heal(Player& player) const;
 
     AllyExecuteResult handle_resurrect(Player& player) const;
-
-    AllyExecuteResult handle_sell_item() const;
 };
 
 

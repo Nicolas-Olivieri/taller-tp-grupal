@@ -6,6 +6,8 @@ target_sources(taller_server
 
         command/cmd_types/cmd_buy/buy_command.cpp
         command/cmd_types/cmd_chatmessage/chatmessage_command.cpp
+        command/cmd_types/cmd_deposit_gold/deposit_gold_command.cpp
+        command/cmd_types/cmd_deposit_item/deposit_item_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
         command/cmd_types/cmd_heal/heal_command.cpp
         command/cmd_types/cmd_interact/interact_command.cpp
@@ -14,6 +16,8 @@ target_sources(taller_server
         command/cmd_types/cmd_resurrect/resurrect_command.cpp
         command/cmd_types/cmd_sell/sell_command.cpp
         command/cmd_types/cmd_spawn/spawn_command.cpp
+        command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.cpp
+        command/cmd_types/cmd_withdraw_item/withdraw_item_command.cpp
 
         command/cmd_results/ally_execute/ally_execute_result.cpp
         command/cmd_results/interact/interact_result.cpp
@@ -33,6 +37,13 @@ target_sources(taller_server
         game/killable.cpp
         game/loot.cpp
         game/tile.cpp
+
+        game/creatures/creature.cpp
+        game/creatures/updatestatus.cpp
+        game/creatures/state/idlestate.cpp
+        game/creatures/state/followingstate.cpp
+        game/creatures/state/attackingstate.cpp
+
         connection/acceptor.cpp
         connection/lobbyhandler.cpp
         connection/game_acceptor.cpp
@@ -50,12 +61,14 @@ target_sources(taller_server
 
         config/game_config.cpp
 
+        game/player/bank/bank.cpp
         game/player/inventory/inventory.cpp
         game/player/inventory/item_mapper.cpp
         game/player/inventory/goldmanager.cpp
 
         game/allies/ally.cpp
         game/allies/ally_action_payload.cpp
+        game/allies/banker.cpp
         game/allies/merchant.cpp
         game/allies/priest.cpp
         game/allies/vendor_ally.cpp
@@ -66,6 +79,8 @@ target_sources(taller_server
 
         command/cmd_types/cmd_buy/buy_command.h
         command/cmd_types/cmd_chatmessage/chatmessage_command.h
+        command/cmd_types/cmd_deposit_gold/deposit_gold_command.h
+        command/cmd_types/cmd_deposit_item/deposit_item_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
         command/cmd_types/cmd_heal/heal_command.h
         command/cmd_types/cmd_interact/interact_command.h
@@ -73,13 +88,21 @@ target_sources(taller_server
         command/cmd_types/cmd_move/move_command.h
         command/cmd_types/cmd_sell/sell_command.h
         command/cmd_types/cmd_spawn/spawn_command.h
+        command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.h
+        command/cmd_types/cmd_withdraw_item/withdraw_item_command.h
         command/cmd_types/cmd_resurrect/resurrect_command.h
 
         command/cmd_results/ally_execute/buy_result.h
+        command/cmd_results/ally_execute/deposit_gold_result.h
+        command/cmd_results/ally_execute/deposit_item_result.h
         command/cmd_results/ally_execute/heal_result.h
+        command/cmd_results/ally_execute/list_bank_result.h
         command/cmd_results/ally_execute/list_items_result.h
+        command/cmd_results/ally_execute/list_outcomes.h
         command/cmd_results/ally_execute/resurrect_result.h
         command/cmd_results/ally_execute/sell_result.h
+        command/cmd_results/ally_execute/withdraw_gold_result.h
+        command/cmd_results/ally_execute/withdraw_item_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
 
         command/cmd_results/interact/attack_result.h
@@ -103,6 +126,14 @@ target_sources(taller_server
         game/killable.h
         game/loot.h
         game/tile.h
+
+        game/creatures/creature.h
+        game/creatures/updatestatus.h
+        game/creatures/state/creaturestate.h
+        game/creatures/state/idlestate.h
+        game/creatures/state/followingstate.h
+        game/creatures/state/attackingstate.h
+
         connection/acceptor.h
         connection/lobbyhandler.h
         connection/connectioninfo.h
@@ -120,16 +151,20 @@ target_sources(taller_server
         persistance/names_monitor.h
         config/game_config.h
 
+        game/player/bank/bank.h
         game/player/inventory/inventory.h
-        game/player/inventory/equipment.h
+        game/equipment.h
         game/player/inventory/item_mapper.h
         game/player/inventory/goldmanager.h
-        
+
         game/attacker.h
 
         game/allies/ally.h
         game/allies/ally_action_payload.h
+        game/allies/banker.h
         game/allies/merchant.h
         game/allies/priest.h
         game/allies/vendor_ally.h
+
+        game/world_update_status.h
     )

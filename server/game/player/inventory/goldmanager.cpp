@@ -15,6 +15,7 @@ void GoldManager::update_max(uint8_t level) {
 }
 
 void GoldManager::add(uint16_t amount) {
+    // TODO: Considerar el caso de monedero lleno al intentar retirar oro del banco
     if (max_total_gold - current_gold < amount) {
         current_gold = max_total_gold;
     } else {

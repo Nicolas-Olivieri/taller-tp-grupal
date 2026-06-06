@@ -22,6 +22,8 @@ size_t ActionDTO::message_size() const {
             return base + list.message_size();
         case ActionType::LIST_ITEMS:
             return base + items.message_size();
+        case ActionType::LIST_BANK:
+            return base + bank.message_size();
         default:
             throw std::runtime_error("ActionDTO Descubrió que tiene un tipo de acción desconocido al "
                                      "calcular su message_size");
@@ -36,7 +38,9 @@ ActionDTO::ActionDTO(const DespawnDTO& despawn):
         chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection("", {}),
         death(""),
-        list(MessageType::SYSTEM, {}, "") {}
+        list(MessageType::SYSTEM, {}, ""),
+        items(),
+        bank() {}
 
 ActionDTO::ActionDTO(const ChatMessageDTO& message):
         action(ActionType::MESSAGE),
@@ -44,7 +48,9 @@ ActionDTO::ActionDTO(const ChatMessageDTO& message):
         chat_message(message),
         resurrection("", {}),
         death(""),
-        list(MessageType::SYSTEM, {}, "") {}
+        list(MessageType::SYSTEM, {}, ""),
+        items(),
+        bank() {}
 
 ActionDTO::ActionDTO(const ResurrectionDTO& resurrection):
         action(ActionType::RESURRECTION),
@@ -52,7 +58,9 @@ ActionDTO::ActionDTO(const ResurrectionDTO& resurrection):
         chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection(resurrection),
         death(""),
-        list(MessageType::SYSTEM, {}, "") {}
+        list(MessageType::SYSTEM, {}, ""),
+        items(),
+        bank() {}
 
 ActionDTO::ActionDTO(const DeathDTO& death):
         action(ActionType::DEATH),
@@ -60,7 +68,9 @@ ActionDTO::ActionDTO(const DeathDTO& death):
         chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection("", {}),
         death(death),
-        list(MessageType::SYSTEM, {}, "") {}
+        list(MessageType::SYSTEM, {}, ""),
+        items(),
+        bank() {}
 
 ActionDTO::ActionDTO(const ChatListDTO& list):
         action(ActionType::MESSAGE_LIST),
@@ -68,7 +78,9 @@ ActionDTO::ActionDTO(const ChatListDTO& list):
         chat_message(MessageType::SYSTEM, "", "", ""),
         resurrection("", {}),
         death(""),
-        list(list) {}
+        list(list),
+        items(),
+        bank() {}
 
 ActionDTO::ActionDTO(const ListItemsDTO& items):
         action(ActionType::LIST_ITEMS),
@@ -77,4 +89,15 @@ ActionDTO::ActionDTO(const ListItemsDTO& items):
         resurrection("", {}),
         death(""),
         list(MessageType::SYSTEM, {}, ""),
-        items(items) {}
+        items(items),
+        bank() {}
+
+ActionDTO::ActionDTO(const ListBankDTO& bank):
+        action(ActionType::LIST_BANK),
+        despawn(""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
+        resurrection("", {}),
+        death(""),
+        list(MessageType::SYSTEM, {}, ""),
+        items(),
+        bank(bank) {}

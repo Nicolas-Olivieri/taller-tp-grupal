@@ -9,11 +9,11 @@ GameConfig::GameConfig() {
     auto root = toml::parse(DATA_PATH TOML_PATH);
 
     const auto paths = toml::find(root, "server");
-    const auto stats_path = toml::find(paths, "stats");
-    const auto stats_file = toml::find<std::string>(stats_path, "path");
-    auto stats_root = toml::parse(DATA_PATH + stats_file);
+    const auto player_stats_path = toml::find(paths, "players");
+    const auto player_stats_file = toml::find<std::string>(player_stats_path, "path");
+    auto player_stats_root = toml::parse(DATA_PATH + player_stats_file);
 
-    const auto archetypes_table = toml::find(stats_root, "archetypes");
+    const auto archetypes_table = toml::find(player_stats_root, "archetypes");
     for (const auto& [name, value]: archetypes_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
 
@@ -31,7 +31,7 @@ GameConfig::GameConfig() {
         archetypes[id] = archetype;
     }
 
-    const auto races_table = toml::find(stats_root, "races");
+    const auto races_table = toml::find(player_stats_root, "races");
     for (const auto& [name, value]: races_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
 
@@ -47,14 +47,50 @@ GameConfig::GameConfig() {
         races[id] = race;
     }
 
-    CooldownData cooldown_data{};
+    const auto creature_stats_path = toml::find(paths, "creatures");
+    const auto creature_stats_file = toml::find<std::string>(creature_stats_path, "path");
+    auto creature_stats_root = toml::parse(DATA_PATH + creature_stats_file);
+
+    const auto creatures_table = toml::find(creature_stats_root, "races");
+    for (const auto& [name, value]: creatures_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        RaceData creature{};
+        creature.health_factor = static_cast<float>(toml::find<double>(value, "health_factor"));
+        creature.mana_factor = static_cast<float>(toml::find<double>(value, "mana_factor"));
+        creature.recovery_factor = static_cast<uint8_t>(toml::find<int>(value, "recovery_factor"));
+        creature.agility = static_cast<uint8_t>(toml::find<int>(value, "agility"));
+        creature.constitution = static_cast<uint8_t>(toml::find<int>(value, "constitution"));
+        creature.intelligence = static_cast<uint8_t>(toml::find<int>(value, "intelligence"));
+        creature.strength = static_cast<uint8_t>(toml::find<int>(value, "strength"));
+
+        creatures[id] = creature;
+    }
+
+    const auto variations_table = toml::find(creature_stats_root, "variations");
+    for (const auto& [name, value]: variations_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+
+        VariationData variation{};
+        const auto races_vector = toml::find<std::vector<int>>(value, "compatible_races");
+        variation.compatible_races = std::vector<uint8_t>(races_vector.begin(), races_vector.end());
+        variation.factor = static_cast<float>(toml::find<double>(value, "factor"));
+        variation.agility = static_cast<uint8_t>(toml::find<int>(value, "agility"));
+        variation.multiplier = static_cast<float>(toml::find<double>(value, "multiplier"));
+
+        variations[id] = variation;
+    }
+
     const auto cooldowns_path = toml::find(paths, "cooldowns");
     const auto cooldowns_file = toml::find<std::string>(cooldowns_path, "path");
     const auto cooldowns_root = toml::parse(DATA_PATH + cooldowns_file);
     const auto cooldowns_table = toml::find(cooldowns_root, "cooldowns");
-    cooldown_data.attack = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "attack"));
-    cooldown_data.move = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "move"));
-    cooldowns = cooldown_data;
+
+    player_cooldowns.attack = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "player", "attack"));
+    player_cooldowns.move = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "player", "move"));
+
+    creature_cooldowns.attack = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "creature", "attack"));
+    creature_cooldowns.move = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "creature", "move"));
 
     const auto items_path = toml::find(paths, "items");
     const auto items_file = toml::find<std::string>(items_path, "path");
@@ -137,7 +173,13 @@ const ArchetypeData& GameConfig::get_archetype(const uint8_t id) const { return 
 
 const RaceData& GameConfig::get_race(const uint8_t id) const { return this->races.at(id); }
 
-const CooldownData& GameConfig::get_cooldown() const { return this->cooldowns; }
+const RaceData& GameConfig::get_creature(uint8_t id) const { return this->creatures.at(id); }
+
+const VariationData& GameConfig::get_variation(uint8_t id) const { return this->variations.at(id); }
+
+const CooldownData& GameConfig::get_player_cooldown() const { return this->player_cooldowns; }
+
+const CooldownData& GameConfig::get_creature_cooldown() const { return this->creature_cooldowns; }
 
 const std::unordered_map<uint8_t, UsableItemData>& GameConfig::get_usables() const { return usable_items; }
 

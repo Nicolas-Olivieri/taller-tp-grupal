@@ -4,6 +4,7 @@
 #include <string>
 
 #include "common/dto/snapshot/info/appearance.h"
+#include "common/dto/snapshot/info/creatureinfo.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 
 #include "animation_pool.h"
@@ -25,6 +26,8 @@ public:
                                     const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
 
     Sprite create_user(const PlayerInfoDTO& playerInfo);
+
+    Sprite create_creature(const CreatureInfoDTO& creature_info);
 
     void update_appearance(Sprite& player, const AppearanceDTO& appearance);
 

@@ -4,6 +4,8 @@
 #include <random>
 #include <vector>
 
+#include "common/direction.h"
+
 #include "position.h"
 #include "tile.h"
 
@@ -17,6 +19,9 @@ private:
     int width_;
     int height_;
     std::vector<std::vector<Tile>> tiles_;
+    std::vector<Direction> directions;
+
+    bool is_tile_available(int x, int y) const;
 
 public:
     explicit Grid(int width, int height);
@@ -24,6 +29,10 @@ public:
     Tile& get_tile(const Position& position);
 
     Position spawn() const;
+
+    Direction closest_movement(const Position& position, const Position& target) const;
+
+    Direction random_movement(const Position& current) const;
 };
 
 

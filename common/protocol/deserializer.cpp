@@ -54,6 +54,10 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::LIST_ITEMS:
         case CommandType::BUY_ITEM:
         case CommandType::SELL_ITEM:
+        case CommandType::DEPOSIT_ITEM:
+        case CommandType::WITHDRAW_ITEM:
+        case CommandType::DEPOSIT_GOLD:
+        case CommandType::WITHDRAW_GOLD:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -92,6 +96,19 @@ std::vector<PlayerInfoDTO> Deserializer::recv_players_information() {
     return players_information;
 }
 
+std::vector<CreatureInfoDTO> Deserializer::recv_creatures_information() {
+    uint16_t size = recv_uint16();
+
+    std::vector<CreatureInfoDTO> creature_information;
+    creature_information.reserve(size);
+
+    for (uint16_t i = 0; i < size; ++i) {
+        creature_information.push_back(recv_creature_info());
+    }
+
+    return creature_information;
+}
+
 PlayerInfoDTO Deserializer::recv_player_info() {
     std::string name = recv_string();
     Direction direction = recv_direction();
@@ -104,6 +121,18 @@ PlayerInfoDTO Deserializer::recv_player_info() {
 
     return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats);
 }
+
+CreatureInfoDTO Deserializer::recv_creature_info() {
+    uint8_t creature_id = recv_uint8();
+    uint8_t variation_id = recv_uint8();
+    uint16_t sub_id = recv_uint16();
+    Direction direction = recv_direction();
+    uint16_t x = recv_uint16();
+    uint16_t y = recv_uint16();
+
+    return CreatureInfoDTO(creature_id, variation_id, sub_id, direction, x, y);
+}
+
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
     uint16_t size = recv_uint16();
@@ -135,6 +164,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_chat_list());
         case ActionType::LIST_ITEMS:
             return ActionDTO(recv_list_items());
+        case ActionType::LIST_BANK:
+            return ActionDTO(recv_list_bank());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -152,6 +183,7 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::DEATH:
         case ActionType::MESSAGE_LIST:
         case ActionType::LIST_ITEMS:
+        case ActionType::LIST_BANK:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -275,6 +307,24 @@ ChatListDTO Deserializer::recv_chat_list() {
     }
 
     return ChatListDTO(type, lines, receiver);
+}
+
+ListBankDTO Deserializer::recv_list_bank() {
+    const MessageType type = recv_message_type();
+    const std::string receiver = recv_string();
+
+    const uint16_t gold = recv_uint16();
+
+    const uint16_t size = recv_uint16();
+    std::map<uint8_t, uint16_t> items;
+
+    for (uint16_t i = 0; i < size; ++i) {
+        const uint8_t item_id = recv_uint8();
+        const uint16_t amount = recv_uint16();
+        items[item_id] = amount;
+    }
+
+    return ListBankDTO(type, gold, items, receiver);
 }
 
 ListItemsDTO Deserializer::recv_list_items() {
