@@ -220,18 +220,19 @@ void ClientGame::send_private_message() {
 }
 
 void ClientGame::update_state_from_server() {
+    if (connection.is_finished()) {
+        keep_running = false;
+        connection.stop();
+        return;
+    }
+
     SnapshotDTO snapshot;
     bool updated = false;
 
-    try {
-        while (connection.try_pop_snapshot(snapshot)) {
-            updated = true;
-            world.handle_actions(snapshot.actions);
-            ui.update_chat(snapshot.actions);
-        }
-    } catch (const ClosedSocket& _) {
-        keep_running = false;
-        return;
+    while (connection.try_pop_snapshot(snapshot)) {
+        updated = true;
+        world.handle_actions(snapshot.actions);
+        ui.update_chat(snapshot.actions);
     }
 
     if (!updated)

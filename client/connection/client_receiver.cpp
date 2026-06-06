@@ -18,9 +18,9 @@ void ClientReceiver::run() {
 }
 
 bool ClientReceiver::try_pop(SnapshotDTO& snapshot) {
-    if (!should_keep_running() || socket.is_stream_recv_closed()) {
-        throw ClosedSocket();
-    }
+//    if (!should_keep_running() || socket.is_stream_recv_closed()) {
+//        throw ClosedSocket();
+//    }
     return receiver_q.try_pop(snapshot);
 }
 
