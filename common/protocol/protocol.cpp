@@ -92,9 +92,13 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS) {
         return RequestedCommandDTO(command);
-    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM) {
+    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
+               command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
+    } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD) {
+        const uint16_t gold_amount = deserializer.recv_uint16();
+        return RequestedCommandDTO(command, gold_amount);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }
@@ -110,11 +114,10 @@ SnapshotDTO Protocol::recv_snapshot() {
     Deserializer deserializer(this->socket);
 
     std::vector<PlayerInfoDTO> players_information = deserializer.recv_players_information();
-    // TODO: std::vector<CreatureDTO> creatures_information =
-    // deserializer.recv_creatures_information();
+    std::vector<CreatureInfoDTO> creatures_information = deserializer.recv_creatures_information();
     std::vector<ActionDTO> actions = deserializer.recv_actions();
 
-    return SnapshotDTO(players_information, actions);
+    return SnapshotDTO(players_information, creatures_information, actions);
 }
 
 void Protocol::check_header_message_byte(const Message& expected) {

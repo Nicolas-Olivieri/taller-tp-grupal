@@ -1,3 +1,7 @@
-[cooldowns]
+[cooldowns.player]
 attack = 30
 move = 6
+
+[cooldowns.creature]
+attack = 45
+move = 14

@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <utility>
 
 #include "common/dto/snapshot/map/asset_info.h"
@@ -25,13 +26,32 @@ Sprite SpriteCreator::create_user(const PlayerInfoDTO& player_info) {
     SpriteLayer body =
             create_sprite_layer(SpriteCategory::BODY, appearance_data.body, SDL2pp::Point(0, HEAD_OFFSET));
 
-    const SDL2pp::Point size = body.frame.Union(head.frame).GetSize();
+    SDL2pp::Rect head_rect(head.offset, head.frame.GetSize());
+    SDL2pp::Rect body_rect(body.offset, body.frame.GetSize());
+    const SDL2pp::Point size = body_rect.Union(head_rect).GetSize();
 
-    Sprite sprite(std::move(body), position, Direction::IDLE, size);
+    Sprite sprite(std::move(body), position, player_info.direction, size);
     sprite.add_layer(Layer::HEAD, std::move(head));
 
     if (player_info.stats.current_health == 0)
         convert_to_ghost(sprite);
+
+    return sprite;
+}
+
+Sprite SpriteCreator::create_creature(const CreatureInfoDTO& creature_info) {
+    const SDL2pp::Point position(creature_info.x, creature_info.y);
+
+    // TODO: Esto podría estar en un config
+    static std::unordered_map<uint8_t, std::string> creature_id_to_category = {
+            {0, "goblin"}, {1, "skeleton"}, {2, "zombie"}, {3, "spider"}, {4, "orc"}, {5, "golem"},
+    };
+
+    const std::string& category = creature_id_to_category.at(creature_info.creature);
+    SpriteLayer creature = create_sprite_layer(category, creature_info.variation);
+    const SDL2pp::Point size = creature.frame.GetSize();
+
+    Sprite sprite(std::move(creature), position, creature_info.direction, size);
 
     return sprite;
 }

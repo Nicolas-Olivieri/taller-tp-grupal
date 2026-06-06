@@ -8,10 +8,14 @@
 
 #include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
+#include "common/dto/events/deposit_gold_event.h"
+#include "common/dto/events/deposit_item_event.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/events/sell_event.h"
+#include "common/dto/events/withdraw_gold_event.h"
+#include "common/dto/events/withdraw_item_event.h"
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/create_player.h"
 #include "common/dto/lobby/credentials.h"
@@ -81,6 +85,8 @@ public:
 
     void serialize(const PlayerInfoDTO& info);
 
+    void serialize(const CreatureInfoDTO& info);
+
     // Es el que se sigue expandiendo al agregar una action nueva
     void serialize(const ActionDTO& action);
 
@@ -104,11 +110,21 @@ public:
 
     void serialize(const ChatListDTO& list);
 
+    void serialize(const ListBankDTO& bank);
+
     void serialize(const ListItemsDTO& list);
 
     void serialize(const BuyEventDTO& event);
 
     void serialize(const SellEventDTO& event);
+
+    void serialize(const DepositItemEventDTO& event);
+
+    void serialize(const WithdrawItemEventDTO& event);
+
+    void serialize(const DepositGoldEventDTO& event);
+
+    void serialize(const WithdrawGoldEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

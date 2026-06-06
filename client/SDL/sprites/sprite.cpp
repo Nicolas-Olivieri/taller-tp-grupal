@@ -65,6 +65,9 @@ void Sprite::update_frame(const int iteration) {
 void Sprite::render(const SDL2pp::Point& camera_offset) {
     SDL2pp::Point render_position = position - camera_offset;
 
+    render_position.x -= (size.x - TILE_SIZE) / 2;
+    render_position.y -= (size.y - TILE_SIZE); 
+
     if (direction == Direction::UP) {
         for (auto layer = layers.rbegin(); layer != layers.rend(); ++layer) {
             layer->second.render(render_position);

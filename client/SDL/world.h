@@ -30,15 +30,22 @@ private:
 
     void init_assets(const ClientMapDataDTO& map_data);
 
+    std::map<uint16_t, Sprite> creatures;
+
     void add_new_player(const PlayerInfoDTO& info);
 
     static bool cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_ptr<Sprite>& b);
+
+    void add_new_creature(const CreatureInfoDTO& info);
+
+    void erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_information);
 
 public:
     World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name);
 
     void update_players(const std::vector<PlayerInfoDTO>& players_information);
 
+    void update_creatures(const std::vector<CreatureInfoDTO>& creatures_information);
     void handle_actions(const std::vector<ActionDTO>& actions);
 
     void update_visuals(int iteration);

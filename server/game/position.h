@@ -25,6 +25,8 @@ public:
 
     int get_y() const;
 
+    float distance_to(const Position& position) const;
+
     friend std::ostream& operator<<(std::ostream& os, const Position& position);
 };
 

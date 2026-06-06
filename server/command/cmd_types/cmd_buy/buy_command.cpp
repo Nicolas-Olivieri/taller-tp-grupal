@@ -19,6 +19,7 @@ void BuyCommand::build_snapshot(SnapshotBuilder& builder) {
     static std::map<AllyType, std::string> ally_type_to_string({
             {AllyType::PRIEST, "Sacerdote"},
             {AllyType::MERCHANT, "Comerciante"},
+            {AllyType::BANKER, "Banquero"},
     });
 
     if (not ally_type_to_string.contains(result.ally)) {
@@ -29,6 +30,7 @@ void BuyCommand::build_snapshot(SnapshotBuilder& builder) {
             {{BuyStatus::ITEM_SOLD, "Gracias por tu compra"},
              {BuyStatus::ITEM_NOT_SOLD, "Yo no vendo ese item"},
              {BuyStatus::NOT_ENOUGH_GOLD, "No te alcanza el oro para comprar ese item"},
+             {BuyStatus::INVENTORY_FULL, "Tu inventario esta al maximo, deshazte de un tipo item primero"},
              {BuyStatus::ACTION_NOT_ACCEPTED, "Perdon, yo no puedo hacer eso"}});
 
     if (not result_to_message.contains(result.status)) {

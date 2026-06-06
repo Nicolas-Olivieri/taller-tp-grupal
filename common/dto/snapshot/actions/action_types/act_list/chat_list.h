@@ -7,7 +7,7 @@
 #include "common/dto/message.h"
 #include "common/dto/snapshot/actions/action_types/act_message/chatmessage.h"
 
-// es una lista de mensajes que le llegan a 1 solo usuario (siempre privada)
+// es una lista de mensajes que le llegan a 1 solo usuario
 struct ChatListDTO: public ProtocolMessageDTO {
     MessageType type;
     std::vector<std::string> lines;

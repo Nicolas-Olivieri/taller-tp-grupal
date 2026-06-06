@@ -1,6 +1,7 @@
 #ifndef ATTACKER_H
 #define ATTACKER_H
 
+#include "position.h"
 
 class Attacker {
 public:

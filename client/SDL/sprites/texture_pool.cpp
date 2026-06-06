@@ -21,10 +21,14 @@ TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
 
         std::map<uint8_t, SDL2pp::Texture> category_textures;
         for (int i = start; i <= finish; ++i) {
-            std::string path = std::format("{}/{}/{}.png", DATA_PATH, category, i);
-            SDL2pp::Texture texture(renderer, path);
-
-            category_textures.insert({i, std::move(texture)});
+            try {
+                std::string path = std::format("{}/{}/{}.png", DATA_PATH, category, i);
+                SDL2pp::Texture texture(renderer, path);
+                category_textures.insert({i, std::move(texture)});
+            } catch (const SDL2pp::Exception& err) {
+                // Skip si no existe ese índice, ideal cuando la variation de las creatures dependen de la
+                // imagen
+            }
         }
 
         SpriteCategory parsed_cat = TomlHelper::get_sprite_category(category);

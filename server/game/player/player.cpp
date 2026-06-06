@@ -15,9 +15,14 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
-        inventory(stats),
+        inventory(equipment),
+        bank(persisted_data.bank_gold, persisted_data.bank, persisted_data.bank_amounts),
         gold_manager(persisted_data.current_gold, persisted_data.xp_level),
-        bound_ally(nullptr) {
+        bound_ally(nullptr),
+        just_resurrected(false),
+        is_resurrecting(false),
+        resurrection_timer(0),
+        target_resurrection_position(0, 0) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
 }
@@ -30,26 +35,32 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
-        inventory(stats),
+        inventory(equipment),
+        bank(persisted_data.bank_gold, persisted_data.bank, persisted_data.bank_amounts),
         gold_manager(persisted_data.current_gold, persisted_data.xp_level),
-        bound_ally(nullptr) {}
+        bound_ally(nullptr),
+        just_resurrected(false),
+        is_resurrecting(false),
+        resurrection_timer(0),
+        target_resurrection_position(0, 0) {}
 
 int Player::attack() {
     if (bound_ally != nullptr) {
         unbind_ally();
     }
 
-
     current_attack_cooldown = required_attack_cooldown;
 
-    const int mana_cost = inventory.get_attack_cost();
+    const int mana_cost = inventory.get_attack_cost(equipment);
 
     stats.mana.loose(mana_cost);
 
-    return Calculator::calculate_damage(stats.strength, inventory.get_equipment());
+    return Calculator::calculate_damage(stats.strength, equipment);
 }
 
-Stats Player::get_stats() const { return stats; }
+const Stats& Player::get_stats() const { return stats; }
+
+const std::string& Player::get_name() const { return player_name; }
 
 uint8_t Player::get_body() const { return body; }
 
@@ -73,7 +84,7 @@ bool Player::can_attack() const {
         return false;
     }
 
-    int mana_cost = ItemMapper::get_mana_cost(inventory.get_equipment().weapon);
+    int mana_cost = ItemMapper::get_mana_cost(equipment.weapon);
 
     std::cout << "[Player] costo de mana: " << mana_cost << "\n";
     std::cout << "[Player] mana actual: " << stats.mana.get_current() << "\n";
@@ -83,6 +94,13 @@ bool Player::can_attack() const {
 
 void Player::update() {
     Killable::update();
+
+    if (is_resurrecting) {
+        resurrection_timer--;
+        if (resurrection_timer <= 0) {
+            complete_delayed_resurrection();
+        }
+    }
 
     stats.health.update();
 
@@ -94,7 +112,7 @@ void Player::update() {
 }
 
 bool Player::can_reach(const Position& other_position) const {
-    const int range = inventory.get_range();
+    uint8_t range = inventory.get_range(equipment);
     //    std::cout << "rango: "<< range << "\n";
 
     return std::abs(position.get_x() - other_position.get_x()) <= range and
@@ -102,72 +120,21 @@ bool Player::can_reach(const Position& other_position) const {
 }
 
 InteractResult Player::interact(Player& attacker) {
-    if (position == attacker.get_position()) {
-        std::cout << "[Player] Jugador " << player_name << " intentó atacarse a sí mismo" << std::endl;
+    if (position == attacker.get_position())
         return InteractResult();
-    }
 
-    if (not attacker.can_reach(position)) {
-        std::cout << "[Player] El objetivo está demasiado lejos" << std::endl;
-        return InteractResult(AttackStatus::OUT_OF_RANGE);
-    }
-
-    if (not is_alive()) {
-        std::cout << "[Player] Jugador " << player_name << " fue atacado, pero ya está muerto" << std::endl;
+    if (not is_alive())
         return InteractResult(AttackStatus::DEAD_TARGET);
-    }
-
-    if (not attacker.can_attack()) {
-        std::cout << "[Player] Jugador " << player_name << " fue atacado, pero el enemigo no podía atacar"
-                  << std::endl;
-        return InteractResult(AttackStatus::CANNOT_ATTACK);
-    }
-
-    const int damage = attacker.attack();
-    std::cout << "[Player] " << player_name << " fue atacado " << std::endl;
-
-    if (bound_ally != nullptr) {
-        unbind_ally();
-    }
-
-    if (Calculator::can_dodge(stats.agility)) {
-        std::cout << "[Player] " << player_name << " ESQUIVO!" << std::endl;
-        return InteractResult(AttackStatus::TARGET_DODGED);
-    }
 
     // TODO Falta considerar
     //  - Fair game
     //  - Daño de los compis del clan?
+    //      (en update del GameWorld -> por cada jugador recorremos las n casillas más cercanas y desde
+    //      ahí player expone un método que le agrega boost y lo usa en su attack)
     //  - fuego amigo (entre compis no nos pegamos)
     //  - zona segura?
 
-    const int defense = Calculator::calculate_defense(inventory.get_equipment());
-
-    std::cout << "[Player] daño: " << damage << "\n";
-    std::cout << "[Player] defensa: " << defense << "\n";
-
-    const int damage_applied = damage - defense;
-
-    // TODO notificar el caso particular?
-    if (damage_applied <= 0)
-        return InteractResult(0, false);
-
-
-    uint32_t earned_xp;
-    const bool was_killed = stats.health.loose(damage_applied);
-
-    if (was_killed) {
-
-        earned_xp = Calculator::kill_exp(this->stats.health.get_max(), this->stats.experience.get_level(),
-                                         attacker.stats.experience.get_level());
-    } else {
-        earned_xp = Calculator::attack_exp(damage_applied, this->stats.experience.get_level(),
-                                           attacker.stats.experience.get_level());
-    }
-
-    attacker.earn_xp(earned_xp);
-
-    return InteractResult(damage_applied, was_killed);
+    return Killable::interact(attacker);
 }
 
 void Player::update_position(const Position& new_position, const Direction& new_direction) {
@@ -209,4 +176,71 @@ void Player::add_gold(const uint16_t amount) { gold_manager.add(amount); }
 
 void Player::acquire_item(const uint8_t item_id) { inventory.acquire_item(item_id); }
 
-void Player::drop_item(const uint8_t item_id) { inventory.drop_item(item_id); }
+void Player::drop_item(const uint8_t item_id) { inventory.drop_item(equipment, item_id); }
+
+uint16_t Player::get_bank_gold() const { return bank.get_gold(); }
+
+void Player::deposit_gold_to_bank(const uint16_t amount) {
+    gold_manager.spend(amount);
+    try {
+        bank.deposit_gold(amount);
+
+    } catch (const BankFull&) {
+        gold_manager.add(amount);
+        throw;
+    }
+}
+
+void Player::withdraw_gold_from_bank(const uint16_t amount) {
+    bank.withdraw_gold(amount);
+    gold_manager.add(amount);
+}
+
+const std::map<uint8_t, uint8_t>& Player::get_bank_items() const { return bank.get_items(); }
+
+void Player::deposit_item_to_bank(const uint8_t item_id) {
+    inventory.drop_item(equipment, item_id);
+    try {
+        bank.deposit_item(item_id);
+
+    } catch (const BankFull&) {
+        inventory.acquire_item(item_id);
+        throw;
+    }
+}
+
+void Player::withdraw_item_from_bank(const uint8_t item_id) {
+    bank.withdraw_item(item_id);
+    try {
+        inventory.acquire_item(item_id);
+
+    } catch (const InventoryFull&) {
+        bank.deposit_item(item_id);
+        throw;
+    }
+}
+
+bool Player::can_move() const { return not is_resurrecting and Killable::can_move(); }
+
+void Player::start_delayed_resurrection(const int wait_time, const Position& position) {
+    is_resurrecting = true;
+    resurrection_timer = wait_time;
+    target_resurrection_position = Position(position.get_x() + 1, position.get_y());
+}
+
+bool Player::did_just_resurrect() {
+    if (just_resurrected) {
+        just_resurrected = false;
+        return true;
+    }
+
+    return false;
+}
+
+void Player::complete_delayed_resurrection() {
+    position = target_resurrection_position;
+    is_resurrecting = false;
+    just_resurrected = true;
+    heal();
+    std::cout << "[Player] " << player_name << " ha resucitado junto al sacerdote." << std::endl;
+}
