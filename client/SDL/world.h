@@ -2,17 +2,18 @@
 #define WORLD_H
 
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/info/playerinfo.h"
+#include "common/dto/snapshot/map/client_map_data.h"
 #include "sprites/sprite_creator.h"
 #include "sprites/texture_pool.h"
 
 #include "camera.h"
-#include "common/dto/snapshot/map/client_map_data.h"
 
 class World {
 private:
@@ -27,11 +28,11 @@ private:
     std::set<std::shared_ptr<Sprite>> map_tiles;
     std::set<std::shared_ptr<Sprite>> map_items;
 
-    void init_assets(const ClientMapDataDTO &map_data);
+    void init_assets(const ClientMapDataDTO& map_data);
 
     void add_new_player(const PlayerInfoDTO& info);
 
-    static bool cmp_by_y_coord(const std::shared_ptr<Sprite> &a, const std::shared_ptr<Sprite> &b);
+    static bool cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_ptr<Sprite>& b);
 
 public:
     World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name);
@@ -44,7 +45,8 @@ public:
 
     void render_in_z_order(const Camera& camera) const;
 
-    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(const Camera &camera, const std::set<std::shared_ptr<Sprite>> &sprites) const;
+    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
+            const Camera& camera, const std::set<std::shared_ptr<Sprite>>& sprites) const;
 
     Sprite& get_client_player();
 

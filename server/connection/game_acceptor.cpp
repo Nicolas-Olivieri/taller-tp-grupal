@@ -13,6 +13,7 @@ GameAcceptor::GameAcceptor(Queue<ConnectionInfo>& waiting_queue, PlayerRepositor
 
 void GameAcceptor::run() {
     game_loop.start();
+
     try {
         while (should_keep_running()) {
             auto [player_name, peer] = waiting_queue.pop();

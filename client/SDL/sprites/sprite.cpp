@@ -5,6 +5,13 @@
 #define MIN_PIXELS_PER_STEP 3
 #define CHANGE_RATE 0.3
 
+Sprite::Sprite(SpriteLayer&& base, const SDL2pp::Point position, const SDL2pp::Point size):
+        position(to_sprite_point(position)),
+        target_position(this->position),
+        direction(std::nullopt),
+        size(size),
+        layers({{Layer::BODY, base}}) {}
+
 Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction action,
                const SDL2pp::Point size):
         position(to_sprite_point(position)),
@@ -40,8 +47,15 @@ void Sprite::update_visual_position() {
 
 void Sprite::update_frame(const int iteration) {
     for (auto& [_, layer]: layers) {
-        if (direction != Direction::IDLE) {
-            layer.update_frame(iteration, direction);
+        // En caso de ser un item con una unica animación, no tiene direction
+        if (!direction.has_value()) {
+            layer.update_frame(iteration);
+            continue;
+        }
+
+        // En caso de ser un sprite que se mueve, tendrá direction
+        if (direction.value() != Direction::IDLE) {
+            layer.update_frame(iteration, direction.value());
         } else {
             layer.set_base_frame();
         }

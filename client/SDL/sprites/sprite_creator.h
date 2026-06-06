@@ -5,12 +5,12 @@
 
 #include "common/dto/snapshot/info/appearance.h"
 #include "common/dto/snapshot/info/playerinfo.h"
+#include "common/dto/snapshot/map/asset_info.h"
 
 #include "animation_pool.h"
 #include "sprite.h"
 #include "sprite_layer.h"
 #include "texture_pool.h"
-#include "common/dto/snapshot/map/asset_info.h"
 
 
 class SpriteCreator {
@@ -22,12 +22,12 @@ private:
 public:
     explicit SpriteCreator(SDL2pp::Renderer& renderer);
 
-    SpriteLayer create_sprite_layer(const std::string& category, uint8_t id,
+    SpriteLayer create_sprite_layer(SpriteCategory category, uint8_t id,
                                     const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
 
     Sprite create_user(const PlayerInfoDTO& player_info);
 
-    Sprite create_asset(const std::string &category, const AssetInfoDTO &asset_info);
+    Sprite create_asset(SpriteCategory category, const AssetInfoDTO& asset_info);
 
     void update_appearance(Sprite& player, const AppearanceDTO& appearance);
 

@@ -9,14 +9,12 @@
 
 GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster,
                    PlayerRepository& player_repository):
-        map_loader(ServerMapLoader()),
-        command_queue(command_queue),
-        game_world(map_loader.get_server_data()),
-        broadcaster(broadcaster),
-        player_repository(player_repository) {}
+        command_queue(command_queue), broadcaster(broadcaster), player_repository(player_repository) {}
 
 
 void GameLoop::run() {
+    game_world.init();
+
     RateTimer timer(FPS);
     int current_iteration = 0;
     int last_iteration = -1;

@@ -4,9 +4,10 @@
 #include <random>
 #include <vector>
 
+#include "common/dto/snapshot/map/grid_matrix.h"
+
 #include "position.h"
 #include "tile.h"
-#include "common/dto/snapshot/map/grid_matrix.h"
 
 
 // forward declaration
@@ -20,7 +21,9 @@ private:
     std::vector<std::vector<Tile>> tiles_;
 
 public:
-    explicit Grid(int width, int height, const GridMatrixDTO& grid_data);
+    Grid();
+
+    Grid(int width, int height, const GridMatrixDTO& grid_data);
 
     Tile& get_tile(const Position& position);
 

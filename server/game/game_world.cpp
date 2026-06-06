@@ -5,12 +5,18 @@
 #include "allies/ally.h"
 #include "allies/merchant.h"
 #include "allies/priest.h"
+#include "server/util/server_map_loader.h"
 
 
-GameWorld::GameWorld(const ServerMapDataDTO& data) : grid(data.width, data.height, data.grid) {
-    init_npc(data.npcs);
+GameWorld::GameWorld(): grid() {}
+
+void GameWorld::init() {
+    ServerMapLoader loader;
+    const ServerMapDataDTO map_data = loader.get_server_data();
+
+    this->grid = Grid(map_data.width, map_data.height, map_data.grid);
+    init_npc(map_data.npcs);
 }
-
 
 std::unordered_map<std::string, Player> GameWorld::get_players() const { return players; }
 
@@ -168,8 +174,8 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
 
 void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
     // TODO ir agregando tipos y borrar defaults de prueba
-    for (const auto& npc : npcs) {
-        Position position(npc.x, npc.y+1);
+    for (const auto& npc: npcs) {
+        Position position(npc.x, npc.y + 1);
 
         switch (npc.type) {
             case AllyType::PRIEST: {

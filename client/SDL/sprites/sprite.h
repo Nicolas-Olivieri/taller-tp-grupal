@@ -12,12 +12,14 @@ private:
     SDL2pp::Point position;
     SDL2pp::Point target_position;
 
-    Direction direction;
+    std::optional<Direction> direction;
     SDL2pp::Point size;
 
     std::map<Layer, SpriteLayer> layers;
 
 public:
+    Sprite(SpriteLayer&& base, SDL2pp::Point position, SDL2pp::Point size);
+
     Sprite(SpriteLayer&& body, SDL2pp::Point position, Direction action, SDL2pp::Point size);
 
     void add_layer(Layer layer_num, SpriteLayer&& layer);

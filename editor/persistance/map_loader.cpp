@@ -29,21 +29,19 @@ bool MapLoader::load(const QString& filename) const {
     file.seek(server_end);
 
     // Cargo todos los items
-    load_assets(stream, tiles, ImageType::TILE);
-    load_assets(stream, colliders, ImageType::COLLIDER);
-    load_assets(stream, npcs, ImageType::NPC);
+    load_assets(stream, tiles);
+    load_assets(stream, colliders);
+    load_assets(stream, npcs);
 
     file.close();
     return true;
 }
 
 
-void MapLoader::load_assets(QDataStream& stream, const QHash<uint8_t, AssetData>& lookup_assets_hash,
-                            const ImageType type) const {
+void MapLoader::load_assets(QDataStream& stream, const QHash<uint8_t, AssetData>& lookup_assets_hash) const {
     uint16_t assets_amount;
 
     stream >> assets_amount;
-    data.asset_counter[type] = assets_amount;
 
     for (uint16_t i = 0; i < assets_amount; i++) {
         uint8_t id;

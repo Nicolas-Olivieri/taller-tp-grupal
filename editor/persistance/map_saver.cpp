@@ -1,6 +1,7 @@
 #include "map_saver.h"
 
 #include <QFileDialog>
+#include <algorithm>
 #include <iostream>
 
 #include "grid_range.h"
@@ -49,15 +50,26 @@ QString MapSaver::format_filename(const QString& filename) {
 void MapSaver::get_origin_and_matrix_size() {
     QList<QPoint> base_points = data.occupied_tiles.keys();
 
-    const auto min_max = std::minmax_element(
-            base_points.begin(), base_points.end(),
-            [](const QPoint& a, const QPoint& b) { return a.x() + a.y() < b.x() + b.y(); });
+    if (base_points.empty()) {
+        min_point = QPoint(0, 0);
+        matrix_size = QSize(0, 0);
+        return;
+    }
 
-    const QPoint min = *min_max.first;
-    const QPoint max = *min_max.second;
+    int min_x = base_points[0].x();
+    int min_y = base_points[0].y();
+    int max_x = min_x;
+    int max_y = min_y;
 
-    min_point = min;
-    matrix_size = QSize(max.x() - min.x() + 1, max.y() - min.y() + 1);
+    for (const auto& point: base_points) {
+        min_x = std::min(min_x, point.x());
+        min_y = std::min(min_y, point.y());
+        max_x = std::max(max_x, point.x());
+        max_y = std::max(max_y, point.y());
+    }
+
+    min_point = QPoint(min_x, min_y);
+    matrix_size = QSize(max_x - min_x + 1, max_y - min_y + 1);
 }
 
 void MapSaver::store_offset_and_dimensions_data(QDataStream& stream) const {

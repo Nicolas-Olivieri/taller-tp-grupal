@@ -48,6 +48,7 @@ target_sources(taller_common
         dto/snapshot/info/player_stats.cpp
 
         util/string_utils.cpp
+        util/toml_helper.cpp
 
         dto/lobby/existence.cpp
         dto/lobby/create_player.cpp
@@ -106,6 +107,7 @@ target_sources(taller_common
         dto/snapshot/info/player_stats.h
 
         util/string_utils.h
+        util/toml_helper.h
 
         dto/lobby/existence.h
         dto/lobby/create_player.h

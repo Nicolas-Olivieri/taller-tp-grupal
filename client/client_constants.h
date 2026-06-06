@@ -12,4 +12,14 @@
 
 enum class Layer { BODY = 0, HEAD = 1, HELMET = 2, WEAPON = 3, SHIELD = 4 };
 
+// TODO ir agregando según se agreguen categorias en los TOML
+enum class SpriteCategory {
+    // Walking
+    HEAD,
+    BODY,
+    // Items / Static
+    TILE,
+    COLLIDER,
+    NPC
+};
 #endif  // CLIENT_CONSTANTS_H

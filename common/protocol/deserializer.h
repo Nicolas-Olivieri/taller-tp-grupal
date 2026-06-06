@@ -13,8 +13,8 @@
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/info/playerinfo.h"
-#include "common/socket.h"
 #include "common/dto/snapshot/map/asset_info.h"
+#include "common/socket.h"
 
 class Deserializer {
 private:

@@ -26,9 +26,7 @@ void ConnectionHandler::stop() {
     sender.join();
 }
 
-ClientMapDataDTO ConnectionHandler::receive_map() {
-    return receiver.receive_map();
-}
+ClientMapDataDTO ConnectionHandler::receive_map() { return receiver.receive_map(); }
 
 bool ConnectionHandler::try_pop_snapshot(SnapshotDTO& snapshot) { return receiver.try_pop(snapshot); }
 

@@ -40,7 +40,7 @@ void Serializer::serialize(const CreatePlayerDTO& player_data) {
     serialize(player_data.race);
 }
 
-void Serializer::serialize(const ClientMapDataDTO &map) {
+void Serializer::serialize(const ClientMapDataDTO& map) {
     serialize(static_cast<uint8_t>(Message::MAP));
     serialize(map.world_width);
     serialize(map.world_height);

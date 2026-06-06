@@ -11,6 +11,8 @@
 #include "toml.hpp"
 #include "ui_editor.h"
 
+#define TILE_SIZE 32
+
 Editor::Editor(QWidget* parent):
         QMainWindow(parent),
         ui(new Ui::Editor),
@@ -45,7 +47,6 @@ Editor::Editor(QWidget* parent):
 }
 
 
-
 QHash<uint8_t, AssetData> Editor::populate_hash(const std::string& category_name, const ImageType type) {
     const auto data = toml::parse(DATA_PATH "/assets_info.toml");
     auto assets = toml::find<std::vector<AssetData>>(data, category_name);
@@ -54,7 +55,9 @@ QHash<uint8_t, AssetData> Editor::populate_hash(const std::string& category_name
     for (auto& tile: assets) {
         auto path = QString("%1/%2/%3.png").arg(DATA_PATH).arg(category_name.data()).arg(tile.id);
         tile.type = type;
-        tile.img = QPixmap(path);
+
+        QSize tile_size(tile.tile_width * TILE_SIZE, tile.tile_height * TILE_SIZE);
+        tile.img = QPixmap(path).copy(QRect(QPoint(0, 0), tile_size));
 
         hash.insert({{tile.id, tile}});
     }

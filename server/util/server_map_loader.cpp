@@ -1,85 +1,88 @@
 #include "server_map_loader.h"
 
 #include <fstream>
+#include <iostream>
+#include <vector>
+
 #include <netinet/in.h>
 
-ServerMapLoader::ServerMapLoader() : map_path(DATA_PATH "/map/map.bin") {}
+#define MAGIC_NUMBER 0xFAF4
 
-ServerMapDataDTO ServerMapLoader::get_server_data() {
-    std::ifstream map;
-
-    try {
-        map.open(map_path, std::ios::binary);
-    } catch (std::ifstream::failure& e) {
+ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
+    // La acción inmediata a crearse es leerlo (para cliente o servidor), por lo que no se mantiene mucho
+    // tiempo abierto
+    map.open(map_path, std::ios::binary);
+    if (!map.is_open()) {
         throw MapFileNotFound(map_path);
     }
 
-    // Leo el magic number (2 bytes) y los 4 bytes de offset (inicio y fin de bytes del servidor)
-    parse_int<uint16_t>(map);
-    parse_int<uint32_t>(map);
+    // Valido que el archivo sea del formato correcto
+    auto magic_number = parse_int<uint16_t>();
+    if (magic_number != MAGIC_NUMBER) {
+        throw InvalidFile(map_path);
+    }
+}
 
-    auto width = parse_int<uint16_t>(map);
-    auto height = parse_int<uint16_t>(map);
+ServerMapDataDTO ServerMapLoader::get_server_data() {
+    // Leo los 4 bytes de offset (inicio y fin de bytes del servidor)
+    parse_int<uint32_t>();
+
+    auto width = parse_int<uint16_t>();
+    auto height = parse_int<uint16_t>();
 
     std::vector<std::vector<bool>> grid_values;
     for (int y = 0; y < height; y++) {
         std::vector<bool> row;
         for (int x = 0; x < width; x++) {
-            bool value = parse_int<uint8_t>(map);
+            const bool value = parse_int<uint8_t>();
             row.push_back(value);
         }
         grid_values.push_back(row);
     }
     GridMatrixDTO grid(grid_values);
 
-    auto npc_amount = parse_int<uint16_t>(map);
+    const auto npc_amount = parse_int<uint16_t>();
     std::vector<AllyInfoDTO> npcs;
     for (int i = 0; i < npc_amount; i++) {
-        auto id = parse_int<uint8_t>(map);
-        auto x = parse_int<uint16_t>(map);
-        auto y = parse_int<uint16_t>(map);
+        auto id = parse_int<uint8_t>();
+        auto x = parse_int<uint16_t>();
+        auto y = parse_int<uint16_t>();
 
-        npcs.emplace_back(static_cast<AllyType>(id),x,y);
+        npcs.emplace_back(static_cast<AllyType>(id), x, y);
     }
 
-    return {width,height,grid,npcs};
+    map.close();
+
+    return {width, height, grid, npcs};
 }
 
 ClientMapDataDTO ServerMapLoader::get_client_data() {
-    std::ifstream map;
+    const auto server_start = parse_int<uint16_t>();
+    const auto server_end = parse_int<uint16_t>();
 
-    try {
-        map.open(map_path, std::ios::binary);
-    } catch (std::ifstream::failure& e) {
-        throw MapFileNotFound(map_path);
-    }
+    auto width = parse_int<uint16_t>();
+    auto height = parse_int<uint16_t>();
 
-    // Leo el magic number (2 bytes)
-    parse_int<uint16_t>(map);
-    auto server_start = parse_int<uint16_t>(map);
-    auto server_end = parse_int<uint16_t>(map);
+    // Salteo la parte que corresponde al servidor
+    map.ignore(server_end - server_start);
 
-    auto width = parse_int<uint16_t>(map);
-    auto height = parse_int<uint16_t>(map);
+    std::vector<AssetInfoDTO> tiles = get_assets();
+    std::vector<AssetInfoDTO> colliders = get_assets();
+    std::vector<AssetInfoDTO> npcs = get_assets();
 
-    // Salteo la parte
-    map.ignore(server_end-server_start);
+    map.close();
 
-    std::vector<AssetInfoDTO> tiles = get_assets(map);
-    std::vector<AssetInfoDTO> colliders = get_assets(map);
-    std::vector<AssetInfoDTO> npcs = get_assets(map);
-
-    return {width, height, tiles,colliders,npcs};
+    return {width, height, tiles, colliders, npcs};
 }
 
 
-std::vector<AssetInfoDTO> ServerMapLoader::get_assets(std::ifstream& map) {
-    const auto size = parse_int<uint16_t>(map);
+std::vector<AssetInfoDTO> ServerMapLoader::get_assets() {
+    const auto size = parse_int<uint16_t>();
     std::vector<AssetInfoDTO> assets;
     for (int i = 0; i < size; i++) {
-        auto id = parse_int<uint8_t>(map);
-        auto x = parse_int<uint16_t>(map);
-        auto y = parse_int<uint16_t>(map);
+        auto id = parse_int<uint8_t>();
+        auto x = parse_int<uint16_t>();
+        auto y = parse_int<uint16_t>();
 
         assets.emplace_back(id, x, y);
     }
@@ -88,9 +91,9 @@ std::vector<AssetInfoDTO> ServerMapLoader::get_assets(std::ifstream& map) {
 }
 
 template <typename intType>
-intType ServerMapLoader::parse_int(std::ifstream& file) {
+intType ServerMapLoader::parse_int() {
     intType data = 0;
-    file.read(reinterpret_cast<char*>(&data), sizeof(data));
+    map.read(reinterpret_cast<char*>(&data), sizeof(data));
 
     if (sizeof(intType) == 2) {
         return ntohs(data);

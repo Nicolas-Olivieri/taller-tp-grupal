@@ -19,6 +19,13 @@ width = 4
 height = 4
 unwalkable = [0,0,0,0]
 
+[[tiles]]
+id = 4
+name = "Costa arena izq."
+width = 2
+height = 2
+unwalkable = [0,0,1,2]
+
 [[colliders]]
 id = 0
 name = "Carreta"

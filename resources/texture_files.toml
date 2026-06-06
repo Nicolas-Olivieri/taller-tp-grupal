@@ -2,6 +2,6 @@
 [file_ids]
 body = [0,3]
 head = [0,4]
-tiles = [0,2]
+tiles = [0,4]
 colliders = [0,0]
 npcs = [0,0]

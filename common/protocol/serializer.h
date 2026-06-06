@@ -21,8 +21,8 @@
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/player_stats.h"
-#include "common/dto/snapshot/snapshot.h"
 #include "common/dto/snapshot/map/client_map_data.h"
+#include "common/dto/snapshot/snapshot.h"
 
 class Serializer {
 private:

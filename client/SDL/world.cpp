@@ -1,5 +1,7 @@
 #include "world.h"
 
+#include <algorithm>
+#include <memory>
 #include <vector>
 
 #include "camera.h"
@@ -8,34 +10,38 @@ World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::
         renderer(renderer),
         texture_pool(renderer),
         sprite_creator(renderer),
-        world_view(SDL2pp::Point(0, 0), SDL2pp::Point(map_data.world_width*TILE_SIZE, map_data.world_height*TILE_SIZE)),
+        world_view(SDL2pp::Point(0, 0),
+                   SDL2pp::Point(map_data.world_width * TILE_SIZE, map_data.world_height * TILE_SIZE)),
         player_name(player_name) {
     init_assets(map_data);
 }
 
 void World::init_assets(const ClientMapDataDTO& map_data) {
-    for (const auto& tile_data : map_data.tiles) {
-        Sprite tile = sprite_creator.create_asset("tiles", tile_data);
+    for (const auto& tile_data: map_data.tiles) {
+        Sprite tile = sprite_creator.create_asset(SpriteCategory::TILE, tile_data);
         map_tiles.emplace(std::make_shared<Sprite>(tile));
     }
 
-    for (const auto& collider_data : map_data.colliders) {
-        Sprite collider = sprite_creator.create_asset("colliders", collider_data);
+    for (const auto& collider_data: map_data.colliders) {
+        Sprite collider = sprite_creator.create_asset(SpriteCategory::COLLIDER, collider_data);
         map_items.emplace(std::make_shared<Sprite>(collider));
     }
 
-    for (const auto& npc_data : map_data.npcs) {
-        Sprite npc = sprite_creator.create_asset("npcs", npc_data);
+    for (const auto& npc_data: map_data.npcs) {
+        Sprite npc = sprite_creator.create_asset(SpriteCategory::NPC, npc_data);
         map_items.emplace(std::make_shared<Sprite>(npc));
     }
 }
 
 
-
 void World::update_visuals(const int it) {
-    for (auto& [name, entity]: players) {
-        entity->update_visual_position();
-        entity->update_frame(it);
+    for (auto& tile: map_tiles) {
+        tile->update_frame(it);
+    }
+
+    for (auto& item: map_items) {
+        item->update_visual_position();
+        item->update_frame(it);
     }
 }
 
@@ -55,20 +61,20 @@ void World::render_in_z_order(const Camera& camera) const {
     for (const auto& tile: viewed_tiles) {
         tile->render(camera.get_view().GetTopLeft());
     }
-    for (const auto& item : viewed_items) {
+    for (const auto& item: viewed_items) {
         item->render(camera.get_view().GetTopLeft());
     }
     renderer.Present();
 }
 
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(const Camera &camera, const std::set<std::shared_ptr<Sprite>> &sprites) const {
+std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
+        const Camera& camera, const std::set<std::shared_ptr<Sprite>>& sprites) const {
     std::vector<std::shared_ptr<Sprite>> viewed_sprites;
 
-    for (auto& item : sprites) {
-        if (item->intersects(camera.get_view(), camera.get_view().GetTopLeft())) {
-            viewed_sprites.push_back(item);
-        }
-    }
+    std::ranges::copy_if(sprites, std::back_inserter(viewed_sprites), [camera](auto& item) {
+        return item->intersects(camera.get_view(), camera.get_view().GetTopLeft());
+    });
+
     return viewed_sprites;
 }
 
@@ -80,7 +86,7 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
         }
 
         // Se le resta 1 para que los jugadores se impriman "una celda para arriba" y se alinee con el mapa
-        SDL2pp::Point position(player_info.x, player_info.y-1);
+        SDL2pp::Point position(player_info.x, player_info.y - 1);
         players.at(player_info.name)->set_target_position(player_info.direction, position);
     }
 }

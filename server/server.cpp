@@ -16,7 +16,11 @@ Server::Server(const char* servname):
 
 void Server::run() {
     acceptor.start();
-    game_acceptor.start();
+    try {
+        game_acceptor.start();
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
 
     // TODO: revisar condición de corte
     while (std::getchar() != CMD_EXIT) {}
