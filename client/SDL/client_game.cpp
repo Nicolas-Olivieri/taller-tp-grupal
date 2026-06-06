@@ -55,6 +55,9 @@ void ClientGame::run() {
             return;
 
         update_state_from_server();
+        if (not keep_running)
+            return;
+
         renderer.Clear();
 
         world.update_visuals(iteration);
@@ -311,6 +314,12 @@ void ClientGame::send_private_message() {
 }
 
 void ClientGame::update_state_from_server() {
+    if (connection.is_finished()) {
+        keep_running = false;
+        connection.stop();
+        return;
+    }
+
     SnapshotDTO snapshot;
     bool updated = false;
 
@@ -396,7 +405,6 @@ void ClientGame::toggle_chat() {
     } else {
         SDL_StopTextInput();
     }
-    return;
 }
 
 void ClientGame::handle_game_click(const SDL_Event& event) {

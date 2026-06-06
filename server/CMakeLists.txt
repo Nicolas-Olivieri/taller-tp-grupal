@@ -57,6 +57,8 @@ target_sources(taller_server
         persistance/playerdatabase.cpp
         persistance/playerindex.cpp
         persistance/playerrepository.cpp
+        persistance/names_monitor.cpp
+
         config/game_config.cpp
 
         game/player/bank/bank.cpp
@@ -146,6 +148,7 @@ target_sources(taller_server
         persistance/playerdatabase.h
         persistance/playerindex.h
         persistance/playerrepository.h
+        persistance/names_monitor.h
         config/game_config.h
 
         game/player/bank/bank.h

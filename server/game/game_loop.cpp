@@ -15,7 +15,7 @@
 GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster,
                    PlayerRepository& player_repository):
         command_queue(command_queue),
-        game_world(39, 76),
+        game_world(39, 76, player_repository),
         broadcaster(broadcaster),
         player_repository(player_repository) {}
 

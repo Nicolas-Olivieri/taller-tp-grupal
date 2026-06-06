@@ -9,7 +9,8 @@
 #include "allies/priest.h"
 
 
-GameWorld::GameWorld(const int width, const int height): grid(width, height) {
+GameWorld::GameWorld(const int width, const int height, PlayerRepository& player_repository):
+        grid(width, height), player_repository(player_repository) {
     init_npc();
     init_creature();
 }
@@ -175,6 +176,7 @@ void GameWorld::remove_player(const std::string& player_name) {
             creature.stop_targeting();
     }
 
+    player_repository.desconnect(player_name);
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
 }

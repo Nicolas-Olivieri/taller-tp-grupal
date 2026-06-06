@@ -9,6 +9,7 @@
 #include "common/thread/thread.h"
 #include "server/game/player/player.h"
 
+#include "names_monitor.h"
 #include "playerdatabase.h"
 #include "playerindex.h"
 
@@ -17,6 +18,7 @@ private:
     PlayerDataBase database;
     PlayerIndex index;
     Queue<std::unordered_map<std::string, PlayerData>> async_requests;
+    NamesMonitor players_connected;
 
     void update_current_players_state(const std::unordered_map<std::string, PlayerData>& players_data);
 
@@ -32,6 +34,13 @@ public:
     PlayerData get(const std::string& username);
 
     bool exists(const std::string& username);
+
+    bool is_connected(const std::string& username);
+
+    void connect(const std::string& username);
+
+    // elimina al nombre de la lista de usuarios conectados, si no está el jugador, no hace nada
+    void desconnect(const std::string& username);
 
     ~PlayerRepository();
 };

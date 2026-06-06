@@ -58,3 +58,11 @@ PlayerRepository::~PlayerRepository() {
     this->async_requests.close();
     join();
 }
+
+bool PlayerRepository::is_connected(const std::string& username) {
+    return players_connected.contains(username);
+}
+
+void PlayerRepository::connect(const std::string& username) { players_connected.insert(username); }
+
+void PlayerRepository::desconnect(const std::string& username) { players_connected.erase(username); }

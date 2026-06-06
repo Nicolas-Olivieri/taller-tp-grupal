@@ -13,6 +13,7 @@
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/persistance/playerrepository.h"
 
 #include "grid.h"
 #include "position.h"
@@ -29,8 +30,10 @@ private:
 
     std::vector<std::unique_ptr<Ally>> allies;
 
+    PlayerRepository& player_repository;
+
 public:
-    explicit GameWorld(int width, int height);
+    explicit GameWorld(int width, int height, PlayerRepository& pLayer_repository);
 
     const std::unordered_map<std::string, Player>& get_players() const;
 
