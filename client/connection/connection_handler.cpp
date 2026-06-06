@@ -30,6 +30,4 @@ bool ConnectionHandler::try_pop_snapshot(SnapshotDTO& snapshot) { return receive
 
 SnapshotDTO ConnectionHandler::pop_snapshot() { return receiver.pop(); }
 
-bool ConnectionHandler::is_finished() {
-    return (!receiver.is_alive()) || (!sender.is_alive());
-}
+bool ConnectionHandler::is_finished() { return (!receiver.is_alive()) || (!sender.is_alive()); }
