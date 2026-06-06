@@ -345,6 +345,6 @@ void GameWorld::init_npc() {
 
 void GameWorld::init_creature() {
     Position goblin_position(30, 30);
-    creatures.emplace(1, Creature(1, 0, 0, goblin_position));
+    creatures.emplace(1, Creature(0, 0, 0, goblin_position));
     grid.get_tile(goblin_position).occupy(&creatures.at(1));
 }

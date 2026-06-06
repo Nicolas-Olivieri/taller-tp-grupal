@@ -9,8 +9,8 @@
 
 Killable::Killable(const uint8_t archetype_id, const uint8_t race_id, const uint32_t current_xp_amount,
                    const uint8_t level, const Position position):
-        required_attack_cooldown(GameConfig::get().get_cooldown().attack),
-        required_move_cooldown(GameConfig::get().get_cooldown().move),
+        required_attack_cooldown(GameConfig::get().get_player_cooldown().attack),
+        required_move_cooldown(GameConfig::get().get_player_cooldown().move),
         current_attack_cooldown(0),
         current_move_cooldown(0),
         is_meditating(false),
@@ -20,15 +20,17 @@ Killable::Killable(const uint8_t archetype_id, const uint8_t race_id, const uint
         direction(Direction::IDLE) {}
 
 Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position):
-        required_attack_cooldown(GameConfig::get().get_cooldown().attack),
-        required_move_cooldown(GameConfig::get().get_cooldown().move),
+        required_attack_cooldown(GameConfig::get().get_creature_cooldown().attack),
+        required_move_cooldown(GameConfig::get().get_creature_cooldown().move),
         current_attack_cooldown(0),
         current_move_cooldown(0),
         is_meditating(false),
         stats(race_id, variation_id, level),
         equipment({NO_ITEM, NO_ITEM, NO_ITEM, 1}),  // TODO: sacar hardcodeo
         position(position),
-        direction(Direction::IDLE) {}
+        direction(Direction::IDLE) {
+    std::cout << "creature attack cooldown: " << required_attack_cooldown << std::endl;
+}
 
 bool Killable::can_move() const { return current_move_cooldown == 0; }
 
