@@ -36,7 +36,7 @@ protected:
 public:
     virtual void drop() = 0;
 
-    bool can_move() const;
+    virtual bool can_move() const;
 
     virtual void update_position(const Position& new_position, const Direction& new_direction);
 

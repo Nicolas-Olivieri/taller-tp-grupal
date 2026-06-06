@@ -1,5 +1,6 @@
 #include "game_world.h"
 
+#include <limits>
 #include <utility>
 
 #include "allies/ally.h"
@@ -18,9 +19,13 @@ const std::unordered_map<std::string, Player>& GameWorld::get_players() const { 
 
 const std::unordered_map<uint16_t, Creature>& GameWorld::get_creatures() const { return creatures; }
 
-std::vector<CreatureUpdateStatus> GameWorld::update() {
+WorldUpdateStatus GameWorld::update() {
+    std::vector<std::string> resurrected_players;
     for (auto& [name, player]: players) {
         player.update();
+        if (player.did_just_resurrect()) {
+            resurrected_players.push_back(name);
+        }
     }
 
     remove_dead_creatures();
@@ -43,7 +48,7 @@ std::vector<CreatureUpdateStatus> GameWorld::update() {
         creatures_status.push_back(move_creature(creature, direction));
     }
 
-    return creatures_status;
+    return WorldUpdateStatus(creatures_status, resurrected_players);
 }
 
 Direction GameWorld::next_movement(const Creature& creature) {
@@ -267,9 +272,7 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
     const auto ally = player.get_bound_ally();
     if (ally == nullptr) {
         if (payload.action == AllyAction::RESURRECT) {
-            // TODO: Implementar lógica de detener al jugador un tiempo proporcional a la distancia con el
-            //  sacerdote más cercano, para luego hacer que aparezca junto al mismo
-            return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_RESURRECTED, AllyType::PRIEST));
+            return resurrect_unbounded_player(player);
         }
 
         std::cout << "[World] Jugador " << player_name << " no tiene vinculado a ningún aliado" << std::endl;
@@ -277,6 +280,49 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
     }
 
     return ally->execute(player, payload);
+}
+
+
+AllyExecuteResult GameWorld::resurrect_unbounded_player(Player& player) const {
+    if (player.is_alive()) {
+        return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_IS_ALIVE, AllyType::PRIEST));
+    }
+
+    const Ally* closest_priest = find_closest_priest(player);
+    if (closest_priest != nullptr) {
+        return start_delayed_resurrection(player, closest_priest);
+    }
+
+    return AllyExecuteResult(ResurrectResult(ResurrectStatus::NO_RESULT, AllyType::PRIEST));
+}
+
+
+const Ally* GameWorld::find_closest_priest(const Player& player) const {
+    const Ally* closest_priest = nullptr;
+    double min_distance = std::numeric_limits<double>::max();
+    const Position& player_position = player.get_position();
+    for (const auto& ally_ptr: allies) {
+        if (ally_ptr.get()->get_type() == AllyType::PRIEST) {
+            const Position& priest_position = ally_ptr.get()->get_position();
+            const double distance = player_position.distance_to(priest_position);
+            if (distance < min_distance) {
+                min_distance = distance;
+                closest_priest = ally_ptr.get();
+            }
+        }
+    }
+
+    return closest_priest;
+}
+
+
+AllyExecuteResult GameWorld::start_delayed_resurrection(Player& player, const Ally* priest) const {
+    // TODO: El factor de proporcionalidad debe venir del TOML
+    constexpr double time_factor = 2;
+    const double distance = player.get_position().distance_to(priest->get_position());
+    const double wait_time = distance * time_factor;
+    player.start_delayed_resurrection(wait_time, priest->get_position());
+    return AllyExecuteResult(ResurrectResult(ResurrectStatus::RESURRECTION_PENDING, AllyType::PRIEST));
 }
 
 

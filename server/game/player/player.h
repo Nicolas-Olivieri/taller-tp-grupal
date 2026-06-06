@@ -27,6 +27,12 @@ private:
 
     Ally* bound_ally;
 
+    // TODO: Considerar usar un enum para los estados (vivo, resucitando, muerto)
+    bool just_resurrected;
+    bool is_resurrecting;
+    int resurrection_timer;
+    Position target_resurrection_position;
+
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
 
@@ -98,6 +104,15 @@ public:
     void deposit_item_to_bank(uint8_t item_id);
 
     void withdraw_item_from_bank(uint8_t item_id);
+
+    bool can_move() const override;
+
+    void start_delayed_resurrection(int wait_time, const Position& position);
+
+    bool did_just_resurrect();
+
+private:
+    void complete_delayed_resurrection();
 };
 
 
