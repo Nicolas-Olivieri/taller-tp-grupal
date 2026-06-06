@@ -38,10 +38,6 @@ sudo apt install -y \
 echo -e "${GREEN}[3/6] Clonando repositorio...${NC}"
 if [ ! -d "$PROJECT_DIR" ]; then
   git clone "$REPO_URL" "$PROJECT_DIR"
-  cd "$PROJECT_DIR"
-  git fetch --all
-  git switch feat/Install_integration
-  cd ..
 else
   cd "$PROJECT_DIR"
   git pull
@@ -117,6 +113,6 @@ echo -e "Configuraciones en:     ${INSTALL_CONFIG}"
 echo -e "Datos en:               ${INSTALL_DATA}"
 echo -e "Lanzadores en:          ${DESKTOP_DIR}"
 echo ""
-echo -e "Para ejecutar el servidor: haz doble clic en ${YELLOW}server.sh${NC} (escritorio)"
-echo -e "Para ejecutar el cliente:  haz doble clic en ${YELLOW}client.sh${NC} (escritorio)"
-echo -e "Para ejecutar el editor:   haz doble clic en ${YELLOW}editor.sh${NC}"
+echo -e "Para iniciar el servidor:  ejecute ${YELLOW}server.sh${NC} (escritorio)"
+echo -e "Para comenzar a jugar:     ejecute ${YELLOW}client.sh${NC} (escritorio)"
+echo -e "Para crear nuevos mapas:   ejecute ${YELLOW}editor.sh${NC} (escritorio)"
