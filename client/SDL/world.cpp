@@ -16,17 +16,17 @@ World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::
 void World::init_assets(const ClientMapDataDTO& map_data) {
     for (const auto& tile_data : map_data.tiles) {
         Sprite tile = sprite_creator.create_asset("tiles", tile_data);
-        map_tiles.push_back(std::make_shared<Sprite>(tile));
+        map_tiles.emplace(std::make_shared<Sprite>(tile));
     }
 
     for (const auto& collider_data : map_data.colliders) {
         Sprite collider = sprite_creator.create_asset("colliders", collider_data);
-        map_items.push_back(std::make_shared<Sprite>(collider));
+        map_items.emplace(std::make_shared<Sprite>(collider));
     }
 
     for (const auto& npc_data : map_data.npcs) {
         Sprite npc = sprite_creator.create_asset("npcs", npc_data);
-        map_items.push_back(std::make_shared<Sprite>(npc));
+        map_items.emplace(std::make_shared<Sprite>(npc));
     }
 }
 
@@ -39,24 +39,32 @@ void World::update_visuals(const int it) {
     }
 }
 
-void World::render_in_z_order(const Camera& camera) const {
-    std::vector<std::shared_ptr<Sprite>> viewed_sprites = filter_viewed_sprites(camera);
+bool World::cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_ptr<Sprite>& b) {
+    return a->get_ground_position().y < b->get_ground_position().y;
+}
 
-    for (const auto& entity: viewed_sprites) {
-        entity->render(camera.get_view().GetTopLeft());
+void World::render_in_z_order(const Camera& camera) const {
+    // Obtengo tiles e items (colliders, npcs, players, enemies) que se llegan a ver en la cámara
+    auto viewed_tiles = filter_viewed_sprites(camera, map_tiles);
+    auto viewed_items = filter_viewed_sprites(camera, map_items);
+
+    // Ordeno los items por y
+    std::ranges::sort(viewed_items, cmp_by_y_coord);
+
+    // Renderizo primero los tiles y luego los items por encima
+    for (const auto& tile: viewed_tiles) {
+        tile->render(camera.get_view().GetTopLeft());
+    }
+    for (const auto& item : viewed_items) {
+        item->render(camera.get_view().GetTopLeft());
     }
     renderer.Present();
 }
 
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(const Camera &camera) const {
+std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(const Camera &camera, const std::set<std::shared_ptr<Sprite>> &sprites) const {
     std::vector<std::shared_ptr<Sprite>> viewed_sprites;
-    for (auto& tile : map_tiles) {
-        if (tile->intersects(camera.get_view(), camera.get_view().GetTopLeft())) {
-            viewed_sprites.push_back(tile);
-        }
-    }
 
-    for (auto& item : map_items) {
+    for (auto& item : sprites) {
         if (item->intersects(camera.get_view(), camera.get_view().GetTopLeft())) {
             viewed_sprites.push_back(item);
         }
@@ -83,7 +91,8 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
         switch (action.action) {
             case ActionType::DESPAWN:
                 if (players.contains(action.despawn.player_despawned)) {
-                    players.extract(action.despawn.player_despawned);
+                    auto player = players.extract(action.despawn.player_despawned);
+                    map_items.erase(player.mapped());
                 }
                 break;
             case ActionType::RESURRECTION:
@@ -109,7 +118,7 @@ void World::add_new_player(const PlayerInfoDTO& info) {
     Sprite player = sprite_creator.create_user(info);
     std::shared_ptr<Sprite> ptr = std::make_shared<Sprite>(player);
     players.insert({{info.name, ptr}});
-    map_items.push_back(ptr);
+    map_items.emplace(ptr);
 }
 
 

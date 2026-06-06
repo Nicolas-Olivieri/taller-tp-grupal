@@ -39,6 +39,8 @@ public:
 
     void remove_all_layers();
 
+    SDL2pp::Point get_ground_position() const;
+
 private:
     int get_new_coordinate(const int& current_coordinate, const int& coordinate_diff);
 
