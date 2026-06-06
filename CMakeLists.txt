@@ -68,6 +68,13 @@ endif()
 # Install libSDL2 and libSDL2pp (for client or editor)
 # HEY!! TODO XXX: add more dependendies (either for client, server or editor)
 if(TALLER_CLIENT OR TALLER_EDITOR)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
+
+    if(NOT DEFINED BUILD_SHARED_LIBS)
+        set(BUILD_SHARED_LIBS OFF CACHE BOOL "Compilar bibliotecas como estáticas" FORCE)
+    endif()
+    set(SDL2PP_STATIC ON CACHE BOOL "Forzar SDL2pp estática" FORCE)
+
     include(FetchContent)
     FetchContent_Declare(
         SDL2
@@ -115,11 +122,24 @@ if(TALLER_CLIENT OR TALLER_EDITOR)
     set(SDL2PP_WITH_MIXER ON CACHE BOOL "Enable SDL2_mixer support" FORCE)
     set(SDL2PP_WITH_TTF   ON CACHE BOOL "Enable SDL2_ttf support" FORCE)
 
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries" FORCE)
+
     FetchContent_MakeAvailable(SDL2 SDL2_image SDL2_mixer SDL2_ttf libSDL2pp)
 
-    # N: Yo lo agrego acá para asegurarme que se compile correctamente en el cmake-build-debug
-    option(SDL2PP_WITH_IMAGE "Enable SDL2_image support" ON)
-    find_package(SDL2_image REQUIRED)
+
+    if(NOT TARGET SDL2_image::SDL2_image)
+        add_library(SDL2_image::SDL2_image ALIAS SDL2_image)
+    endif()
+    if(NOT TARGET SDL2_mixer::SDL2_mixer)
+        add_library(SDL2_mixer::SDL2_mixer ALIAS SDL2_mixer)
+    endif()
+    if(NOT TARGET SDL2_ttf::SDL2_ttf)
+        add_library(SDL2_ttf::SDL2_ttf ALIAS SDL2_ttf)
+    endif()
+
+#    # N: Yo lo agrego acá para asegurarme que se compile correctamente en el cmake-build-debug
+#    option(SDL2PP_WITH_IMAGE "Enable SDL2_image support" ON)
+#    find_package(SDL2_image REQUIRED)
 
     # Agrego QT
 
