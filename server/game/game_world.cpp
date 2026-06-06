@@ -173,31 +173,26 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
 
 
 void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
-    // TODO ir agregando tipos y borrar defaults de prueba
     for (const auto& npc: npcs) {
         Position position(npc.x, npc.y + 1);
+        std::unique_ptr<Ally> ally;
 
         switch (npc.type) {
-            case AllyType::PRIEST: {
-                auto priest = std::make_unique<Priest>(position);
-                grid.get_tile(position).occupy(priest.get());
-                allies.push_back(std::move(priest));
+            case AllyType::PRIEST:
+                ally = std::make_unique<Priest>(position);
                 break;
-            }
             case AllyType::MERCHANT:
+                ally = std::make_unique<Merchant>(position);
+                break;
             case AllyType::BANKER:
             case AllyType::NO_ALLY:
+            default:
                 break;
         }
+
+        if (ally) {
+            grid.get_tile(position).occupy(ally.get());
+            allies.push_back(std::move(ally));
+        }
     }
-
-    Position priest_position(10, 10);
-    auto priest = std::make_unique<Priest>(priest_position);
-    grid.get_tile(priest_position).occupy(priest.get());
-    allies.push_back(std::move(priest));
-
-    Position merchant_position(15, 10);
-    auto merchant = std::make_unique<Merchant>(merchant_position);
-    grid.get_tile(merchant_position).occupy(merchant.get());
-    allies.push_back(std::move(merchant));
 }
