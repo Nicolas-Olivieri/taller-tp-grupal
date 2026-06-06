@@ -18,7 +18,11 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         inventory(equipment),
         bank(persisted_data.bank_gold, persisted_data.bank, persisted_data.bank_amounts),
         gold_manager(persisted_data.current_gold, persisted_data.xp_level),
-        bound_ally(nullptr) {
+        bound_ally(nullptr),
+        just_resurrected(false),
+        is_resurrecting(false),
+        resurrection_timer(0),
+        target_resurrection_position(0, 0) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
 }
@@ -34,7 +38,11 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         inventory(equipment),
         bank(persisted_data.bank_gold, persisted_data.bank, persisted_data.bank_amounts),
         gold_manager(persisted_data.current_gold, persisted_data.xp_level),
-        bound_ally(nullptr) {}
+        bound_ally(nullptr),
+        just_resurrected(false),
+        is_resurrecting(false),
+        resurrection_timer(0),
+        target_resurrection_position(0, 0) {}
 
 int Player::attack() {
     if (bound_ally != nullptr) {
@@ -87,6 +95,13 @@ bool Player::can_attack() const {
 void Player::update() {
     Killable::update();
 
+    if (is_resurrecting) {
+        resurrection_timer--;
+        if (resurrection_timer <= 0) {
+            complete_delayed_resurrection();
+        }
+    }
+
     stats.health.update();
 
     if (is_meditating) {
@@ -114,8 +129,8 @@ InteractResult Player::interact(Player& attacker) {
     // TODO Falta considerar
     //  - Fair game
     //  - Daño de los compis del clan?
-    //      (en update del GameWorld -> por cada jugador recorremos las n casillas más cercanas y desde ahí
-    //      player expone un método que le agrega boost y lo usa en su attack)
+    //      (en update del GameWorld -> por cada jugador recorremos las n casillas más cercanas y desde
+    //      ahí player expone un método que le agrega boost y lo usa en su attack)
     //  - fuego amigo (entre compis no nos pegamos)
     //  - zona segura?
 
@@ -203,4 +218,29 @@ void Player::withdraw_item_from_bank(const uint8_t item_id) {
         bank.deposit_item(item_id);
         throw;
     }
+}
+
+bool Player::can_move() const { return not is_resurrecting and Killable::can_move(); }
+
+void Player::start_delayed_resurrection(const int wait_time, const Position& position) {
+    is_resurrecting = true;
+    resurrection_timer = wait_time;
+    target_resurrection_position = Position(position.get_x() + 1, position.get_y());
+}
+
+bool Player::did_just_resurrect() {
+    if (just_resurrected) {
+        just_resurrected = false;
+        return true;
+    }
+
+    return false;
+}
+
+void Player::complete_delayed_resurrection() {
+    position = target_resurrection_position;
+    is_resurrecting = false;
+    just_resurrected = true;
+    heal();
+    std::cout << "[Player] " << player_name << " ha resucitado junto al sacerdote." << std::endl;
 }

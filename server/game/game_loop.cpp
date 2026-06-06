@@ -6,6 +6,8 @@
 #include "common/dto/snapshot/snapshot_builder.h"
 #include "common/util/rate_timer.h"
 
+#include "world_update_status.h"
+
 #define FPS 30
 #define SAVE_FRAME (FPS * 10)
 
@@ -55,10 +57,10 @@ void GameLoop::process_commands(SnapshotBuilder& builder) {
 
 
 void GameLoop::update_world(SnapshotBuilder& builder) {
-    std::vector<CreatureUpdateStatus> creatures_status = game_world.update();
+    const WorldUpdateStatus world_update_status = game_world.update();
 
     // TODO: no sé si esta responsabilidad va acá
-    for (const auto& status: creatures_status) {
+    for (const auto& status: world_update_status.creatures) {
         if (!status.did_attack)
             continue;
         std::string msg = format_creature_attack_message(status);
@@ -67,6 +69,8 @@ void GameLoop::update_world(SnapshotBuilder& builder) {
             builder.add_action(ActionDTO(DeathDTO(status.player_name)));
         builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, status.player_name, msg)));
     }
+
+    broadcast_resurrected_players(builder, world_update_status.resurrected_players);
 }
 
 // TODO: no sé si esta responsabilidad va acá
@@ -84,6 +88,21 @@ std::string GameLoop::format_creature_attack_message(const CreatureUpdateStatus&
     return std::format("{} te quito {} de vida", creature_to_name.at(status.creature_id),
                        status.damage_dealt);
 }
+
+
+void GameLoop::broadcast_resurrected_players(SnapshotBuilder& builder,
+                                             const std::vector<std::string>& resurrected_players) const {
+    const auto& players = game_world.get_players();
+    for (const auto& player_name: resurrected_players) {
+        if (not players.contains(player_name))
+            continue;
+
+        const Player& player = players.at(player_name);
+        auto appearance = AppearanceDTO(player.get_body(), player.get_head());
+        builder.add_action(ActionDTO(ResurrectionDTO(player_name, appearance)));
+    }
+}
+
 
 void GameLoop::broadcast(SnapshotBuilder& builder) {
     builder.add_players(game_world.get_players());

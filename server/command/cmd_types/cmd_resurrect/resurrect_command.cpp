@@ -27,6 +27,7 @@ void ResurrectCommand::build_snapshot(SnapshotBuilder& builder) {
 
     static std::map<ResurrectStatus, std::string> result_to_message(
             {{ResurrectStatus::PLAYER_RESURRECTED, "A sus ordenes! Bienvenido de nuevo a la vida"},
+             {ResurrectStatus::RESURRECTION_PENDING, "Resucitando..."},
              {ResurrectStatus::PLAYER_IS_ALIVE, "Ya estas vivo! Avivate"},
              {ResurrectStatus::ACTION_NOT_ACCEPTED, "Perdon, yo no puedo hacer eso"}});
 

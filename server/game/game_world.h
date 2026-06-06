@@ -16,6 +16,7 @@
 
 #include "grid.h"
 #include "position.h"
+#include "world_update_status.h"
 
 
 class GameWorld {
@@ -35,7 +36,7 @@ public:
 
     const std::unordered_map<uint16_t, Creature>& get_creatures() const;
 
-    std::vector<CreatureUpdateStatus> update();
+    WorldUpdateStatus update();
 
     CreatureUpdateStatus move_creature(Creature& creature, const Direction& direction);
 
@@ -70,6 +71,12 @@ public:
 
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
+
+    AllyExecuteResult resurrect_unbounded_player(Player& player) const;
+
+    const Ally* find_closest_priest(const Player& player) const;
+
+    AllyExecuteResult start_delayed_resurrection(Player& player, const Ally* priest) const;
 
     Direction next_movement(const Creature& creature);
 

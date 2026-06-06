@@ -162,4 +162,6 @@ target_sources(taller_server
         game/allies/merchant.h
         game/allies/priest.h
         game/allies/vendor_ally.h
+
+        game/world_update_status.h
     )
