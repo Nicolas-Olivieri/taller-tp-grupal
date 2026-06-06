@@ -23,7 +23,9 @@ Sprite SpriteCreator::create_user(const PlayerInfoDTO& playerInfo) {
     SpriteLayer head = create_sprite_layer("head", appearance_data.head);
     SpriteLayer body = create_sprite_layer("body", appearance_data.body, SDL2pp::Point(0, HEAD_OFFSET));
 
-    const SDL2pp::Point size = body.frame.Union(head.frame).GetSize();
+    SDL2pp::Rect head_rect(head.offset, head.frame.GetSize());
+    SDL2pp::Rect body_rect(body.offset, body.frame.GetSize());
+    const SDL2pp::Point size = body_rect.Union(head_rect).GetSize();
 
     Sprite sprite(std::move(body), position, playerInfo.direction, size);
     sprite.add_layer(Layer::HEAD, std::move(head));
