@@ -83,6 +83,10 @@ else
     exit 1
 fi
 
+echo -e "${GREEN}    Ajustando permisos...${NC}"
+sudo chown -R $USER:$USER "$INSTALL_CONFIG"
+sudo chown -R $USER:$USER "$INSTALL_DATA"
+
 # No debería de ser debug, pero de momento rompe si no lo ponemos como tal
 echo -e "${GREEN}[5/6] Compilando el proyecto...${NC}"
 cmake -S . -B cmake-build-debug -G Ninja -DCMAKE_BUILD_TYPE=Debug\
