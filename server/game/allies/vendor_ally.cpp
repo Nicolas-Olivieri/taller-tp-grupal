@@ -25,6 +25,9 @@ AllyExecuteResult VendorAlly::handle_buy_item(Player& player, const uint8_t item
 
     } catch (const NotEnoughGold&) {
         return AllyExecuteResult(BuyResult(BuyStatus::NOT_ENOUGH_GOLD, type));
+
+    } catch (const InventoryFull&) {
+        return AllyExecuteResult(BuyResult(BuyStatus::INVENTORY_FULL, type));
     }
 }
 
