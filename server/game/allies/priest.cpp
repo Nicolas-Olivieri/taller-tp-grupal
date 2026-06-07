@@ -1,11 +1,13 @@
 #include "priest.h"
 
-#include "server/game/player/inventory/item_mapper.h"
+#include "server/config/game_config.h"
 #include "server/game/player/player.h"
+#include "server/util/calculator.h"
 
 
 Priest::Priest(const Position& position):
-        VendorAlly(position, AllyType::PRIEST, ItemMapper::get_random_priest_items()) {}
+        VendorAlly(position, AllyType::PRIEST,
+                   Calculator::random_number(0, GameConfig::get().get_priest_max_id())) {}
 
 
 AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& payload) const {

@@ -4,113 +4,80 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "server/persistance/playerdata.h"
+#include "server/game/items/item_mapper.h"
+#include "server/persistance/playerdata.h"  // TODO: borrar después de meter el TOML
 
-#include "item_mapper.h"
+Inventory::Inventory(std::span<const uint8_t> items_id, std::span<const uint8_t> items_amount):
+        max_item_amount(INVENTORY_AMOUNT) {
+    assert(items_id.size() == items_amount.size());
+    assert(items_id.size() <= max_item_amount);
 
-// ver comentario en el .h
-Inventory::Inventory(const Equipment& equipment) {
-    item_to_amount_map[equipment.weapon] = 1;  // TODO: sacar este hardcodeo
-}
-
-void Inventory::use_item(Stats& stats, Equipment& equipment, uint8_t item) {
-    if (!item_to_amount_map.contains(item)) {
-        return;
-    }
-
-    if (ItemMapper::is_equipable(item)) {
-        equip_item(equipment, item);
-    } else if (ItemMapper::is_usable(item)) {
-        use_usable_item(stats, equipment, item);
+    for (size_t i = 0; i < items_id.size(); i++) {
+        if (items_amount[i] > 0)
+            items_amounts[items_id[i]] = items_amount[i];
     }
 }
 
-void Inventory::drop_item(Equipment& equipment, uint8_t item) {
-    if (!item_to_amount_map.contains(item)) {
+Inventory::Inventory(): max_item_amount(INVENTORY_AMOUNT) {}
+
+void Inventory::use_item(Stats& stats, Equipment& equipment, uint8_t item_id) {
+    if (!items_amounts.contains(item_id))
         throw ItemNotOwned();
-    }
 
-    if (is_equipped(equipment, item)) {
+    Item item = ItemMapper::parse_item(item_id);
+    uint8_t unequipped = std::visit(Use{stats, equipment}, item);
+
+    if (unequipped != NO_ITEM)
+        add_amount_safely(unequipped);
+
+    consume_item(item_id);
+}
+
+void Inventory::drop_item(const Equipment& equipment, uint8_t item) {
+    if (!items_amounts.contains(item))
+        throw ItemNotOwned();
+
+    if (!items_amounts.contains(item) && is_equipped(equipment, item))
         throw ItemEquipped();
-    }
 
-    consume_item(equipment, item);
-    // TODO lo debería soltar/devolver??
+    consume_item(item);
 }
 
 void Inventory::acquire_item(uint8_t item) {
-    if (!item_to_amount_map.contains(item)) {
-        acquire_new_item(item);
-        return;
-    }
-    item_to_amount_map[item]++;
-}
-
-void Inventory::acquire_new_item(const uint8_t item) {
-    // TODO: INVENTORY_AMOUNT debería recuperase de un archivo TOML
-    if (item_to_amount_map.size() >= INVENTORY_AMOUNT) {
+    if (!items_amounts.contains(item) && items_amounts.size() >= max_item_amount)
         throw InventoryFull();
-    }
 
-    item_to_amount_map[item] = 1;
+    add_amount_safely(item);
 }
 
-void Inventory::equip_item(Equipment& equipment, uint8_t item) {
-    // TODO: considerar todas las ranuras
-    equipment.weapon = item;
+void Inventory::unequip_item(Equipment& equipment, uint8_t item_id) {
+    Item item = ItemMapper::parse_item(item_id);
+    bool could_unequip = std::visit(Unequip{equipment}, item);
+
+    if (could_unequip)
+        add_amount_safely(item_id);
 }
 
-void Inventory::unequip_item(Equipment& equipment, uint8_t /* item */) {
-    // TODO debería verificar que lo tengo equipado antes
-    // TODO: considerar todas las ranuras
-    equipment.weapon = NO_ITEM;
-}
-
-bool Inventory::is_equipped(const Equipment& equipment, uint8_t item) {
+bool Inventory::is_equipped(const Equipment& equipment, uint8_t item) const {
     return equipment.armor == item || equipment.shield == item || equipment.helmet == item ||
            equipment.weapon == item;
 }
 
-void Inventory::use_usable_item(Stats& stats, Equipment& equpiment, uint8_t item) {
-    assert(ItemMapper::is_usable(item));
-    assert(item_to_amount_map.contains(item));
+void Inventory::consume_item(uint8_t item) {
+    assert(items_amounts.contains(item));
 
-    const uint16_t effect_amount = ItemMapper::get_usable_effect_amount(item);
+    items_amounts[item]--;
 
-    switch (static_cast<UsableTypeEffect>(ItemMapper::get_usable_type_effect(item))) {
-        case UsableTypeEffect::HEALTH:
-            stats.health.recover(effect_amount);
-            break;
-        case UsableTypeEffect::MANA:
-            stats.mana.recover(effect_amount);
-            break;
-        default:
-            throw std::runtime_error("Inventory encontró un tipo inválido de efecto de usable");
-    }
-
-    consume_item(equpiment, item);
-}
-
-int Inventory::get_range(const Equipment& equipment) const {
-    if (equipment.weapon == NO_ITEM)
-        return 1;
-
-    return ItemMapper::get_range(equipment.weapon);
-}
-
-int Inventory::get_attack_cost(const Equipment& equipment) const {
-    return ItemMapper::get_mana_cost(equipment.weapon);
-}
-
-void Inventory::consume_item(Equipment& equipment, uint8_t item) {
-    assert(item_to_amount_map.contains(item));
-
-    item_to_amount_map[item]--;
-
-    if (item_to_amount_map[item] == 0) {
-        if (is_equipped(equipment, item)) {
-            unequip_item(equipment, item);
-        }
-        item_to_amount_map.extract(item);
+    if (items_amounts[item] == 0) {
+        items_amounts.extract(item);
     }
 }
+
+void Inventory::add_amount_safely(uint8_t item) {
+    if (items_amounts[item] == UINT8_MAX)
+        throw SlotFull();
+
+    items_amounts[item]++;
+}
+
+const std::unordered_map<uint8_t, uint8_t>& Inventory::get_items() const { return this->items_amounts; }

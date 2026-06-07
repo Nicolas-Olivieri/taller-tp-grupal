@@ -4,18 +4,18 @@
 #include <cassert>
 #include <utility>
 
-#include "server/game/player/inventory/item_mapper.h"
+#include "server/config/game_config.h"
 #include "server/game/player/player.h"
 #include "server/util/calculator.h"
 #include "state/idlestate.h"
 
-#define EXTRA_TARGET_RANGE 3
+#define EXTRA_TARGET_RANGE 5  // TODO: toml
 
 // TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
 // ditintos niveles
 Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
                    const Position& position):
-        Killable(race, variation, 5, position),
+        Killable(race, variation, 5, position, Equipment{0, 0, 0, 1}),
         sub_id(sub_id),
         state(std::make_unique<IdleState>()),
         target(nullptr) {}
@@ -49,7 +49,7 @@ CreatureUpdateStatus Creature::attack_player() {
 int Creature::attack() {
     current_attack_cooldown = required_attack_cooldown;
 
-    const int mana_cost = ItemMapper::get_mana_cost(equipment.weapon);
+    const int mana_cost = get_attack_cost();
     stats.mana.loose(mana_cost);
 
     return Calculator::calculate_damage(stats.strength, equipment);
@@ -59,22 +59,33 @@ bool Creature::can_attack() const {
     if (current_attack_cooldown != 0)
         return false;
 
-    int mana_cost = ItemMapper::get_mana_cost(equipment.weapon);
+    int mana_cost = get_attack_cost();
 
     return mana_cost <= stats.mana.get_current();
 }
 
 // TODO: modularizar
 bool Creature::can_reach(const Position& other_position) const {
-    uint8_t range = ItemMapper::get_range(equipment.weapon);
-
-    return std::abs(position.get_x() - other_position.get_x()) <= range and
-           std::abs(position.get_y() - other_position.get_y()) <= range;
+    uint8_t range = get_weapon_range();
+    return is_in_range(other_position, range);
 }
 
 bool Creature::can_target(const Position& other_position) const {
-    uint8_t range = ItemMapper::get_range(equipment.weapon) + EXTRA_TARGET_RANGE;
+    uint8_t range = get_weapon_range() + EXTRA_TARGET_RANGE;
+    return is_in_range(other_position, range);
+}
 
+uint8_t Creature::get_weapon_range() const {
+    WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
+    return data.range;
+}
+
+uint16_t Creature::get_attack_cost() const {
+    WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
+    return data.mana_cost;
+}
+
+bool Creature::is_in_range(const Position& other_position, uint8_t range) const {
     return std::abs(position.get_x() - other_position.get_x()) <= range and
            std::abs(position.get_y() - other_position.get_y()) <= range;
 }

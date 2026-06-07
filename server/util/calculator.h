@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <random>
 
-#include "server/game/equipment.h"
+#include "server/game/items/equipment.h"
 
 
 class Calculator {
@@ -37,9 +37,9 @@ public:
 
     static uint8_t calculate_scalable_stat(uint8_t base, uint8_t level, float multiplier);
 
-private:
     static int random_number(const int min, const int max);
 
+private:
     static float random_float(const float min, const float max);
 
     static int get_random_from_item(const uint8_t item);

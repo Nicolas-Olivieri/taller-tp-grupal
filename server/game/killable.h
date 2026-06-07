@@ -1,7 +1,7 @@
 #ifndef KILLABLE_H
 #define KILLABLE_H
 
-#include "server/game/equipment.h"
+#include "server/game/items/equipment.h"
 #include "server/game/stats/stats.h"
 
 #include "attacker.h"
@@ -29,9 +29,10 @@ protected:
     Direction direction;
 
     Killable(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t level,
-             Position position);
+             Position position, const Equipment& equipment);
 
-    Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position);
+    Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position,
+             const Equipment& equipment);
 
 public:
     virtual void drop() = 0;

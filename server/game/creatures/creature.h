@@ -5,7 +5,6 @@
 
 #include "server/command/cmd_results/interact/interact_result.h"
 #include "server/game/attacker.h"
-#include "server/game/equipment.h"
 #include "server/game/killable.h"
 #include "server/game/position.h"
 #include "state/creaturestate.h"
@@ -18,6 +17,12 @@ private:
     std::unique_ptr<CreatureState> state;
 
     Player* target;
+
+    uint8_t get_weapon_range() const;
+
+    uint16_t get_attack_cost() const;
+
+    bool is_in_range(const Position& other_position, uint8_t range) const;
 
 public:
     // TODO: mover métodos que no son públicos a la sección private

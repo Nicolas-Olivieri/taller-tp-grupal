@@ -2,15 +2,20 @@
 #define INVENTORY_H
 
 #include <cstdint>
-#include <map>
+#include <span>
 #include <stdexcept>
+#include <unordered_map>
 
-#include "server/game/equipment.h"
+#include "server/game/items/equipment.h"
 #include "server/game/stats/stats.h"
 
 
 struct InventoryFull: public std::runtime_error {
     InventoryFull(): std::runtime_error("The player's inventory is full.") {}
+};
+
+struct SlotFull: public std::runtime_error {
+    SlotFull(): std::runtime_error("The player cannot add more items of this type.") {}
 };
 
 
@@ -23,42 +28,33 @@ struct ItemEquipped: public std::runtime_error {
     ItemEquipped(): std::runtime_error("The player has this item equipped.") {}
 };
 
-
 class Inventory {
-
     // Mapa de item_id a cantidad en posesión de ese item
-    std::map<uint8_t, uint8_t> item_to_amount_map;
+    std::unordered_map<uint8_t, uint8_t> items_amounts;
+    uint8_t max_item_amount;
     // TODO agregar maximo de items
 
 public:
-    // TODO dejar de hardcodear, creo que podría usarse un constructor default, aprovechandose que el NO_ITEM
-    // es 0
-    explicit Inventory(const Equipment& equipment);
+    Inventory();
+
+    Inventory(std::span<const uint8_t> items_id, std::span<const uint8_t> items_amount);
 
     void use_item(Stats& stats, Equipment& equipment, uint8_t item);
 
-    void acquire_item(uint8_t item);
-
-    void drop_item(Equipment& equipment, uint8_t item);
-
-    // consigue el rango de ataque
-    int get_range(const Equipment& equipment) const;
-
-    int get_attack_cost(const Equipment& equipment) const;
-
-private:
-    void acquire_new_item(uint8_t item);
-
-    // TODO actualizar los métodos -> ahora son solo equipar y desequipar el arma
-    void equip_item(Equipment& equipment, uint8_t item);
-
     void unequip_item(Equipment& equipment, uint8_t item);
 
-    void use_usable_item(Stats& stats, Equipment& equpiment, uint8_t item);
+    void acquire_item(uint8_t item);
 
-    bool is_equipped(const Equipment& equipment, uint8_t item);
+    void drop_item(const Equipment& equipment, uint8_t item);
 
-    void consume_item(Equipment& equipment, uint8_t item);
+    const std::unordered_map<uint8_t, uint8_t>& get_items() const;
+
+private:
+    bool is_equipped(const Equipment& equipment, uint8_t item) const;
+
+    void consume_item(uint8_t item);
+
+    void add_amount_safely(uint8_t item);
 };
 
 
