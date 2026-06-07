@@ -35,7 +35,14 @@ target_sources(taller_common
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/info/creatureinfo.cpp
+
+        dto/snapshot/map/asset_info.cpp
+        dto/snapshot/map/client_map_data.cpp
+        dto/snapshot/map/grid_matrix.cpp
+        dto/snapshot/map/server_map_data.cpp
+
         dto/snapshot/snapshot_builder.cpp
+
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
@@ -47,6 +54,7 @@ target_sources(taller_common
         dto/snapshot/info/player_stats.cpp
 
         util/string_utils.cpp
+        util/toml_helper.cpp
 
         dto/lobby/existence.cpp
         dto/lobby/create_player.cpp
@@ -91,7 +99,14 @@ target_sources(taller_common
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/info/creatureinfo.h
+
+        dto/snapshot/map/asset_info.h
+        dto/snapshot/map/client_map_data.h
+        dto/snapshot/map/grid_matrix.h
+        dto/snapshot/map/server_map_data.h
+
         dto/snapshot/snapshot_builder.h
+
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h
@@ -104,6 +119,7 @@ target_sources(taller_common
         dto/snapshot/info/player_stats.h
 
         util/string_utils.h
+        util/toml_helper.h
 
         dto/lobby/existence.h
         dto/lobby/create_player.h

@@ -1,19 +1,22 @@
 #include "grid.h"
 
-Grid::Grid(const int width, const int height):
+#include <algorithm>
+#include <utility>
+
+Grid::Grid(): width_(0), height_(0) {}
+
+Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         width_(width),
         height_(height),
         directions({Direction::DOWN, Direction::RIGHT, Direction::LEFT, Direction::UP}) {
-    for (int x = 0; x < width; ++x) {
-        std::vector<Tile> row;
-        for (int y = 0; y < height; ++y) {
-            if (y < height_ / 2) {
-                row.emplace_back(true);
-            } else {
-                row.emplace_back(false);
-            }
-        }
-        tiles_.emplace_back(row);
+    for (const auto& row: grid_data.walkable_tiles) {
+        std::vector<Tile> tile_row;
+        tile_row.reserve(row.size());
+
+        std::ranges::transform(row, std::back_inserter(tile_row),
+                               [](auto tile_value) { return Tile(tile_value); });
+
+        tiles_.emplace_back(std::move(tile_row));
     }
 }
 
@@ -25,7 +28,7 @@ Tile& Grid::get_tile(const Position& position) {
     if (x < 0 or x >= width_ or y < 0 or y >= height_)
         throw std::out_of_range("Position out of range");
 
-    return tiles_[x][y];
+    return tiles_[y][x];
 }
 
 
@@ -46,7 +49,7 @@ Position Grid::spawn() const {
 bool Grid::is_tile_available(int x, int y) const {
     bool is_in_range = x >= 0 && y >= 0 && x < width_ && y < height_;
 
-    return is_in_range && tiles_[x][y].is_walkable() && tiles_[x][y].occupant() == nullptr;
+    return is_in_range && tiles_[y][x].is_walkable() && tiles_[y][x].occupant() == nullptr;
 }
 
 // TODO: seguramente se puede hacer sin crear tantos objetos

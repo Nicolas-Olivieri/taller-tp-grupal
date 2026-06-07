@@ -33,7 +33,7 @@ protected:
     void mouseMoveEvent(QMouseEvent* event) override;
 
 private slots:
-    void conect_match();
+    void connect_match();
 
     void send_creation_data(const CreatePlayerDTO& player_data);
 

@@ -183,8 +183,8 @@ void MapCanvas::set_unwalkable_tiles(const QPoint& clicked_cell, const int tile_
 
     const QBrush redBrush(QColor(255, 0, 0, 150));
     const QPen noPen(Qt::NoPen);
-    for (int i = unwalkable_offset.x(); i < unwalkable_size.width(); i++) {
-        for (int j = unwalkable_offset.y(); j < unwalkable_size.height(); j++) {
+    for (int i = unwalkable_offset.x(); i < unwalkable_size.width() + unwalkable_offset.x(); i++) {
+        for (int j = unwalkable_offset.y(); j < unwalkable_size.height() + unwalkable_offset.y(); j++) {
             auto* mark = new QGraphicsEllipseItem(11, 11, 10, 10);
             mark->setZValue(98.0);
             mark->setData(0, tile_id);

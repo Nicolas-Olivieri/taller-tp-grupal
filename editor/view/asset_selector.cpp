@@ -6,7 +6,7 @@
 #include "ui_assetselector.h"
 
 AssetSelector::AssetSelector(const QHash<uint8_t, AssetData>& tiles,
-                             const QHash<uint16_t, AssetData>& colliders,
+                             const QHash<uint8_t, AssetData>& colliders,
                              const QHash<uint8_t, AssetData>& npcs, QWidget* parent):
         QTabWidget(parent), ui(new Ui::AssetSelector), tiles(tiles), colliders(colliders), npcs(npcs) {
 

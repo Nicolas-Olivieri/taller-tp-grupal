@@ -6,6 +6,9 @@
 
 #include <toml.hpp>
 
+#include "client/client_constants.h"
+#include "common/util/toml_helper.h"
+
 
 TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
     auto root = toml::parse(DATA_PATH "/texture_files.toml");
@@ -28,11 +31,12 @@ TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
             }
         }
 
-        textures.insert({category, std::move(category_textures)});
+        SpriteCategory parsed_cat = TomlHelper::get_sprite_category(category);
+        textures.insert({parsed_cat, std::move(category_textures)});
     }
 }
 
 
-SDL2pp::Texture& TexturePool::get_sprite_texture(const std::string& category_id, const uint8_t sub_id) {
+SDL2pp::Texture& TexturePool::get_sprite_texture(const SpriteCategory category_id, const uint8_t sub_id) {
     return textures.at(category_id).at(sub_id);
 }

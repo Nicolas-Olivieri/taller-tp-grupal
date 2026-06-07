@@ -342,3 +342,24 @@ ListItemsDTO Deserializer::recv_list_items() {
 
     return ListItemsDTO(type, items, receiver);
 }
+
+std::vector<AssetInfoDTO> Deserializer::recv_assets_information() {
+    const uint16_t size = recv_uint16();
+
+    std::vector<AssetInfoDTO> assets_information;
+    assets_information.reserve(size);
+
+    for (uint16_t i = 0; i < size; ++i) {
+        assets_information.push_back(recv_asset_info());
+    }
+
+    return assets_information;
+}
+
+AssetInfoDTO Deserializer::recv_asset_info() {
+    const uint8_t id = recv_uint8();
+    const uint16_t x = recv_uint16();
+    const uint16_t y = recv_uint16();
+
+    return AssetInfoDTO(id, x, y);
+}

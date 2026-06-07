@@ -6,6 +6,7 @@
 #include "common/dto/snapshot/info/appearance.h"
 #include "common/dto/snapshot/info/creatureinfo.h"
 #include "common/dto/snapshot/info/playerinfo.h"
+#include "common/dto/snapshot/map/asset_info.h"
 
 #include "animation_pool.h"
 #include "sprite.h"
@@ -19,15 +20,19 @@ private:
     AnimationPool animation_pool;
     SDL2pp::Renderer& renderer;
 
+    SpriteLayer create_sprite_layer(SpriteCategory category, uint8_t id,
+                                    const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
+
 public:
     explicit SpriteCreator(SDL2pp::Renderer& renderer);
 
-    SpriteLayer create_sprite_layer(const std::string& category, uint8_t id,
-                                    const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
+    // Sobrecarga para tomar distintos DTOs
 
-    Sprite create_user(const PlayerInfoDTO& playerInfo);
+    Sprite create_sprite(const PlayerInfoDTO& player_info);
 
-    Sprite create_creature(const CreatureInfoDTO& creature_info);
+    Sprite create_sprite(SpriteCategory category, const AssetInfoDTO& asset_info);
+
+    Sprite create_sprite(const CreatureInfoDTO& creature_info);
 
     void update_appearance(Sprite& player, const AppearanceDTO& appearance);
 

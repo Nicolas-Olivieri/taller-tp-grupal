@@ -7,14 +7,19 @@
 #include "allies/banker.h"
 #include "allies/merchant.h"
 #include "allies/priest.h"
+#include "server/util/server_map_loader.h"
 
 
-GameWorld::GameWorld(const int width, const int height, PlayerRepository& player_repository):
-        grid(width, height), player_repository(player_repository) {
-    init_npc();
+GameWorld::GameWorld(PlayerRepository& player_repository): grid(), player_repository(player_repository) {}
+
+void GameWorld::init() {
+    ServerMapLoader loader;
+    const ServerMapDataDTO map_data = loader.get_server_data();
+
+    this->grid = Grid(map_data.width, map_data.height, map_data.grid);
+    init_npc(map_data.npcs);
     init_creature();
 }
-
 
 const std::unordered_map<std::string, Player>& GameWorld::get_players() const { return players; }
 
@@ -328,25 +333,35 @@ AllyExecuteResult GameWorld::start_delayed_resurrection(Player& player, const Al
 }
 
 
-void GameWorld::init_npc() {
-    Position priest_position(10, 10);
-    auto priest = std::make_unique<Priest>(priest_position);
-    grid.get_tile(priest_position).occupy(priest.get());
-    allies.push_back(std::move(priest));
+void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
+    for (const auto& npc: npcs) {
+        Position position(npc.x, npc.y + 1);
+        std::unique_ptr<Ally> ally;
 
-    Position merchant_position(15, 10);
-    auto merchant = std::make_unique<Merchant>(merchant_position);
-    grid.get_tile(merchant_position).occupy(merchant.get());
-    allies.push_back(std::move(merchant));
+        switch (npc.type) {
+            case AllyType::PRIEST:
+                ally = std::make_unique<Priest>(position);
+                break;
+            case AllyType::MERCHANT:
+                ally = std::make_unique<Merchant>(position);
+                break;
+            case AllyType::BANKER:
+                ally = std::make_unique<Banker>(position);
+                break;
+            case AllyType::NO_ALLY:
+            default:
+                break;
+        }
 
-    Position banker_position(15, 15);
-    auto banker = std::make_unique<Banker>(banker_position);
-    grid.get_tile(banker_position).occupy(banker.get());
-    allies.push_back(std::move(banker));
+        if (ally) {
+            grid.get_tile(position).occupy(ally.get());
+            allies.push_back(std::move(ally));
+        }
+    }
 }
 
 void GameWorld::init_creature() {
-    Position goblin_position(30, 30);
+    Position goblin_position(15, 15);
     creatures.emplace(1, Creature(0, 0, 0, goblin_position));
     grid.get_tile(goblin_position).occupy(&creatures.at(1));
 }

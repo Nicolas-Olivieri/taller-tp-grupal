@@ -2,6 +2,7 @@
 #define CLIENT_RECEIVER_H
 
 
+#include "common/dto/snapshot/map/client_map_data.h"
 #include "common/dto/snapshot/snapshot.h"
 #include "common/queue.h"
 #include "common/socket.h"
@@ -15,6 +16,8 @@ class ClientReceiver: public Thread {
 
 public:
     explicit ClientReceiver(Socket& socket);
+
+    ClientMapDataDTO receive_map();
 
 
     bool try_pop(SnapshotDTO& snapshot);

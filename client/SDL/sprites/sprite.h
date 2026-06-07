@@ -12,12 +12,15 @@ private:
     SDL2pp::Point position;
     SDL2pp::Point target_position;
 
-    Direction direction;
+    std::optional<Direction> direction;
     SDL2pp::Point size;
+    SDL2pp::Point render_offset;
 
     std::map<Layer, SpriteLayer> layers;
 
 public:
+    Sprite(SpriteLayer&& base, SDL2pp::Point position, SDL2pp::Point size);
+
     Sprite(SpriteLayer&& body, SDL2pp::Point position, Direction action, SDL2pp::Point size);
 
     void add_layer(Layer layer_num, SpriteLayer&& layer);
@@ -38,6 +41,8 @@ public:
     bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const;
 
     void remove_all_layers();
+
+    SDL2pp::Point get_ground_position() const;
 
 private:
     int get_new_coordinate(const int& current_coordinate, const int& coordinate_diff);

@@ -6,7 +6,7 @@
 #define HEADER 0xFAF4
 
 MapLoader::MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
-                     QHash<uint16_t, AssetData>& colliders, QHash<uint8_t, AssetData>& npcs):
+                     QHash<uint8_t, AssetData>& colliders, QHash<uint8_t, AssetData>& npcs):
         data(data), canvas(canvas), tiles(tiles), colliders(colliders), npcs(npcs) {}
 
 
@@ -28,30 +28,23 @@ bool MapLoader::load(const QString& filename) const {
     stream >> server_start >> server_end;
     file.seek(server_end);
 
-    // Cargo los tiles
-    load_assets<uint8_t>(stream, tiles, ImageType::TILE);
-
-    // Cargo los colliders
-    load_assets<uint16_t>(stream, colliders, ImageType::COLLIDER);
-
-    // Cargo los npcs
-    load_assets<uint8_t>(stream, npcs, ImageType::NPC);
+    // Cargo todos los items
+    load_assets(stream, tiles);
+    load_assets(stream, colliders);
+    load_assets(stream, npcs);
 
     file.close();
     return true;
 }
 
 
-template <typename intType>
-void MapLoader::load_assets(QDataStream& stream, const QHash<intType, AssetData>& lookup_assets_hash,
-                            const ImageType type) const {
+void MapLoader::load_assets(QDataStream& stream, const QHash<uint8_t, AssetData>& lookup_assets_hash) const {
     uint16_t assets_amount;
 
     stream >> assets_amount;
-    data.asset_counter[type] = assets_amount;
 
     for (uint16_t i = 0; i < assets_amount; i++) {
-        intType id;
+        uint8_t id;
         uint16_t origin_x, origin_y;
         stream >> id >> origin_x >> origin_y;
 

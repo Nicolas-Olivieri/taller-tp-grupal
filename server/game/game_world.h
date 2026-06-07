@@ -9,6 +9,7 @@
 
 #include "allies/ally_action_payload.h"
 #include "common/direction.h"
+#include "common/dto/snapshot/map/server_map_data.h"
 #include "creatures/creature.h"
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
@@ -33,7 +34,9 @@ private:
     PlayerRepository& player_repository;
 
 public:
-    explicit GameWorld(int width, int height, PlayerRepository& pLayer_repository);
+    explicit GameWorld(PlayerRepository& pLayer_repository);
+
+    void init();
 
     const std::unordered_map<std::string, Player>& get_players() const;
 
@@ -83,11 +86,11 @@ private:
 
     Direction next_movement(const Creature& creature);
 
-    void init_npc();
-
     void init_creature();
 
     void remove_dead_creatures();
+
+    void init_npc(const std::vector<AllyInfoDTO>& npcs);
 };
 
 

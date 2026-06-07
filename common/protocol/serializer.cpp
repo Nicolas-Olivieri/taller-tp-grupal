@@ -42,6 +42,21 @@ void Serializer::serialize(const CreatePlayerDTO& player_data) {
     serialize(player_data.race);
 }
 
+void Serializer::serialize(const ClientMapDataDTO& map) {
+    serialize(static_cast<uint8_t>(Message::MAP));
+    serialize(map.world_width);
+    serialize(map.world_height);
+    serialize(map.tiles);
+    serialize(map.colliders);
+    serialize(map.npcs);
+}
+
+void Serializer::serialize(const AssetInfoDTO& asset) {
+    serialize(asset.id);
+    serialize(asset.x);
+    serialize(asset.y);
+}
+
 void Serializer::serialize(const SnapshotDTO& snapshot) {
     serialize(static_cast<uint8_t>(Message::SNAPSHOT));
     serialize(snapshot.players_information);

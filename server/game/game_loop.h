@@ -10,6 +10,7 @@
 #include "common/thread/thread.h"
 #include "server/command/command.h"
 #include "server/persistance/playerrepository.h"
+#include "server/util/server_map_loader.h"
 
 #include "game_world.h"
 
