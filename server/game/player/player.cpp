@@ -30,7 +30,9 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
 Player::Player(const std::string& player_name, const PlayerData& persisted_data,
                const Position& starting_position):
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
-                 persisted_data.xp_level, starting_position, Equipment()),
+                 persisted_data.xp_level, starting_position,
+                 Equipment{persisted_data.helmet_id, persisted_data.armor_id, persisted_data.shield_id,
+                           persisted_data.weapon_id}),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
@@ -173,6 +175,10 @@ void Player::spend_gold(const uint16_t amount) { gold_manager.spend(amount); }
 
 void Player::add_gold(const uint16_t amount) { gold_manager.add(amount); }
 
+void Player::use_item(const uint8_t item_id) { inventory.use_item(stats, equipment, item_id); }
+
+void Player::unequip_item(const uint8_t item_id) { inventory.unequip_item(equipment, item_id); }
+
 void Player::acquire_item(const uint8_t item_id) { inventory.acquire_item(item_id); }
 
 void Player::drop_item(const uint8_t item_id) { inventory.drop_item(equipment, item_id); }
@@ -194,6 +200,8 @@ void Player::withdraw_gold_from_bank(const uint16_t amount) {
     bank.withdraw_gold(amount);
     gold_manager.add(amount);
 }
+
+const Equipment& Player::get_equipment() const { return this->equipment; }
 
 const std::unordered_map<uint8_t, uint8_t>& Player::get_inventory_items() const {
     return inventory.get_items();

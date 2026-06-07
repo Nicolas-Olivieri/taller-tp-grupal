@@ -12,7 +12,10 @@ Inventory::Inventory(std::span<const uint8_t> items_id, std::span<const uint8_t>
     assert(items_id.size() == items_amount.size());
     assert(items_id.size() <= max_item_amount);
 
-    for (size_t i = 0; i < items_id.size(); i++) items_amounts[items_id[i]] = items_amount[i];
+    for (size_t i = 0; i < items_id.size(); i++) {
+        if (items_amount[i] > 0)
+            items_amounts[items_id[i]] = items_amount[i];
+    }
 }
 
 Inventory::Inventory(): max_item_amount(INVENTORY_AMOUNT) {}
@@ -25,7 +28,7 @@ void Inventory::use_item(Stats& stats, Equipment& equipment, uint8_t item_id) {
     uint8_t unequipped = std::visit(Use{stats, equipment}, item);
 
     if (unequipped != NO_ITEM)
-        add_amount_safely(item_id);
+        add_amount_safely(unequipped);
 
     consume_item(item_id);
 }
@@ -34,7 +37,7 @@ void Inventory::drop_item(const Equipment& equipment, uint8_t item) {
     if (!items_amounts.contains(item))
         throw ItemNotOwned();
 
-    if (is_equipped(equipment, item))
+    if (!items_amounts.contains(item) && is_equipped(equipment, item))
         throw ItemEquipped();
 
     consume_item(item);
@@ -55,7 +58,7 @@ void Inventory::unequip_item(Equipment& equipment, uint8_t item_id) {
         add_amount_safely(item_id);
 }
 
-bool Inventory::is_equipped(const Equipment& equipment, uint8_t item) {
+bool Inventory::is_equipped(const Equipment& equipment, uint8_t item) const {
     return equipment.armor == item || equipment.shield == item || equipment.helmet == item ||
            equipment.weapon == item;
 }

@@ -90,6 +90,10 @@ public:
 
     void add_gold(uint16_t amount);
 
+    void use_item(uint8_t item_id);
+
+    void unequip_item(const uint8_t item_id);
+
     void acquire_item(uint8_t item_id);
 
     void drop_item(uint8_t item_id);
@@ -99,6 +103,8 @@ public:
     void deposit_gold_to_bank(uint16_t amount);
 
     void withdraw_gold_from_bank(uint16_t amount);
+
+    const Equipment& get_equipment() const;
 
     const std::unordered_map<uint8_t, uint8_t>& get_inventory_items() const;
 

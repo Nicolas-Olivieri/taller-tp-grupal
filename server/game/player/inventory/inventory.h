@@ -50,7 +50,7 @@ public:
     const std::unordered_map<uint8_t, uint8_t>& get_items() const;
 
 private:
-    bool is_equipped(const Equipment& equipment, uint8_t item);
+    bool is_equipped(const Equipment& equipment, uint8_t item) const;
 
     void consume_item(uint8_t item);
 
