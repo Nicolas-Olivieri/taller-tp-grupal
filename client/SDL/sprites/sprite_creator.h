@@ -20,17 +20,19 @@ private:
     AnimationPool animation_pool;
     SDL2pp::Renderer& renderer;
 
-public:
-    explicit SpriteCreator(SDL2pp::Renderer& renderer);
-
     SpriteLayer create_sprite_layer(SpriteCategory category, uint8_t id,
                                     const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
 
-    Sprite create_user(const PlayerInfoDTO& player_info);
+public:
+    explicit SpriteCreator(SDL2pp::Renderer& renderer);
 
-    Sprite create_asset(SpriteCategory category, const AssetInfoDTO& asset_info);
+    // Sobrecarga para tomar distintos DTOs
 
-    Sprite create_creature(const CreatureInfoDTO& creature_info);
+    Sprite create_sprite(const PlayerInfoDTO& player_info);
+
+    Sprite create_sprite(SpriteCategory category, const AssetInfoDTO& asset_info);
+
+    Sprite create_sprite(const CreatureInfoDTO& creature_info);
 
     void update_appearance(Sprite& player, const AppearanceDTO& appearance);
 

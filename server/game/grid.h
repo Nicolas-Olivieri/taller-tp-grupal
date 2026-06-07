@@ -4,9 +4,8 @@
 #include <random>
 #include <vector>
 
-#include "common/dto/snapshot/map/grid_matrix.h"
-
 #include "common/direction.h"
+#include "common/dto/snapshot/map/grid_matrix.h"
 
 #include "position.h"
 #include "tile.h"

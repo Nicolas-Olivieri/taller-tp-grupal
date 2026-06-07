@@ -18,6 +18,7 @@ Sprite::Sprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction
         target_position(this->position),
         direction(action),
         size(size),
+        render_offset(SDL2pp::Point{(size.x - TILE_SIZE) / 2, size.y - TILE_SIZE}),
         layers{{Layer::BODY, body}} {}
 
 void Sprite::add_layer(Layer layer_num, SpriteLayer&& layer) { layers.emplace(layer_num, layer); }
@@ -63,10 +64,7 @@ void Sprite::update_frame(const int iteration) {
 }
 
 void Sprite::render(const SDL2pp::Point& camera_offset) {
-    SDL2pp::Point render_position = position - camera_offset;
-
-    render_position.x -= (size.x - TILE_SIZE) / 2;
-    render_position.y -= (size.y - TILE_SIZE); 
+    const SDL2pp::Point render_position = position - camera_offset - render_offset;
 
     if (direction == Direction::UP) {
         for (auto layer = layers.rbegin(); layer != layers.rend(); ++layer) {
@@ -110,4 +108,4 @@ bool Sprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) c
 
 void Sprite::remove_all_layers() { layers.clear(); }
 
-SDL2pp::Point Sprite::get_ground_position() const { return position + size; }
+SDL2pp::Point Sprite::get_ground_position() const { return position + size - render_offset; }

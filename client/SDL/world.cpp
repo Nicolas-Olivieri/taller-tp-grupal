@@ -19,17 +19,17 @@ World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::
 
 void World::init_assets(const ClientMapDataDTO& map_data) {
     for (const auto& tile_data: map_data.tiles) {
-        Sprite tile = sprite_creator.create_asset(SpriteCategory::TILE, tile_data);
+        Sprite tile = sprite_creator.create_sprite(SpriteCategory::TILE, tile_data);
         map_tiles.emplace(std::make_shared<Sprite>(tile));
     }
 
     for (const auto& collider_data: map_data.colliders) {
-        Sprite collider = sprite_creator.create_asset(SpriteCategory::COLLIDER, collider_data);
+        Sprite collider = sprite_creator.create_sprite(SpriteCategory::COLLIDER, collider_data);
         map_items.emplace(std::make_shared<Sprite>(collider));
     }
 
     for (const auto& npc_data: map_data.npcs) {
-        Sprite npc = sprite_creator.create_asset(SpriteCategory::NPC, npc_data);
+        Sprite npc = sprite_creator.create_sprite(SpriteCategory::NPC, npc_data);
         map_items.emplace(std::make_shared<Sprite>(npc));
     }
 }
@@ -43,11 +43,6 @@ void World::update_visuals(const int it) {
     for (auto& item: map_items) {
         item->update_visual_position();
         item->update_frame(it);
-    }
-
-    for (auto& [sub_id, creature]: creatures) {
-        creature.update_visual_position();
-        creature.update_frame(it);
     }
 }
 
@@ -80,11 +75,7 @@ std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
     std::ranges::copy_if(sprites, std::back_inserter(viewed_sprites), [camera](auto& item) {
         return item->intersects(camera.get_view(), camera.get_view().GetTopLeft());
     });
-    for (auto& [sub_id, creature]: creatures) {
-        if (creature.intersects(camera.get_view(), camera.get_view().GetTopLeft())) {
-            viewed_sprites.push_back(creature);
-        }
-    }
+
     return viewed_sprites;
 }
 
@@ -96,7 +87,7 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
         }
 
         SDL2pp::Point position(player_info.x, player_info.y);
-        players.at(player_info.name).set_target_position(player_info.direction, position);
+        players.at(player_info.name)->set_target_position(player_info.direction, position);
     }
 }
 
@@ -109,7 +100,7 @@ void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_infor
         }
 
         SDL2pp::Point position(creature_info.x, creature_info.y);
-        creatures.at(creature_info.sub_id).set_target_position(creature_info.direction, position);
+        creatures.at(creature_info.sub_id)->set_target_position(creature_info.direction, position);
     }
 }
 
@@ -122,6 +113,7 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
     for (auto it = creatures.begin(); it != creatures.end();) {
         if (!sub_ids.contains(it->first)) {
             it = creatures.erase(it);
+            map_items.erase(it->second);
         } else {
             it++;
         }
@@ -159,15 +151,17 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 
 
 void World::add_new_player(const PlayerInfoDTO& info) {
-    Sprite player = sprite_creator.create_user(info);
-    std::shared_ptr<Sprite> ptr = std::make_shared<Sprite>(player);
+    Sprite player = sprite_creator.create_sprite(info);
+    auto ptr = std::make_shared<Sprite>(player);
     players.insert({{info.name, ptr}});
     map_items.emplace(ptr);
 }
 
 void World::add_new_creature(const CreatureInfoDTO& info) {
-    Sprite creature = sprite_creator.create_creature(info);
-    creatures.insert({{info.sub_id, creature}});
+    Sprite creature = sprite_creator.create_sprite(info);
+    auto ptr = std::make_shared<Sprite>(creature);
+    creatures.insert({{info.sub_id, ptr}});
+    map_items.emplace(ptr);
 }
 
 Sprite& World::get_client_player() { return *players.at(player_name).get(); }

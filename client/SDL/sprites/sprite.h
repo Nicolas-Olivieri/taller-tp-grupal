@@ -14,6 +14,7 @@ private:
 
     std::optional<Direction> direction;
     SDL2pp::Point size;
+    SDL2pp::Point render_offset;
 
     std::map<Layer, SpriteLayer> layers;
 

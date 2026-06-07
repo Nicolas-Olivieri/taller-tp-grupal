@@ -24,13 +24,13 @@ private:
     SDL2pp::Rect world_view;
     std::string player_name;
     std::map<std::string, std::shared_ptr<Sprite>> players;
+    std::map<uint16_t, std::shared_ptr<Sprite>> creatures;
 
     std::set<std::shared_ptr<Sprite>> map_tiles;
     std::set<std::shared_ptr<Sprite>> map_items;
 
     void init_assets(const ClientMapDataDTO& map_data);
 
-    std::map<uint16_t, Sprite> creatures;
 
     void add_new_player(const PlayerInfoDTO& info);
 

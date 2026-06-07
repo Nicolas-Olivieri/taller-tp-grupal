@@ -6,7 +6,9 @@
 Grid::Grid(): width_(0), height_(0) {}
 
 Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
-        width_(width), height_(height), directions({Direction::DOWN, Direction::RIGHT, Direction::LEFT, Direction::UP}) {
+        width_(width),
+        height_(height),
+        directions({Direction::DOWN, Direction::RIGHT, Direction::LEFT, Direction::UP}) {
     for (const auto& row: grid_data.walkable_tiles) {
         std::vector<Tile> tile_row;
         tile_row.reserve(row.size());
@@ -47,7 +49,7 @@ Position Grid::spawn() const {
 bool Grid::is_tile_available(int x, int y) const {
     bool is_in_range = x >= 0 && y >= 0 && x < width_ && y < height_;
 
-    return is_in_range && tiles_[x][y].is_walkable() && tiles_[x][y].occupant() == nullptr;
+    return is_in_range && tiles_[y][x].is_walkable() && tiles_[y][x].occupant() == nullptr;
 }
 
 // TODO: seguramente se puede hacer sin crear tantos objetos

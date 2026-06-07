@@ -1,8 +1,6 @@
 #include "sprite_creator.h"
 
 #include <map>
-#include <string>
-#include <unordered_map>
 #include <utility>
 
 #include "common/dto/snapshot/map/asset_info.h"
@@ -18,7 +16,7 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
 #define GHOST_HEAD_ID 0
 #define GHOST_BODY_ID 0
 
-Sprite SpriteCreator::create_user(const PlayerInfoDTO& player_info) {
+Sprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
     const SDL2pp::Point position(player_info.x, player_info.y);
     const AppearanceDTO& appearance_data = player_info.appearance;
 
@@ -39,28 +37,23 @@ Sprite SpriteCreator::create_user(const PlayerInfoDTO& player_info) {
     return sprite;
 }
 
-Sprite SpriteCreator::create_creature(const CreatureInfoDTO& creature_info) {
+Sprite SpriteCreator::create_sprite(const CreatureInfoDTO& creature_info) {
     const SDL2pp::Point position(creature_info.x, creature_info.y);
+    const auto category = static_cast<SpriteCategory>(creature_info.creature);
 
-    // TODO: Esto podría estar en un config
-    static std::unordered_map<uint8_t, std::string> creature_id_to_category = {
-            {0, "goblin"}, {1, "skeleton"}, {2, "zombie"}, {3, "spider"}, {4, "orc"}, {5, "golem"},
-    };
-
-    const std::string& category = creature_id_to_category.at(creature_info.creature);
     SpriteLayer creature = create_sprite_layer(category, creature_info.variation);
     const SDL2pp::Point size = creature.frame.GetSize();
 
     Sprite sprite(std::move(creature), position, creature_info.direction, size);
-
     return sprite;
 }
 
-Sprite SpriteCreator::create_asset(const SpriteCategory category, const AssetInfoDTO& asset_info) {
+Sprite SpriteCreator::create_sprite(const SpriteCategory category, const AssetInfoDTO& asset_info) {
     const SDL2pp::Point position(asset_info.x, asset_info.y);
     SpriteLayer base = create_sprite_layer(category, asset_info.id);
+    const SDL2pp::Point size = base.frame.GetSize();
 
-    Sprite asset(std::move(base), position, base.frame.GetSize());
+    Sprite asset(std::move(base), position, size);
     return asset;
 }
 
@@ -68,13 +61,17 @@ SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, co
                                                const SDL2pp::Point& offset) {
     SDL2pp::Texture& texture = texture_pool.get_sprite_texture(category, id);
 
-    if (category == SpriteCategory::BODY || category == SpriteCategory::HEAD) {
-        auto actions = animation_pool.get_walking_animations(category);
-        return SpriteLayer(renderer, texture, offset, actions);
-
-    } else {
-        const Animation action = animation_pool.get_item_animation(category, id);
-        return SpriteLayer(renderer, texture, offset, action);
+    switch (category) {
+        case SpriteCategory::NPC:
+        case SpriteCategory::TILE:
+        case SpriteCategory::COLLIDER: {
+            const Animation action = animation_pool.get_item_animation(category, id);
+            return SpriteLayer(renderer, texture, offset, action);
+        }
+        default: {
+            auto actions = animation_pool.get_walking_animations(category);
+            return SpriteLayer(renderer, texture, offset, actions);
+        }
     }
 }
 
