@@ -29,6 +29,8 @@ public:
     SnapshotDTO pop_snapshot();
 
     void push_command(std::unique_ptr<EventDTO>&& event);
+
+    bool is_finished();
 };
 
 

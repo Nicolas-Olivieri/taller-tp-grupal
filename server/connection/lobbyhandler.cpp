@@ -26,7 +26,7 @@ void LobbyHandler::run() {
     // si es registro, recibir personalización del personaje + persistencia
     if (!player_repository.exists(credentials.username)) {
         try {
-            protocol.send(ExistenceDTO(false));
+            protocol.send(ExistenceDTO(false, false));
             CreatePlayerDTO appearance = protocol.recv_appearance();
             create_player(credentials.username, appearance);
 
@@ -36,7 +36,11 @@ void LobbyHandler::run() {
             return;
         }
     } else {
-        protocol.send(ExistenceDTO(true));
+        if (player_repository.is_connected(credentials.username)) {
+            protocol.send(ExistenceDTO(true, true));
+            return;
+        }
+        protocol.send(ExistenceDTO(true, false));
     }
 
     // envío de información del mundo + snapshot inicial

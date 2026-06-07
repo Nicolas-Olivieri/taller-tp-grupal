@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include <sys/socket.h>
+
 
 ClientHandler::ClientHandler(Socket&& peer, const std::string& player_name,
                              Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster):
@@ -33,6 +35,13 @@ bool ClientHandler::is_alive() const { return sender.is_alive() or receiver.is_a
 void ClientHandler::polite_kill() {
     sender.stop();
     receiver.stop();
+
+    if (!peer.is_stream_send_closed())
+        peer.shutdown(SHUT_WR);
+    if (!peer.is_stream_recv_closed())
+        peer.shutdown(SHUT_RD);
+
+    peer.close();
     client_queue.close();
 }
 

@@ -32,6 +32,7 @@ void Serializer::serialize(const MoveEventDTO& event) {
 void Serializer::serialize(const ExistenceDTO& existence) {
     serialize(static_cast<uint8_t>(Message::EXISTENCE));
     serialize(existence.user_exists);
+    serialize(existence.user_connected);
 }
 
 void Serializer::serialize(const CreatePlayerDTO& player_data) {

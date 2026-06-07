@@ -32,6 +32,7 @@ CLIENT_ID= "Argentum-Online-client"
 
 # Valgrind
 VALGRIND_FLAGS= --tool=memcheck --leak-check=full --leak-resolution=med --show-reachable=yes --trace-children=yes --track-fds=yes --track-origins=no --time-stamp=yes --num-callers=20 --error-exitcode=42
+VALGRIND_LOG_FILE= ./log_valgrind.txt
 
 all: build
 
@@ -60,7 +61,10 @@ valgrind-client: build
 	valgrind $(VALGRIND_FLAGS) $(BUILD_DIR)/$(CLIENT_EXE) $(CLIENT_FLAGS)
 
 valgrind-server: build
-	valgrind $(VALGRIND_FLAGS) $(BUILD_DIR)/$(SERVER_EXE) $(SERVER_FLAGS)
+	@touch $(VALGRIND_LOG_FILE)
+	@rm $(VALGRIND_LOG_FILE)
+	valgrind $(VALGRIND_FLAGS) $(BUILD_DIR)/$(SERVER_EXE) $(SERVER_FLAGS) > $(VALGRIND_LOG_FILE) 2>&1
+	@tail $(VALGRIND_LOG_FILE)
 
 valgrind-editor: build
 	valgrind $(VALGRIND_FLAGS) $(BUILD_DIR)/$(EDITOR_EXE) $(EDITOR_FLAGS)
@@ -71,6 +75,10 @@ valgrind-test: build
 clean:
 	@touch $(CLEAN_FILES)
 	@rm $(CLEAN_FILES)
+
+valgrind-clean:
+	@touch $(VALGRIND_LOG_FILE)
+	@rm $(VALGRIND_LOG_FILE)
 
 log-server:
 	journalctl -t $(SERVER_ID) -f

@@ -15,7 +15,8 @@ void ClientSender::run() {
             std::unique_ptr<EventDTO> event = sender_q.pop();
             protocol.send(*event);
         }
-    } catch (const ClosedQueue& _) {}
+    } catch (const ClosedQueue& _) {
+    } catch (const ClosedSocket& _) {}
 }
 
 void ClientSender::close() { sender_q.close(); }

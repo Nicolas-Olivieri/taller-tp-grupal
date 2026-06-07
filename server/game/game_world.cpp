@@ -10,7 +10,7 @@
 #include "server/util/server_map_loader.h"
 
 
-GameWorld::GameWorld(): grid() {}
+GameWorld::GameWorld(PlayerRepository& player_repository): grid(), player_repository(player_repository) {}
 
 void GameWorld::init() {
     ServerMapLoader loader;
@@ -181,6 +181,7 @@ void GameWorld::remove_player(const std::string& player_name) {
             creature.stop_targeting();
     }
 
+    player_repository.desconnect(player_name);
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
 }
