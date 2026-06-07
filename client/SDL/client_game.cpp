@@ -110,6 +110,9 @@ void ClientGame::pollEvents() {
             handle_mouse_click(event);
         }
 
+        if (event.type == SDL_MOUSEWHEEL)
+            handle_mouse_wheel(event);
+
         if (is_chat_active) {
             handle_chat_events(event);
             continue;
@@ -155,6 +158,8 @@ void ClientGame::handle_chat_events(const SDL_Event& event) {
     if (event.key.keysym.sym == SDLK_RETURN) {
         if (chat_text.empty())
             return;
+
+        ui.chat_scroll_to_bottom();
 
         if (chat_text[0] == '@') {
             send_private_message();
@@ -426,4 +431,19 @@ SDL_HitTestResult ClientGame::hit_test_callback(SDL_Window*, const SDL_Point* ar
     }
 
     return SDL_HITTEST_NORMAL;
+}
+
+void ClientGame::handle_mouse_wheel(const SDL_Event& event) {
+    int mouse_x;
+    int mouse_y;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+
+    if (!ui.is_over_chat(mouse_x, mouse_y))
+        return;
+
+    if (event.wheel.y > 0)
+        ui.chat_scroll_up();
+
+    if (event.wheel.y < 0)
+        ui.chat_scroll_down();
 }

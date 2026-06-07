@@ -62,6 +62,8 @@ private:
 
     void handle_chat_events(const SDL_Event& event);
 
+    void handle_mouse_wheel(const SDL_Event& event);
+
     void handle_text_command(const std::string& text);
 
     void handle_buy_item_command(const std::string& text);
