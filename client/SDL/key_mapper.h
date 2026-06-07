@@ -10,10 +10,10 @@
 
 class KeyMapper {
 
-    inline static const std::map<int, Direction> key_to_move_map = {{SDLK_DOWN, Direction::DOWN},
-                                                                    {SDLK_UP, Direction::UP},
-                                                                    {SDLK_RIGHT, Direction::RIGHT},
-                                                                    {SDLK_LEFT, Direction::LEFT}};
+    inline static const std::map<int, Direction> key_to_move_map = {
+            {SDLK_DOWN, Direction::DOWN}, {SDLK_UP, Direction::UP},  {SDLK_RIGHT, Direction::RIGHT},
+            {SDLK_LEFT, Direction::LEFT}, {SDLK_s, Direction::DOWN}, {SDLK_w, Direction::UP},
+            {SDLK_d, Direction::RIGHT},   {SDLK_a, Direction::LEFT}};
 
 public:
     static bool is_movement_key(const int& key_pressed);

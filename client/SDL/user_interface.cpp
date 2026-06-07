@@ -16,6 +16,7 @@
 #define MENU_FONT_SIZE 17.5
 #define CHAT_FONT_SIZE 19
 #define LINE_SPACING 21
+#define MAX_CHAT_HISTORY 100
 
 UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name):
         renderer(renderer),
@@ -79,7 +80,10 @@ void UserInterface::render_chat_history() {
     if (chat_history.empty())
         return;
 
-    for (size_t i = 0; i < chat_history.size(); ++i) {
+    size_t start = first_visible_message;
+    size_t end = std::min(start + get_visible_lines(), chat_history.size());
+
+    for (size_t i = start; i < end; ++i) {
         const auto& [text, color] = chat_history[i];
 
         if (text.empty())
@@ -87,7 +91,7 @@ void UserInterface::render_chat_history() {
 
         SDL2pp::Texture line_texture(renderer, chat_font.RenderText_Solid(text, color));
 
-        int current_y = history_messages.y + (i * LINE_SPACING);
+        int current_y = history_messages.y + ((i - start) * LINE_SPACING);
         int text_w = line_texture.GetWidth();
         int text_h = line_texture.GetHeight();
 
@@ -180,9 +184,18 @@ void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
 }
 
 void UserInterface::enqueue_message(const std::string& message, SDL_Color color) {
+    const size_t visible_lines = get_visible_lines();
+    bool is_at_bottom = first_visible_message + visible_lines >= chat_history.size();
+
     chat_history.push_back({message, color});
-    if (chat_history.size() > static_cast<size_t>(history_messages.h) / LINE_SPACING)
+
+    if (chat_history.size() > MAX_CHAT_HISTORY)
         chat_history.pop_front();
+
+    if (!is_at_bottom)
+        return;
+
+    chat_scroll_to_bottom();
 }
 
 void UserInterface::handle_chat_message(const ActionDTO& action) {
@@ -249,4 +262,38 @@ SDL_Color UserInterface::assign_message_color(const MessageType& type) {
             {MessageType::CLAN, green},    {MessageType::ERROR, red},    {MessageType::ALLY, light_blue}};
 
     return msg_type_to_color.at(type);
+}
+
+void UserInterface::chat_scroll_up() {
+    if (first_visible_message > 0)
+        --first_visible_message;
+}
+
+void UserInterface::chat_scroll_down() {
+    size_t max_start;
+    if (chat_history.size() > get_visible_lines()) {
+        max_start = chat_history.size() - get_visible_lines();
+    } else {
+        max_start = 0;
+    }
+
+    if (first_visible_message < max_start)
+        ++first_visible_message;
+}
+
+size_t UserInterface::get_visible_lines() const { return history_messages.h / LINE_SPACING; }
+
+void UserInterface::chat_scroll_to_bottom() {
+    const size_t visible_lines = get_visible_lines();
+
+    if (chat_history.size() > visible_lines) {
+        first_visible_message = chat_history.size() - visible_lines;
+    } else {
+        first_visible_message = 0;
+    }
+}
+
+bool UserInterface::is_over_chat(const int x, const int y) {
+    SDL2pp::Point click_position(x, y);
+    return history_messages.Contains(click_position) || input_box.Contains(click_position);
 }

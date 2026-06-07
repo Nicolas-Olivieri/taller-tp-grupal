@@ -33,6 +33,7 @@ private:
     std::string& player_name;
 
     std::deque<std::pair<std::string, SDL_Color>> chat_history;
+    size_t first_visible_message = 0;
 
     std::vector<std::pair<SDL2pp::Rect, std::string>> field_values;
     std::vector<std::pair<SDL2pp::Rect, BarValue>> bar_values;
@@ -87,6 +88,8 @@ private:
 
     bool is_receiver(const MessageType& type);
 
+    size_t get_visible_lines() const;
+
 public:
     UserInterface(SDL2pp::Renderer& renderer, std::string& player_name);
 
@@ -102,6 +105,14 @@ public:
     void update_player_state(const std::vector<PlayerInfoDTO>& players_information);
 
     void update_chat(const std::vector<ActionDTO>& actions);
+
+    void chat_scroll_up();
+
+    void chat_scroll_down();
+
+    void chat_scroll_to_bottom();
+
+    bool is_over_chat(const int x, const int y);
 };
 
 
