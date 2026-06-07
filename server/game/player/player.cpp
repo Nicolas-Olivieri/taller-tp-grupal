@@ -2,20 +2,19 @@
 
 #include <cassert>
 
-#include "server/game/player/inventory/item_mapper.h"
-
-
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
 // modelo
 
 // Constructor para jugador que vuelve a conectarse
 Player::Player(const std::string& player_name, const PlayerData& persisted_data):
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
-                 persisted_data.xp_level, Position(persisted_data.position_x, persisted_data.position_y)),
+                 persisted_data.xp_level, Position(persisted_data.position_x, persisted_data.position_y),
+                 Equipment{persisted_data.helmet_id, persisted_data.armor_id, persisted_data.shield_id,
+                           persisted_data.weapon_id}),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
-        inventory(equipment),
+        inventory(persisted_data.inventory, persisted_data.inventory_amounts),
         bank(persisted_data.bank_gold, persisted_data.bank, persisted_data.bank_amounts),
         gold_manager(persisted_data.current_gold, persisted_data.xp_level),
         bound_ally(nullptr),
@@ -31,11 +30,11 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
 Player::Player(const std::string& player_name, const PlayerData& persisted_data,
                const Position& starting_position):
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
-                 persisted_data.xp_level, starting_position),
+                 persisted_data.xp_level, starting_position, Equipment()),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
-        inventory(equipment),
+        inventory(),
         bank(persisted_data.bank_gold, persisted_data.bank, persisted_data.bank_amounts),
         gold_manager(persisted_data.current_gold, persisted_data.xp_level),
         bound_ally(nullptr),
@@ -51,9 +50,8 @@ int Player::attack() {
 
     current_attack_cooldown = required_attack_cooldown;
 
-    const int mana_cost = inventory.get_attack_cost(equipment);
-
-    stats.mana.loose(mana_cost);
+    WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
+    stats.mana.loose(data.mana_cost);
 
     return Calculator::calculate_damage(stats.strength, equipment);
 }
@@ -84,12 +82,12 @@ bool Player::can_attack() const {
         return false;
     }
 
-    int mana_cost = ItemMapper::get_mana_cost(equipment.weapon);
+    WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
 
-    std::cout << "[Player] costo de mana: " << mana_cost << "\n";
+    std::cout << "[Player] costo de mana: " << data.mana_cost << "\n";
     std::cout << "[Player] mana actual: " << stats.mana.get_current() << "\n";
 
-    return mana_cost <= stats.mana.get_current();
+    return data.mana_cost <= stats.mana.get_current();
 }
 
 void Player::update() {
@@ -112,7 +110,8 @@ void Player::update() {
 }
 
 bool Player::can_reach(const Position& other_position) const {
-    uint8_t range = inventory.get_range(equipment);
+    WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
+    uint8_t range = data.range;
     //    std::cout << "rango: "<< range << "\n";
 
     return std::abs(position.get_x() - other_position.get_x()) <= range and
@@ -194,6 +193,10 @@ void Player::deposit_gold_to_bank(const uint16_t amount) {
 void Player::withdraw_gold_from_bank(const uint16_t amount) {
     bank.withdraw_gold(amount);
     gold_manager.add(amount);
+}
+
+const std::unordered_map<uint8_t, uint8_t>& Player::get_inventory_items() const {
+    return inventory.get_items();
 }
 
 const std::map<uint8_t, uint8_t>& Player::get_bank_items() const { return bank.get_items(); }

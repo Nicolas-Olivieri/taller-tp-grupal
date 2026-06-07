@@ -31,11 +31,25 @@ PlayerData::PlayerData(const Player& player) {
     body = player.get_body();
     head = player.get_head();
 
+    std::memset(inventory, 0, INVENTORY_AMOUNT);
+    std::memset(inventory_amounts, 0, INVENTORY_AMOUNT);
+
+
+    size_t i = 0;
+    for (const auto& [item_id, amount]: player.get_inventory_items()) {
+        if (i >= INVENTORY_AMOUNT)
+            break;
+
+        inventory[i] = item_id;
+        inventory_amounts[i] = amount;
+        i++;
+    }
+
     bank_gold = player.get_bank_gold();
     std::memset(bank, 0, BANK_AMOUNT);
     std::memset(bank_amounts, 0, BANK_AMOUNT);
 
-    size_t i = 0;
+    i = 0;
     for (const auto& [item_id, amount]: player.get_bank_items()) {
         if (i >= BANK_AMOUNT) {
             break;

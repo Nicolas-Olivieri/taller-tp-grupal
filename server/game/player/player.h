@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 
 #include "../killable.h"
 #include "../position.h"
@@ -98,6 +99,8 @@ public:
     void deposit_gold_to_bank(uint16_t amount);
 
     void withdraw_gold_from_bank(uint16_t amount);
+
+    const std::unordered_map<uint8_t, uint8_t>& get_inventory_items() const;
 
     const std::map<uint8_t, uint8_t>& get_bank_items() const;
 

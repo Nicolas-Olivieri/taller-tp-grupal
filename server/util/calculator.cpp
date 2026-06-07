@@ -4,7 +4,7 @@
 #include <cmath>
 #include <random>
 
-#include "server/game/player/inventory/item_mapper.h"
+#include "server/game/items/item_mapper.h"
 
 uint16_t Calculator::calculate_max_health(uint8_t level, uint8_t constitution, float factor_class,
                                           float factor_race) {
@@ -68,7 +68,9 @@ uint16_t Calculator::calculate_defense(const Equipment& equipment) {
 }
 
 int Calculator::get_random_from_item(const uint8_t item) {
-    return random_number(ItemMapper::get_min(item), ItemMapper::get_max(item));
+    const EquipableItemData data = GameConfig::get().get_equipable(item);
+
+    return random_number(data.min, data.max);
 }
 
 float Calculator::random_float(const float min, const float max) {

@@ -63,7 +63,9 @@ target_sources(taller_server
 
         game/player/bank/bank.cpp
         game/player/inventory/inventory.cpp
-        game/player/inventory/item_mapper.cpp
+        game/items/item_mapper.cpp
+        game/items/equipment.cpp
+        game/items/item.cpp
         game/player/inventory/goldmanager.cpp
 
         game/allies/ally.cpp
@@ -155,8 +157,9 @@ target_sources(taller_server
 
         game/player/bank/bank.h
         game/player/inventory/inventory.h
-        game/equipment.h
-        game/player/inventory/item_mapper.h
+        game/items/equipment.h
+        game/items/item.h
+        game/items/item_mapper.h
         game/player/inventory/goldmanager.h
 
         game/attacker.h

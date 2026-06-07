@@ -9,3 +9,6 @@ path = "/server/cooldowns.toml"
 
 [server.items]
 path = "/server/items.toml"
+
+[server.traders]
+path = "/server/traders.toml"

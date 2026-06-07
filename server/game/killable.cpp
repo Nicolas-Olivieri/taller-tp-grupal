@@ -8,25 +8,26 @@
 
 
 Killable::Killable(const uint8_t archetype_id, const uint8_t race_id, const uint32_t current_xp_amount,
-                   const uint8_t level, const Position position):
+                   const uint8_t level, const Position position, const Equipment& equipment):
         required_attack_cooldown(GameConfig::get().get_player_cooldown().attack),
         required_move_cooldown(GameConfig::get().get_player_cooldown().move),
         current_attack_cooldown(0),
         current_move_cooldown(0),
         is_meditating(false),
         stats(archetype_id, race_id, current_xp_amount, level),
-        equipment({NO_ITEM, NO_ITEM, NO_ITEM, 1}),  // TODO: sacar hardcodeo
+        equipment(equipment),
         position(position),
         direction(Direction::IDLE) {}
 
-Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position):
+Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position,
+                   const Equipment& equipment):
         required_attack_cooldown(GameConfig::get().get_creature_cooldown().attack),
         required_move_cooldown(GameConfig::get().get_creature_cooldown().move),
         current_attack_cooldown(0),
         current_move_cooldown(0),
         is_meditating(false),
         stats(race_id, variation_id, level),
-        equipment({NO_ITEM, NO_ITEM, NO_ITEM, 1}),  // TODO: sacar hardcodeo
+        equipment(equipment),
         position(position),
         direction(Direction::IDLE) {
     std::cout << "creature attack cooldown: " << required_attack_cooldown << std::endl;
