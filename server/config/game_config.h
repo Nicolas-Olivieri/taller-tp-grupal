@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <unordered_map>
+#include <vector>
 
 
 struct CooldownData {
@@ -30,6 +31,13 @@ struct RaceData {
     uint8_t strength;
 };
 
+struct VariationData {
+    std::vector<uint8_t> compatible_races;
+    float factor;
+    uint8_t agility;
+    float multiplier;
+};
+
 struct UsableItemData {
     uint8_t type_effect;     // vida = 0 o mana = 1
     uint16_t effect_amount;  // 100, 200, etc.
@@ -49,9 +57,13 @@ struct WeaponItemData {
 
 class GameConfig {
 private:
-    CooldownData cooldowns{};
+    CooldownData player_cooldowns;
+    CooldownData creature_cooldowns;
     std::unordered_map<uint8_t, ArchetypeData> archetypes;
     std::unordered_map<uint8_t, RaceData> races;
+
+    std::unordered_map<uint8_t, RaceData> creatures;
+    std::unordered_map<uint8_t, VariationData> variations;
 
     std::unordered_map<uint8_t, UsableItemData> usable_items;
     std::unordered_map<uint8_t, WeaponItemData> weapons_items;
@@ -73,7 +85,13 @@ public:
 
     const RaceData& get_race(uint8_t id) const;
 
-    const CooldownData& get_cooldown() const;
+    const RaceData& get_creature(uint8_t id) const;
+
+    const VariationData& get_variation(uint8_t id) const;
+
+    const CooldownData& get_player_cooldown() const;
+
+    const CooldownData& get_creature_cooldown() const;
 
     const std::unordered_map<uint8_t, UsableItemData>& get_usables() const;
 

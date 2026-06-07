@@ -8,6 +8,7 @@ enum class BuyStatus {
     ITEM_SOLD,
     ITEM_NOT_SOLD,
     NOT_ENOUGH_GOLD,
+    INVENTORY_FULL,
     ACTION_NOT_ACCEPTED,
     PLAYER_UNBOUNDED,
     NO_RESULT,

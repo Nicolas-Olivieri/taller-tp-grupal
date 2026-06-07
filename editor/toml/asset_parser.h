@@ -12,7 +12,7 @@ template <>
 struct toml::from<AssetData> {
     static AssetData from_toml(const value& v) {
         AssetData data;
-        data.id = toml::find<uint16_t>(v, "id");
+        data.id = toml::find<uint8_t>(v, "id");
         data.name = QString::fromStdString(toml::find<std::string>(v, "name"));
         data.tile_width = toml::find<uint16_t>(v, "width");
         data.tile_height = toml::find<uint16_t>(v, "height");

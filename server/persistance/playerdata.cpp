@@ -1,5 +1,7 @@
 #include "playerdata.h"
 
+#include <cstring>
+
 #include "server/game/player/player.h"
 
 // TODO: el jugador podría empezar con ciertas cosas, como oro o un arma
@@ -28,4 +30,19 @@ PlayerData::PlayerData(const Player& player) {
     race = stats.race_id;
     body = player.get_body();
     head = player.get_head();
+
+    bank_gold = player.get_bank_gold();
+    std::memset(bank, 0, BANK_AMOUNT);
+    std::memset(bank_amounts, 0, BANK_AMOUNT);
+
+    size_t i = 0;
+    for (const auto& [item_id, amount]: player.get_bank_items()) {
+        if (i >= BANK_AMOUNT) {
+            break;
+        }
+
+        bank[i] = item_id;
+        bank_amounts[i] = amount;
+        i++;
+    }
 }

@@ -14,10 +14,6 @@ public:
 
 private:
     AllyExecuteResult handle_sell_item(Player& player, uint8_t item_id) const;
-
-    AllyExecuteResult handle_heal() const;
-
-    AllyExecuteResult handle_resurrect() const;
 };
 
 

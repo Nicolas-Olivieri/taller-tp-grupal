@@ -109,6 +109,10 @@ bool MapData::erase_asset(const int asset_id) {
 }
 
 void MapData::clear_all() {
+    asset_counter[ImageType::TILE] = 0;
+    asset_counter[ImageType::COLLIDER] = 0;
+    asset_counter[ImageType::NPC] = 0;
+
     occupied_tiles.clear();
     placements.clear();
     unwalkable_tiles.clear();

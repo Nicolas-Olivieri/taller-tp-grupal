@@ -2,14 +2,19 @@
 #define GAME_LOOP_H
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "common/dto/snapshot/snapshot_builder.h"
 #include "common/queue.h"
 #include "common/thread/thread.h"
 #include "server/command/command.h"
 #include "server/persistance/playerrepository.h"
+#include "server/util/server_map_loader.h"
 
 #include "game_world.h"
+
+
 class GameLoop: public Thread {
 private:
     Queue<std::unique_ptr<Command>>& command_queue;
@@ -32,9 +37,14 @@ public:
 private:
     void process_commands(SnapshotBuilder& builder);
 
-    void update_world();
+    void update_world(SnapshotBuilder& builder);
 
     void broadcast(SnapshotBuilder& builder);
+
+    std::string format_creature_attack_message(const CreatureUpdateStatus& status);
+
+    void broadcast_resurrected_players(SnapshotBuilder& builder,
+                                       const std::vector<std::string>& resurrected_players) const;
 };
 
 

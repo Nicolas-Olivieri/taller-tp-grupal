@@ -1,10 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <map>
 #include <string>
 
 #include "../killable.h"
 #include "../position.h"
+#include "bank/bank.h"
 #include "server/game/allies/ally.h"
 #include "server/game/attacker.h"
 #include "server/game/player/inventory/goldmanager.h"
@@ -20,9 +22,16 @@ private:
     const uint8_t head;
 
     Inventory inventory;
+    Bank bank;
     GoldManager gold_manager;
 
     Ally* bound_ally;
+
+    // TODO: Considerar usar un enum para los estados (vivo, resucitando, muerto)
+    bool just_resurrected;
+    bool is_resurrecting;
+    int resurrection_timer;
+    Position target_resurrection_position;
 
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
@@ -50,7 +59,9 @@ public:
 
     /// Player
 
-    Stats get_stats() const;
+    const Stats& get_stats() const;
+
+    const std::string& get_name() const;
 
     uint8_t get_body() const;
 
@@ -81,6 +92,27 @@ public:
     void acquire_item(uint8_t item_id);
 
     void drop_item(uint8_t item_id);
+
+    uint16_t get_bank_gold() const;
+
+    void deposit_gold_to_bank(uint16_t amount);
+
+    void withdraw_gold_from_bank(uint16_t amount);
+
+    const std::map<uint8_t, uint8_t>& get_bank_items() const;
+
+    void deposit_item_to_bank(uint8_t item_id);
+
+    void withdraw_item_from_bank(uint8_t item_id);
+
+    bool can_move() const override;
+
+    void start_delayed_resurrection(int wait_time, const Position& position);
+
+    bool did_just_resurrect();
+
+private:
+    void complete_delayed_resurrection();
 };
 
 

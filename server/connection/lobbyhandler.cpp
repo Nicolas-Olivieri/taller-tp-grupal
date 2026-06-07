@@ -5,7 +5,9 @@
 
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/lobby/existence.h"
+#include "common/dto/snapshot/map/client_map_data.h"
 #include "common/protocol/protocol.h"
+#include "server/util/server_map_loader.h"
 
 LobbyHandler::LobbyHandler(Socket&& socket, Queue<ConnectionInfo>& waiting_players,
                            PlayerRepository& player_repository):
@@ -24,7 +26,7 @@ void LobbyHandler::run() {
     // si es registro, recibir personalización del personaje + persistencia
     if (!player_repository.exists(credentials.username)) {
         try {
-            protocol.send(ExistenceDTO(false));
+            protocol.send(ExistenceDTO(false, false));
             CreatePlayerDTO appearance = protocol.recv_appearance();
             create_player(credentials.username, appearance);
 
@@ -34,10 +36,17 @@ void LobbyHandler::run() {
             return;
         }
     } else {
-        protocol.send(ExistenceDTO(true));
+        if (player_repository.is_connected(credentials.username)) {
+            protocol.send(ExistenceDTO(true, true));
+            return;
+        }
+        protocol.send(ExistenceDTO(true, false));
     }
 
     // envío de información del mundo + snapshot inicial
+    ServerMapLoader loader;
+    protocol.send(loader.get_client_data());
+
     move_into_waiting_queue(credentials.username);
 }
 

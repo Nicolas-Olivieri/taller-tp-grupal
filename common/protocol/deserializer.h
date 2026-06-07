@@ -11,8 +11,10 @@
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
+#include "common/dto/snapshot/info/creatureinfo.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/info/playerinfo.h"
+#include "common/dto/snapshot/map/asset_info.h"
 #include "common/socket.h"
 
 class Deserializer {
@@ -20,6 +22,8 @@ private:
     Socket& socket;
 
     PlayerInfoDTO recv_player_info();
+
+    CreatureInfoDTO recv_creature_info();
 
     AllyInfoDTO recv_ally_info();
 
@@ -46,7 +50,12 @@ private:
     DeathDTO recv_death();
 
     ChatListDTO recv_chat_list();
+
+    ListBankDTO recv_list_bank();
+
     ListItemsDTO recv_list_items();
+
+    AssetInfoDTO recv_asset_info();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT
@@ -65,9 +74,13 @@ public:
 
     std::vector<PlayerInfoDTO> recv_players_information();
 
+    std::vector<CreatureInfoDTO> recv_creatures_information();
+
     std::vector<ActionDTO> recv_actions();
 
     std::vector<AllyInfoDTO> recv_allies_information();
+
+    std::vector<AssetInfoDTO> recv_assets_information();
 };
 
 #endif  // DESERIALIZER_H

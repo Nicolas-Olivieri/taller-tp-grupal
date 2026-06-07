@@ -19,7 +19,7 @@ void Camera::update_position() {
     if (view.GetX() > world_size.GetW() - view.GetW())
         view.SetX(world_size.GetW() - view.GetW());
     if (view.GetY() > world_size.GetH() - view.GetH())
-        view.SetY(world_size.GetY() - view.GetH());
+        view.SetY(world_size.GetH() - view.GetH());
 }
 
 SDL2pp::Rect Camera::get_world() const { return world_size; }

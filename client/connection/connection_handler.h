@@ -22,11 +22,15 @@ public:
 
     void stop();
 
+    ClientMapDataDTO receive_map();
+
     bool try_pop_snapshot(SnapshotDTO& snapshot);
 
     SnapshotDTO pop_snapshot();
 
     void push_command(std::unique_ptr<EventDTO>&& event);
+
+    bool is_finished();
 };
 
 

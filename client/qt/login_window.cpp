@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QMoveEvent>
 #include <QMovie>
+#include <iostream>
 #include <string>
 #include <utility>
 
@@ -30,10 +31,10 @@ LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::Login
     ui->conn_err->hide();
     ui->name_err->hide();
 
-    connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::conect_match);
+    connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::connect_match);
 }
 
-void LoginWindow::conect_match() {
+void LoginWindow::connect_match() {
     ui->conn_err->hide();
     ui->name_err->hide();
 
@@ -48,6 +49,13 @@ void LoginWindow::conect_match() {
     protocol.send(message);
 
     const ExistenceDTO confirmation = protocol.recv_existence();
+    if (confirmation.user_connected) {
+        ui->name_err->setText("El usuario ya está conectado");
+        ui->name_err->show();
+        socket.reset();
+        return;
+    }
+
     if (!confirmation.user_exists) {
         const auto creator = new CreatorWindow(QString::fromStdString(username));
         connect(creator, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
@@ -69,6 +77,7 @@ void LoginWindow::send_creation_data(const CreatePlayerDTO& player_data) {
 
 bool LoginWindow::can_create_session() {
     if (ui->user->text().isEmpty()) {
+        ui->name_err->setText("Ingresá un nombre de usuario");
         ui->name_err->show();
         return false;
     }

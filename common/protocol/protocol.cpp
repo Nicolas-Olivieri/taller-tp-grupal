@@ -37,7 +37,24 @@ ExistenceDTO Protocol::recv_existence() {
 
     const uint8_t exists = deserializer.recv_uint8();
 
-    return ExistenceDTO(exists);
+    const uint8_t connected = deserializer.recv_uint8();
+
+    return ExistenceDTO(exists, connected);
+}
+
+ClientMapDataDTO Protocol::recv_map() {
+    check_header_message_byte(Message::MAP);
+
+    Deserializer deserializer(this->socket);
+
+    const uint16_t width = deserializer.recv_uint16();
+    const uint16_t height = deserializer.recv_uint16();
+
+    const std::vector<AssetInfoDTO> tiles = deserializer.recv_assets_information();
+    const std::vector<AssetInfoDTO> colliders = deserializer.recv_assets_information();
+    const std::vector<AssetInfoDTO> npcs = deserializer.recv_assets_information();
+
+    return ClientMapDataDTO(width, height, tiles, colliders, npcs);
 }
 
 CreatePlayerDTO Protocol::recv_appearance() {
@@ -77,9 +94,13 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS) {
         return RequestedCommandDTO(command);
-    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM) {
+    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
+               command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
+    } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD) {
+        const uint16_t gold_amount = deserializer.recv_uint16();
+        return RequestedCommandDTO(command, gold_amount);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }
@@ -95,11 +116,10 @@ SnapshotDTO Protocol::recv_snapshot() {
     Deserializer deserializer(this->socket);
 
     std::vector<PlayerInfoDTO> players_information = deserializer.recv_players_information();
-    // TODO: std::vector<CreatureDTO> creatures_information =
-    // deserializer.recv_creatures_information();
+    std::vector<CreatureInfoDTO> creatures_information = deserializer.recv_creatures_information();
     std::vector<ActionDTO> actions = deserializer.recv_actions();
 
-    return SnapshotDTO(players_information, actions);
+    return SnapshotDTO(players_information, creatures_information, actions);
 }
 
 void Protocol::check_header_message_byte(const Message& expected) {

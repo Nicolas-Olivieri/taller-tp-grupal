@@ -9,11 +9,16 @@
 
 #include "allies/ally_action_payload.h"
 #include "common/direction.h"
+#include "common/dto/snapshot/map/server_map_data.h"
+#include "creatures/creature.h"
 #include "player/player.h"
+#include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/persistance/playerrepository.h"
 
 #include "grid.h"
 #include "position.h"
+#include "world_update_status.h"
 
 
 class GameWorld {
@@ -22,14 +27,24 @@ private:
 
     std::unordered_map<std::string, Player> players;
 
+    std::unordered_map<uint16_t, Creature> creatures;
+
     std::vector<std::unique_ptr<Ally>> allies;
 
+    PlayerRepository& player_repository;
+
 public:
-    explicit GameWorld(int width, int height);
+    explicit GameWorld(PlayerRepository& pLayer_repository);
 
-    std::unordered_map<std::string, Player> get_players() const;
+    void init();
 
-    void update();
+    const std::unordered_map<std::string, Player>& get_players() const;
+
+    const std::unordered_map<uint16_t, Creature>& get_creatures() const;
+
+    WorldUpdateStatus update();
+
+    CreatureUpdateStatus move_creature(Creature& creature, const Direction& direction);
 
     void move_player(const std::string& player_name, Direction direction);
 
@@ -46,16 +61,36 @@ public:
 
     HealResult heal_player(const std::string& player_name);
 
-    ListItemsResult list_ally_items(const std::string& player_name);
+    std::unique_ptr<ListOutcome> list_ally_items(const std::string& player_name);
 
     BuyResult buy_item(const std::string& player_name, uint8_t item_id);
 
     SellResult sell_item(const std::string& player_name, uint8_t item_id);
 
+    DepositItemResult deposit_item(const std::string& player_name, uint8_t item_id);
+
+    WithdrawItemResult withdraw_item(const std::string& player_name, uint8_t item_id);
+
+    DepositGoldResult deposit_gold(const std::string& player_name, uint16_t gold_amount);
+
+    WithdrawGoldResult withdraw_gold(const std::string& player_name, uint16_t gold_amount);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 
-    void init_npc();
+    AllyExecuteResult resurrect_unbounded_player(Player& player) const;
+
+    const Ally* find_closest_priest(const Player& player) const;
+
+    AllyExecuteResult start_delayed_resurrection(Player& player, const Ally* priest) const;
+
+    Direction next_movement(const Creature& creature);
+
+    void init_creature();
+
+    void remove_dead_creatures();
+
+    void init_npc(const std::vector<AllyInfoDTO>& npcs);
 };
 
 

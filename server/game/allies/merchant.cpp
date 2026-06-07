@@ -10,20 +10,32 @@ Merchant::Merchant(const Position& position):
 
 AllyExecuteResult Merchant::execute(Player& player, const AllyActionPayload& payload) const {
     switch (payload.action) {
+        case AllyAction::BUY:
+            return handle_buy_item(player, payload.item_id);
+
+        case AllyAction::DEPOSIT_GOLD:
+            return handle_action_not_accepted<DepositGoldResult>(DepositGoldStatus::ACTION_NOT_ACCEPTED);
+
+        case AllyAction::DEPOSIT_ITEM:
+            return handle_action_not_accepted<DepositItemResult>(DepositItemStatus::ACTION_NOT_ACCEPTED);
+
+        case AllyAction::HEAL:
+            return handle_action_not_accepted<HealResult>(HealStatus::ACTION_NOT_ACCEPTED);
+
         case AllyAction::LIST_ITEMS:
             return handle_list_items();
 
-        case AllyAction::BUY:
-            return handle_buy_item(player, payload.item_id);
+        case AllyAction::RESURRECT:
+            return handle_action_not_accepted<ResurrectResult>(ResurrectStatus::ACTION_NOT_ACCEPTED);
 
         case AllyAction::SELL:
             return handle_sell_item(player, payload.item_id);
 
-        case AllyAction::HEAL:
-            return handle_heal();
+        case AllyAction::WITHDRAW_GOLD:
+            return handle_action_not_accepted<WithdrawGoldResult>(WithdrawGoldStatus::ACTION_NOT_ACCEPTED);
 
-        case AllyAction::RESURRECT:
-            return handle_resurrect();
+        case AllyAction::WITHDRAW_ITEM:
+            return handle_action_not_accepted<WithdrawItemResult>(WithdrawItemStatus::ACTION_NOT_ACCEPTED);
 
         default:
             break;
@@ -50,14 +62,4 @@ AllyExecuteResult Merchant::handle_sell_item(Player& player, const uint8_t item_
     } catch (const ItemEquipped&) {
         return AllyExecuteResult(SellResult(SellStatus::ITEM_EQUIPPED, type));
     }
-}
-
-
-AllyExecuteResult Merchant::handle_heal() const {
-    return AllyExecuteResult(HealResult(HealStatus::ACTION_NOT_ACCEPTED, type));
-}
-
-
-AllyExecuteResult Merchant::handle_resurrect() const {
-    return AllyExecuteResult(ResurrectResult(ResurrectStatus::ACTION_NOT_ACCEPTED, type));
 }

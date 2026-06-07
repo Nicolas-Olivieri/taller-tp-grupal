@@ -1,8 +1,10 @@
 #ifndef KILLABLE_H
 #define KILLABLE_H
 
+#include "server/game/equipment.h"
 #include "server/game/stats/stats.h"
 
+#include "attacker.h"
 #include "interactive.h"
 #include "position.h"
 
@@ -21,6 +23,7 @@ protected:
     bool is_meditating;
 
     Stats stats;
+    Equipment equipment;
 
     Position position;
     Direction direction;
@@ -28,12 +31,16 @@ protected:
     Killable(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t level,
              Position position);
 
+    Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position);
+
 public:
     virtual void drop() = 0;
 
-    bool can_move() const;
+    virtual bool can_move() const;
 
     virtual void update_position(const Position& new_position, const Direction& new_direction);
+
+    InteractResult interact(Player&) override;
 
     Position get_position() const;
 
@@ -42,6 +49,8 @@ public:
     bool is_alive() const;
 
     virtual void update();
+
+    uint16_t receive_damage(Attacker& attacker);
 
     virtual ~Killable() = default;
 };

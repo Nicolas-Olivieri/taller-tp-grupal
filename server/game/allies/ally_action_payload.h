@@ -4,7 +4,17 @@
 #include <cstdint>
 
 
-enum class AllyAction { HEAL, RESURRECT, BUY, SELL, LIST_ITEMS };
+enum class AllyAction {
+    BUY,
+    DEPOSIT_GOLD,
+    DEPOSIT_ITEM,
+    HEAL,
+    LIST_ITEMS,
+    RESURRECT,
+    SELL,
+    WITHDRAW_GOLD,
+    WITHDRAW_ITEM,
+};
 
 
 struct AllyActionPayload {

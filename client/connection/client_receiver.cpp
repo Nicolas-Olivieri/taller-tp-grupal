@@ -5,6 +5,11 @@
 
 ClientReceiver::ClientReceiver(Socket& socket): socket(socket) {}
 
+ClientMapDataDTO ClientReceiver::receive_map() {
+    Protocol protocol(socket);
+    return protocol.recv_map();
+}
+
 void ClientReceiver::run() {
 
     Protocol protocol(socket);

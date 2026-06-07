@@ -17,7 +17,11 @@ target_sources(taller_common
         dto/events/interact_event.cpp
         dto/events/command.cpp
         dto/events/chatevent.cpp
+        dto/events/deposit_gold_event.cpp
+        dto/events/deposit_item_event.cpp
         dto/events/sell_event.cpp
+        dto/events/withdraw_gold_event.cpp
+        dto/events/withdraw_item_event.cpp
 
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
@@ -25,11 +29,20 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_resurrection/resurrection.cpp
         dto/snapshot/actions/action_types/act_death/death.cpp
         dto/snapshot/actions/action_types/act_list/chat_list.cpp
+        dto/snapshot/actions/action_types/act_list_bank/list_bank.cpp
         dto/snapshot/actions/action_types/act_list_items/list_items.cpp
 
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
+        dto/snapshot/info/creatureinfo.cpp
+
+        dto/snapshot/map/asset_info.cpp
+        dto/snapshot/map/client_map_data.cpp
+        dto/snapshot/map/grid_matrix.cpp
+        dto/snapshot/map/server_map_data.cpp
+
         dto/snapshot/snapshot_builder.cpp
+
         protocol/protocol.cpp
         protocol/serializer.cpp
         protocol/deserializer.cpp
@@ -41,6 +54,7 @@ target_sources(taller_common
         dto/snapshot/info/player_stats.cpp
 
         util/string_utils.cpp
+        util/toml_helper.cpp
 
         dto/lobby/existence.cpp
         dto/lobby/create_player.cpp
@@ -67,7 +81,11 @@ target_sources(taller_common
         dto/events/interact_event.h
         dto/events/command.h
         dto/events/chatevent.h
+        dto/events/deposit_gold_event.h
+        dto/events/deposit_item_event.h
         dto/events/sell_event.h
+        dto/events/withdraw_gold_event.h
+        dto/events/withdraw_item_event.h
 
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h
@@ -75,11 +93,20 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_resurrection/resurrection.h
         dto/snapshot/actions/action_types/act_death/death.h
         dto/snapshot/actions/action_types/act_list/chat_list.h
+        dto/snapshot/actions/action_types/act_list_bank/list_bank.h
         dto/snapshot/actions/action_types/act_list_items/list_items.h
 
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
+        dto/snapshot/info/creatureinfo.h
+
+        dto/snapshot/map/asset_info.h
+        dto/snapshot/map/client_map_data.h
+        dto/snapshot/map/grid_matrix.h
+        dto/snapshot/map/server_map_data.h
+
         dto/snapshot/snapshot_builder.h
+
         protocol/protocol.h
         protocol/serializer.h
         protocol/deserializer.h
@@ -92,6 +119,7 @@ target_sources(taller_common
         dto/snapshot/info/player_stats.h
 
         util/string_utils.h
+        util/toml_helper.h
 
         dto/lobby/existence.h
         dto/lobby/create_player.h

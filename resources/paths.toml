@@ -1,5 +1,8 @@
-[server.stats]
-path = "/server/stats.toml"
+[server.players]
+path = "/server/player_stats.toml"
+
+[server.creatures]
+path = "/server/creature_stats.toml"
 
 [server.cooldowns]
 path = "/server/cooldowns.toml"
