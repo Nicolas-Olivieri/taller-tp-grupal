@@ -48,7 +48,7 @@ Editor::Editor(QWidget* parent):
 
 
 QHash<uint8_t, AssetData> Editor::populate_hash(const std::string& category_name, const ImageType type) {
-    const auto data = toml::parse(DATA_PATH "/assets_info.toml");
+    const auto data = toml::parse(CONFIG_PATH "/assets_info.toml");
     auto assets = toml::find<std::vector<AssetData>>(data, category_name);
 
     QHash<uint8_t, AssetData> hash;

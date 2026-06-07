@@ -112,8 +112,8 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
 
     for (auto it = creatures.begin(); it != creatures.end();) {
         if (!sub_ids.contains(it->first)) {
-            it = creatures.erase(it);
             map_items.erase(it->second);
+            it = creatures.erase(it);
         } else {
             it++;
         }

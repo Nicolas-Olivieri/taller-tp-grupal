@@ -32,10 +32,8 @@ sudo apt install -y \
     git cmake build-essential ninja-build pkg-config \
     qt6-base-dev \
     libasound2-dev libopus-dev libopusfile-dev libxmp-dev \
-    libfluidsynth-dev fluidsynth libwavpack-dev libfreetype-dev
-
-# Puedo instalarlas, pero debería de hacerlo el Cmake
-#    libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+    libfluidsynth-dev fluidsynth libwavpack-dev libfreetype-dev \
+    libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
 
 echo -e "${GREEN}[3/6] Clonando repositorio...${NC}"
 if [ ! -d "$PROJECT_DIR" ]; then
@@ -81,6 +79,10 @@ else
     exit 1
 fi
 
+echo -e "${GREEN}    Ajustando permisos...${NC}"
+sudo chown -R $USER:$USER "$INSTALL_CONFIG"
+sudo chown -R $USER:$USER "$INSTALL_DATA"
+
 # No debería de ser debug, pero de momento rompe si no lo ponemos como tal
 echo -e "${GREEN}[5/6] Compilando el proyecto...${NC}"
 cmake -S . -B cmake-build-debug -G Ninja -DCMAKE_BUILD_TYPE=Debug\
@@ -93,6 +95,8 @@ echo -e "${GREEN}    Instalando binarios en ${INSTALL_BIN}...${NC}"
 sudo cp cmake-build-debug/taller_client "$INSTALL_BIN"
 sudo cp cmake-build-debug/taller_server "$INSTALL_BIN"
 sudo cp cmake-build-debug/taller_editor "$INSTALL_BIN"
+
+cd ..
 
 echo -e "${GREEN}[6/6] Copiando lanzadores al escritorio...${NC}"
 cp "$PROJECT_DIR/client.sh" "$DESKTOP_DIR/"
@@ -109,6 +113,6 @@ echo -e "Configuraciones en:     ${INSTALL_CONFIG}"
 echo -e "Datos en:               ${INSTALL_DATA}"
 echo -e "Lanzadores en:          ${DESKTOP_DIR}"
 echo ""
-echo -e "Para ejecutar el servidor: haz doble clic en ${YELLOW}server.sh${NC} (escritorio)"
-echo -e "Para ejecutar el cliente:  haz doble clic en ${YELLOW}client.sh${NC} (escritorio)"
-echo -e "Para ejecutar el editor:   haz doble clic en ${YELLOW}editor.sh${NC}"
+echo -e "Para iniciar el servidor:  ejecute ${YELLOW}server.sh${NC} (escritorio)"
+echo -e "Para comenzar a jugar:     ejecute ${YELLOW}client.sh${NC} (escritorio)"
+echo -e "Para crear nuevos mapas:   ejecute ${YELLOW}editor.sh${NC} (escritorio)"

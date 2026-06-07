@@ -6,12 +6,12 @@
 #define TOML_PATH "/paths.toml"
 
 GameConfig::GameConfig() {
-    auto root = toml::parse(DATA_PATH TOML_PATH);
+    auto root = toml::parse(CONFIG_PATH TOML_PATH);
 
     const auto paths = toml::find(root, "server");
     const auto player_stats_path = toml::find(paths, "players");
     const auto player_stats_file = toml::find<std::string>(player_stats_path, "path");
-    auto player_stats_root = toml::parse(DATA_PATH + player_stats_file);
+    auto player_stats_root = toml::parse(CONFIG_PATH + player_stats_file);
 
     const auto archetypes_table = toml::find(player_stats_root, "archetypes");
     for (const auto& [name, value]: archetypes_table.as_table()) {
@@ -49,7 +49,7 @@ GameConfig::GameConfig() {
 
     const auto creature_stats_path = toml::find(paths, "creatures");
     const auto creature_stats_file = toml::find<std::string>(creature_stats_path, "path");
-    auto creature_stats_root = toml::parse(DATA_PATH + creature_stats_file);
+    auto creature_stats_root = toml::parse(CONFIG_PATH + creature_stats_file);
 
     const auto creatures_table = toml::find(creature_stats_root, "races");
     for (const auto& [name, value]: creatures_table.as_table()) {
@@ -83,7 +83,7 @@ GameConfig::GameConfig() {
 
     const auto cooldowns_path = toml::find(paths, "cooldowns");
     const auto cooldowns_file = toml::find<std::string>(cooldowns_path, "path");
-    const auto cooldowns_root = toml::parse(DATA_PATH + cooldowns_file);
+    const auto cooldowns_root = toml::parse(CONFIG_PATH + cooldowns_file);
     const auto cooldowns_table = toml::find(cooldowns_root, "cooldowns");
 
     player_cooldowns.attack = static_cast<uint8_t>(toml::find<int>(cooldowns_table, "player", "attack"));
@@ -94,7 +94,7 @@ GameConfig::GameConfig() {
 
     const auto items_path = toml::find(paths, "items");
     const auto items_file = toml::find<std::string>(items_path, "path");
-    const auto items_root = toml::parse(DATA_PATH + items_file);
+    const auto items_root = toml::parse(CONFIG_PATH + items_file);
     const auto items_potions_table = toml::find(items_root, "potions");
     for (const auto& [name, value]: items_potions_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));

@@ -38,7 +38,7 @@ CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
 }
 
 void CreatorWindow::load_skins_data() {
-    auto root = toml::parse(DATA_PATH "/texture_files.toml");
+    auto root = toml::parse(CONFIG_PATH "/texture_files.toml");
     std::vector<std::string> categories = {"body", "head"};
 
     for (const auto& cat: categories) {
