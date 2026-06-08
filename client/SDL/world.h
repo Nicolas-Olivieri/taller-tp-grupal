@@ -42,6 +42,8 @@ private:
 
     void add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place);
 
+    void update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place);
+
     void erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_information);
 
     void erase_taken_loot(const std::vector<LootInfoDTO>& loot_information);

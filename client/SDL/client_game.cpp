@@ -188,6 +188,8 @@ void ClientGame::handle_text_command(const std::string& text) {
         connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
     if (text == "/listar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::LIST_ITEMS));
+    if (text == "/tomar")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::PICKUP));
     if (text.starts_with("/comprar "))
         handle_buy_item_command(text);
     if (text.starts_with("/vender "))

@@ -297,13 +297,21 @@ WithdrawGoldResult GameWorld::withdraw_gold(const std::string& player_name, cons
             .withdraw_gold;
 }
 
-PickUpResult GameWorld::pick_up(const std::string& player_name, const Position& position) {
+PickUpResult GameWorld::pick_up(const std::string& player_name) {
     if (!players.contains(player_name))
         return PickUpResult();
 
     Player& player = players.at(player_name);
 
+    if (!player.is_alive())
+        return PickUpResult(PickUpStatus::GHOST_FAIL);
+
+    const Position& position = player.get_position();
+
     Tile& tile = grid.get_tile(position);
+    if (tile.get_loot().empty())
+        return PickUpResult(PickUpStatus(PickUpStatus::NO_LOOT));
+
     const Loot& loot = tile.get_loot().top();
 
     PickUpResult result = loot.type == LootType::ITEM ? pick_item_up(player, tile, loot.item) :
@@ -323,13 +331,23 @@ PickUpResult GameWorld::pick_item_up(Player& player, Tile& tile, uint8_t item) {
     } catch (const InventoryFull& err) {
     } catch (const SlotFull& err) {}
 
-    return PickUpResult(PickUpStatus::FAILED);
+    return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
 }
 
 PickUpResult GameWorld::pick_gold_up(Player& player, Tile& tile, uint16_t gold) {
+    uint16_t previous_gold = player.get_safe_gold() + player.get_excess_gold();
     player.add_gold(gold);
+    uint16_t current_gold = player.get_safe_gold() + player.get_excess_gold();
+
     tile.get_loot().pop();
-    return PickUpResult(PickUpStatus::SUCCESS);
+
+    if (current_gold - previous_gold == gold) {
+        return PickUpResult(PickUpStatus::SUCCESS);
+    } else if (current_gold - previous_gold == 0) {
+        return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
+    }
+
+    return PickUpResult(PickUpStatus::GOLD_OVERFLOW);
 }
 
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,

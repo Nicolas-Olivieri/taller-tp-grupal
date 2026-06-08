@@ -57,7 +57,7 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
             return std::make_unique<WithdrawGoldCommand>(player_name, dto.gold_amount);
 
         case CommandType::PICKUP:
-            return std::make_unique<PickUpCommand>(player_name, dto.x, dto.y);
+            return std::make_unique<PickUpCommand>(player_name);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

@@ -131,8 +131,11 @@ void World::update_loot(const std::vector<LootInfoDTO>& loot_information) {
 
     for (const LootInfoDTO& loot_info: loot_information) {
         const std::pair<uint16_t, uint16_t> place = {loot_info.x, loot_info.y};
-        if (!loot.contains(place) || loot.at(place).second != loot_info.is_item)
+        if (!loot.contains(place)) {
             add_new_loot(loot_info, place);
+        } else if (loot.at(place).second != loot_info.is_item) {
+            update_top_loot(loot_info, place);
+        }
     }
 }
 
@@ -198,11 +201,16 @@ void World::add_new_creature(const CreatureInfoDTO& info) {
 }
 
 void World::add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
-    std::cout << "[LOOT] se agregó un loot de tipo: " << static_cast<int>(info.is_item) << std::endl;
     Sprite drop = sprite_creator.create_sprite(info);
     auto ptr = std::make_shared<Sprite>(drop);
     loot[place] = {ptr, info.is_item};
     map_loot.emplace(ptr);
+}
+
+void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
+    auto& [sprite, is_item] = loot[place];
+    map_loot.extract(sprite);
+    add_new_loot(info, place);
 }
 
 Sprite& World::get_client_player() { return *players.at(player_name).get(); }

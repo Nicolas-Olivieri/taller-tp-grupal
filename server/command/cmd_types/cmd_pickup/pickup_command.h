@@ -8,12 +8,13 @@
 class PickUpCommand: public Command {
 private:
     std::string player_name;
-    Position position;
 
     PickUpResult result;
 
+    ChatMessageDTO create_message();
+
 public:
-    PickUpCommand(const std::string& player_name, uint16_t x, uint16_t y);
+    explicit PickUpCommand(const std::string& player_name);
 
     void execute(GameWorld& world) override;
 
