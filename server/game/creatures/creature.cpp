@@ -44,7 +44,7 @@ std::vector<Loot> Creature::drop() {
             uint8_t item =
                     Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
             // TODO: NI BIEN SE IMPLEMENTE EL BÁCULO DE CURACIÓN SACAR ESTE HARDCODEO
-            if (item == 5)               // TODO: CORREGIME
+            if (item == 0 or item == 5)  // TODO: CORREGIME
                 item++;                  // TODO: CORREGIME
             drop.push_back(Loot(item));  // TODO: CORREGIME
             // TODO: CORREGIRRRR
