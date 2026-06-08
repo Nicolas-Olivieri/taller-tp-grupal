@@ -26,6 +26,10 @@ void PlayerRepository::update_current_players_state(
     }
 }
 
+void PlayerRepository::save_progress(const Player& player) {
+    async_requests.push(std::unordered_map<std::string, PlayerData>{{player.get_name(), PlayerData(player)}});
+}
+
 void PlayerRepository::save_progress(const std::unordered_map<std::string, Player>& players) {
     std::unordered_map<std::string, PlayerData> players_data;
 

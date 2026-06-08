@@ -199,6 +199,7 @@ void GameWorld::remove_player(const std::string& player_name) {
             creature.stop_targeting();
     }
 
+    player_repository.save_progress(it->second);
     player_repository.desconnect(player_name);
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
