@@ -2,6 +2,7 @@
 
 #include <map>
 #include <stdexcept>
+#include <unordered_map>
 
 #include <arpa/inet.h>
 
@@ -131,8 +132,11 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     uint16_t excess_gold = recv_uint16();
     AppearanceDTO appearance = recv_appearance();
     PlayerStatsDTO stats = recv_player_stats();
+    InventoryInfoDTO inventory = recv_inventory_info();
+    EquipmentInfoDTO equipment = recv_equipment_info();
 
-    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats);
+    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats, inventory,
+                         equipment);
 }
 
 CreatureInfoDTO Deserializer::recv_creature_info() {
@@ -299,6 +303,28 @@ PlayerStatsDTO Deserializer::recv_player_stats() {
 
     return PlayerStatsDTO(max_health, current_health, max_mana, current_mana, xp_level, current_xp_amount,
                           max_xp_amount);
+}
+
+InventoryInfoDTO Deserializer::recv_inventory_info() {
+    const uint16_t size = recv_uint16();
+    std::unordered_map<uint8_t, uint8_t> items;
+
+    for (uint16_t i = 0; i < size; ++i) {
+        const uint8_t item_id = recv_uint8();
+        const uint8_t amount = recv_uint8();
+        items[item_id] = amount;
+    }
+
+    return InventoryInfoDTO(items);
+}
+
+EquipmentInfoDTO Deserializer::recv_equipment_info() {
+    const uint8_t weapon = recv_uint8();
+    const uint8_t shield = recv_uint8();
+    const uint8_t helmet = recv_uint8();
+    const uint8_t armor = recv_uint8();
+
+    return EquipmentInfoDTO(weapon, shield, helmet, armor);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {

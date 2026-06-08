@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "common/dto/events/buy_event.h"
@@ -24,6 +25,7 @@
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
+#include "common/dto/snapshot/info/inventory_info.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/map/client_map_data.h"
 #include "common/dto/snapshot/snapshot.h"
@@ -53,6 +55,15 @@ private:
     // Generaliza la forma de serializar mapas con claves K y valores V
     template <typename K, typename V>
     void serialize(const std::map<K, V>& container) {
+        serialize(static_cast<uint16_t>(container.size()));
+        for (const auto& [key, value]: container) {
+            serialize(key);
+            serialize(value);
+        }
+    }
+
+    template <typename K, typename V>
+    void serialize(const std::unordered_map<K, V>& container) {
         serialize(static_cast<uint16_t>(container.size()));
         for (const auto& [key, value]: container) {
             serialize(key);
@@ -105,6 +116,10 @@ public:
     void serialize(const AllyInfoDTO& info);
 
     void serialize(const PlayerStatsDTO& stats);
+
+    void serialize(const InventoryInfoDTO& inventory);
+
+    void serialize(const EquipmentInfoDTO& equipment);
 
     void serialize(const ResurrectionDTO& resurrection);
 

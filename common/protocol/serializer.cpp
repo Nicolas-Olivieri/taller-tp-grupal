@@ -7,6 +7,7 @@
 
 #include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/lobby/existence.h"
+#include "common/dto/snapshot/info/inventory_info.h"
 
 Serializer::Serializer(std::vector<uint8_t>& buffer): buffer(buffer), offset(0) {}
 
@@ -74,6 +75,8 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(info.excess_gold);
     serialize(info.appearance);
     serialize(info.stats);
+    serialize(info.inventory);
+    serialize(info.equipment);
 }
 
 void Serializer::serialize(const CreatureInfoDTO& info) {
@@ -188,6 +191,15 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
     serialize(stats.xp_level);
     serialize(stats.current_xp_amount);
     serialize(stats.max_xp_amount);
+}
+
+void Serializer::serialize(const InventoryInfoDTO& inventory) { serialize(inventory.items); }
+
+void Serializer::serialize(const EquipmentInfoDTO& equipment) {
+    serialize(equipment.weapon);
+    serialize(equipment.shield);
+    serialize(equipment.helmet);
+    serialize(equipment.armor);
 }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {
