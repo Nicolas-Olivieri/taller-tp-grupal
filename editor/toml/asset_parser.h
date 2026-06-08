@@ -19,6 +19,11 @@ struct toml::from<AssetData> {
 
         const auto rect_values = toml::find<std::vector<int>>(v, "unwalkable");
         data.unwalkable_area = QRect(rect_values[0], rect_values[1], rect_values[2], rect_values[3]);
+        if (v.contains("inverse")) {
+            data.inverse_unwalkable = toml::find<bool>(v, "inverse");
+        } else {
+            data.inverse_unwalkable = false;
+        }
 
         data.type = ImageType::TILE;  // Luego se asigna de forma correcta
 

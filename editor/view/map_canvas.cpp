@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QtMath>
 
+#include "grid_range.h"
 #include "ui_mapcanvas.h"
 
 #define TILE_SIZE 32
@@ -178,19 +179,21 @@ void MapCanvas::clear_all() {
 
 
 void MapCanvas::set_unwalkable_tiles(const QPoint& clicked_cell, const int tile_id) const {
-    const QPoint unwalkable_offset = drawing_asset.unwalkable_area.topLeft();
-    const QSize unwalkable_size = drawing_asset.unwalkable_area.size();
+    const GridRange grid_range(clicked_cell, drawing_asset.tile_width, drawing_asset.tile_height);
+    const QRect unwalkable_area = drawing_asset.unwalkable_area.translated(clicked_cell);
 
     const QBrush redBrush(QColor(255, 0, 0, 150));
     const QPen noPen(Qt::NoPen);
-    for (int i = unwalkable_offset.x(); i < unwalkable_size.width() + unwalkable_offset.x(); i++) {
-        for (int j = unwalkable_offset.y(); j < unwalkable_size.height() + unwalkable_offset.y(); j++) {
+    for (const auto& cell: grid_range) {
+
+        if ((!drawing_asset.inverse_unwalkable && unwalkable_area.contains(cell)) ||
+            (drawing_asset.inverse_unwalkable && !unwalkable_area.contains(cell))) {
             auto* mark = new QGraphicsEllipseItem(11, 11, 10, 10);
             mark->setZValue(98.0);
             mark->setData(0, tile_id);
             mark->setBrush(redBrush);
             mark->setPen(noPen);
-            mark->setPos((clicked_cell.x() + i) * TILE_SIZE, (clicked_cell.y() + j) * TILE_SIZE);
+            mark->setPos(cell * TILE_SIZE);
 
             unwalkable_tiles->addToGroup(mark);
         }

@@ -20,7 +20,7 @@
    <string>TabWidget</string>
   </property>
   <property name="currentIndex">
-   <number>2</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="tile_selector">
    <attribute name="title">
@@ -31,8 +31,8 @@
      <widget class="QListWidget" name="tiles_list">
       <property name="styleSheet">
        <string notr="true">QListWidget::item {
-    margin-left: auto;
-    margin-right: auto;
+    padding: 2px;
+    margin: 0px;
 }</string>
       </property>
       <property name="frameShape">
@@ -57,7 +57,7 @@
        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
       </property>
       <property name="resizeMode">
-       <enum>QListView::ResizeMode::Adjust</enum>
+       <enum>QListView::ResizeMode::Fixed</enum>
       </property>
       <property name="spacing">
        <number>0</number>
@@ -72,7 +72,7 @@
        <enum>QListView::ViewMode::IconMode</enum>
       </property>
       <property name="uniformItemSizes">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="wordWrap">
        <bool>false</bool>

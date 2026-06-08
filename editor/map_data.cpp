@@ -34,12 +34,14 @@ int MapData::add_tile(const QPoint position, const AssetData& tile_data) {
     // Agrega la tile logica al hash de tiles e indica el id que corresponda en cada celda que ocupe la tile
     asset_counter[tile_data.type]++;
     placements.insert(tile_id, new_tile);
+    const QRect unwalkable_area = tile_data.unwalkable_area.translated(position);
 
     for (const auto& cell: grid_range) {
         occupied_tiles.insert(cell, QVector{tile_id});
 
-        const QRect unwalkable_area = tile_data.unwalkable_area.translated(position);
-        if (unwalkable_area.contains(cell)) {
+        if (!tile_data.inverse_unwalkable && unwalkable_area.contains(cell)) {
+            unwalkable_tiles[cell].append(tile_id);
+        } else if (tile_data.inverse_unwalkable && !unwalkable_area.contains(cell)) {
             unwalkable_tiles[cell].append(tile_id);
         }
     }
@@ -62,11 +64,13 @@ int MapData::add_collider(const QPoint position, const AssetData& collider_data)
 
     placements.insert(tile_id, new_tile);
     asset_counter[collider_data.type]++;
+    const QRect unwalkable_area = collider_data.unwalkable_area.translated(position);
+
     for (const auto& cell: grid_range) {
         occupied_tiles[cell].append(tile_id);
 
-        const QRect unwalkable = collider_data.unwalkable_area.translated(position);
-        if (unwalkable.contains(cell)) {
+        if ((!collider_data.inverse_unwalkable && unwalkable_area.contains(cell)) ||
+            (collider_data.inverse_unwalkable && !unwalkable_area.contains(cell))) {
             unwalkable_tiles[cell].append(tile_id);
         }
     }

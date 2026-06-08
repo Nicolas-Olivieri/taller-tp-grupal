@@ -51,12 +51,16 @@
 
 
 [[items.tiles]]
-id_range = [0, 51]
+id_range = [0, 50]
 data = [1, 1, 0, 0, 128, 128]
 
-#[[items.tiles]]
-#id_range =
-#4 = [10, 5, 0, 0, 64, 64]
+[[items.tiles]]
+id_range = [51, 86]
+data = [10, 5, 0, 0, 64, 64]
+
+[[items.tiles]]
+id_range = [87, 98]
+data = [1, 1, 0, 0, 128, 128]
 
 [[items.colliders]]
 id = 0

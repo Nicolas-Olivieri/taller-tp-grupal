@@ -360,6 +360,354 @@ width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
+[[tiles]]
+id = 51
+name = "Pasto costa 1"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 2]
+
+[[tiles]]
+id = 52
+name = "Pasto costa 2"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 2]
+
+[[tiles]]
+id = 53
+name = "Pasto costa 4"
+width = 2
+height = 2
+unwalkable = [1, 0, 2, 1]
+
+[[tiles]]
+id = 54
+name = "Pasto costa 3"
+width = 2
+height = 2
+unwalkable = [0, 0, 2, 1]
+
+[[tiles]]
+id = 55
+name = "Pasto costa esq 1"
+width = 2
+height = 2
+unwalkable = [1, 1, 1, 1]
+
+[[tiles]]
+id = 56
+name = "Pasto costa esq 3"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 1]
+
+[[tiles]]
+id = 57
+name = "Pasto costa esq 2"
+width = 2
+height = 2
+unwalkable = [0, 1, 1, 1]
+
+[[tiles]]
+id = 58
+name = "Pasto costa esq 4"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 1]
+
+[[tiles]]
+id = 59
+name = "Pasto costa L 1"
+width = 2
+height = 2
+unwalkable = [1, 1, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 60
+name = "Pasto costa L 3"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 61
+name = "Pasto costa L 2"
+width = 2
+height = 2
+unwalkable = [0, 1, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 62
+name = "Pasto costa L 4"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 1]
+inverse = true
+
+
+[[tiles]]
+id = 63
+name = "Arena costa 1"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 2]
+
+[[tiles]]
+id = 64
+name = "Arena costa 2"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 2]
+
+[[tiles]]
+id = 65
+name = "Arena costa 4"
+width = 2
+height = 2
+unwalkable = [1, 0, 2, 1]
+
+[[tiles]]
+id = 66
+name = "Arena costa 3"
+width = 2
+height = 2
+unwalkable = [0, 0, 2, 1]
+
+[[tiles]]
+id = 67
+name = "Arena costa esq 1"
+width = 2
+height = 2
+unwalkable = [1, 1, 1, 1]
+
+[[tiles]]
+id = 68
+name = "Arena costa esq 3"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 1]
+
+[[tiles]]
+id = 69
+name = "Arena costa esq 2"
+width = 2
+height = 2
+unwalkable = [0, 1, 1, 1]
+
+[[tiles]]
+id = 70
+name = "Arena costa esq 4"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 1]
+
+[[tiles]]
+id = 71
+name = "Arena costa L 1"
+width = 2
+height = 2
+unwalkable = [1, 1, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 72
+name = "Arena costa L 3"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 73
+name = "Arena costa L 2"
+width = 2
+height = 2
+unwalkable = [0, 1, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 74
+name = "Arena costa L 4"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 75
+name = "Nieve costa 1"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 2]
+
+[[tiles]]
+id = 76
+name = "Nieve costa 2"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 2]
+
+[[tiles]]
+id = 77
+name = "Nieve costa 4"
+width = 2
+height = 2
+unwalkable = [1, 0, 2, 1]
+
+[[tiles]]
+id = 78
+name = "Nieve costa 3"
+width = 2
+height = 2
+unwalkable = [0, 0, 2, 1]
+
+[[tiles]]
+id = 79
+name = "Nieve costa esq 1"
+width = 2
+height = 2
+unwalkable = [1, 1, 1, 1]
+
+[[tiles]]
+id = 80
+name = "Nieve costa esq 3"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 1]
+
+[[tiles]]
+id = 81
+name = "Nieve costa esq 2"
+width = 2
+height = 2
+unwalkable = [0, 1, 1, 1]
+
+[[tiles]]
+id = 82
+name = "Nieve costa esq 4"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 1]
+
+[[tiles]]
+id = 83
+name = "Nieve costa L 1"
+width = 2
+height = 2
+unwalkable = [1, 1, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 84
+name = "Nieve costa L 3"
+width = 2
+height = 2
+unwalkable = [1, 0, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 85
+name = "Nieve costa L 2"
+width = 2
+height = 2
+unwalkable = [0, 1, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 86
+name = "Nieve costa L 4"
+width = 2
+height = 2
+unwalkable = [0, 0, 1, 1]
+inverse = true
+
+[[tiles]]
+id = 87
+name = "Arena limite 1"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 88
+name = "Arena limite 2"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 89
+name = "Arena limite 3"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 90
+name = "Arena limite 4"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 91
+name = "Arena limite esq 1"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 92
+name = "Arena limite esq 2"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 93
+name = "Arena limite esq 3"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 94
+name = "Arena limite esq 4"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 95
+name = "Arena limite L 1"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 96
+name = "Arena limite L 2"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 97
+name = "Arena limite L 3"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
+
+[[tiles]]
+id = 98
+name = "Arena limite L 4"
+width = 4
+height = 4
+unwalkable = [0, 0, 0, 0]
 
 # =========================================
 # COLLIDERS :::::::::::::::::::::::::::::::
