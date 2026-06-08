@@ -28,6 +28,7 @@ PlayerData::PlayerData(const Player& player) {
     xp_level = stats.experience.get_level();
 
     weapon_id = equipment.weapon;
+    shield_id = equipment.shield;
     helmet_id = equipment.helmet;
     armor_id = equipment.armor;
 
