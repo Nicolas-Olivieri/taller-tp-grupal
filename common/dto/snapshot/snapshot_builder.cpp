@@ -1,7 +1,9 @@
 
 #include "snapshot_builder.h"
 
-SnapshotDTO SnapshotBuilder::build() const { return SnapshotDTO(players_info, creatures_info, actions); }
+SnapshotDTO SnapshotBuilder::build() const {
+    return SnapshotDTO(players_info, creatures_info, loot_info, actions);
+}
 
 void SnapshotBuilder::add_players(const std::unordered_map<std::string, Player>& players) {
     for (const auto& [player_name, player]: players) {
@@ -12,6 +14,12 @@ void SnapshotBuilder::add_players(const std::unordered_map<std::string, Player>&
 void SnapshotBuilder::add_creatures(const std::unordered_map<uint16_t, Creature>& creatures) {
     for (const auto& [sub_id, creature]: creatures) {
         creatures_info.push_back(convert_to_info(sub_id, creature));
+    }
+}
+
+void SnapshotBuilder::add_loot(const std::map<std::pair<uint16_t, uint16_t>, Tile*>& lootable_tiles) {
+    for (const auto& [position, tile]: lootable_tiles) {
+        loot_info.push_back(convert_to_info(position, *tile));
     }
 }
 
@@ -36,4 +44,9 @@ CreatureInfoDTO SnapshotBuilder::convert_to_info(uint16_t sub_id, const Creature
 
     return CreatureInfoDTO(stats.race_id, stats.archetype_id, sub_id, creature.get_direction(),
                            position.get_x(), position.get_y());
+}
+
+LootInfoDTO SnapshotBuilder::convert_to_info(const std::pair<uint16_t, uint16_t>& position,
+                                             Tile& tile) {
+    return LootInfoDTO(tile.get_loot().top().type == LootType::ITEM, position.first, position.second);
 }

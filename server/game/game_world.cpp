@@ -25,6 +25,10 @@ const std::unordered_map<std::string, Player>& GameWorld::get_players() const { 
 
 const std::unordered_map<uint16_t, Creature>& GameWorld::get_creatures() const { return creatures; }
 
+const std::map<std::pair<uint16_t, uint16_t>, Tile*>& GameWorld::get_lootable_tiles() const {
+    return tiles_with_loot;
+}
+
 WorldUpdateStatus GameWorld::update() {
     std::vector<std::string> resurrected_players;
     for (auto& [name, player]: players) {
@@ -158,10 +162,16 @@ std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(cons
 
 void GameWorld::remove_dead_creatures() {
     for (auto it = creatures.begin(); it != creatures.end();) {
-        const Creature& creature = it->second;
+        Creature& creature = it->second;
 
         if (!creature.is_alive()) {
-            grid.get_tile(creature.get_position()).occupy(nullptr);
+            const Position& position = creature.get_position();
+            Tile& tile = grid.get_tile(position);
+            tile.occupy(nullptr);
+            tile.add_loot(creature.drop());
+
+            add_tile_if_lootable(tile, position);
+
             it = creatures.erase(it);
         } else {
             it++;
@@ -193,11 +203,20 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
     Player& player = players.at(player_name);
 
     try {
-        const Tile& target_tile = grid.get_tile(position);
+        Tile& target_tile = grid.get_tile(position);
         Interactive* occupant = target_tile.occupant();
 
         if (occupant != nullptr) {
-            return occupant->interact(player);
+            InteractResult result = occupant->interact(player);
+
+            if (result.attack.was_killed) {
+                Player& target = players.at(result.attack.player_attacked);
+                target_tile.add_loot(target.drop());
+
+                add_tile_if_lootable(target_tile, position);
+            }
+
+            return result;
         }
         std::cout << "[World] " << player_name << " golpeó al aire" << std::endl;
     } catch (const std::out_of_range&) {
@@ -206,6 +225,11 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
     return InteractResult();
 }
 
+void GameWorld::add_tile_if_lootable(Tile& tile, const Position& position) {
+    std::pair<uint16_t, uint16_t> pair_position = {position.get_x(), position.get_y()};
+    if (not tile.get_loot().empty() && !tiles_with_loot.contains(pair_position))
+        tiles_with_loot.insert({pair_position, &tile});
+}
 
 ResurrectResult GameWorld::resurrect_player(const std::string& player_name) {
     return execute_ally_action(player_name, AllyActionPayload(AllyAction::RESURRECT)).resurrect;
@@ -267,6 +291,40 @@ WithdrawGoldResult GameWorld::withdraw_gold(const std::string& player_name, cons
             .withdraw_gold;
 }
 
+PickUpResult GameWorld::pick_up(const std::string& player_name, const Position& position) {
+    if (!players.contains(player_name))
+        return PickUpResult();
+
+    Player& player = players.at(player_name);
+
+    Tile& tile = grid.get_tile(position);
+    const Loot& loot = tile.get_loot().top();
+
+    PickUpResult result = loot.type == LootType::ITEM ? pick_item_up(player, tile, loot.item) :
+                                                        pick_gold_up(player, tile, loot.gold);
+
+    if (result.status == PickUpStatus::SUCCESS && tile.get_loot().empty())
+        tiles_with_loot.extract({position.get_x(), position.get_y()});
+
+    return result;
+}
+
+PickUpResult GameWorld::pick_item_up(Player& player, Tile& tile, uint8_t item) {
+    try {
+        player.acquire_item(item);
+        tile.get_loot().pop();
+        return PickUpResult(PickUpStatus::SUCCESS);
+    } catch (const InventoryFull& err) {
+    } catch (const SlotFull& err) {}
+
+    return PickUpResult(PickUpStatus::FAILED);
+}
+
+PickUpResult GameWorld::pick_gold_up(Player& player, Tile& tile, uint16_t gold) {
+    player.add_gold(gold);
+    tile.get_loot().pop();
+    return PickUpResult(PickUpStatus::SUCCESS);
+}
 
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {

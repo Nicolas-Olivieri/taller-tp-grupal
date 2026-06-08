@@ -2,6 +2,7 @@
 #define TILE_H
 
 #include <stack>
+#include <vector>
 
 #include "interactive.h"
 #include "loot.h"
@@ -24,9 +25,9 @@ public:
 
     std::stack<Loot>& get_loot();
 
-    void occupy(Interactive* occupant);
+    void add_loot(const std::vector<Loot>& drops);
 
-    Loot take_loot();
+    void occupy(Interactive* occupant);
 };
 
 

@@ -12,3 +12,6 @@ path = "/server/items.toml"
 
 [server.traders]
 path = "/server/traders.toml"
+
+[server.drops]
+path = "/server/drops.toml"

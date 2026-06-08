@@ -53,11 +53,20 @@ struct WeaponData {
     uint16_t mana_cost;  // si es 0 -> No es mágico
 };
 
+struct DropProbabilitiesData {
+    float nothing;
+    float gold;
+    float usable;
+    float equipable;
+};
 
 class GameConfig {
 private:
     CooldownData player_cooldowns;
     CooldownData creature_cooldowns;
+
+    DropProbabilitiesData drop_probabilities;
+
     std::unordered_map<uint8_t, ArchetypeData> archetypes;
     std::unordered_map<uint8_t, RaceData> races;
 
@@ -102,6 +111,8 @@ public:
 
     const WeaponData& get_weapon(uint8_t id) const;
 
+    const DropProbabilitiesData& get_drop_probabilities() const;
+
     uint16_t get_item_price(uint8_t item_id) const;
 
     bool usables_contains(uint8_t id) const;
@@ -113,6 +124,14 @@ public:
     bool armors_contains(uint8_t id) const;
 
     bool shields_contains(uint8_t id) const;
+
+    uint8_t get_min_usable_id() const;
+
+    uint8_t get_max_usable_id() const;
+
+    uint8_t get_min_equipable_id() const;
+
+    uint8_t get_max_equipable_id() const;
 
     const std::vector<uint8_t>& get_priest_items(int id) const;
 
