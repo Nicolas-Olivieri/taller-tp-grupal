@@ -2,7 +2,7 @@
 [file_ids]
 tiles = [0,4]
 colliders = [0,0]
-npcs = [0,0]
+npcs = [0,2]
 body = [0, 3]
 head = [0, 4]
 goblin = [0, 4]

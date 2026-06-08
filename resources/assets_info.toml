@@ -39,3 +39,17 @@ name = "Cura"
 width = 1
 height = 2
 unwalkable = [0,1,1,1]
+
+[[npcs]]
+id = 1
+name = "Comerciante"
+width = 1
+height = 2
+unwalkable = [0,1,1,1]
+
+[[npcs]]
+id = 2
+name = "Banquero"
+width = 1
+height = 2
+unwalkable = [0,1,1,1]
