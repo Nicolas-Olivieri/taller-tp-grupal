@@ -365,3 +365,29 @@ void GameWorld::init_creature() {
     creatures.emplace(1, Creature(0, 0, 0, goblin_position));
     grid.get_tile(goblin_position).occupy(&creatures.at(1));
 }
+
+FoundClanResult GameWorld::found_clan(const std::string& player_name, const std::string& clan_name) {
+    if (not players.contains(player_name)) {
+        return FoundClanResult::NO_RESULT;
+    }
+
+    const Player& player = players.at(player_name);
+
+    if (clans.contains(clan_name))
+        return FoundClanResult::CLAN_ALREADY_EXISTS;
+
+    const std::string current_clan = player.get_clan_name();
+
+    if (not current_clan.empty())
+        return FoundClanResult::ALREADY_IN_CLAN;
+
+    const uint8_t current_level = player.get_stats().experience.get_level();
+    if (current_level < Clan::MIN_LEVEL_REQUIRED_TO_FOUND_CLAN)
+        return FoundClanResult::NOT_ENOUGH_LEVEL;
+
+    Clan new_clan(player_name);
+    clans.insert({clan_name, std::move(new_clan)});
+    // TODO agregar al player un puntero a su clan?? -> Como hace sino para no pegarse entre miembros del
+    // mismo clan?
+    return FoundClanResult::SUCCESS;
+}

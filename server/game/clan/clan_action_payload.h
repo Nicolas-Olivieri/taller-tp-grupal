@@ -3,15 +3,7 @@
 
 #include <string>
 
-enum class ClanActionType {
-    JOIN,
-    ACCEPT,
-    REJECT,
-    KICK,
-    BAN,
-    LEAVE,
-    REVIEW
-};
+enum class ClanActionType { JOIN, ACCEPT, REJECT, KICK, BAN, LEAVE, REVIEW };
 
 struct ClanActionPayload {
     ClanActionType type;

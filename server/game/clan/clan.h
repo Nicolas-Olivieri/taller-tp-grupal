@@ -18,16 +18,17 @@ class Clan {
     static const uint8_t MAX_MEMBERS = 16;
 
 public:
+    static const uint8_t MIN_LEVEL_REQUIRED_TO_FOUND_CLAN;
+
     // TODO definir parámetros
     Clan(/* clan_data */);
 
     /// Principales operaciones
-
-    Clan(const std::string& founder_name);
-
+    // Fundar clan
+    // TODO debería necesitar su propio nombre, no?
+    explicit Clan(const std::string& founder_name);
 
 private:
-
     void join(const std::string& player_name);
 
     void accept(const std::string& player_name, const std::string& player_to_accept);

@@ -34,6 +34,8 @@ private:
     int resurrection_timer;
     Position target_resurrection_position;
 
+    std::string clan_name;
+
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
 
@@ -119,6 +121,8 @@ public:
     void start_delayed_resurrection(int wait_time, const Position& position);
 
     bool did_just_resurrect();
+
+    std::string get_clan_name() const;
 
 private:
     void complete_delayed_resurrection();

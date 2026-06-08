@@ -255,3 +255,5 @@ void Player::complete_delayed_resurrection() {
     heal();
     std::cout << "[Player] " << player_name << " ha resucitado junto al sacerdote." << std::endl;
 }
+
+std::string Player::get_clan_name() const { return clan_name; }

@@ -15,6 +15,7 @@
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
 #include "server/command/cmd_results/clan/clan_action_result.h"
+#include "server/game/clan/clan.h"
 #include "server/game/clan/clan_action_payload.h"
 #include "server/persistance/playerrepository.h"
 
@@ -34,6 +35,8 @@ private:
     std::vector<std::unique_ptr<Ally>> allies;
 
     PlayerRepository& player_repository;
+
+    std::unordered_map<std::string, Clan> clans;
 
 public:
     explicit GameWorld(PlayerRepository& pLayer_repository);
@@ -77,7 +80,7 @@ public:
 
     WithdrawGoldResult withdraw_gold(const std::string& player_name, uint16_t gold_amount);
 
-    CreateClanResult create_clan(const std::string& player_name, const std::string& clan_name);
+    FoundClanResult found_clan(const std::string& player_name, const std::string& clan_name);
 
     ClanActionResult execute_clan_action(const ClanActionPayload& payload);
 
