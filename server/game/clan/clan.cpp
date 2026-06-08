@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <format>
+#include <utility>
 
 bool Clan::is_founder(const std::string& player_name) const { return player_name == founder; }
 
@@ -20,6 +21,9 @@ void Clan::check_is_in_clan(const std::string& player_name) {
                 player_name, clan_name));
 }
 
+Clan::Clan(const std::string& clan_name, const std::string& founder_name):
+        clan_name(clan_name), founder(founder_name) {}
+
 ClanActionResult Clan::execute(const ClanActionPayload& payload) {
     const std::string& player_name = payload.player_name;
     const std::string& other_player = payload.other_player;
@@ -34,8 +38,10 @@ ClanActionResult Clan::execute(const ClanActionPayload& payload) {
         case ClanActionType::BAN:
             return ban(player_name, other_player);
         case ClanActionType::LEAVE:
+            assert(other_player.empty());
             return leave(player_name);
         case ClanActionType::REVIEW:
+            assert(other_player.empty());
             return review(player_name);
         default:
             throw std::runtime_error(
@@ -123,5 +129,28 @@ ClanActionResult Clan::ban(const std::string& player_name, const std::string& pl
     }
 
     banned_players.insert(player_to_ban);
+    return ClanActionResult(ClanActionStatus::SUCCESS);
+}
+
+ClanActionResult Clan::review(const std::string& player_name) {
+    check_is_in_clan(player_name);
+
+    if (not is_founder(player_name))
+        return ClanActionResult(ClanActionStatus::IS_MEMBER);
+
+    std::vector<std::string> members_vector(members.begin(), members.end());
+    std::vector<std::string> requests_vector(joining_requests.begin(), joining_requests.end());
+    std::vector<std::string> banned_vector(banned_players.begin(), banned_players.end());
+
+    return ClanActionResult(ClanActionStatus::SUCCESS, std::move(members_vector), std::move(requests_vector),
+                            std::move(banned_vector));
+}
+
+ClanActionResult Clan::leave(const std::string& player_name) {
+    check_is_in_clan(player_name);
+
+    if (is_founder(player_name))
+        return ClanActionResult(ClanActionStatus::IS_FOUNDER);
+
     return ClanActionResult(ClanActionStatus::SUCCESS);
 }

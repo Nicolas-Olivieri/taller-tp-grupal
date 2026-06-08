@@ -35,9 +35,8 @@ struct ClanActionResult {
 
     explicit ClanActionResult(const ClanActionStatus& status);
 
-    ClanActionResult(const ClanActionStatus& status, const std::vector<std::string>& clan_members,
-                     std::vector<std::string>& joining_requests,
-                     const std::vector<std::string>& banned_players);
+    ClanActionResult(const ClanActionStatus& status, std::vector<std::string>&& clan_members,
+                     std::vector<std::string>&& joining_requests, std::vector<std::string>&& banned_players);
 };
 
 
