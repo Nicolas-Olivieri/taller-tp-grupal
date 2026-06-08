@@ -82,7 +82,7 @@ InteractResult Killable::interact(Player& attacker) {
     return InteractResult(damage_applied, was_killed);
 }
 
-Position Killable::get_position() const { return position; }
+const Position& Killable::get_position() const { return position; }
 
 
 Direction Killable::get_direction() const { return direction; }

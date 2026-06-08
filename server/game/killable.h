@@ -46,7 +46,7 @@ public:
 
     InteractResult interact(Player&) override;
 
-    Position get_position() const;
+    const Position& get_position() const;
 
     Direction get_direction() const;
 

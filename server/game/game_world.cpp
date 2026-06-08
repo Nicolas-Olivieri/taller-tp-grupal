@@ -25,6 +25,10 @@ const std::unordered_map<std::string, Player>& GameWorld::get_players() const { 
 
 const std::unordered_map<uint16_t, Creature>& GameWorld::get_creatures() const { return creatures; }
 
+const std::map<std::pair<uint16_t, uint16_t>, Tile*>& GameWorld::get_lootable_tiles() const {
+    return tiles_with_loot;
+}
+
 WorldUpdateStatus GameWorld::update() {
     std::vector<std::string> resurrected_players;
     for (auto& [name, player]: players) {
@@ -161,9 +165,12 @@ void GameWorld::remove_dead_creatures() {
         Creature& creature = it->second;
 
         if (!creature.is_alive()) {
-            Tile& tile = grid.get_tile(creature.get_position());
+            const Position& position = creature.get_position();
+            Tile& tile = grid.get_tile(position);
             tile.occupy(nullptr);
             tile.add_loot(creature.drop());
+
+            add_tile_if_lootable(tile, position);
 
             it = creatures.erase(it);
         } else {
@@ -205,6 +212,8 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
             if (result.attack.was_killed) {
                 Player& target = players.at(result.attack.player_attacked);
                 target_tile.add_loot(target.drop());
+
+                add_tile_if_lootable(target_tile, position);
             }
 
             return result;
@@ -216,6 +225,11 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
     return InteractResult();
 }
 
+void GameWorld::add_tile_if_lootable(Tile& tile, const Position& position) {
+    std::pair<uint16_t, uint16_t> pair_position = {position.get_x(), position.get_y()};
+    if (tile.has_loot() && !tiles_with_loot.contains(pair_position))
+        tiles_with_loot.insert({pair_position, &tile});
+}
 
 ResurrectResult GameWorld::resurrect_player(const std::string& player_name) {
     return execute_ally_action(player_name, AllyActionPayload(AllyAction::RESURRECT)).resurrect;

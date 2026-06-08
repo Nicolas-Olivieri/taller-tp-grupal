@@ -12,6 +12,7 @@
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/creatureinfo.h"
+#include "common/dto/snapshot/info/lootinfo.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 #include "common/dto/snapshot/map/asset_info.h"
@@ -24,6 +25,8 @@ private:
     PlayerInfoDTO recv_player_info();
 
     CreatureInfoDTO recv_creature_info();
+
+    LootInfoDTO recv_loot_info();
 
     AllyInfoDTO recv_ally_info();
 
@@ -75,6 +78,8 @@ public:
     std::vector<PlayerInfoDTO> recv_players_information();
 
     std::vector<CreatureInfoDTO> recv_creatures_information();
+
+    std::vector<LootInfoDTO> recv_loot_information();
 
     std::vector<ActionDTO> recv_actions();
 

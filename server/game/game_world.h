@@ -2,9 +2,11 @@
 #define GAME_WORLD_H
 
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "allies/ally_action_payload.h"
@@ -30,6 +32,8 @@ private:
 
     std::unordered_map<uint16_t, Creature> creatures;
 
+    std::map<std::pair<uint16_t, uint16_t>, Tile*> tiles_with_loot;
+
     std::vector<std::unique_ptr<Ally>> allies;
 
     PlayerRepository& player_repository;
@@ -42,6 +46,8 @@ public:
     const std::unordered_map<std::string, Player>& get_players() const;
 
     const std::unordered_map<uint16_t, Creature>& get_creatures() const;
+
+    const std::map<std::pair<uint16_t, uint16_t>, Tile*>& get_lootable_tiles() const;
 
     WorldUpdateStatus update();
 
@@ -98,6 +104,8 @@ private:
     void remove_dead_creatures();
 
     void init_npc(const std::vector<AllyInfoDTO>& npcs);
+
+    void add_tile_if_lootable(Tile& tile, const Position& position);
 };
 
 

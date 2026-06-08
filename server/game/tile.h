@@ -23,9 +23,11 @@ public:
 
     Interactive* occupant() const;
 
-    uint16_t get_loot_amount() const;
+    bool has_loot() const;
 
     Loot take_loot();
+
+    const Loot& peek_loot() const;
 
     void add_loot(uint8_t item);
 

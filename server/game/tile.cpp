@@ -12,8 +12,7 @@ bool Tile::is_walkable() const { return is_walkable_; }
 
 Interactive* Tile::occupant() const { return occupant_; }
 
-
-uint16_t Tile::get_loot_amount() const { return loot_.size(); }
+bool Tile::has_loot() const { return !loot_.empty(); }
 
 Loot Tile::take_loot() {
     Loot top = loot_.top();
@@ -21,6 +20,8 @@ Loot Tile::take_loot() {
 
     return top;
 }
+
+const Loot& Tile::peek_loot() const { return loot_.top(); }
 
 void Tile::add_loot(uint8_t item) { loot_.push(Loot(item)); }
 
