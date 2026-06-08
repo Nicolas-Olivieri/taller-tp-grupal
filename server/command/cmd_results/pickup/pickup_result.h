@@ -3,7 +3,14 @@
 
 #include <cstdint>
 
-enum class PickUpStatus : uint8_t { SUCCESS, FAILED, MUST_NOT_NOTIFY };
+enum class PickUpStatus : uint8_t {
+    SUCCESS,
+    GHOST_FAIL,
+    NOT_ENOUGH_SPACE,
+    GOLD_OVERFLOW,
+    MUST_NOT_NOTIFY,
+    NO_LOOT
+};
 
 struct PickUpResult {
     PickUpStatus status;

@@ -84,7 +84,7 @@ public:
 
     WithdrawGoldResult withdraw_gold(const std::string& player_name, uint16_t gold_amount);
 
-    PickUpResult pick_up(const std::string& player_name, const Position& position);
+    PickUpResult pick_up(const std::string& player_name);
 
     UseItemResult use_item(const std::string& player_name, uint8_t item_id);
 

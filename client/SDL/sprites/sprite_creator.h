@@ -5,6 +5,7 @@
 
 #include "common/dto/snapshot/info/appearance.h"
 #include "common/dto/snapshot/info/creatureinfo.h"
+#include "common/dto/snapshot/info/lootinfo.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 #include "common/dto/snapshot/map/asset_info.h"
 
@@ -33,6 +34,8 @@ public:
     Sprite create_sprite(SpriteCategory category, const AssetInfoDTO& asset_info);
 
     Sprite create_sprite(const CreatureInfoDTO& creature_info);
+
+    Sprite create_sprite(const LootInfoDTO& loot_info);
 
     void update_appearance(Sprite& player, const AppearanceDTO& appearance);
 

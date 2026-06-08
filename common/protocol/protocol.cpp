@@ -92,7 +92,7 @@ RequestedCommandDTO Protocol::recv_command() {
 
         return RequestedCommandDTO(command, receiver, content);
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
-               command == CommandType::LIST_ITEMS) {
+               command == CommandType::LIST_ITEMS or command == CommandType::PICKUP) {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
                command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or

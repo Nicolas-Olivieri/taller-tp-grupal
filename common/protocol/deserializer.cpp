@@ -59,6 +59,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::WITHDRAW_ITEM:
         case CommandType::DEPOSIT_GOLD:
         case CommandType::WITHDRAW_GOLD:
+        case CommandType::PICKUP:
         case CommandType::USE_ITEM:
         case CommandType::DROP_ITEM:
         case CommandType::UNEQUIP_ITEM:

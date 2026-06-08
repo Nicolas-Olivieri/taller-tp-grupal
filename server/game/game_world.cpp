@@ -34,9 +34,15 @@ const std::map<std::pair<uint16_t, uint16_t>, Tile*>& GameWorld::get_lootable_ti
 WorldUpdateStatus GameWorld::update() {
     std::vector<std::string> resurrected_players;
     for (auto& [name, player]: players) {
+        const Position previous_position = player.get_position();
         player.update();
+
         if (player.did_just_resurrect()) {
             resurrected_players.push_back(name);
+            const Position& resurrect_position = player.get_position();
+
+            grid.get_tile(previous_position).occupy(nullptr);
+            grid.get_tile(resurrect_position).occupy(&player);
         }
     }
 
@@ -293,13 +299,21 @@ WithdrawGoldResult GameWorld::withdraw_gold(const std::string& player_name, cons
             .withdraw_gold;
 }
 
-PickUpResult GameWorld::pick_up(const std::string& player_name, const Position& position) {
+PickUpResult GameWorld::pick_up(const std::string& player_name) {
     if (!players.contains(player_name))
         return PickUpResult();
 
     Player& player = players.at(player_name);
 
+    if (!player.is_alive())
+        return PickUpResult(PickUpStatus::GHOST_FAIL);
+
+    const Position& position = player.get_position();
+
     Tile& tile = grid.get_tile(position);
+    if (tile.get_loot().empty())
+        return PickUpResult(PickUpStatus(PickUpStatus::NO_LOOT));
+
     const Loot& loot = tile.get_loot().top();
 
     PickUpResult result = loot.type == LootType::ITEM ? pick_item_up(player, tile, loot.item) :
@@ -319,13 +333,23 @@ PickUpResult GameWorld::pick_item_up(Player& player, Tile& tile, uint8_t item) {
     } catch (const InventoryFull& err) {
     } catch (const SlotFull& err) {}
 
-    return PickUpResult(PickUpStatus::FAILED);
+    return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
 }
 
 PickUpResult GameWorld::pick_gold_up(Player& player, Tile& tile, uint16_t gold) {
+    uint16_t previous_gold = player.get_safe_gold() + player.get_excess_gold();
     player.add_gold(gold);
+    uint16_t current_gold = player.get_safe_gold() + player.get_excess_gold();
+
     tile.get_loot().pop();
-    return PickUpResult(PickUpStatus::SUCCESS);
+
+    if (current_gold - previous_gold == gold) {
+        return PickUpResult(PickUpStatus::SUCCESS);
+    } else if (current_gold - previous_gold == 0) {
+        return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
+    }
+
+    return PickUpResult(PickUpStatus::GOLD_OVERFLOW);
 }
 
 UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t item_id) {
