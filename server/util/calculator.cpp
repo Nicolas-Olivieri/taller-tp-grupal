@@ -55,6 +55,21 @@ int Calculator::random_number(const int min, const int max) {
     return dis(gen);
 }
 
+uint8_t Calculator::random_number(const uint8_t min, const uint8_t max) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<uint8_t> dis(min, max);
+    return dis(gen);
+}
+
+int Calculator::random_from_weighted_probabilities(const std::vector<float>& probabilities) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::discrete_distribution<int> dis(probabilities.begin(), probabilities.end());
+
+    return dis(gen);
+}
+
 uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& equipment) {
     return strength * get_random_from_item(equipment.weapon);
 }
@@ -90,3 +105,7 @@ uint8_t Calculator::calculate_scalable_stat(uint8_t base, uint8_t level, float m
 }
 
 bool Calculator::can_dodge(const int agility) { return std::pow(random_float(0.0f, 1.0f), agility) < 0.001f; }
+
+uint16_t Calculator::calculate_random_drop_gold(uint8_t max_healh) {
+    return random_float(0.1, 0.2) * max_healh;
+}

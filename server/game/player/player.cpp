@@ -1,6 +1,8 @@
 #include "player.h"
 
+#include <algorithm>
 #include <cassert>
+#include <random>
 
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
 // modelo
@@ -145,13 +147,43 @@ void Player::update_position(const Position& new_position, const Direction& new_
     Killable::update_position(new_position, new_direction);
 }
 
-void Player::drop() {
+std::vector<Loot> Player::drop() {
+    std::vector<Loot> drops;
+
+    drop_excess_gold(drops);
+    drop_inventory(drops);
+    drop_equipment(drops);
+
+    static std::random_device rd;
+    static std::mt19937 generator(rd());
+
+    // Randomizamos el orden del Loot para que no sepas que te va a tocar!
+    std::shuffle(drops.begin(), drops.end(), generator);
+
+    return drops;
+}
+
+void Player::drop_excess_gold(std::vector<Loot>& drops) {
     uint16_t excess_gold = gold_manager.get_excess_gold();
-    gold_manager.spend(excess_gold);
+    if (excess_gold > 0) {
+        gold_manager.spend(excess_gold);
+        drops.push_back(Loot(excess_gold));
+    }
+}
 
-    // TODO: hacer que se dropeen
+void Player::drop_inventory(std::vector<Loot>& drops) {
+    for (const auto& [item, amount]: inventory.get_items()) {
+        for (size_t i = 0; i < amount; i++) {
+            drops.push_back(Loot(item));
+        }
+    }
+}
 
-    assert(false);
+void Player::drop_equipment(std::vector<Loot>& drops) {
+    drops.push_back(Loot(equipment.weapon));
+    drops.push_back(Loot(equipment.armor));
+    drops.push_back(Loot(equipment.shield));
+    drops.push_back(Loot(equipment.helmet));
 }
 
 void Player::bind_ally(Ally* ally) {

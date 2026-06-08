@@ -2,6 +2,7 @@
 #define TILE_H
 
 #include <stack>
+#include <vector>
 
 #include "interactive.h"
 #include "loot.h"
@@ -22,13 +23,15 @@ public:
 
     Interactive* occupant() const;
 
-    uint8_t get_loot_amount() const;
+    uint16_t get_loot_amount() const;
 
     Loot take_loot();
 
     void add_loot(uint8_t item);
 
     void add_loot(uint16_t gold);
+
+    void add_loot(const std::vector<Loot>& drops);
 
     void occupy(Interactive* occupant);
 };

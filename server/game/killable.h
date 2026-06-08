@@ -1,7 +1,10 @@
 #ifndef KILLABLE_H
 #define KILLABLE_H
 
+#include <vector>
+
 #include "server/game/items/equipment.h"
+#include "server/game/loot.h"
 #include "server/game/stats/stats.h"
 
 #include "attacker.h"
@@ -35,7 +38,7 @@ protected:
              const Equipment& equipment);
 
 public:
-    virtual void drop() = 0;
+    virtual std::vector<Loot> drop() = 0;
 
     virtual bool can_move() const;
 

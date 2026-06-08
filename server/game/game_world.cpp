@@ -158,10 +158,13 @@ std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(cons
 
 void GameWorld::remove_dead_creatures() {
     for (auto it = creatures.begin(); it != creatures.end();) {
-        const Creature& creature = it->second;
+        Creature& creature = it->second;
 
         if (!creature.is_alive()) {
-            grid.get_tile(creature.get_position()).occupy(nullptr);
+            Tile& tile = grid.get_tile(creature.get_position());
+            tile.occupy(nullptr);
+            tile.add_loot(creature.drop());
+
             it = creatures.erase(it);
         } else {
             it++;
@@ -193,11 +196,18 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
     Player& player = players.at(player_name);
 
     try {
-        const Tile& target_tile = grid.get_tile(position);
+        Tile& target_tile = grid.get_tile(position);
         Interactive* occupant = target_tile.occupant();
 
         if (occupant != nullptr) {
-            return occupant->interact(player);
+            InteractResult result = occupant->interact(player);
+
+            if (result.attack.was_killed) {
+                Player& target = players.at(result.attack.player_attacked);
+                target_tile.add_loot(target.drop());
+            }
+
+            return result;
         }
         std::cout << "[World] " << player_name << " golpeó al aire" << std::endl;
     } catch (const std::out_of_range&) {

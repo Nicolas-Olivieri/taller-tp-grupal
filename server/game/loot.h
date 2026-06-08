@@ -6,9 +6,9 @@
 enum class LootType : uint8_t { ITEM, GOLD };
 
 struct Loot {
-    const LootType type;
-    const uint8_t item;
-    const uint16_t gold;
+    LootType type;
+    uint8_t item;
+    uint16_t gold;
 
     explicit Loot(uint8_t item_id);
 

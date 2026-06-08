@@ -13,7 +13,7 @@ bool Tile::is_walkable() const { return is_walkable_; }
 Interactive* Tile::occupant() const { return occupant_; }
 
 
-uint8_t Tile::get_loot_amount() const { return loot_.size(); }
+uint16_t Tile::get_loot_amount() const { return loot_.size(); }
 
 Loot Tile::take_loot() {
     Loot top = loot_.top();
@@ -25,5 +25,9 @@ Loot Tile::take_loot() {
 void Tile::add_loot(uint8_t item) { loot_.push(Loot(item)); }
 
 void Tile::add_loot(uint16_t gold) { loot_.push(Loot(gold)); }
+
+void Tile::add_loot(const std::vector<Loot>& drops) {
+    for (const auto& drop: drops) loot_.push(drop);
+}
 
 void Tile::occupy(Interactive* occupant) { occupant_ = occupant; }

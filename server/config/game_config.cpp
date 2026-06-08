@@ -1,5 +1,6 @@
 #include "game_config.h"
 
+#include <algorithm>
 #include <string>
 
 #include <toml.hpp>
@@ -169,7 +170,7 @@ GameConfig::GameConfig() {
 
     const auto traders_path = toml::find(paths, "traders");
     const auto traders_file = toml::find<std::string>(traders_path, "path");
-    auto traders_root = toml::parse(DATA_PATH + traders_file);
+    auto traders_root = toml::parse(CONFIG_PATH + traders_file);
 
     const auto priests_table = toml::find(traders_root, "priests");
     for (const auto& [name, value]: priests_table.as_table()) {
@@ -182,6 +183,16 @@ GameConfig::GameConfig() {
         uint8_t id = static_cast<uint8_t>(std::stoi(name));
         merchant_items[id] = toml::get<std::vector<uint8_t>>(value);
     }
+
+    const auto drops_path = toml::find(paths, "drops");
+    const auto drops_file = toml::find<std::string>(drops_path, "path");
+    auto drops_root = toml::parse(CONFIG_PATH + drops_file);
+    const auto drops_table = toml::find(drops_root, "probabilities");
+
+    drop_probabilities.nothing = toml::find<float>(drops_table, "nothing");
+    drop_probabilities.gold = toml::find<float>(drops_table, "gold");
+    drop_probabilities.usable = toml::find<float>(drops_table, "usable");
+    drop_probabilities.equipable = toml::find<float>(drops_table, "equipable");
 }
 
 
@@ -208,6 +219,8 @@ const UsableItemData& GameConfig::get_usable(uint8_t id) const { return this->us
 
 const WeaponData& GameConfig::get_weapon(uint8_t id) const { return this->weapons.at(id); }
 
+const DropProbabilitiesData& GameConfig::get_drop_probabilities() const { return this->drop_probabilities; }
+
 bool GameConfig::usables_contains(uint8_t id) const { return this->usables.contains(id); }
 
 bool GameConfig::weapons_contains(uint8_t id) const { return this->weapons.contains(id); }
@@ -217,6 +230,31 @@ bool GameConfig::helmets_contains(uint8_t id) const { return this->helmets.conta
 bool GameConfig::armors_contains(uint8_t id) const { return this->armors.contains(id); }
 
 bool GameConfig::shields_contains(uint8_t id) const { return this->shields.contains(id); }
+
+// TODO: capaz es mejor guardarse un campo en la clase con el valor al levantar los toml
+uint8_t GameConfig::get_min_usable_id() const {
+    const auto& it = std::min_element(usables.begin(), usables.end(),
+                                      [](const auto& a, const auto& b) { return a.first < b.first; });
+    return it->first;
+}
+
+uint8_t GameConfig::get_max_usable_id() const {
+    const auto& it = std::max_element(usables.begin(), usables.end(),
+                                      [](const auto& a, const auto& b) { return a.first < b.first; });
+    return it->first;
+}
+
+uint8_t GameConfig::get_min_equipable_id() const {
+    const auto& it = std::min_element(equipables.begin(), equipables.end(),
+                                      [](const auto& a, const auto& b) { return a.first < b.first; });
+    return it->first;
+}
+
+uint8_t GameConfig::get_max_equipable_id() const {
+    const auto& it = std::max_element(equipables.begin(), equipables.end(),
+                                      [](const auto& a, const auto& b) { return a.first < b.first; });
+    return it->first;
+}
 
 uint16_t GameConfig::get_item_price(const uint8_t item_id) const {
     if (not item_prices.contains(item_id)) {
