@@ -14,6 +14,7 @@
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/command/cmd_results/pickup/pickup_result.h"
 #include "server/persistance/playerrepository.h"
 
 #include "grid.h"
@@ -75,6 +76,8 @@ public:
 
     WithdrawGoldResult withdraw_gold(const std::string& player_name, uint16_t gold_amount);
 
+    PickUpResult pick_up(const std::string& player_name, const Position& position);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 
@@ -85,6 +88,10 @@ private:
     AllyExecuteResult start_delayed_resurrection(Player& player, const Ally* priest) const;
 
     Direction next_movement(const Creature& creature);
+
+    PickUpResult pick_item_up(Player& player, Tile& tile, uint8_t item);
+
+    PickUpResult pick_gold_up(Player& player, Tile& tile, uint16_t gold);
 
     void init_creature();
 

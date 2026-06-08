@@ -18,9 +18,11 @@ target_sources(taller_server
         command/cmd_types/cmd_spawn/spawn_command.cpp
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.cpp
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.cpp
+        command/cmd_types/cmd_pickup/pickup_command.cpp
 
         command/cmd_results/ally_execute/ally_execute_result.cpp
         command/cmd_results/interact/interact_result.cpp
+        command/cmd_results/pickup/pickup_result.cpp
 
         command/command_factory.cpp
 
@@ -94,6 +96,7 @@ target_sources(taller_server
         command/cmd_types/cmd_spawn/spawn_command.h
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.h
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.h
+        command/cmd_types/cmd_pickup/pickup_command.h
         command/cmd_types/cmd_resurrect/resurrect_command.h
 
         command/cmd_results/ally_execute/buy_result.h
@@ -108,6 +111,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/withdraw_gold_result.h
         command/cmd_results/ally_execute/withdraw_item_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
+        command/cmd_results/pickup/pickup_result.h
 
         command/cmd_results/interact/attack_result.h
         command/cmd_results/interact/bind_result.h

@@ -8,6 +8,7 @@
 #include "cmd_types/cmd_interact/interact_command.h"
 #include "cmd_types/cmd_list_items/list_items_command.h"
 #include "cmd_types/cmd_move/move_command.h"
+#include "cmd_types/cmd_pickup/pickup_command.h"
 #include "cmd_types/cmd_resurrect/resurrect_command.h"
 #include "cmd_types/cmd_sell/sell_command.h"
 #include "cmd_types/cmd_withdraw_gold/withdraw_gold_command.h"
@@ -54,6 +55,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::WITHDRAW_GOLD:
             return std::make_unique<WithdrawGoldCommand>(player_name, dto.gold_amount);
+
+        case CommandType::PICKUP:
+            return std::make_unique<PickUpCommand>(player_name, dto.x, dto.y);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

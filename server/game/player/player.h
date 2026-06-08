@@ -88,7 +88,7 @@ public:
 
     void spend_gold(uint16_t amount);
 
-    void add_gold(uint16_t amount);
+    uint16_t add_gold(uint16_t amount);
 
     void use_item(uint8_t item_id);
 

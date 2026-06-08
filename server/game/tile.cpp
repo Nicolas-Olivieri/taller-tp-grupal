@@ -13,14 +13,17 @@ bool Tile::is_walkable() const { return is_walkable_; }
 Interactive* Tile::occupant() const { return occupant_; }
 
 
-std::stack<Loot>& Tile::get_loot() { return loot_; }
-
-
-void Tile::occupy(Interactive* occupant) { occupant_ = occupant; }
-
+uint8_t Tile::get_loot_amount() const { return loot_.size(); }
 
 Loot Tile::take_loot() {
-    const auto loot = loot_.top();
+    Loot top = loot_.top();
     loot_.pop();
-    return loot;
+
+    return top;
 }
+
+void Tile::add_loot(uint8_t item) { loot_.push(Loot(item)); }
+
+void Tile::add_loot(uint16_t gold) { loot_.push(Loot(gold)); }
+
+void Tile::occupy(Interactive* occupant) { occupant_ = occupant; }

@@ -22,11 +22,15 @@ public:
 
     Interactive* occupant() const;
 
-    std::stack<Loot>& get_loot();
-
-    void occupy(Interactive* occupant);
+    uint8_t get_loot_amount() const;
 
     Loot take_loot();
+
+    void add_loot(uint8_t item);
+
+    void add_loot(uint16_t gold);
+
+    void occupy(Interactive* occupant);
 };
 
 
