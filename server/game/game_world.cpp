@@ -199,6 +199,7 @@ void GameWorld::remove_player(const std::string& player_name) {
             creature.stop_targeting();
     }
 
+    player_repository.save_progress(it->second);
     player_repository.desconnect(player_name);
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
@@ -377,6 +378,27 @@ UnequipItemResult GameWorld::unequip_item(const std::string& player_name, const 
 
     } catch (const InventoryFull&) {
         return UnequipItemResult(UnequipItemStatus::FAILED);
+    }
+}
+
+DropItemResult GameWorld::drop_item(const std::string& player_name, const uint8_t item_id) {
+    if (not players.contains(player_name))
+        return DropItemResult();
+
+    Player& player = players.at(player_name);
+    const Position& position = player.get_position();
+    try {
+        player.drop_item(item_id);
+        Tile& tile = grid.get_tile(position);
+        tile.add_loot(Loot(item_id));
+        add_tile_if_lootable(tile, position);
+        return DropItemResult(DropItemStatus::SUCCESS);
+
+    } catch (const ItemNotOwned&) {
+        return DropItemResult(DropItemStatus::ITEM_NOT_OWNED);
+
+    } catch (const ItemEquipped&) {
+        return DropItemResult(DropItemStatus::ITEM_EQUIPPED);
     }
 }
 

@@ -14,6 +14,7 @@
 #include "common/dto/events/chatevent.h"
 #include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/events/deposit_item_event.h"
+#include "common/dto/events/drop_item_event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/events/sell_event.h"
@@ -206,6 +207,9 @@ void ClientGame::handle_text_command(const std::string& text) {
         handle_withdraw_gold_command(text);
     else if (text.starts_with("/retirar "))
         handle_withdraw_item_command(text);
+
+    if (text == "/tirar")
+        handle_drop_item_command();
 }
 
 void ClientGame::handle_buy_item_command(const std::string& text) {
@@ -308,6 +312,20 @@ void ClientGame::handle_withdraw_item_command(const std::string& text) {
     } else {
         std::vector<ActionDTO> local_error;
         local_error.push_back(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, "Item desconocido")));
+        ui.update_chat(local_error);
+    }
+}
+
+void ClientGame::handle_drop_item_command() {
+    auto bound_id = ui.get_bound_item_id();
+    if (bound_id.has_value()) {
+        connection.push_command(std::make_unique<DropItemEventDTO>(bound_id.value()));
+        ui.clear_bound_item();
+
+    } else {
+        std::vector<ActionDTO> local_error;
+        local_error.push_back(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name,
+                                                       "No tenes ningun item seleccionado para tirar")));
         ui.update_chat(local_error);
     }
 }

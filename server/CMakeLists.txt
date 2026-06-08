@@ -9,6 +9,7 @@ target_sources(taller_server
         command/cmd_types/cmd_deposit_gold/deposit_gold_command.cpp
         command/cmd_types/cmd_deposit_item/deposit_item_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
+        command/cmd_types/cmd_drop_item/drop_item_command.cpp
         command/cmd_types/cmd_heal/heal_command.cpp
         command/cmd_types/cmd_interact/interact_command.cpp
         command/cmd_types/cmd_list_items/list_items_command.cpp
@@ -23,6 +24,7 @@ target_sources(taller_server
         command/cmd_types/cmd_pickup/pickup_command.cpp
 
         command/cmd_results/ally_execute/ally_execute_result.cpp
+        command/cmd_results/drop_item/drop_item_result.cpp
         command/cmd_results/interact/interact_result.cpp
         command/cmd_results/pickup/pickup_result.cpp
         command/cmd_results/unequip_item/unequip_item_result.cpp
@@ -92,6 +94,7 @@ target_sources(taller_server
         command/cmd_types/cmd_deposit_gold/deposit_gold_command.h
         command/cmd_types/cmd_deposit_item/deposit_item_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
+        command/cmd_types/cmd_drop_item/drop_item_command.h
         command/cmd_types/cmd_heal/heal_command.h
         command/cmd_types/cmd_interact/interact_command.h
         command/cmd_types/cmd_list_items/list_items_command.h
@@ -117,6 +120,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/withdraw_gold_result.h
         command/cmd_results/ally_execute/withdraw_item_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
+        command/cmd_results/drop_item/drop_item_result.h
         command/cmd_results/interact/attack_result.h
         command/cmd_results/interact/bind_result.h
         command/cmd_results/interact/interact_result.h
