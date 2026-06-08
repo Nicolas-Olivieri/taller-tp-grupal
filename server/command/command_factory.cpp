@@ -11,6 +11,7 @@
 #include "cmd_types/cmd_pickup/pickup_command.h"
 #include "cmd_types/cmd_resurrect/resurrect_command.h"
 #include "cmd_types/cmd_sell/sell_command.h"
+#include "cmd_types/cmd_unequip_item/unequip_item_command.h"
 #include "cmd_types/cmd_use_item/use_item_command.h"
 #include "cmd_types/cmd_withdraw_gold/withdraw_gold_command.h"
 #include "cmd_types/cmd_withdraw_item/withdraw_item_command.h"
@@ -62,6 +63,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::USE_ITEM:
             return std::make_unique<UseItemCommand>(player_name, dto.item_id);
+
+        case CommandType::UNEQUIP_ITEM:
+            return std::make_unique<UnequipItemCommand>(player_name, dto.item_id);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

@@ -16,6 +16,7 @@ target_sources(taller_server
         command/cmd_types/cmd_resurrect/resurrect_command.cpp
         command/cmd_types/cmd_sell/sell_command.cpp
         command/cmd_types/cmd_spawn/spawn_command.cpp
+        command/cmd_types/cmd_unequip_item/unequip_item_command.cpp
         command/cmd_types/cmd_use_item/use_item_command.cpp
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.cpp
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.cpp
@@ -24,6 +25,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/ally_execute_result.cpp
         command/cmd_results/interact/interact_result.cpp
         command/cmd_results/pickup/pickup_result.cpp
+        command/cmd_results/unequip_item/unequip_item_result.cpp
         command/cmd_results/use_item/use_item_result.cpp
 
         command/command_factory.cpp
@@ -96,6 +98,7 @@ target_sources(taller_server
         command/cmd_types/cmd_move/move_command.h
         command/cmd_types/cmd_sell/sell_command.h
         command/cmd_types/cmd_spawn/spawn_command.h
+        command/cmd_types/cmd_unequip_item/unequip_item_command.h
         command/cmd_types/cmd_use_item/use_item_command.h
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.h
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.h
@@ -118,6 +121,7 @@ target_sources(taller_server
         command/cmd_results/interact/bind_result.h
         command/cmd_results/interact/interact_result.h
         command/cmd_results/pickup/pickup_result.h
+        command/cmd_results/unequip_item/unequip_item_result.h
         command/cmd_results/use_item/use_item_result.h
 
         command/command.h
