@@ -82,14 +82,14 @@ mana_cost = 0
 [armors.leather]
 id = 10
 price = 1000
-min_defense = 15
-max_defense = 30
+min_defense = 2
+max_defense = 6
 
 [armors.plate]
 id = 11
 price = 1100
-min_defense = 2
-max_defense = 6
+min_defense = 15
+max_defense = 30
 
 [armors.blue_tunic]
 id = 12
