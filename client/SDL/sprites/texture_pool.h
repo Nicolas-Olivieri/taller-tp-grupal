@@ -5,7 +5,7 @@
 #include <string>
 
 #include "SDL2pp/SDL2pp.hh"
-#include "client/client_constants.h"
+#include "common/util/constants.h"
 
 
 class TexturePool {

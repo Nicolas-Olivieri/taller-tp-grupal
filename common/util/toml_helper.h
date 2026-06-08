@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 
-#include "client/client_constants.h"
+#include "common/util/constants.h"
 
 
 class TomlHelper {
@@ -11,6 +11,8 @@ public:
     TomlHelper();
 
     static SpriteCategory get_sprite_category(const std::string& category);
+
+    static std::string get_category_name(SpriteCategory category);
 };
 
 

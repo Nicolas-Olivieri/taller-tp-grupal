@@ -2,12 +2,10 @@
 #define ANIMATION_POOL_H
 
 #include <map>
-#include <string>
-
-#include "../../../common/direction.h"
-#include "client/client_constants.h"
 
 #include "animation.h"
+#include "common/util/constants.h"
+#include "common/direction.h"
 
 class AnimationPool {
 private:

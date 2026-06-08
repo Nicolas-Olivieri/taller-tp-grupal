@@ -13,3 +13,13 @@ SpriteCategory TomlHelper::get_sprite_category(const std::string& category) {
 
     return map.at(category);
 }
+
+// No se completa con la totalidad de opciones porque solo lo usa el editor
+std::string TomlHelper::get_category_name(const SpriteCategory category) {
+    const std::map<SpriteCategory, std::string> map = {
+        {SpriteCategory::TILE, "tiles"},
+        {SpriteCategory::COLLIDER, "colliders"},
+        {SpriteCategory::NPC, "npcs"},
+    };
+    return map.at(category);
+}
