@@ -46,7 +46,7 @@ private:
 
     CreatureInfoDTO convert_to_info(uint16_t sub_id, const Creature& creature);
 
-    LootInfoDTO convert_to_info(const std::pair<uint16_t, uint16_t>& position, const Tile& tile);
+    LootInfoDTO convert_to_info(const std::pair<uint16_t, uint16_t>& position, Tile& tile);
 };
 
 

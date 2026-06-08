@@ -205,7 +205,7 @@ void Player::heal() {
 
 void Player::spend_gold(const uint16_t amount) { gold_manager.spend(amount); }
 
-uint16_t Player::add_gold(const uint16_t amount) { return gold_manager.add(amount); }
+void Player::add_gold(const uint16_t amount) { gold_manager.add(amount); }
 
 void Player::use_item(const uint8_t item_id) { inventory.use_item(stats, equipment, item_id); }
 

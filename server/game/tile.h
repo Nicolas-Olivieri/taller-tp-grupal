@@ -23,15 +23,7 @@ public:
 
     Interactive* occupant() const;
 
-    bool has_loot() const;
-
-    Loot take_loot();
-
-    const Loot& peek_loot() const;
-
-    void add_loot(uint8_t item);
-
-    void add_loot(uint16_t gold);
+    std::stack<Loot>& get_loot();
 
     void add_loot(const std::vector<Loot>& drops);
 

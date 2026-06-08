@@ -3,11 +3,10 @@
 
 #include <cstdint>
 
-enum class PickUpStatus : uint8_t { SUCCESS, PARTIAL, FAILED, MUST_NOT_NOTIFY };
+enum class PickUpStatus : uint8_t { SUCCESS, FAILED, MUST_NOT_NOTIFY };
 
 struct PickUpResult {
     PickUpStatus status;
-    bool picked_something_up;
 
     PickUpResult();
 

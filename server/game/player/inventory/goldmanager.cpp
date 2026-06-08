@@ -14,16 +14,13 @@ void GoldManager::update_max(uint8_t level) {
     max_total_gold = max_safe_gold + Calculator::calculate_max_excess_gold(max_safe_gold);
 }
 
-uint16_t GoldManager::add(uint16_t amount) {
+void GoldManager::add(uint16_t amount) {
     // TODO: Considerar el caso de monedero lleno al intentar retirar oro del banco
-    uint16_t difference_to_max = max_total_gold - current_gold;
-    if (difference_to_max < amount) {
+    if (max_total_gold - current_gold < amount) {
         current_gold = max_total_gold;
-        return difference_to_max;
+    } else {
+        current_gold += amount;
     }
-
-    current_gold += amount;
-    return 0;
 }
 
 void GoldManager::spend(uint16_t amount) {

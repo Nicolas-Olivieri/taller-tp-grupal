@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include "server/command/cmd_results/pickup/pickup_result.h"
 #include "server/command/command.h"
 
 class PickUpCommand: public Command {

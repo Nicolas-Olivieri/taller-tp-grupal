@@ -12,20 +12,7 @@ bool Tile::is_walkable() const { return is_walkable_; }
 
 Interactive* Tile::occupant() const { return occupant_; }
 
-bool Tile::has_loot() const { return !loot_.empty(); }
-
-Loot Tile::take_loot() {
-    Loot top = loot_.top();
-    loot_.pop();
-
-    return top;
-}
-
-const Loot& Tile::peek_loot() const { return loot_.top(); }
-
-void Tile::add_loot(uint8_t item) { loot_.push(Loot(item)); }
-
-void Tile::add_loot(uint16_t gold) { loot_.push(Loot(gold)); }
+std::stack<Loot>& Tile::get_loot() { return loot_; }
 
 void Tile::add_loot(const std::vector<Loot>& drops) {
     for (const auto& drop: drops) loot_.push(drop);

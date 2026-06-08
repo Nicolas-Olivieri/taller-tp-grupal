@@ -13,11 +13,6 @@ void PickUpCommand::build_snapshot(SnapshotBuilder& builder) {
             builder.add_action(ActionDTO(
                     ChatMessageDTO(MessageType::SYSTEM, player_name, "El botín se agrego a tu inventario")));
             break;
-        case PickUpStatus::PARTIAL:
-            builder.add_action(ActionDTO(
-                    ChatMessageDTO(MessageType::SYSTEM, player_name,
-                                   "Dejaste caer parte del botin porque no puedes llevar mas oro")));
-            break;
         case PickUpStatus::FAILED:
             builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name,
                                                         "No tienes espacio para llevarte el botin")));

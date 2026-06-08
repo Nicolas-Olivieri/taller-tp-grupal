@@ -19,7 +19,7 @@ public:
 
     void update_max(uint8_t level);
 
-    uint16_t add(uint16_t amount);
+    void add(uint16_t amount);
 
     void spend(uint16_t amount);
 

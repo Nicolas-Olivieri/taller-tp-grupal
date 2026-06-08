@@ -227,7 +227,7 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
 
 void GameWorld::add_tile_if_lootable(Tile& tile, const Position& position) {
     std::pair<uint16_t, uint16_t> pair_position = {position.get_x(), position.get_y()};
-    if (tile.has_loot() && !tiles_with_loot.contains(pair_position))
+    if (not tile.get_loot().empty() && !tiles_with_loot.contains(pair_position))
         tiles_with_loot.insert({pair_position, &tile});
 }
 
@@ -293,43 +293,37 @@ WithdrawGoldResult GameWorld::withdraw_gold(const std::string& player_name, cons
 
 PickUpResult GameWorld::pick_up(const std::string& player_name, const Position& position) {
     if (!players.contains(player_name))
-        return PickUpResult(PickUpStatus::MUST_NOT_NOTIFY);
+        return PickUpResult();
 
     Player& player = players.at(player_name);
 
     Tile& tile = grid.get_tile(position);
-    Loot loot = tile.take_loot();
+    const Loot& loot = tile.get_loot().top();
 
-    switch (loot.type) {
-        case LootType::ITEM:
-            return pick_item_up(player, tile, loot.item);
-        case LootType::GOLD:
-            return pick_gold_up(player, tile, loot.gold);
-        default:
-            throw std::invalid_argument("There is no loot of this type to be picked up");
-    }
+    PickUpResult result = loot.type == LootType::ITEM ? pick_item_up(player, tile, loot.item) :
+                                                        pick_gold_up(player, tile, loot.gold);
+
+    if (result.status == PickUpStatus::SUCCESS && tile.get_loot().empty())
+        tiles_with_loot.extract({position.get_x(), position.get_y()});
+
+    return result;
 }
 
 PickUpResult GameWorld::pick_item_up(Player& player, Tile& tile, uint8_t item) {
     try {
         player.acquire_item(item);
+        tile.get_loot().pop();
         return PickUpResult(PickUpStatus::SUCCESS);
     } catch (const InventoryFull& err) {
-        tile.add_loot(item);
-    } catch (const SlotFull& err) {
-        tile.add_loot(item);
-    }
+    } catch (const SlotFull& err) {}
 
     return PickUpResult(PickUpStatus::FAILED);
 }
 
 PickUpResult GameWorld::pick_gold_up(Player& player, Tile& tile, uint16_t gold) {
-    uint16_t difference = player.add_gold(gold);
-    if (difference == 0)
-        return PickUpResult(PickUpStatus::SUCCESS);
-
-    tile.add_loot(difference);
-    return PickUpResult(PickUpStatus::PARTIAL);
+    player.add_gold(gold);
+    tile.get_loot().pop();
+    return PickUpResult(PickUpStatus::SUCCESS);
 }
 
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,

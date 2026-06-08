@@ -37,18 +37,18 @@ std::vector<Loot> Creature::drop() {
             drop.push_back(Loot(Calculator::calculate_random_drop_gold(stats.health.get_max())));
             break;
         case DropType::USABLE:
-            drop.push_back(Loot(Calculator::random_number(config.get_min_usable_id(), config.get_max_usable_id())));
+            drop.push_back(
+                    Loot(Calculator::random_number(config.get_min_usable_id(), config.get_max_usable_id())));
             break;
-        case DropType::EQUIPABLE:
-            {
-                uint8_t item = Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
-                // TODO: NI BIEN SE IMPLEMENTE EL BÁCULO DE CURACIÓN SACAR ESTE HARDCODEO
-                if (item == 5)  // TODO: CORREGIME
-                    item++; // TODO: CORREGIME
-                drop.push_back(Loot(item)); // TODO: CORREGIME
-                // TODO: CORREGIRRRR
-            }
-            break;
+        case DropType::EQUIPABLE: {
+            uint8_t item =
+                    Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
+            // TODO: NI BIEN SE IMPLEMENTE EL BÁCULO DE CURACIÓN SACAR ESTE HARDCODEO
+            if (item == 5)               // TODO: CORREGIME
+                item++;                  // TODO: CORREGIME
+            drop.push_back(Loot(item));  // TODO: CORREGIME
+            // TODO: CORREGIRRRR
+        } break;
         default:
             throw std::invalid_argument("There is no known way to drop something of this type");
     }
