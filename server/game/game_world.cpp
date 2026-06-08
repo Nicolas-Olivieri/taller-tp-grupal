@@ -398,16 +398,36 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
         return ClanActionResult();
     }
 
-    const Player& player = players.at(payload.player_name);
+    Player& player = players.at(payload.player_name);
     const std::string clan_name = player.get_clan_name();
 
     if (clan_name.empty())
         return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
 
+    if (not(payload.other_player.empty() and players.contains(payload.other_player)))
+        return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
+
     assert(clans.contains(clan_name));
 
     Clan& clan = clans.at(clan_name);
-    return clan.execute(payload);
+    ClanActionResult result = clan.execute(payload);
+
+    if (result.status == ClanActionStatus::SUCCESS) {
+        switch (payload.type) {
+            case ClanActionType::ACCEPT: {
+                Player& player_accepted = players.at(payload.other_player);
+                player_accepted.set_clan_name(clan_name);
+                break;
+            }
+            case ClanActionType::LEAVE:
+                player.set_clan_name("");
+                break;
+            default:
+                break;
+        }
+    }
+
+    return result;
 }
 
 JoinClanResult GameWorld::join_clan(const std::string& player_name, const std::string& clan_name) {

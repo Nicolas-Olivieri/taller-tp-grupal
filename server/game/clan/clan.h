@@ -50,6 +50,8 @@ private:
 
     /// Auxiliares
     bool is_founder(const std::string& player_name);
+
+    void check_is_in_clan(const std::string& player_name);
 };
 
 

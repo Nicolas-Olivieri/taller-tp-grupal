@@ -8,12 +8,13 @@ enum class ClanActionType { ACCEPT, REJECT, KICK, BAN, LEAVE, REVIEW };
 struct ClanActionPayload {
     ClanActionType type;
     std::string player_name;
-    std::string target;
+    std::string other_player;
 
 public:
     ClanActionPayload(const ClanActionType& type, const std::string& player_name);
 
-    ClanActionPayload(const ClanActionType& type, const std::string& player_name, const std::string& target);
+    ClanActionPayload(const ClanActionType& type, const std::string& player_name,
+                      const std::string& other_player);
 };
 
 
