@@ -12,6 +12,7 @@
 #include "client/config/client_config.h"
 #include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
+#include "common/dto/events/clan_found_event.h"
 #include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/events/deposit_item_event.h"
 #include "common/dto/events/interact_event.h"
@@ -202,6 +203,10 @@ void ClientGame::handle_text_command(const std::string& text) {
         handle_withdraw_gold_command(text);
     else if (text.starts_with("/retirar "))
         handle_withdraw_item_command(text);
+
+    if (text.starts_with("/fundar-clan "))
+        handle_clan_foundation(text);
+    // TODO agregar comandos de clanes
 }
 
 void ClientGame::handle_buy_item_command(const std::string& text) {
@@ -446,4 +451,20 @@ void ClientGame::handle_mouse_wheel(const SDL_Event& event) {
 
     if (event.wheel.y < 0)
         ui.chat_scroll_down();
+}
+
+void ClientGame::handle_clan_foundation(const std::string& text) {
+    assert(text.starts_with("/fundar-clan "));
+    size_t pos = text.find(' ');
+    assert(pos != std::string::npos);
+
+    std::string clan_name = text.substr(pos + 1);
+    if (clan_name.empty())
+        return;
+
+    auto not_space = [](unsigned char ch) { return !std::isspace(ch); };
+    clan_name.erase(clan_name.begin(), std::find_if(clan_name.begin(), clan_name.end(), not_space));
+    clan_name.erase(std::find_if(clan_name.rbegin(), clan_name.rend(), not_space).base(), clan_name.end());
+
+    connection.push_command(std::make_unique<ClanFoundEventDTO>(clan_name));
 }

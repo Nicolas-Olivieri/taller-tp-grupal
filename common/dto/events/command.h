@@ -18,6 +18,7 @@ enum class CommandType : uint8_t {
     WITHDRAW_ITEM,
     DEPOSIT_GOLD,
     WITHDRAW_GOLD,
+    CLAN_FOUND,
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a
@@ -37,9 +38,8 @@ struct RequestedCommandDTO {
 
     uint16_t gold_amount;
 
-    /* TODO: agregar los siguientes al implementar los correspondientes comandos
-    clan_name
-    */
+    std::string clan_name;
+
 
     // TODO: Refactorizar los constructores para que determinen el CommandType a partir de los parámetros
     RequestedCommandDTO(const CommandType& cmd, const Direction& direction);
@@ -53,6 +53,8 @@ struct RequestedCommandDTO {
     RequestedCommandDTO(const CommandType& cmd, uint8_t item_id);
 
     RequestedCommandDTO(const CommandType& cmd, uint16_t gold_amount);
+
+    RequestedCommandDTO(const CommandType& cmd, const std::string& clan_name);
 };
 
 #endif  // REQUESTEDCOMMANDDTO_H

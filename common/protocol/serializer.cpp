@@ -239,3 +239,8 @@ void Serializer::serialize(const WithdrawGoldEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.gold_amount);
 }
+
+void Serializer::serialize(const ClanFoundEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.clan_name);
+}

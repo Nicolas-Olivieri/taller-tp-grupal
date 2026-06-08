@@ -22,7 +22,7 @@ class Clan {
     static const uint8_t MAX_MEMBERS = 16;
 
 public:
-    static const uint8_t MIN_LEVEL_REQUIRED_TO_FOUND_CLAN = 6;
+    static constexpr uint8_t MIN_LEVEL_REQUIRED_TO_FOUND_CLAN = 6;
 
     // TODO definir parámetros
     Clan(/* clan_data */);

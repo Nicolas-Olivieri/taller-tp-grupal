@@ -78,6 +78,8 @@ private:
 
     void handle_withdraw_item_command(const std::string& text);
 
+    void handle_clan_foundation(const std::string& text);
+
     void send_private_message();
 
     // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes
