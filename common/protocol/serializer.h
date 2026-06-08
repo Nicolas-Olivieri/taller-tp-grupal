@@ -11,10 +11,12 @@
 #include "common/dto/events/chatevent.h"
 #include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/events/deposit_item_event.h"
+#include "common/dto/events/drop_item_event.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/events/sell_event.h"
+#include "common/dto/events/use_item_event.h"
 #include "common/dto/events/withdraw_gold_event.h"
 #include "common/dto/events/withdraw_item_event.h"
 #include "common/dto/lobby/ally_info.h"
@@ -142,6 +144,10 @@ public:
     void serialize(const DepositGoldEventDTO& event);
 
     void serialize(const WithdrawGoldEventDTO& event);
+
+    void serialize(const UseItemEventDTO& event);
+
+    void serialize(const DropItemEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

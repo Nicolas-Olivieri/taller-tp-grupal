@@ -257,3 +257,13 @@ void Serializer::serialize(const WithdrawGoldEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.gold_amount);
 }
+
+void Serializer::serialize(const UseItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
+
+void Serializer::serialize(const DropItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
