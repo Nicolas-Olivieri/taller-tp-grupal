@@ -17,11 +17,10 @@ enum class ClanActionStatus {
     NOT_IN_CLAN,
     NOT_A_PLAYER,
     NO_RESULT,
-    // accept()
+    // accept(), reject(), kick()
     IS_ALREADY_MEMBER,
     IS_BANNED_PLAYER,
     IS_NOT_IN_JOIN_LIST
-
 
 };
 

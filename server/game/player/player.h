@@ -126,6 +126,8 @@ public:
 
     void set_clan_name(const std::string& _clan_name);
 
+    void leave_clan();
+
 private:
     void complete_delayed_resurrection();
 };

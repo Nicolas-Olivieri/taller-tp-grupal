@@ -420,8 +420,19 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
                 break;
             }
             case ClanActionType::LEAVE:
-                player.set_clan_name("");
+                player.leave_clan();
                 break;
+            case ClanActionType::KICK: {
+                Player& player_kicked = players.at(payload.other_player);
+                player_kicked.leave_clan();
+                break;
+            }
+            case ClanActionType::BAN: {
+                Player& player_banned = players.at(payload.other_player);
+                if (player_banned.get_clan_name() == clan_name)
+                    player_banned.leave_clan();
+                break;
+            }
             default:
                 break;
         }

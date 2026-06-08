@@ -3,8 +3,18 @@
 #include <cassert>
 #include <format>
 
+bool Clan::is_founder(const std::string& player_name) const { return player_name == founder; }
+
+bool Clan::is_member(const std::string& player_name) const { return members.contains(player_name); }
+
+bool Clan::has_pending_request(const std::string& player_name) const {
+    return joining_requests.contains(player_name);
+}
+
+bool Clan::is_banned(const std::string& player_name) const { return banned_players.contains(player_name); }
+
 void Clan::check_is_in_clan(const std::string& player_name) {
-    if (not members.contains(player_name))
+    if (not(is_founder(player_name) or is_member(player_name)))
         throw std::runtime_error(std::format(
                 "El jugador {} llegó a hacerle un pedido al clan {} sin ser miembro ni fundador del mismo",
                 player_name, clan_name));
@@ -34,9 +44,9 @@ ClanActionResult Clan::execute(const ClanActionPayload& payload) {
 }
 
 void Clan::recv_join_request(const std::string& player_name) {
-    assert(!members.contains(player_name));
+    assert(not is_member(player_name));
 
-    if (!banned_players.contains(player_name))
+    if (not is_banned(player_name))
         joining_requests.insert(player_name);
 }
 
@@ -46,17 +56,72 @@ ClanActionResult Clan::accept(const std::string& player_name, const std::string&
     if (not is_founder(player_name))
         return ClanActionResult(ClanActionStatus::IS_MEMBER);
 
-    if (members.contains(player_to_accept))
+    if (is_member(player_name))
         return ClanActionResult(ClanActionStatus::IS_ALREADY_MEMBER);
 
-    if (banned_players.contains(player_to_accept))
+    if (is_banned(player_name))
         return ClanActionResult(ClanActionStatus::IS_BANNED_PLAYER);
 
-    if (not joining_requests.contains(player_to_accept))
+    if (not has_pending_request(player_name))
         return ClanActionResult(ClanActionStatus::IS_NOT_IN_JOIN_LIST);
 
     joining_requests.extract(player_to_accept);
     members.insert(player_to_accept);
 
+    return ClanActionResult(ClanActionStatus::SUCCESS);
+}
+
+ClanActionResult Clan::reject(const std::string& player_name, const std::string& player_to_reject) {
+    check_is_in_clan(player_name);
+
+    if (not is_founder(player_name))
+        return ClanActionResult(ClanActionStatus::IS_MEMBER);
+
+    if (is_member(player_to_reject))
+        return ClanActionResult(ClanActionStatus::IS_ALREADY_MEMBER);
+
+    if (not has_pending_request(player_to_reject))
+        return ClanActionResult(ClanActionStatus::IS_NOT_IN_JOIN_LIST);
+
+    joining_requests.extract(player_to_reject);
+
+    return ClanActionResult(ClanActionStatus::SUCCESS);
+}
+
+ClanActionResult Clan::kick(const std::string& player_name, const std::string& player_to_kick) {
+    check_is_in_clan(player_name);
+
+    if (not is_founder(player_name))
+        return ClanActionResult(ClanActionStatus::IS_MEMBER);
+
+    // El fundador trata de kickearse a sí mismo
+    if (is_founder(player_to_kick))
+        return ClanActionResult(ClanActionStatus::IS_FOUNDER);
+
+    if (not is_member(player_to_kick)) {
+        return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
+    }
+
+    return ClanActionResult(ClanActionStatus::SUCCESS);
+}
+
+ClanActionResult Clan::ban(const std::string& player_name, const std::string& player_to_ban) {
+    check_is_in_clan(player_name);
+
+    if (not is_founder(player_name))
+        return ClanActionResult(ClanActionStatus::IS_MEMBER);
+
+    // El fundador trata de banearse a sí mismo
+    if (is_founder(player_to_ban))
+        return ClanActionResult(ClanActionStatus::IS_FOUNDER);
+
+    if (has_pending_request(player_to_ban))
+        joining_requests.extract(player_to_ban);
+
+    if (is_member(player_to_ban)) {
+        assert(kick(player_name, player_to_ban).status == ClanActionStatus::SUCCESS);
+    }
+
+    banned_players.insert(player_to_ban);
     return ClanActionResult(ClanActionStatus::SUCCESS);
 }

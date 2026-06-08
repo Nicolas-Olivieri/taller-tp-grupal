@@ -49,7 +49,13 @@ private:
     ClanActionResult review(const std::string& player_name);
 
     /// Auxiliares
-    bool is_founder(const std::string& player_name);
+    bool is_founder(const std::string& player_name) const;
+
+    bool is_member(const std::string& player_name) const;
+
+    bool has_pending_request(const std::string& player_name) const;
+
+    bool is_banned(const std::string& player_name) const;
 
     void check_is_in_clan(const std::string& player_name);
 };

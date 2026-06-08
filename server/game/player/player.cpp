@@ -259,3 +259,5 @@ void Player::complete_delayed_resurrection() {
 std::string Player::get_clan_name() const { return clan_name; }
 
 void Player::set_clan_name(const std::string& _clan_name) { clan_name = _clan_name; }
+
+void Player::leave_clan() { clan_name.clear(); }
