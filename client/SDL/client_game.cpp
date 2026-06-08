@@ -17,6 +17,8 @@
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/events/sell_event.h"
+#include "common/dto/events/unequip_item_event.h"
+#include "common/dto/events/use_item_event.h"
 #include "common/dto/events/withdraw_gold_event.h"
 #include "common/dto/events/withdraw_item_event.h"
 #include "common/util/rate_timer.h"
@@ -392,6 +394,31 @@ bool ClientGame::is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport) 
 void ClientGame::handle_ui_click(const SDL_Event& event) {
     int x = event.button.x;
     int y = event.button.y;
+
+    const int inventory_slot_index = ui.get_inventory_slot_at(x, y);
+    if (inventory_slot_index != -1) {
+        if (event.button.button == SDL_BUTTON_LEFT) {
+            ui.bind_item(inventory_slot_index);
+
+        } else if (event.button.button == SDL_BUTTON_RIGHT) {
+            auto item_id = ui.get_item_in_inventory_slot(inventory_slot_index);
+            if (item_id.has_value())
+                connection.push_command(std::make_unique<UseItemEventDTO>(item_id.value()));
+        }
+
+        return;
+    }
+
+    const int equipment_slot_index = ui.get_equipment_slot_at(x, y);
+    if (equipment_slot_index != -1) {
+        if (event.button.button == SDL_BUTTON_RIGHT) {
+            auto item_id = ui.get_item_in_equipment_slot(equipment_slot_index);
+            if (item_id.has_value())
+                connection.push_command(std::make_unique<UnequipItemEventDTO>(item_id.value()));
+        }
+
+        return;
+    }
 
     if (event.button.button == SDL_BUTTON_LEFT) {
         // Clic izquierdo sobre el chat

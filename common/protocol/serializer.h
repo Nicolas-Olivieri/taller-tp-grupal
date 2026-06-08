@@ -4,16 +4,20 @@
 #include <cstdint>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
 #include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/events/deposit_item_event.h"
+#include "common/dto/events/drop_item_event.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/events/sell_event.h"
+#include "common/dto/events/unequip_item_event.h"
+#include "common/dto/events/use_item_event.h"
 #include "common/dto/events/withdraw_gold_event.h"
 #include "common/dto/events/withdraw_item_event.h"
 #include "common/dto/lobby/ally_info.h"
@@ -24,6 +28,7 @@
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
+#include "common/dto/snapshot/info/inventory_info.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/map/client_map_data.h"
 #include "common/dto/snapshot/snapshot.h"
@@ -53,6 +58,15 @@ private:
     // Generaliza la forma de serializar mapas con claves K y valores V
     template <typename K, typename V>
     void serialize(const std::map<K, V>& container) {
+        serialize(static_cast<uint16_t>(container.size()));
+        for (const auto& [key, value]: container) {
+            serialize(key);
+            serialize(value);
+        }
+    }
+
+    template <typename K, typename V>
+    void serialize(const std::unordered_map<K, V>& container) {
         serialize(static_cast<uint16_t>(container.size()));
         for (const auto& [key, value]: container) {
             serialize(key);
@@ -106,6 +120,10 @@ public:
 
     void serialize(const PlayerStatsDTO& stats);
 
+    void serialize(const InventoryInfoDTO& inventory);
+
+    void serialize(const EquipmentInfoDTO& equipment);
+
     void serialize(const ResurrectionDTO& resurrection);
 
     void serialize(const DeathDTO& death);
@@ -127,6 +145,12 @@ public:
     void serialize(const DepositGoldEventDTO& event);
 
     void serialize(const WithdrawGoldEventDTO& event);
+
+    void serialize(const UseItemEventDTO& event);
+
+    void serialize(const DropItemEventDTO& event);
+
+    void serialize(const UnequipItemEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

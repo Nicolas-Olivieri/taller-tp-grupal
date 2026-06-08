@@ -48,6 +48,10 @@ private:
 
     PlayerStatsDTO recv_player_stats();
 
+    InventoryInfoDTO recv_inventory_info();
+
+    EquipmentInfoDTO recv_equipment_info();
+
     ResurrectionDTO recv_resurrection();
 
     DeathDTO recv_death();

@@ -19,6 +19,9 @@ enum class CommandType : uint8_t {
     DEPOSIT_GOLD,
     WITHDRAW_GOLD,
     PICKUP,
+    USE_ITEM,
+    DROP_ITEM,
+    UNEQUIP_ITEM,
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a

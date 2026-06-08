@@ -7,6 +7,8 @@
 #include "allies/banker.h"
 #include "allies/merchant.h"
 #include "allies/priest.h"
+#include "server/command/cmd_results/unequip_item/unequip_item_result.h"
+#include "server/command/cmd_results/use_item/use_item_result.h"
 #include "server/util/server_map_loader.h"
 
 
@@ -348,6 +350,34 @@ PickUpResult GameWorld::pick_gold_up(Player& player, Tile& tile, uint16_t gold) 
     }
 
     return PickUpResult(PickUpStatus::GOLD_OVERFLOW);
+}
+
+UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t item_id) {
+    if (not players.contains(player_name))
+        return UseItemResult();
+
+    Player& player = players.at(player_name);
+    try {
+        player.use_item(item_id);
+        return UseItemResult(UseItemStatus::SUCCESS);
+
+    } catch (const ItemNotOwned&) {
+        return UseItemResult(UseItemStatus::FAILED);
+    }
+}
+
+UnequipItemResult GameWorld::unequip_item(const std::string& player_name, const uint8_t item_id) {
+    if (not players.contains(player_name))
+        return UnequipItemResult();
+
+    Player& player = players.at(player_name);
+    try {
+        player.unequip_item(item_id);
+        return UnequipItemResult(UnequipItemStatus::SUCCESS);
+
+    } catch (const InventoryFull&) {
+        return UnequipItemResult(UnequipItemStatus::FAILED);
+    }
 }
 
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
