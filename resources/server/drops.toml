@@ -1,5 +1,5 @@
 [probabilities]
-nothing = 0.00
-gold = 75.00
-usable = 12.50
-equipable = 12.50
+nothing = 80.00
+gold = 8.00
+usable = 1.00
+equipable = 1.00
