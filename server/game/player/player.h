@@ -124,6 +124,8 @@ public:
 
     std::string get_clan_name() const;
 
+    void set_clan_name(const std::string& _clan_name);
+
 private:
     void complete_delayed_resurrection();
 };

@@ -1,5 +1,6 @@
 #include "game_world.h"
 
+#include <cassert>
 #include <limits>
 #include <utility>
 
@@ -371,7 +372,7 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
         return FoundClanResult::NO_RESULT;
     }
 
-    const Player& player = players.at(player_name);
+    Player& player = players.at(player_name);
 
     if (clans.contains(clan_name))
         return FoundClanResult::CLAN_ALREADY_EXISTS;
@@ -385,9 +386,43 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
     if (current_level < Clan::MIN_LEVEL_REQUIRED_TO_FOUND_CLAN)
         return FoundClanResult::NOT_ENOUGH_LEVEL;
 
-    Clan new_clan(player_name);
+    Clan new_clan(clan_name, player_name);
+
     clans.insert({clan_name, std::move(new_clan)});
-    // TODO agregar al player un puntero a su clan?? -> Como hace sino para no pegarse entre miembros del
-    // mismo clan?
+    player.set_clan_name(clan_name);
     return FoundClanResult::SUCCESS;
+}
+
+ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload) {
+    if (not players.contains(payload.player_name)) {
+        return ClanActionResult();
+    }
+
+    const Player& player = players.at(payload.player_name);
+    const std::string clan_name = player.get_clan_name();
+
+    if (clan_name.empty())
+        return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
+
+    assert(clans.contains(clan_name));
+
+    Clan& clan = clans.at(clan_name);
+    return clan.execute(payload);
+}
+
+JoinClanResult GameWorld::join_clan(const std::string& player_name, const std::string& clan_name) {
+    if (not players.contains(player_name)) {
+        return JoinClanResult::NO_RESULT;
+    }
+
+    const Player& player = players.at(player_name);
+
+    if (not player.get_clan_name().empty())
+        return JoinClanResult::ALREADY_IN_CLAN;
+
+    if (!clans.contains(clan_name))
+        return JoinClanResult::CLAN_NOT_FOUND;
+
+    clans.at(clan_name).recv_join_request(player_name);
+    return JoinClanResult::SUCCESS;
 }

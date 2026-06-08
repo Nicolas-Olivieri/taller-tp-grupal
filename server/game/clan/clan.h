@@ -7,12 +7,16 @@
 #include <unordered_set>
 #include <vector>
 
+#include "server/command/cmd_results/clan/clan_action_result.h"
+
+#include "clan_action_payload.h"
+
 class Clan {
     std::string clan_name;
     std::string founder;
     std::unordered_set<std::string> members;
 
-    std::deque<std::string> joining_requests;
+    std::unordered_set<std::string> joining_requests;
     std::unordered_set<std::string> banned_players;
 
     static const uint8_t MAX_MEMBERS = 16;
@@ -25,23 +29,24 @@ public:
 
     /// Principales operaciones
     // Fundar clan
-    // TODO debería necesitar su propio nombre, no?
-    explicit Clan(const std::string& founder_name);
+    Clan(const std::string& clan_name, const std::string& founder_name);
+
+    ClanActionResult execute(const ClanActionPayload& payload);
+
+    void recv_join_request(const std::string& player_name);
 
 private:
-    void join(const std::string& player_name);
+    ClanActionResult accept(const std::string& player_name, const std::string& player_to_accept);
 
-    void accept(const std::string& player_name, const std::string& player_to_accept);
+    ClanActionResult reject(const std::string& player_name, const std::string& player_to_reject);
 
-    void reject(const std::string& player_name, const std::string& player_to_reject);
+    ClanActionResult kick(const std::string& player_name, const std::string& player_to_kick);
 
-    void kick(const std::string& player_name, const std::string& player_to_kick);
+    ClanActionResult ban(const std::string& player_name, const std::string& player_to_ban);
 
-    void ban(const std::string& player_name, const std::string& player_to_ban);
+    ClanActionResult leave(const std::string& player_name);
 
-    void leave(const std::string& player_name);
-
-    std::vector<std::string> list(const std::string& player_name);
+    ClanActionResult review(const std::string& player_name);
 
     /// Auxiliares
     bool is_founder(const std::string& player_name);

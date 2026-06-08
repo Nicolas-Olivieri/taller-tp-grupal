@@ -82,6 +82,8 @@ public:
 
     FoundClanResult found_clan(const std::string& player_name, const std::string& clan_name);
 
+    JoinClanResult join_clan(const std::string& player_name, const std::string& clan_name);
+
     ClanActionResult execute_clan_action(const ClanActionPayload& payload);
 
 private:
