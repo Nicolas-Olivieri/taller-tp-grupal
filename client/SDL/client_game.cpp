@@ -390,6 +390,15 @@ void ClientGame::handle_ui_click(const SDL_Event& event) {
     int x = event.button.x;
     int y = event.button.y;
 
+    const int slot_index = ui.get_inventory_slot_at(x, y);
+    if (slot_index != -1) {
+        if (event.button.button == SDL_BUTTON_LEFT) {
+            ui.bind_item(slot_index);
+        }
+
+        return;
+    }
+
     if (event.button.button == SDL_BUTTON_LEFT) {
         // Clic izquierdo sobre el chat
         if (is_inside_viewport(x, y, chat_icon)) {

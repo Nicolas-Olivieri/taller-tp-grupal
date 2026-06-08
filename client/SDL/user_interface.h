@@ -66,6 +66,9 @@ private:
             {806, 284, 34, 34}, {874, 284, 34, 34}, {942, 284, 34, 34},
             {806, 348, 34, 34}, {874, 348, 34, 34}, {942, 348, 34, 34}};
 
+    std::optional<uint8_t> bound_item_id;
+    std::optional<int> bound_slot_index;
+
     std::vector<uint8_t> current_equipment;
     const std::vector<SDL2pp::Rect> equipment_slots = {{780, 447, 34, 34},   // Espada
                                                        {842, 447, 34, 34},   // Escudo
@@ -146,6 +149,16 @@ public:
     void chat_scroll_to_bottom();
 
     bool is_over_chat(const int x, const int y);
+
+    int get_inventory_slot_at(int x, int y) const;
+
+    std::optional<uint8_t> get_item_in_slot(int slot_index) const;
+
+    void bind_item(int slot_index);
+
+    std::optional<uint8_t> get_bound_item_id() const;
+
+    void clear_bound_item();
 };
 
 

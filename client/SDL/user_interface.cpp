@@ -92,6 +92,13 @@ void UserInterface::render_inventory() {
             const SDL2pp::Rect& slot = inventory_slots[i];
             render_item(slot, item_id);
             render_item_amount(slot, amount);
+
+            if (bound_slot_index.has_value() and bound_slot_index.value() == static_cast<int>(i)) {
+                renderer.SetDrawColor(yellow.r, yellow.g, yellow.b, yellow.a);
+                renderer.DrawRect(slot);
+                // TODO: Esto ajusta el color por defecto, revisar si los valores son correctos
+                renderer.SetDrawColor(0, 0, 0, 255);
+            }
         }
     }
 }
@@ -379,4 +386,44 @@ void UserInterface::chat_scroll_to_bottom() {
 bool UserInterface::is_over_chat(const int x, const int y) {
     SDL2pp::Point click_position(x, y);
     return history_messages.Contains(click_position) || input_box.Contains(click_position);
+}
+
+int UserInterface::get_inventory_slot_at(const int x, const int y) const {
+    const SDL2pp::Point click_pos(x, y);
+    for (size_t i = 0; i < inventory_slots.size(); ++i) {
+        if (inventory_slots[i].Contains(click_pos))
+            return static_cast<int>(i);
+    }
+
+    return -1;
+}
+
+std::optional<uint8_t> UserInterface::get_item_in_slot(const int slot_index) const {
+    if (slot_index >= 0 and static_cast<size_t>(slot_index) < current_inventory.size()) {
+        uint8_t id = current_inventory[slot_index].item_id;
+        if (id != 0)
+            return id;
+    }
+
+    return std::nullopt;
+}
+
+void UserInterface::bind_item(const int slot_index) {
+    if (bound_slot_index.has_value() and bound_slot_index.value() == slot_index) {
+        clear_bound_item();
+        return;
+    }
+
+    auto item_id = get_item_in_slot(slot_index);
+    if (item_id.has_value()) {
+        bound_slot_index = slot_index;
+        bound_item_id = item_id.value();
+    }
+}
+
+std::optional<uint8_t> UserInterface::get_bound_item_id() const { return bound_item_id; }
+
+void UserInterface::clear_bound_item() {
+    bound_slot_index = std::nullopt;
+    bound_item_id = std::nullopt;
 }
