@@ -159,6 +159,10 @@ public:
     std::optional<uint8_t> get_bound_item_id() const;
 
     void clear_bound_item();
+
+    int get_equipment_slot_at(int x, int y) const;
+
+    std::optional<uint8_t> get_item_in_equipment_slot(int slot_index) const;
 };
 
 

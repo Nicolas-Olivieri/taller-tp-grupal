@@ -427,3 +427,23 @@ void UserInterface::clear_bound_item() {
     bound_slot_index = std::nullopt;
     bound_item_id = std::nullopt;
 }
+
+int UserInterface::get_equipment_slot_at(const int x, const int y) const {
+    const SDL2pp::Point click_pos(x, y);
+    for (size_t i = 0; i < equipment_slots.size(); ++i) {
+        if (equipment_slots[i].Contains(click_pos))
+            return static_cast<int>(i);
+    }
+
+    return -1;
+}
+
+std::optional<uint8_t> UserInterface::get_item_in_equipment_slot(const int slot_index) const {
+    if (slot_index >= 0 and static_cast<size_t>(slot_index) < current_equipment.size()) {
+        uint8_t id = current_equipment[slot_index];
+        if (id != 0)
+            return id;
+    }
+
+    return std::nullopt;
+}
