@@ -398,7 +398,7 @@ int UserInterface::get_inventory_slot_at(const int x, const int y) const {
     return -1;
 }
 
-std::optional<uint8_t> UserInterface::get_item_in_slot(const int slot_index) const {
+std::optional<uint8_t> UserInterface::get_item_in_inventory_slot(const int slot_index) const {
     if (slot_index >= 0 and static_cast<size_t>(slot_index) < current_inventory.size()) {
         uint8_t id = current_inventory[slot_index].item_id;
         if (id != 0)
@@ -414,7 +414,7 @@ void UserInterface::bind_item(const int slot_index) {
         return;
     }
 
-    auto item_id = get_item_in_slot(slot_index);
+    auto item_id = get_item_in_inventory_slot(slot_index);
     if (item_id.has_value()) {
         bound_slot_index = slot_index;
         bound_item_id = item_id.value();

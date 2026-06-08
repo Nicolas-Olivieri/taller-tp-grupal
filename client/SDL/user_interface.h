@@ -152,7 +152,7 @@ public:
 
     int get_inventory_slot_at(int x, int y) const;
 
-    std::optional<uint8_t> get_item_in_slot(int slot_index) const;
+    std::optional<uint8_t> get_item_in_inventory_slot(int slot_index) const;
 
     void bind_item(int slot_index);
 
