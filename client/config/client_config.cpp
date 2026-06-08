@@ -51,6 +51,15 @@ std::optional<uint8_t> ClientConfig::get_item_id(const std::string& item_name) c
 }
 
 
+std::string ClientConfig::get_item_icon_path(const uint8_t item_id) {
+    if (not items_data.contains(item_id)) {
+        return "resources/items/0.png";  // TODO: Agregar una textura de error
+    }
+
+    return items_data.at(item_id).icon_path;
+}
+
+
 void ClientConfig::loadFromFile(const std::string& filepath) {
     auto root = toml::parse(filepath);
     if (root.contains("items")) {
@@ -69,5 +78,6 @@ void ClientConfig::parseItemsTable(const toml::value& items_table) {
 
 ItemDisplayData ClientConfig::buildItemDisplayData(const toml::value& item_toml) {
     // TODO: Cargar el resto de atributos de un ítem para el cliente
-    return ItemDisplayData(toml::find<std::string>(item_toml, "name"));
+    return ItemDisplayData(toml::find<std::string>(item_toml, "name"),
+                           toml::find<std::string>(item_toml, "icon_path"));
 }
