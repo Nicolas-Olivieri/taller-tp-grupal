@@ -53,15 +53,21 @@ bool World::cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_p
 void World::render_in_z_order(const Camera& camera) const {
     // Obtengo tiles e items (colliders, npcs, players, enemies) que se llegan a ver en la cámara
     auto viewed_tiles = filter_viewed_sprites(camera, map_tiles);
+    auto viewed_loot = filter_viewed_sprites(camera, map_loot);
     auto viewed_items = filter_viewed_sprites(camera, map_items);
 
     // Ordeno los items por y
-    std::ranges::sort(viewed_items, cmp_by_y_coord);
+    std::ranges::stable_sort(viewed_items, cmp_by_y_coord);
 
     // Renderizo primero los tiles y luego los items por encima
     for (const auto& tile: viewed_tiles) {
         tile->render(camera.get_view().GetTopLeft());
     }
+
+    for (const auto& top_loot: viewed_loot) {
+        top_loot->render(camera.get_view().GetTopLeft());
+    }
+
     for (const auto& item: viewed_items) {
         item->render(camera.get_view().GetTopLeft());
     }
@@ -120,6 +126,33 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
     }
 }
 
+void World::update_loot(const std::vector<LootInfoDTO>& loot_information) {
+    erase_taken_loot(loot_information);
+
+    for (const LootInfoDTO& loot_info: loot_information) {
+        const std::pair<uint16_t, uint16_t> place = {loot_info.x, loot_info.y};
+        if (!loot.contains(place) || loot.at(place).second != loot_info.is_item)
+            add_new_loot(loot_info, place);
+    }
+}
+
+void World::erase_taken_loot(const std::vector<LootInfoDTO>& loot_information) {
+    // TODO: este capaz si se puede cambiar por un ActionDTO que broadcastea PickUpCommand; es un poco más
+    // costoso por ser un map ordenado
+    std::set<std::pair<uint16_t, uint16_t>> places;
+    for (const auto& info: loot_information) {
+        places.insert({info.x, info.y});
+    }
+
+    for (auto it = loot.begin(); it != loot.end();) {
+        if (!places.contains(it->first)) {
+            map_loot.erase(it->second.first);
+            it = loot.erase(it);
+        } else {
+            it++;
+        }
+    }
+}
 
 void World::handle_actions(const std::vector<ActionDTO>& actions) {
     // TODO agregar todos los tipos que vayamos agregando
@@ -162,6 +195,14 @@ void World::add_new_creature(const CreatureInfoDTO& info) {
     auto ptr = std::make_shared<Sprite>(creature);
     creatures.insert({{info.sub_id, ptr}});
     map_items.emplace(ptr);
+}
+
+void World::add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
+    std::cout << "[LOOT] se agregó un loot de tipo: " << static_cast<int>(info.is_item) << std::endl;
+    Sprite drop = sprite_creator.create_sprite(info);
+    auto ptr = std::make_shared<Sprite>(drop);
+    loot[place] = {ptr, info.is_item};
+    map_loot.emplace(ptr);
 }
 
 Sprite& World::get_client_player() { return *players.at(player_name).get(); }

@@ -25,6 +25,8 @@ enum class SpriteCategory {
 
     TILE,
     COLLIDER,
-    NPC
+    NPC,
+
+    LOOT
 };
 #endif  // CLIENT_CONSTANTS_H

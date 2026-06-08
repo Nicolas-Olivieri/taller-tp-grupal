@@ -338,6 +338,7 @@ void ClientGame::update_state_from_server() {
         return;
     world.update_players(snapshot.players_information);
     world.update_creatures(snapshot.creatures_information);
+    world.update_loot(snapshot.loot_information);
     ui.update_player_state(snapshot.players_information);
     // TODO añadir el resto del manejo de sprites
 }
