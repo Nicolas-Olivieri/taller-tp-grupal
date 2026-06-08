@@ -17,6 +17,7 @@
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
 #include "server/command/cmd_results/pickup/pickup_result.h"
+#include "server/command/cmd_results/use_item/use_item_result.h"
 #include "server/persistance/playerrepository.h"
 
 #include "grid.h"
@@ -83,6 +84,8 @@ public:
     WithdrawGoldResult withdraw_gold(const std::string& player_name, uint16_t gold_amount);
 
     PickUpResult pick_up(const std::string& player_name, const Position& position);
+
+    UseItemResult use_item(const std::string& player_name, uint8_t item_id);
 
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
