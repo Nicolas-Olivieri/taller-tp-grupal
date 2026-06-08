@@ -16,6 +16,7 @@
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/command/cmd_results/drop_item/drop_item_result.h"
 #include "server/command/cmd_results/pickup/pickup_result.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
@@ -89,6 +90,8 @@ public:
     UseItemResult use_item(const std::string& player_name, uint8_t item_id);
 
     UnequipItemResult unequip_item(const std::string& player_name, uint8_t item_id);
+
+    DropItemResult drop_item(const std::string& player_name, uint8_t item_id);
 
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);

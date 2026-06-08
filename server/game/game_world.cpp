@@ -380,6 +380,27 @@ UnequipItemResult GameWorld::unequip_item(const std::string& player_name, const 
     }
 }
 
+DropItemResult GameWorld::drop_item(const std::string& player_name, const uint8_t item_id) {
+    if (not players.contains(player_name))
+        return DropItemResult();
+
+    Player& player = players.at(player_name);
+    const Position& position = player.get_position();
+    try {
+        player.drop_item(item_id);
+        Tile& tile = grid.get_tile(position);
+        tile.add_loot(Loot(item_id));
+        add_tile_if_lootable(tile, position);
+        return DropItemResult(DropItemStatus::SUCCESS);
+
+    } catch (const ItemNotOwned&) {
+        return DropItemResult(DropItemStatus::ITEM_NOT_OWNED);
+
+    } catch (const ItemEquipped&) {
+        return DropItemResult(DropItemStatus::ITEM_EQUIPPED);
+    }
+}
+
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {
     if (not players.contains(player_name)) {

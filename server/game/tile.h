@@ -25,6 +25,8 @@ public:
 
     std::stack<Loot>& get_loot();
 
+    void add_loot(const Loot& drop);
+
     void add_loot(const std::vector<Loot>& drops);
 
     void occupy(Interactive* occupant);

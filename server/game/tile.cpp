@@ -14,6 +14,8 @@ Interactive* Tile::occupant() const { return occupant_; }
 
 std::stack<Loot>& Tile::get_loot() { return loot_; }
 
+void Tile::add_loot(const Loot& drop) { loot_.push(drop); }
+
 void Tile::add_loot(const std::vector<Loot>& drops) {
     for (const auto& drop: drops) loot_.push(drop);
 }
