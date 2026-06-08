@@ -21,6 +21,7 @@ target_sources(taller_server
 
         command/cmd_results/ally_execute/ally_execute_result.cpp
         command/cmd_results/interact/interact_result.cpp
+        command/cmd_results/clan/clan_action_result.cpp
 
         command/command_factory.cpp
 
@@ -43,6 +44,9 @@ target_sources(taller_server
         game/creatures/state/idlestate.cpp
         game/creatures/state/followingstate.cpp
         game/creatures/state/attackingstate.cpp
+
+        game/clan/clan.cpp
+        game/clan/clan_action_payload.cpp
 
         connection/acceptor.cpp
         connection/lobbyhandler.cpp
@@ -112,6 +116,7 @@ target_sources(taller_server
         command/cmd_results/interact/attack_result.h
         command/cmd_results/interact/bind_result.h
         command/cmd_results/interact/interact_result.h
+        command/cmd_results/clan/clan_action_result.h
 
         command/command.h
         command/command_factory.h
@@ -137,6 +142,9 @@ target_sources(taller_server
         game/creatures/state/idlestate.h
         game/creatures/state/followingstate.h
         game/creatures/state/attackingstate.h
+
+        game/clan/clan.h
+        game/clan/clan_action_payload.h
 
         connection/acceptor.h
         connection/lobbyhandler.h

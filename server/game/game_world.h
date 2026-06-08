@@ -14,6 +14,8 @@
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/command/cmd_results/clan/clan_action_result.h"
+#include "server/game/clan/clan_action_payload.h"
 #include "server/persistance/playerrepository.h"
 
 #include "grid.h"
@@ -74,6 +76,10 @@ public:
     DepositGoldResult deposit_gold(const std::string& player_name, uint16_t gold_amount);
 
     WithdrawGoldResult withdraw_gold(const std::string& player_name, uint16_t gold_amount);
+
+    CreateClanResult create_clan(const std::string& player_name, const std::string& clan_name);
+
+    ClanActionResult execute_clan_action(const ClanActionPayload& payload);
 
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
