@@ -2,23 +2,34 @@
 
 #include <string>
 
-PickUpCommand::PickUpCommand(const std::string& player_name, uint16_t x, uint16_t y):
-        player_name(player_name), position(x, y) {}
+PickUpCommand::PickUpCommand(const std::string& player_name): player_name(player_name) {}
 
-void PickUpCommand::execute(GameWorld& world) { result = world.pick_up(player_name, position); }
+void PickUpCommand::execute(GameWorld& world) { result = world.pick_up(player_name); }
 
 void PickUpCommand::build_snapshot(SnapshotBuilder& builder) {
+    if (result.status == PickUpStatus::MUST_NOT_NOTIFY)
+        return;
+
+    builder.add_action(ActionDTO(create_message()));
+}
+
+ChatMessageDTO PickUpCommand::create_message() {
     switch (result.status) {
         case PickUpStatus::SUCCESS:
-            builder.add_action(ActionDTO(
-                    ChatMessageDTO(MessageType::SYSTEM, player_name, "El botín se agrego a tu inventario")));
-            break;
-        case PickUpStatus::FAILED:
-            builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name,
-                                                        "No tienes espacio para llevarte el botin")));
-            break;
+            return ChatMessageDTO(MessageType::SYSTEM, player_name, "El botin se agrego a tu inventario");
+        case PickUpStatus::NOT_ENOUGH_SPACE:
+            return ChatMessageDTO(MessageType::ERROR, player_name,
+                                  "No tienes espacio para llevarte el botin");
+        case PickUpStatus::GHOST_FAIL:
+            return ChatMessageDTO(MessageType::ERROR, player_name,
+                                  "No puedes levantar cosas del piso como fantasma");
+        case PickUpStatus::GOLD_OVERFLOW:
+            return ChatMessageDTO(MessageType::SYSTEM, player_name,
+                                  "Llenaste tus bolsillos con oro, se perdio parte del botin");
+        case PickUpStatus::NO_LOOT:
+            return ChatMessageDTO(MessageType::ERROR, player_name, "No hay nada en el piso para levantar");
+
         case PickUpStatus::MUST_NOT_NOTIFY:
-            break;
         default:
             throw std::invalid_argument("There is no defined way to add this pick up result to the snapshot");
     }

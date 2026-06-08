@@ -188,6 +188,8 @@ void ClientGame::handle_text_command(const std::string& text) {
         connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
     if (text == "/listar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::LIST_ITEMS));
+    if (text == "/tomar")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::PICKUP));
     if (text.starts_with("/comprar "))
         handle_buy_item_command(text);
     if (text.starts_with("/vender "))
@@ -338,6 +340,7 @@ void ClientGame::update_state_from_server() {
         return;
     world.update_players(snapshot.players_information);
     world.update_creatures(snapshot.creatures_information);
+    world.update_loot(snapshot.loot_information);
     ui.update_player_state(snapshot.players_information);
     // TODO añadir el resto del manejo de sprites
 }

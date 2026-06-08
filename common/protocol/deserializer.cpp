@@ -58,6 +58,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::WITHDRAW_ITEM:
         case CommandType::DEPOSIT_GOLD:
         case CommandType::WITHDRAW_GOLD:
+        case CommandType::PICKUP:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");

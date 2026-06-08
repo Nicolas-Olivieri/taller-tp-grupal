@@ -57,6 +57,16 @@ Sprite SpriteCreator::create_sprite(const SpriteCategory category, const AssetIn
     return asset;
 }
 
+Sprite SpriteCreator::create_sprite(const LootInfoDTO& loot_info) {
+    const SDL2pp::Point position(loot_info.x, loot_info.y);
+    SpriteLayer base = create_sprite_layer(SpriteCategory::LOOT,
+                                           static_cast<uint8_t>(loot_info.is_item));  // false: 0, true: 1
+    const SDL2pp::Point size = base.frame.GetSize();
+
+    Sprite loot(std::move(base), position, size);
+    return loot;
+}
+
 SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, const uint8_t id,
                                                const SDL2pp::Point& offset) {
     SDL2pp::Texture& texture = texture_pool.get_sprite_texture(category, id);
@@ -64,7 +74,8 @@ SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, co
     switch (category) {
         case SpriteCategory::NPC:
         case SpriteCategory::TILE:
-        case SpriteCategory::COLLIDER: {
+        case SpriteCategory::COLLIDER:
+        case SpriteCategory::LOOT: {
             const Animation action = animation_pool.get_item_animation(category, id);
             return SpriteLayer(renderer, texture, offset, action);
         }
