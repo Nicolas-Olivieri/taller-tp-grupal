@@ -32,9 +32,15 @@ const std::map<std::pair<uint16_t, uint16_t>, Tile*>& GameWorld::get_lootable_ti
 WorldUpdateStatus GameWorld::update() {
     std::vector<std::string> resurrected_players;
     for (auto& [name, player]: players) {
+        const Position previous_position = player.get_position();
         player.update();
+
         if (player.did_just_resurrect()) {
             resurrected_players.push_back(name);
+            const Position& resurrect_position = player.get_position();
+
+            grid.get_tile(previous_position).occupy(nullptr);
+            grid.get_tile(resurrect_position).occupy(&player);
         }
     }
 
