@@ -16,6 +16,7 @@
 #include "common/dto/events/interact_event.h"
 #include "common/dto/events/moveevent.h"
 #include "common/dto/events/sell_event.h"
+#include "common/dto/events/unequip_item_event.h"
 #include "common/dto/events/use_item_event.h"
 #include "common/dto/events/withdraw_gold_event.h"
 #include "common/dto/events/withdraw_item_event.h"
@@ -148,6 +149,8 @@ public:
     void serialize(const UseItemEventDTO& event);
 
     void serialize(const DropItemEventDTO& event);
+
+    void serialize(const UnequipItemEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

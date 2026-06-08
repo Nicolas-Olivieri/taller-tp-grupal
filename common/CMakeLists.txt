@@ -21,6 +21,7 @@ target_sources(taller_common
         dto/events/deposit_item_event.cpp
         dto/events/drop_item_event.cpp
         dto/events/sell_event.cpp
+        dto/events/unequip_item_event.cpp
         dto/events/use_item_event.cpp
         dto/events/withdraw_gold_event.cpp
         dto/events/withdraw_item_event.cpp
@@ -90,6 +91,7 @@ target_sources(taller_common
         dto/events/deposit_item_event.h
         dto/events/drop_item_event.h
         dto/events/sell_event.h
+        dto/events/unequip_item_event.h
         dto/events/use_item_event.h
         dto/events/withdraw_gold_event.h
         dto/events/withdraw_item_event.h

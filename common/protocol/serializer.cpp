@@ -267,3 +267,8 @@ void Serializer::serialize(const DropItemEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.item_id);
 }
+
+void Serializer::serialize(const UnequipItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}

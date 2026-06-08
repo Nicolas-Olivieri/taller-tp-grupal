@@ -96,7 +96,8 @@ RequestedCommandDTO Protocol::recv_command() {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
                command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or
-               command == CommandType::USE_ITEM or command == CommandType::DROP_ITEM) {
+               command == CommandType::USE_ITEM or command == CommandType::DROP_ITEM or
+               command == CommandType::UNEQUIP_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
     } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD) {
