@@ -1,6 +1,9 @@
 #ifndef GAME_CONFIG_H
 #define GAME_CONFIG_H
 
+#include <string>
+#include <vector>
+
 #include "game_data.h"
 
 class GameConfig {
@@ -20,17 +23,18 @@ private:
             throw std::runtime_error("No se encontró el path al archivo TOML: " + path_id);
 
         const auto root = toml::parse(CONFIG_PATH + data.paths.at(path_id));
-        
+
         return toml::get<T>(root);
     }
 
     template <typename T>
-    T retrieve_config_data(const PathsData& data, const std::string& path_id, const std::string& sub_category) {
+    T retrieve_config_data(const PathsData& data, const std::string& path_id,
+                           const std::string& sub_category) {
         if (!data.paths.contains(path_id))
             throw std::runtime_error("No se encontró el path al archivo TOML: " + path_id);
 
         const auto root = toml::parse(CONFIG_PATH + data.paths.at(path_id));
-        
+
         return toml::find<T>(root, sub_category);
     }
 

@@ -1,11 +1,14 @@
 #ifndef GAME_DATA_H
 #define GAME_DATA_H
 
-#include <toml.hpp>
-#include <unordered_map>
-#include <unordered_set>
 #include <cstdint>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+
+#include <toml.hpp>
 
 /* Paths hacia el resto de tomls con datos del juego */
 
@@ -13,7 +16,7 @@ struct PathsData {
     std::unordered_map<std::string, std::string> paths;
 };
 
-template<>
+template <>
 struct toml::from<PathsData> {
     static PathsData from_toml(const toml::value& raw) {
         PathsData data;
@@ -22,7 +25,7 @@ struct toml::from<PathsData> {
             throw std::runtime_error("No se encontró el archivo TOML con los paths hacia el resto de TOMLS");
 
         const auto server_table = toml::find(raw, "server").as_table();
-        for (const auto& [category, content] : server_table)
+        for (const auto& [category, content]: server_table)
             data.paths[category] = toml::find<std::string>(content, "path");
 
         return data;
@@ -41,17 +44,17 @@ struct ArchetypeData {
     float strength_multiplier;
 };
 
-template<>
+template <>
 struct toml::from<ArchetypeData> {
     static ArchetypeData from_toml(const toml::value& raw) {
         return ArchetypeData{
-            toml::find<float>(raw, "health_factor"),
-            toml::find<float>(raw, "mana_factor"),
-            toml::find<float>(raw, "meditation_factor"),
-            toml::find<uint8_t>(raw, "agility"),
-            toml::find<float>(raw, "constitution_multiplier"),
-            toml::find<float>(raw, "intelligence_multiplier"),
-            toml::find<float>(raw, "strength_multiplier"),
+                toml::find<float>(raw, "health_factor"),
+                toml::find<float>(raw, "mana_factor"),
+                toml::find<float>(raw, "meditation_factor"),
+                toml::find<uint8_t>(raw, "agility"),
+                toml::find<float>(raw, "constitution_multiplier"),
+                toml::find<float>(raw, "intelligence_multiplier"),
+                toml::find<float>(raw, "strength_multiplier"),
         };
     }
 };
@@ -66,17 +69,14 @@ struct RaceData {
     uint8_t strength;
 };
 
-template<>
+template <>
 struct toml::from<RaceData> {
     static RaceData from_toml(const toml::value& raw) {
         return RaceData{
-            toml::find<float>(raw, "health_factor"),
-            toml::find<float>(raw, "mana_factor"),
-            toml::find<uint8_t>(raw, "recovery_factor"),
-            toml::find<uint8_t>(raw, "agility"),
-            toml::find<uint8_t>(raw, "constitution"),
-            toml::find<uint8_t>(raw, "intelligence"),
-            toml::find<uint8_t>(raw, "strength"),
+                toml::find<float>(raw, "health_factor"),     toml::find<float>(raw, "mana_factor"),
+                toml::find<uint8_t>(raw, "recovery_factor"), toml::find<uint8_t>(raw, "agility"),
+                toml::find<uint8_t>(raw, "constitution"),    toml::find<uint8_t>(raw, "intelligence"),
+                toml::find<uint8_t>(raw, "strength"),
         };
     }
 };
@@ -90,17 +90,15 @@ struct VariationData {
     std::vector<uint8_t> equipment;
 };
 
-template<>
+template <>
 struct toml::from<VariationData> {
     static VariationData from_toml(const toml::value& raw) {
-        return VariationData{
-            toml::find<std::vector<uint8_t>>(raw, "compatible_races"),
-            toml::find<float>(raw, "factor"),
-            toml::find<uint8_t>(raw, "agility"),
-            toml::find<float>(raw, "multiplier"),
-            toml::find<float>(raw, "max_level_multiplier"),
-            toml::find<std::vector<uint8_t>>(raw, "equipment")
-        };
+        return VariationData{toml::find<std::vector<uint8_t>>(raw, "compatible_races"),
+                             toml::find<float>(raw, "factor"),
+                             toml::find<uint8_t>(raw, "agility"),
+                             toml::find<float>(raw, "multiplier"),
+                             toml::find<float>(raw, "max_level_multiplier"),
+                             toml::find<std::vector<uint8_t>>(raw, "equipment")};
     }
 };
 
@@ -109,12 +107,12 @@ struct EquipableItemData {
     uint8_t max;
 };
 
-template<>
+template <>
 struct toml::from<EquipableItemData> {
     static EquipableItemData from_toml(const toml::value& raw) {
         return EquipableItemData{
-            toml::find<uint8_t>(raw, "min_value"),
-            toml::find<uint8_t>(raw, "max_value"),
+                toml::find<uint8_t>(raw, "min_value"),
+                toml::find<uint8_t>(raw, "max_value"),
         };
     }
 };
@@ -124,12 +122,12 @@ struct UsableItemData {
     uint8_t effect_amount;
 };
 
-template<>
+template <>
 struct toml::from<UsableItemData> {
     static UsableItemData from_toml(const toml::value& raw) {
         return UsableItemData{
-            toml::find<uint8_t>(raw, "type"),
-            toml::find<uint8_t>(raw, "effect"),
+                toml::find<uint8_t>(raw, "type"),
+                toml::find<uint8_t>(raw, "effect"),
         };
     }
 };
@@ -139,12 +137,12 @@ struct WeaponData {
     uint8_t mana_cost;
 };
 
-template<>
+template <>
 struct toml::from<WeaponData> {
     static WeaponData from_toml(const toml::value& raw) {
         return WeaponData{
-            toml::find<uint8_t>(raw, "range"),
-            toml::find<uint8_t>(raw, "mana_cost"),
+                toml::find<uint8_t>(raw, "range"),
+                toml::find<uint8_t>(raw, "mana_cost"),
         };
     }
 };
@@ -156,15 +154,11 @@ struct DropProbabilitiesData {
     float equipable;
 };
 
-template<>
+template <>
 struct toml::from<DropProbabilitiesData> {
     static DropProbabilitiesData from_toml(const toml::value& raw) {
-        return DropProbabilitiesData{
-            toml::find<float>(raw, "nothing"),
-            toml::find<float>(raw, "gold"),
-            toml::find<float>(raw, "usable"),
-            toml::find<float>(raw, "equipable")
-        };
+        return DropProbabilitiesData{toml::find<float>(raw, "nothing"), toml::find<float>(raw, "gold"),
+                                     toml::find<float>(raw, "usable"), toml::find<float>(raw, "equipable")};
     }
 };
 
@@ -173,13 +167,10 @@ struct CooldownData {
     uint8_t move;
 };
 
-template<>
+template <>
 struct toml::from<CooldownData> {
     static CooldownData from_toml(const toml::value& raw) {
-        return CooldownData{
-            toml::find<uint8_t>(raw, "attack"),
-            toml::find<uint8_t>(raw, "move")
-        };
+        return CooldownData{toml::find<uint8_t>(raw, "attack"), toml::find<uint8_t>(raw, "move")};
     }
 };
 
@@ -187,14 +178,14 @@ struct TraderSetData {
     std::vector<std::vector<uint8_t>> items;
 };
 
-template<>
+template <>
 struct toml::from<TraderSetData> {
     static TraderSetData from_toml(const toml::value& raw) {
         TraderSetData data;
         const auto& table = raw.as_table();
 
         data.items.resize(table.size());
-        for (const auto& [key, value] : table) {
+        for (const auto& [key, value]: table) {
             data.items[std::stoi(key)] = toml::get<std::vector<uint8_t>>(value);
         }
 
@@ -218,7 +209,7 @@ struct toml::from<PlayerStatsData> {
         if (!players_stats_table.contains("archetypes"))
             throw std::runtime_error("No se encontró un TOML con la información arquetipos de jugador");
 
-        for (const auto& [category, value] : players_stats_table.at("archetypes").as_table() ) {
+        for (const auto& [category, value]: players_stats_table.at("archetypes").as_table()) {
             auto archetype = toml::get<ArchetypeData>(value);
             data.archetypes[toml::find<uint8_t>(value, "id")] = std::move(archetype);
         }
@@ -226,7 +217,7 @@ struct toml::from<PlayerStatsData> {
         if (!players_stats_table.contains("races"))
             throw std::runtime_error("No se encontró un TOML con la información razas de jugador");
 
-        for (const auto& [category, value] : players_stats_table.at("races").as_table() ) {
+        for (const auto& [category, value]: players_stats_table.at("races").as_table()) {
             auto race = toml::get<RaceData>(value);
             data.races[toml::find<uint8_t>(value, "id")] = std::move(race);
         }
@@ -241,7 +232,7 @@ struct CreatureStatsData {
     std::unordered_map<uint8_t, VariationData> variations;
 };
 
-template<>
+template <>
 struct toml::from<CreatureStatsData> {
     static CreatureStatsData from_toml(const toml::value& raw) {
         CreatureStatsData data;
@@ -250,7 +241,7 @@ struct toml::from<CreatureStatsData> {
         if (!creature_stats_table.contains("races"))
             throw std::runtime_error("No se encontró un TOML con la información razas de criaturas");
 
-        for (const auto& [name, value] : creature_stats_table.at("races").as_table()) {
+        for (const auto& [name, value]: creature_stats_table.at("races").as_table()) {
             uint8_t id = toml::find<uint8_t>(value, "id");
             auto race = toml::get<RaceData>(value);
             data.creatures[id] = std::move(race);
@@ -260,7 +251,7 @@ struct toml::from<CreatureStatsData> {
         if (!creature_stats_table.contains("variations"))
             throw std::runtime_error("No se encontró un TOML con la información variaciones de criaturas");
 
-        for (const auto& [name, value] : creature_stats_table.at("variations").as_table()) {
+        for (const auto& [name, value]: creature_stats_table.at("variations").as_table()) {
             auto variation = toml::get<VariationData>(value);
             data.variations[toml::find<uint8_t>(value, "id")] = std::move(variation);
         }
@@ -283,7 +274,7 @@ struct ItemsData {
     std::unordered_set<uint8_t> shields;
 };
 
-template<>
+template <>
 struct toml::from<ItemsData> {
     static ItemsData from_toml(const toml::value& raw) {
         ItemsData data;
@@ -295,10 +286,10 @@ struct toml::from<ItemsData> {
         const auto& items_table = raw.as_table();
 
         if (items_table.contains("weapons")) {
-            for (const auto& [name, value] : items_table.at("weapons").as_table()) {
+            for (const auto& [name, value]: items_table.at("weapons").as_table()) {
                 uint8_t id = toml::find<uint8_t>(value, "id");
                 update_min_max_id(data.min_equipable_id, data.max_equipable_id, id);
-                
+
                 WeaponData weapon = toml::get<WeaponData>(value);
                 EquipableItemData equipable = toml::get<EquipableItemData>(value);
 
@@ -310,13 +301,13 @@ struct toml::from<ItemsData> {
 
         add_defensive_equipables(items_table, "armors", data.armors, data);
         add_defensive_equipables(items_table, "helmets", data.helmets, data);
-        add_defensive_equipables(items_table, "shields", data.shields, data); 
+        add_defensive_equipables(items_table, "shields", data.shields, data);
 
         if (items_table.contains("usables")) {
-            for (const auto& [name, value] : items_table.at("usables").as_table()) {
+            for (const auto& [name, value]: items_table.at("usables").as_table()) {
                 uint8_t id = toml::find<uint8_t>(value, "id");
                 update_min_max_id(data.min_usable_id, data.max_usable_id, id);
-                
+
                 UsableItemData usable = toml::get<UsableItemData>(value);
 
                 data.usables[id] = std::move(usable);
@@ -329,7 +320,9 @@ struct toml::from<ItemsData> {
 
     static void update_min_max_id(uint8_t& current_min, uint8_t& current_max, uint8_t id);
 
-    static void add_defensive_equipables(const toml::type_config::table_type<toml::type_config::string_type, toml::value> &table, const std::string& category, std::unordered_set<uint8_t>& category_set, ItemsData& data);
+    static void add_defensive_equipables(
+            const toml::type_config::table_type<toml::type_config::string_type, toml::value>& table,
+            const std::string& category, std::unordered_set<uint8_t>& category_set, ItemsData& data);
 };
 
 struct CooldownsData {
@@ -337,14 +330,15 @@ struct CooldownsData {
     CooldownData creatures;
 };
 
-template<>
+template <>
 struct toml::from<CooldownsData> {
     static CooldownsData from_toml(const toml::value& raw) {
         CooldownsData data;
         const auto& cooldowns_table = raw.as_table();
 
         if (!cooldowns_table.contains("cooldowns"))
-            throw std::runtime_error("No se encontró un TOML con la información de cooldowns para players y creatures");
+            throw std::runtime_error(
+                    "No se encontró un TOML con la información de cooldowns para players y creatures");
 
         const auto& cooldown_node = cooldowns_table.at("cooldowns");
 
@@ -360,7 +354,7 @@ struct TradersData {
     TraderSetData merchants;
 };
 
-template<>
+template <>
 struct toml::from<TradersData> {
     static TradersData from_toml(const toml::value& raw) {
         TradersData data;
@@ -378,4 +372,4 @@ struct toml::from<TradersData> {
     }
 };
 
-#endif // GAME_DATA_H
+#endif  // GAME_DATA_H
