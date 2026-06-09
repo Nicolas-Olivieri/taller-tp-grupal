@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "event.h"
+#include "common/dto/events/event.h"
 
 struct ClanFoundEventDTO: public EventDTO {
     std::string clan_name;
