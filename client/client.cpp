@@ -16,9 +16,12 @@ int Client::run() {
     lobby.show();
 
     int error = app.exec();
-
     if (error)
         return error;
+
+    if (lobby.was_forced_close()) {
+        return 0;
+    }
 
     Socket socket = lobby.get_socket();
     ConnectionHandler connection(std::move(socket));
@@ -26,7 +29,7 @@ int Client::run() {
     SDL2pp::SDLTTF ttf;
 
     std::string player_name = lobby.get_username();
-    ClientGame game(connection, player_name);
+    ClientGame game(connection, player_name, audio_manager);
     game.run();
 
     return 0;

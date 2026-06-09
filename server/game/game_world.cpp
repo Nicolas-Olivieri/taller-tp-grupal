@@ -1,5 +1,6 @@
 #include "game_world.h"
 
+#include <cassert>
 #include <limits>
 #include <utility>
 
@@ -9,6 +10,7 @@
 #include "allies/priest.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
+#include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
 
 #define MAX_CREATURE_AMOUNT 8
@@ -21,6 +23,7 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
+    load_clans();
 }
 
 const std::unordered_map<std::string, Player>& GameWorld::get_players() const { return players; }
@@ -555,4 +558,121 @@ void GameWorld::drop_and_add(Player& player, Tile& tile) {
     tile.add_loot(player.drop());
 
     add_tile_if_lootable(tile, player.get_position());
+}
+
+FoundClanResult GameWorld::found_clan(const std::string& player_name, const std::string& clan_name) {
+    if (not players.contains(player_name)) {
+        return FoundClanResult::NO_RESULT;
+    }
+
+    Player& player = players.at(player_name);
+
+    if (clans.contains(clan_name))
+        return FoundClanResult::CLAN_ALREADY_EXISTS;
+
+    const std::string current_clan = player.get_clan_name();
+
+    if (not current_clan.empty())
+        return FoundClanResult::ALREADY_IN_CLAN;
+
+    const uint8_t current_level = player.get_stats().experience.get_level();
+    if (current_level < Clan::MIN_LEVEL_REQUIRED_TO_FOUND_CLAN)
+        return FoundClanResult::NOT_ENOUGH_LEVEL;
+
+    if (clan_name.size() > CLAN_NAME)
+        return FoundClanResult::CLAN_NAME_LONG;
+
+    Clan new_clan(clan_name, player_name);
+
+    clans.insert({clan_name, std::move(new_clan)});
+    player.found_clan(clan_name);
+    return FoundClanResult::SUCCESS;
+}
+
+ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload) {
+    if (not players.contains(payload.player_name)) {
+        return ClanActionResult();
+    }
+
+    Player& player = players.at(payload.player_name);
+    const std::string clan_name = player.get_clan_name();
+
+    if (clan_name.empty())
+        return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
+
+    if ((not players.contains(payload.other_player)) and (not payload.other_player.empty()))
+        return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
+
+    assert(clans.contains(clan_name));
+
+    Clan& clan = clans.at(clan_name);
+
+    ClanActionResult result = clan.execute(payload);
+
+    if (result.status == ClanActionStatus::SUCCESS) {
+        switch (payload.type) {
+            case ClanActionType::ACCEPT: {
+                Player& player_accepted = players.at(payload.other_player);
+                if (not player_accepted.get_clan_name().empty()) {
+                    clan.remove(payload.other_player);
+                    return ClanActionResult(ClanActionStatus::PLAYER_HAS_CLAN);
+                }
+                player_accepted.join_clan(clan_name);
+                break;
+            }
+            case ClanActionType::LEAVE:
+                player.leave_clan();
+                break;
+            case ClanActionType::KICK: {
+                Player& player_kicked = players.at(payload.other_player);
+                player_kicked.leave_clan();
+                break;
+            }
+            case ClanActionType::BAN: {
+                Player& player_banned = players.at(payload.other_player);
+                if (player_banned.get_clan_name() == clan_name)
+                    player_banned.leave_clan();
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    return result;
+}
+
+JoinClanResult GameWorld::join_clan(const std::string& player_name, const std::string& clan_name) {
+    if (not players.contains(player_name)) {
+        return JoinClanResult::NO_RESULT;
+    }
+
+    const Player& player = players.at(player_name);
+
+    if (not player.get_clan_name().empty())
+        return JoinClanResult::ALREADY_IN_CLAN;
+
+    if (!clans.contains(clan_name))
+        return JoinClanResult::CLAN_NOT_FOUND;
+
+    clans.at(clan_name).recv_join_request(player_name);
+    return JoinClanResult::SUCCESS;
+}
+
+void GameWorld::load_clans() {
+    std::vector<ClanData> saved_clans = player_repository.get_saved_clans();
+
+    for (const auto& data: saved_clans) {
+        Clan clan(data);
+        clans.insert({data.clan_name, clan});
+    }
+}
+
+void GameWorld::cheat_player_xp(const std::string& player_name, const uint8_t level) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+    player.set_xp_level(level);
 }

@@ -44,6 +44,8 @@ private:
 
     DespawnDTO recv_despawn();
 
+    HealDTO recv_heal();
+
     ChatMessageDTO recv_chat_message();
 
     PlayerStatsDTO recv_player_stats();
@@ -51,6 +53,8 @@ private:
     InventoryInfoDTO recv_inventory_info();
 
     EquipmentInfoDTO recv_equipment_info();
+
+    AttackDTO recv_attack();
 
     ResurrectionDTO recv_resurrection();
 

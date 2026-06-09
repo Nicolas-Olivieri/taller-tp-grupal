@@ -24,7 +24,6 @@ private:
 
     void shutdown_if_blocked();
 
-    // TOOD: de momento es solo para crear jugadores con skins random, después se borra o cambia cómo funciona
     void create_player(const std::string& username, const CreatePlayerDTO& player_data);
 
 public:

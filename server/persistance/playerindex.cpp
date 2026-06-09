@@ -92,3 +92,8 @@ bool PlayerIndex::exists(const std::string& username) {
 }
 
 PlayerIndex::~PlayerIndex() { file.close(); }
+
+std::vector<std::pair<std::string, uint32_t>> PlayerIndex::get_all_entries() {
+    std::lock_guard<std::mutex> lock(mutex);
+    return std::vector<std::pair<std::string, uint32_t>>(index.begin(), index.end());
+}

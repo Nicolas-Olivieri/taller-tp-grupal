@@ -35,6 +35,9 @@ private:
     int resurrection_timer;
     Position target_resurrection_position;
 
+    bool _is_founder;
+    std::string clan_name;
+
     void drop_excess_gold(std::vector<Loot>& drops);
 
     void drop_inventory(std::vector<Loot>& drops);
@@ -126,6 +129,18 @@ public:
     void start_delayed_resurrection(int wait_time, const Position& position);
 
     bool did_just_resurrect();
+
+    std::string get_clan_name() const;
+
+    void join_clan(const std::string& _clan_name);
+
+    void found_clan(const std::string& _clan_name);
+
+    void leave_clan();
+
+    bool is_clan_founder() const;
+
+    void set_xp_level(const uint8_t new_level);
 
 private:
     void complete_delayed_resurrection();

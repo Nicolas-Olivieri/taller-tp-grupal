@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "event.h"
+#include "common/dto/events/event.h"
 
 struct ChatEventDTO: public EventDTO {
     std::string receiver;

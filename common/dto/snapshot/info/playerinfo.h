@@ -13,6 +13,7 @@
 
 struct PlayerInfoDTO: public ProtocolMessageDTO {
     std::string name;
+    std::string clan_name;
     Direction direction;
     uint16_t x;
     uint16_t y;
@@ -25,10 +26,10 @@ struct PlayerInfoDTO: public ProtocolMessageDTO {
     // PlayersStatsDTO stats; TODO: agregar esto Y NO OLVIDAR MODIFICAR LOS
     // MÉTODOS PARA TENERLO EN CUENTA
 
-    PlayerInfoDTO(const std::string& name, const Direction& direction, uint16_t x, uint16_t y,
-                  uint16_t safe_gold, uint16_t excess_gold, const AppearanceDTO& appearance,
-                  const PlayerStatsDTO& stats, const InventoryInfoDTO& inventory,
-                  const EquipmentInfoDTO& equipment);
+    PlayerInfoDTO(const std::string& name, const std::string& clan_name, const Direction& direction,
+                  uint16_t x, uint16_t y, uint16_t safe_gold, uint16_t excess_gold,
+                  const AppearanceDTO& appearance, const PlayerStatsDTO& stats,
+                  const InventoryInfoDTO& inventory, const EquipmentInfoDTO& equipment);
 
     size_t message_size() const override;
 

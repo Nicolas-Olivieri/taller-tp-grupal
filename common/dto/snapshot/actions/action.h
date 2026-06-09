@@ -2,8 +2,10 @@
 #define ACTIONDTO_H
 
 #include "common/dto/message.h"
+#include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
 #include "common/dto/snapshot/actions/action_types/act_death/death.h"
 #include "common/dto/snapshot/actions/action_types/act_despawn/despawn.h"
+#include "common/dto/snapshot/actions/action_types/act_heal/heal.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_bank/list_bank.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
@@ -11,7 +13,9 @@
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 
 enum class ActionType : uint8_t {
+    ATTACK,
     DESPAWN,
+    HEAL,
     MESSAGE,
     RESURRECTION,
     DEATH,
@@ -23,7 +27,9 @@ enum class ActionType : uint8_t {
 struct ActionDTO: public ProtocolMessageDTO {
     ActionType action;
 
+    AttackDTO attack;
     DespawnDTO despawn;
+    HealDTO heal;
     ChatMessageDTO chat_message;
     ResurrectionDTO resurrection;
     DeathDTO death;
@@ -35,7 +41,11 @@ struct ActionDTO: public ProtocolMessageDTO {
     // pueden llegar a no necesitar el ActionType dependiendo del contenido.
     //    explicit ActionDTO(ActionType action);
 
+    explicit ActionDTO(const AttackDTO& attack);
+
     explicit ActionDTO(const DespawnDTO& despawn);
+
+    explicit ActionDTO(const HealDTO& heal);
 
     explicit ActionDTO(const ChatMessageDTO& message);
 

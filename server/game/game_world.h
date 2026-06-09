@@ -16,10 +16,13 @@
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/command/cmd_results/clan/clan_action_result.h"
 #include "server/command/cmd_results/drop_item/drop_item_result.h"
 #include "server/command/cmd_results/pickup/pickup_result.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
+#include "server/game/clan/clan.h"
+#include "server/game/clan/clan_action_payload.h"
 #include "server/persistance/playerrepository.h"
 
 #include "grid.h"
@@ -40,6 +43,8 @@ private:
     std::vector<std::unique_ptr<Ally>> allies;
 
     PlayerRepository& player_repository;
+
+    std::unordered_map<std::string, Clan> clans;
 
 public:
     explicit GameWorld(PlayerRepository& pLayer_repository);
@@ -93,6 +98,14 @@ public:
 
     DropItemResult drop_item(const std::string& player_name, uint8_t item_id);
 
+    FoundClanResult found_clan(const std::string& player_name, const std::string& clan_name);
+
+    JoinClanResult join_clan(const std::string& player_name, const std::string& clan_name);
+
+    ClanActionResult execute_clan_action(const ClanActionPayload& payload);
+
+    void cheat_player_xp(const std::string& player_name, const uint8_t level);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 
@@ -122,6 +135,8 @@ private:
     void drop_player_items(Player& player);
 
     void drop_and_add(Player& player, Tile& tile);
+
+    void load_clans();
 };
 
 

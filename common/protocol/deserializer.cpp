@@ -63,6 +63,13 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::USE_ITEM:
         case CommandType::DROP_ITEM:
         case CommandType::UNEQUIP_ITEM:
+        case CommandType::CLAN_FOUND:
+        case CommandType::CLAN_JOIN:
+        case CommandType::CLAN_REQUEST_RESPONSE:
+        case CommandType::CLAN_REMOVE_PLAYER:
+        case CommandType::CLAN_LEAVE:
+        case CommandType::CLAN_REVIEW:
+        case CommandType::CHEAT_XP:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -129,6 +136,7 @@ std::vector<LootInfoDTO> Deserializer::recv_loot_information() {
 
 PlayerInfoDTO Deserializer::recv_player_info() {
     std::string name = recv_string();
+    std::string clan_name = recv_string();
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
@@ -139,8 +147,8 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     InventoryInfoDTO inventory = recv_inventory_info();
     EquipmentInfoDTO equipment = recv_equipment_info();
 
-    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats, inventory,
-                         equipment);
+    return PlayerInfoDTO(name, clan_name, direction, x, y, safe_gold, excess_gold, appearance, stats,
+                         inventory, equipment);
 }
 
 CreatureInfoDTO Deserializer::recv_creature_info() {
@@ -180,8 +188,12 @@ ActionDTO Deserializer::recv_action() {
     // TODO: recordar modificar esto para recibir la información según el
     // ActionType
     switch (type) {
+        case ActionType::ATTACK:
+            return ActionDTO(recv_attack());
         case ActionType::DESPAWN:
             return ActionDTO(recv_despawn());
+        case ActionType::HEAL:
+            return ActionDTO(recv_heal());
         case ActionType::MESSAGE:
             return ActionDTO(recv_chat_message());
         case ActionType::RESURRECTION:
@@ -205,7 +217,9 @@ ActionType Deserializer::recv_action_type() {
     switch (static_cast<ActionType>(byte)) {
         // TODO: agregar un case para todos los tipos de comandos existentes,
         // luego borrar este comentario
+        case ActionType::ATTACK:
         case ActionType::DESPAWN:
+        case ActionType::HEAL:
         case ActionType::MESSAGE:
         case ActionType::RESURRECTION:
         case ActionType::DEATH:
@@ -232,6 +246,12 @@ DespawnDTO Deserializer::recv_despawn() {
     std::string player_despawned = recv_string();
 
     return DespawnDTO(player_despawned);
+}
+
+HealDTO Deserializer::recv_heal() {
+    const std::string player_healed = recv_string();
+
+    return HealDTO(player_healed);
 }
 
 std::vector<AllyInfoDTO> Deserializer::recv_allies_information() {
@@ -329,6 +349,13 @@ EquipmentInfoDTO Deserializer::recv_equipment_info() {
     const uint8_t armor = recv_uint8();
 
     return EquipmentInfoDTO(weapon, shield, helmet, armor);
+}
+
+AttackDTO Deserializer::recv_attack() {
+    const std::string attacker = recv_string();
+    const uint8_t weapon = recv_uint8();
+
+    return AttackDTO(attacker, weapon);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {

@@ -8,6 +8,7 @@
 #include <SDL2pp/Renderer.hh>
 #include <SDL2pp/SDL2pp.hh>
 
+#include "audio/audio_manager.h"
 #include "client/connection/connection_handler.h"
 
 #include "camera.h"
@@ -80,13 +81,35 @@ private:
 
     void handle_drop_item_command();
 
+    void handle_clan_foundation(const std::string& text);
+
+    void handle_clan_join(const std::string& text);
+
+    std::string extract_prefix(const std::string& prefix, const std::string& text) const;
+
+    void trim_text(std::string& text);
+
+    void handle_clan_operation(const std::string& text);
+
+    void handle_clan_accept(const std::string& text);
+
+    void handle_clan_reject(const std::string& text);
+
+    void handle_clan_kick(const std::string& text);
+
+    void handle_clan_ban(const std::string& text);
+
     void send_private_message();
 
     // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes
     static SDL_HitTestResult hit_test_callback(SDL_Window*, const SDL_Point* area, void* data);
 
+    void handle_cheat(const std::string& text);
+
+    void handle_xp_cheat(const std::string& text);
+
 public:
-    ClientGame(ConnectionHandler& connection, std::string& player_name);
+    ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager);
 
     void run();
 

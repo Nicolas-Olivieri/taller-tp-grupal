@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "event.h"
+#include "common/dto/events/event.h"
 
 
 struct InteractEventDTO: public EventDTO {

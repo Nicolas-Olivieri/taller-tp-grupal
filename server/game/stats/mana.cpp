@@ -24,6 +24,9 @@ void Mana::update_max(uint8_t level, uint8_t intelligence) {
     }
 
     this->intelligence = intelligence;
+
+    if (current_amount > max_amount)
+        current_amount = max_amount;
 }
 
 

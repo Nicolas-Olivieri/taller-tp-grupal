@@ -7,24 +7,30 @@
 #include <unordered_map>
 #include <vector>
 
-#include "common/dto/events/buy_event.h"
-#include "common/dto/events/chatevent.h"
-#include "common/dto/events/deposit_gold_event.h"
-#include "common/dto/events/deposit_item_event.h"
+#include "common/dto/events/ally_related/deposit/deposit_gold_event.h"
+#include "common/dto/events/ally_related/deposit/deposit_item_event.h"
+#include "common/dto/events/ally_related/interact_event.h"
+#include "common/dto/events/ally_related/shop/buy_event.h"
+#include "common/dto/events/ally_related/shop/sell_event.h"
+#include "common/dto/events/ally_related/withdraw/withdraw_gold_event.h"
+#include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
+#include "common/dto/events/chat/chatevent.h"
+#include "common/dto/events/cheat/cheat_experience_set_event.h"
+#include "common/dto/events/clan/clan_found_event.h"
+#include "common/dto/events/clan/clan_join_event.h"
+#include "common/dto/events/clan/clan_remove_player_event.h"
+#include "common/dto/events/clan/clan_request_response_event.h"
 #include "common/dto/events/drop_item_event.h"
 #include "common/dto/events/event.h"
-#include "common/dto/events/interact_event.h"
-#include "common/dto/events/moveevent.h"
-#include "common/dto/events/sell_event.h"
+#include "common/dto/events/movement/moveevent.h"
 #include "common/dto/events/unequip_item_event.h"
 #include "common/dto/events/use_item_event.h"
-#include "common/dto/events/withdraw_gold_event.h"
-#include "common/dto/events/withdraw_item_event.h"
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/create_player.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/lobby/existence.h"
 #include "common/dto/message.h"
+#include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
@@ -110,6 +116,8 @@ public:
 
     void serialize(const DespawnDTO& despawn);
 
+    void serialize(const HealDTO& heal);
+
     void serialize(const InteractEventDTO& event);
 
     void serialize(const ChatMessageDTO& message);
@@ -123,6 +131,8 @@ public:
     void serialize(const InventoryInfoDTO& inventory);
 
     void serialize(const EquipmentInfoDTO& equipment);
+
+    void serialize(const AttackDTO& attack);
 
     void serialize(const ResurrectionDTO& resurrection);
 
@@ -151,6 +161,16 @@ public:
     void serialize(const DropItemEventDTO& event);
 
     void serialize(const UnequipItemEventDTO& event);
+
+    void serialize(const ClanFoundEventDTO& event);
+
+    void serialize(const ClanJoinEventDTO& event);
+
+    void serialize(const RequestResponseEventDTO& event);
+
+    void serialize(const ClanRemovePlayerEventDTO& event);
+
+    void serialize(const CheatExperienceSetEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

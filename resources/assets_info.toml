@@ -956,7 +956,7 @@ id = 34
 name = "Casa desierto 2"
 width = 11
 height = 13
-unwalkable = [1, 9, 7, 4]
+unwalkable = [1, 9, 6, 3]
 
 [[colliders]]
 id = 35
@@ -1152,7 +1152,7 @@ id = 62
 name = "Tiburon colgante"
 width = 5
 height = 7
-unwalkable = [0, 4, 3, 3]
+unwalkable = [0, 4, 3, 2]
 
 [[colliders]]
 id = 63
