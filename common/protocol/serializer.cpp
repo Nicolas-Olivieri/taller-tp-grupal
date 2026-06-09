@@ -98,8 +98,14 @@ void Serializer::serialize(const ActionDTO& action) {
     serialize(static_cast<uint8_t>(action.action));
 
     switch (action.action) {
+        case ActionType::ATTACK:
+            serialize(action.attack);
+            break;
         case ActionType::DESPAWN:
             serialize(action.despawn);
+            break;
+        case ActionType::HEAL:
+            serialize(action.heal);
             break;
         case ActionType::MESSAGE:
             serialize(action.chat_message);
@@ -163,6 +169,8 @@ void Serializer::serialize(const InteractEventDTO& event) {
 
 void Serializer::serialize(const DespawnDTO& despawn) { serialize(despawn.player_despawned); }
 
+void Serializer::serialize(const HealDTO& heal) { serialize(heal.player_healed); }
+
 void Serializer::serialize(const AllyInfoDTO& info) {
     serialize(static_cast<uint8_t>(info.type));
     serialize(info.x);
@@ -199,6 +207,11 @@ void Serializer::serialize(const EquipmentInfoDTO& equipment) {
     serialize(equipment.shield);
     serialize(equipment.helmet);
     serialize(equipment.armor);
+}
+
+void Serializer::serialize(const AttackDTO& attack) {
+    serialize(attack.attacker);
+    serialize(attack.weapon);
 }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {

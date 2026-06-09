@@ -38,4 +38,7 @@ void HealCommand::build_snapshot(SnapshotBuilder& builder) {
     const std::string& sender = ally_type_to_string.at(result.ally);
     const std::string& content = result_to_message.at(result.status);
     builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ALLY, sender, player_name, content)));
+
+    if (result.status == HealStatus::PLAYER_HEALED)
+        builder.add_action(ActionDTO(HealDTO(player_name)));
 }

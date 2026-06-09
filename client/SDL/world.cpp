@@ -7,10 +7,12 @@
 
 #include "camera.h"
 
-World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name):
+World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
+             AudioManager& audio_manager):
         renderer(renderer),
         texture_pool(renderer),
         sprite_creator(renderer),
+        audio_manager(audio_manager),
         world_view(SDL2pp::Point(0, 0),
                    SDL2pp::Point(map_data.world_width * TILE_SIZE, map_data.world_height * TILE_SIZE)),
         player_name(player_name) {
@@ -90,10 +92,15 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
     for (const PlayerInfoDTO& player_info: players_information) {
         if (!players.contains(player_info.name)) {
             add_new_player(player_info);
+            audio_manager.play_event(SoundEvent::SPAWN);
         }
 
         SDL2pp::Point position(player_info.x, player_info.y);
-        players.at(player_info.name)->set_target_position(player_info.direction, position);
+        const auto& player_sprite = players.at(player_info.name);
+        if (position * TILE_SIZE != player_sprite->get_target_position())
+            audio_manager.play_event(SoundEvent::FOOTSTEP);
+
+        player_sprite->set_target_position(player_info.direction, position);
     }
 }
 
@@ -103,10 +110,15 @@ void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_infor
     for (const CreatureInfoDTO& creature_info: creatures_information) {
         if (!creatures.contains(creature_info.sub_id)) {
             add_new_creature(creature_info);
+            audio_manager.play_event(SoundEvent::SPAWN);
         }
 
         SDL2pp::Point position(creature_info.x, creature_info.y);
-        creatures.at(creature_info.sub_id)->set_target_position(creature_info.direction, position);
+        const auto& creature_sprite = creatures.at(creature_info.sub_id);
+        if (position * TILE_SIZE != creature_sprite->get_target_position())
+            audio_manager.play_event(SoundEvent::FOOTSTEP);
+
+        creature_sprite->set_target_position(creature_info.direction, position);
     }
 }
 
@@ -120,6 +132,7 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
         if (!sub_ids.contains(it->first)) {
             map_items.erase(it->second);
             it = creatures.erase(it);
+            audio_manager.play_event(SoundEvent::DEATH);
         } else {
             it++;
         }
@@ -165,20 +178,34 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 if (players.contains(action.despawn.player_despawned)) {
                     auto player = players.extract(action.despawn.player_despawned);
                     map_items.erase(player.mapped());
+                    audio_manager.play_event(SoundEvent::DESPAWN);
                 }
                 break;
+
+            case ActionType::HEAL:
+                audio_manager.play_event(SoundEvent::HEAL);
+                break;
+
             case ActionType::RESURRECTION:
                 if (players.contains(action.resurrection.player_resurrected)) {
                     Sprite* sprite = players.at(action.resurrection.player_resurrected).get();
                     sprite_creator.update_appearance(*sprite, action.resurrection.original_appearance);
+                    audio_manager.play_event(SoundEvent::RESURRECTION);
                 }
                 break;
             case ActionType::DEATH:
                 if (players.contains(action.death.player_dead)) {
                     Sprite* sprite = players.at(action.death.player_dead).get();
                     sprite_creator.convert_to_ghost(*sprite);
+                    audio_manager.play_event(SoundEvent::DEATH);
                 }
                 break;
+
+            case ActionType::ATTACK:
+                // TODO: Cambiar el SFX según el arma con la que se atacó
+                audio_manager.play_event(SoundEvent::SWORD_ATTACK);
+                break;
+
             default:
                 break;
         }

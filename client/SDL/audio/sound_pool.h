@@ -25,6 +25,10 @@ private:
 public:
     SoundPool();
 
+    void preload_sfx(const std::string& path);
+
+    void play_sfx(const std::string& path, int volume = 32);
+
     void play_music(const std::string& path, int volume = 64);
 
     void set_music_volume(int volume);

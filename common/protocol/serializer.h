@@ -29,6 +29,7 @@
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/lobby/existence.h"
 #include "common/dto/message.h"
+#include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
@@ -114,6 +115,8 @@ public:
 
     void serialize(const DespawnDTO& despawn);
 
+    void serialize(const HealDTO& heal);
+
     void serialize(const InteractEventDTO& event);
 
     void serialize(const ChatMessageDTO& message);
@@ -127,6 +130,8 @@ public:
     void serialize(const InventoryInfoDTO& inventory);
 
     void serialize(const EquipmentInfoDTO& equipment);
+
+    void serialize(const AttackDTO& attack);
 
     void serialize(const ResurrectionDTO& resurrection);
 

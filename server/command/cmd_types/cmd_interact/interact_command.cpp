@@ -55,6 +55,8 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
         return;
     }
 
+    builder.add_action(ActionDTO(AttackDTO(player_name, result.attack.weapon)));
+
     switch (status) {
         case AttackStatus::HIT:
             handle_hit(builder);

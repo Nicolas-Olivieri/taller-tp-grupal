@@ -32,6 +32,8 @@ target_sources(taller_common
 
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
+        dto/snapshot/actions/action_types/act_attack/attack.cpp
+        dto/snapshot/actions/action_types/act_heal/heal.cpp
         dto/snapshot/actions/action_types/act_message/chatmessage.cpp
         dto/snapshot/actions/action_types/act_resurrection/resurrection.cpp
         dto/snapshot/actions/action_types/act_death/death.cpp
@@ -106,6 +108,8 @@ target_sources(taller_common
 
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h
+        dto/snapshot/actions/action_types/act_attack/attack.h
+        dto/snapshot/actions/action_types/act_heal/heal.h
         dto/snapshot/actions/action_types/act_message/chatmessage.h
         dto/snapshot/actions/action_types/act_resurrection/resurrection.h
         dto/snapshot/actions/action_types/act_death/death.h

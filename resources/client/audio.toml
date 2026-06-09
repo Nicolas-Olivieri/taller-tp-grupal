@@ -2,3 +2,12 @@
 creator = { paths = ["/music/creator.mid"], volume = 64 }
 login = { paths = ["/music/login.mid"], volume = 32 }
 forest = { paths = ["/music/forest.mid"], volume = 64 }
+
+[sfx]
+death = { paths = ["/sfx/death.wav"], volume = 16 }
+despawn = { paths = ["/sfx/despawn.wav"], volume = 64 }
+footstep = { paths = ["/sfx/step1.wav", "/sfx/step2.wav"], volume = 8 }
+heal = { paths = ["/sfx/heal.wav"], volume = 128 }
+resurrection = { paths = ["/sfx/resurrection.wav"], volume = 16 }
+spawn = { paths = ["/sfx/spawn.wav"], volume = 16 }
+sword_attack = { paths = ["/sfx/sword_attack.wav"], volume = 16 }

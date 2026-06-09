@@ -29,7 +29,7 @@ int Client::run() {
     SDL2pp::SDLTTF ttf;
 
     std::string player_name = lobby.get_username();
-    ClientGame game(connection, player_name);
+    ClientGame game(connection, player_name, audio_manager);
     game.run();
 
     return 0;

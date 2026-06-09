@@ -25,6 +25,7 @@ void Sprite::add_layer(Layer layer_num, SpriteLayer&& layer) { layers.emplace(la
 
 void Sprite::remove_layer(const Layer layer_num) { layers.erase(layer_num); }
 
+const SDL2pp::Point& Sprite::get_target_position() const { return target_position; }
 
 void Sprite::set_target_position(const Direction new_direction, const SDL2pp::Point& new_target) {
     target_position = to_sprite_point(new_target);
