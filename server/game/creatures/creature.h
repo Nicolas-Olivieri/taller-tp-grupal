@@ -2,6 +2,7 @@
 #define CREATURE_H
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "server/command/cmd_results/interact/interact_result.h"
@@ -67,6 +68,8 @@ public:
     bool is_targeting(const Player& playter) const;
 
     const Stats& get_stats() const;
+
+    const std::string& get_target_name() const;
 };
 
 #endif  // CREATURE_H

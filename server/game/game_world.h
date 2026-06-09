@@ -108,13 +108,17 @@ private:
 
     PickUpResult pick_gold_up(Player& player, Tile& tile, uint16_t gold);
 
-    void init_creature();
+    void init_creature(uint16_t id);
 
     void remove_dead_creatures();
 
     void init_npc(const std::vector<AllyInfoDTO>& npcs);
 
     void add_tile_if_lootable(Tile& tile, const Position& position);
+
+    void drop_player_items(Player& player);
+
+    void drop_and_add(Player& player, Tile& tile);
 };
 
 

@@ -20,7 +20,7 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
-    init_creature();
+    init_creature(0);
 }
 
 const std::unordered_map<std::string, Player>& GameWorld::get_players() const { return players; }
@@ -63,7 +63,14 @@ WorldUpdateStatus GameWorld::update() {
             }
         }
 
+        std::string target_name = creature.is_targeting_someone() ? creature.get_target_name() : "";
         creatures_status.push_back(move_creature(creature, direction));
+
+        if (!target_name.empty()) {
+            Player& target = players.at(target_name);
+            if (!target.is_alive())
+                drop_player_items(target);
+        }
     }
 
     return WorldUpdateStatus(creatures_status, resurrected_players);
@@ -180,7 +187,10 @@ void GameWorld::remove_dead_creatures() {
 
             add_tile_if_lootable(tile, position);
 
+            uint16_t new_id = it->first + 1;
             it = creatures.erase(it);
+
+            init_creature(new_id);
         } else {
             it++;
         }
@@ -220,9 +230,7 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
 
             if (result.attack.was_killed) {
                 Player& target = players.at(result.attack.player_attacked);
-                target_tile.add_loot(target.drop());
-
-                add_tile_if_lootable(target_tile, position);
+                drop_and_add(target, target_tile);
             }
 
             return result;
@@ -358,6 +366,11 @@ UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t 
         return UseItemResult();
 
     Player& player = players.at(player_name);
+
+    // No debería ocurrir porque los jugadores pierden todo al morir, pero igual
+    if (not player.is_alive())
+        return UseItemResult(UseItemStatus::GHOST_FAIL);
+
     try {
         player.use_item(item_id);
         return UseItemResult(UseItemStatus::SUCCESS);
@@ -494,8 +507,19 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
     }
 }
 
-void GameWorld::init_creature() {
+void GameWorld::init_creature(uint16_t id) {
     Position goblin_position(15, 15);
-    creatures.emplace(1, Creature(0, 0, 0, goblin_position));
-    grid.get_tile(goblin_position).occupy(&creatures.at(1));
+    creatures.emplace(id, Creature(id, 0, 0, goblin_position));
+    grid.get_tile(goblin_position).occupy(&creatures.at(id));
+}
+
+void GameWorld::drop_player_items(Player& player) {
+    Tile& target_tile = grid.get_tile(player.get_position());
+    drop_and_add(player, target_tile);
+}
+
+void GameWorld::drop_and_add(Player& player, Tile& tile) {
+    tile.add_loot(player.drop());
+
+    add_tile_if_lootable(tile, player.get_position());
 }

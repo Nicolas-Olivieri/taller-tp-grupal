@@ -49,6 +49,8 @@ public:
 
     const std::unordered_map<uint8_t, uint8_t>& get_items() const;
 
+    void clear();
+
 private:
     bool is_equipped(const Equipment& equipment, uint8_t item) const;
 

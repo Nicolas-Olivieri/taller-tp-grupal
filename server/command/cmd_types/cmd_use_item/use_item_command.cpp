@@ -19,6 +19,11 @@ void UseItemCommand::build_snapshot(SnapshotBuilder& builder) {
                     ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, "No tienes ese item")));
             break;
 
+        case UseItemStatus::GHOST_FAIL:
+            builder.add_action(ActionDTO(
+                    ChatMessageDTO(MessageType::ERROR, player_name, "No puedes usar objetos como fantasma")));
+            break;
+
         case UseItemStatus::MUST_NOT_NOTIFY:
             break;
 
