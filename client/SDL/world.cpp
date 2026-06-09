@@ -132,6 +132,7 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
         if (!sub_ids.contains(it->first)) {
             map_items.erase(it->second);
             it = creatures.erase(it);
+            audio_manager.play_event(SoundEvent::DEATH);
         } else {
             it++;
         }
@@ -190,6 +191,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 if (players.contains(action.death.player_dead)) {
                     Sprite* sprite = players.at(action.death.player_dead).get();
                     sprite_creator.convert_to_ghost(*sprite);
+                    audio_manager.play_event(SoundEvent::DEATH);
                 }
                 break;
             default:

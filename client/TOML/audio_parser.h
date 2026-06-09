@@ -23,7 +23,7 @@ struct MusicConfig {
 };
 
 
-enum class SoundEvent { FOOTSTEP, RESURRECTION, SPAWN };
+enum class SoundEvent { DEATH, FOOTSTEP, RESURRECTION, SPAWN };
 
 struct SFXConfig {
     std::map<SoundEvent, SoundConfig> configs;
@@ -65,6 +65,7 @@ struct toml::from<SFXConfig> {
     static SFXConfig from_toml(const toml::value& v) {
         // TODO: Considerar moverlo a TomlHelper
         static const std::unordered_map<std::string, SoundEvent> string_to_sound_event({
+                {"death", SoundEvent::DEATH},
                 {"footstep", SoundEvent::FOOTSTEP},
                 {"resurrection", SoundEvent::RESURRECTION},
                 {"spawn", SoundEvent::SPAWN},
