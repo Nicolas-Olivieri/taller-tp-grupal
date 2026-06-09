@@ -19,7 +19,6 @@ target_sources(taller_client
         qt/creator_window.cpp
         qt/widgets/selector_widget.cpp
         qt/widgets/preview_widget.cpp
-        qt/widgets/error_window.cpp
 
         connection/client_receiver.cpp
         connection/client_sender.cpp
@@ -56,8 +55,6 @@ target_sources(taller_client
         qt/ui/selector_widget.ui
         qt/widgets/preview_widget.h
         qt/ui/preview_widget.ui
-        qt/widgets/error_window.h
-        qt/ui/error_window.ui
 
         connection/client_receiver.h
         connection/client_sender.h
