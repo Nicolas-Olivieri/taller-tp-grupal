@@ -67,6 +67,7 @@ void Serializer::serialize(const SnapshotDTO& snapshot) {
 
 void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(info.name);
+    serialize(info.clan_name);
     serialize(static_cast<uint8_t>(info.direction));
     serialize(info.x);
     serialize(info.y);

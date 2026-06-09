@@ -10,10 +10,10 @@
 
 // TODO: revisar constantes
 #define FONT "/augusta.ttf"
-/* #define CLAN_NAME_FONT_SIZE 24 */
+#define CLAN_NAME_FONT_SIZE 24
 #define USERNAME_FONT_SIZE 35
 #define MENU_TITLE_FONT_SIZE 20
-#define MENU_FONT_SIZE 17.5
+#define MENU_FONT_SIZE 17
 #define CHAT_FONT_SIZE 19
 #define ITEM_AMOUNT_FONT_SIZE 14
 #define LINE_SPACING 21
@@ -22,13 +22,14 @@
 UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name):
         renderer(renderer),
         user_font(DATA_PATH FONT, USERNAME_FONT_SIZE),
-        /* clan_font(DATA_PATH FONT, FONT_SIZE), */
+        clan_font(DATA_PATH FONT, CLAN_NAME_FONT_SIZE),
         menu_title_font(DATA_PATH FONT, MENU_TITLE_FONT_SIZE),
         menu_font(DATA_PATH FONT, MENU_FONT_SIZE),
         chat_font(DATA_PATH FONT, CHAT_FONT_SIZE),
         item_amount_font(DATA_PATH FONT, ITEM_AMOUNT_FONT_SIZE),
         ui_texture(renderer, DATA_PATH "/interfaz_principal.bmp"),
         player_name(player_name),
+        clan_name(""),
         current_inventory(),
         current_equipment(),
         health_texture(renderer, DATA_PATH "/barra_vida.bmp"),
@@ -39,6 +40,7 @@ void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp
 
 void UserInterface::render_fields() {
     render_text(player_name, username_rect, user_font);
+    render_text(clan_name, clan_rect, clan_font);
 
     render_text("Inventario", inventory_rect, menu_title_font);
     render_inventory();
@@ -57,6 +59,9 @@ void UserInterface::render_fields() {
 }
 
 void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box_limit, SDL2pp::Font& font) {
+    if (text == "")
+        return;
+
     SDL2pp::Texture text_texture(renderer, font.RenderText_Solid(text, white));
 
     int text_w = std::min(text_texture.GetWidth(), box_limit.w);
@@ -222,6 +227,8 @@ void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& player
         field_values.push_back(std::pair(xp_level_rect, std::to_string(stats.xp_level)));
         field_values.push_back(std::pair(safe_gold_rect, std::to_string(player_info.safe_gold)));
         field_values.push_back(std::pair(excess_gold_rect, std::to_string(player_info.excess_gold)));
+
+        clan_name = player_info.clan_name;
 
         current_inventory.clear();
 
