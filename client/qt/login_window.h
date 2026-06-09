@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <string>
 
+#include <SDL2pp/Mixer.hh>
+#include <SDL2pp/Music.hh>
+#include <SDL2pp/SDL.hh>
 #include <ui_creator_window.h>
 #include <ui_login_window.h>
 
@@ -44,7 +47,15 @@ private:
 
     QPoint drag_offset;
 
+    std::optional<SDL2pp::SDL> sdl;
+    std::optional<SDL2pp::Mixer> mixer;
+    std::optional<SDL2pp::Music> background_music;
+
     bool can_create_session();
+
+    void init_music(const std::string& audio_path, uint8_t volume);
+
+    void set_background_music(const std::string& audio_path, uint8_t volume);
 };
 
 #endif  // LOBBYWINDOW_H

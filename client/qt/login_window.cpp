@@ -7,12 +7,22 @@
 #include <string>
 #include <utility>
 
+#include <SDL.h>
+
 #include "common/dto/lobby/credentials.h"
 #include "common/liberror.h"
 #include "common/protocol/protocol.h"
 #include "common/socket.h"
 
 #include "ui_login_window.h"
+
+#define FOREST_THEME_PATH "/music/forest.mid"
+#define CREATOR_THEME_PATH "/music/creator.mid"
+#define LOGIN_THEME_PATH "/music/login.mid"
+
+#define GAME_MUSIC_VOLUME 64   // Equivale a 50 %
+#define LOGIN_MUSIC_VOLUME 32  // Equivale a 25 %
+
 
 LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow) {
     ui->setupUi(this);
@@ -32,6 +42,7 @@ LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::Login
     ui->name_err->hide();
 
     connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::connect_match);
+    init_music(LOGIN_THEME_PATH, LOGIN_MUSIC_VOLUME);
 }
 
 void LoginWindow::connect_match() {
@@ -60,9 +71,11 @@ void LoginWindow::connect_match() {
         const auto creator = new CreatorWindow(QString::fromStdString(username));
         connect(creator, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
 
+        set_background_music(CREATOR_THEME_PATH, GAME_MUSIC_VOLUME);
         setCentralWidget(creator);
 
     } else {
+        set_background_music(FOREST_THEME_PATH, GAME_MUSIC_VOLUME);
         close();
     }
 }
@@ -72,6 +85,7 @@ void LoginWindow::send_creation_data(const CreatePlayerDTO& player_data) {
 
     protocol.send(player_data);
 
+    set_background_music(FOREST_THEME_PATH, GAME_MUSIC_VOLUME);
     close();
 }
 
@@ -100,6 +114,33 @@ bool LoginWindow::can_create_session() {
         return false;
     }
     return true;
+}
+
+void LoginWindow::init_music(const std::string& audio_path, const uint8_t volume) {
+    try {
+        sdl.emplace(SDL_INIT_AUDIO);
+        mixer.emplace(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
+        background_music.emplace(std::string(DATA_PATH) + audio_path);
+        mixer->PlayMusic(*background_music, -1);
+        mixer->SetMusicVolume(volume);
+
+    } catch (const std::exception& e) {
+        std::cerr << "[LoginWindow] No se pudo inicializar la música de fondo: " << e.what() << std::endl;
+    }
+}
+
+void LoginWindow::set_background_music(const std::string& audio_path, const uint8_t volume) {
+    if (not mixer)
+        return;
+
+    try {
+        background_music.emplace(std::string(DATA_PATH) + audio_path);
+        mixer->PlayMusic(*background_music, -1);
+        mixer->SetMusicVolume(volume);
+
+    } catch (const std::exception& e) {
+        std::cerr << "[LoginWindow] No se pudo cambiar la música de fondo: " << e.what() << std::endl;
+    }
 }
 
 Socket LoginWindow::get_socket() {
