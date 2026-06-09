@@ -194,6 +194,11 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                     audio_manager.play_event(SoundEvent::DEATH);
                 }
                 break;
+
+            case ActionType::ATTACK:
+                // TODO: Cambiar el SFX según el arma con la que se atacó
+                audio_manager.play_event(SoundEvent::SWORD_ATTACK);
+
             default:
                 break;
         }

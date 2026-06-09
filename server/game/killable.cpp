@@ -68,7 +68,7 @@ InteractResult Killable::interact(Player& attacker) {
 
     // TODO notificar el caso particular?
     if (damage_applied == 0)
-        return InteractResult(0, false);
+        return InteractResult(attacker.get_equipment().weapon, 0, false);
 
     bool was_killed = !is_alive();
     uint32_t earned_xp =
@@ -79,7 +79,7 @@ InteractResult Killable::interact(Player& attacker) {
                                            attacker.stats.experience.get_level());
     attacker.earn_xp(earned_xp);
 
-    return InteractResult(damage_applied, was_killed);
+    return InteractResult(attacker.get_equipment().weapon, damage_applied, was_killed);
 }
 
 const Position& Killable::get_position() const { return position; }

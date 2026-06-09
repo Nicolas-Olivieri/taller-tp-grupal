@@ -14,9 +14,10 @@ InteractResult::InteractResult(const AttackStatus attackStatus): type(Interactio
     attack.was_killed = false;
 }
 
-InteractResult::InteractResult(const int damage_dealt, const bool was_killed):
+InteractResult::InteractResult(const uint8_t weapon, const int damage_dealt, const bool was_killed):
         type(InteractionType::ATTACK), bind() {
     attack.status = AttackStatus::HIT;
+    attack.weapon = weapon;
     attack.damage_dealt = damage_dealt;
     attack.was_killed = was_killed;
 }

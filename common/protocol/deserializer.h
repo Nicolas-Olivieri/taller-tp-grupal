@@ -52,6 +52,8 @@ private:
 
     EquipmentInfoDTO recv_equipment_info();
 
+    AttackDTO recv_attack();
+
     ResurrectionDTO recv_resurrection();
 
     DeathDTO recv_death();

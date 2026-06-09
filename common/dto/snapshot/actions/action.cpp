@@ -10,6 +10,8 @@ size_t ActionDTO::message_size() const {
     const auto base = sizeof(action);
 
     switch (action) {
+        case ActionType::ATTACK:
+            return base + attack.message_size();
         case ActionType::DESPAWN:
             return base + despawn.message_size();
         case ActionType::MESSAGE:
@@ -31,6 +33,16 @@ size_t ActionDTO::message_size() const {
 }
 
 void ActionDTO::accept(Serializer& serializer) const { serializer.serialize(*this); }
+
+ActionDTO::ActionDTO(const AttackDTO& attack):
+        action(ActionType::ATTACK),
+        attack(attack),
+        despawn(""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
+        resurrection("", {}),
+        death(""),
+        list(MessageType::SYSTEM, {}, ""),
+        items() {}
 
 ActionDTO::ActionDTO(const DespawnDTO& despawn):
         action(ActionType::DESPAWN),

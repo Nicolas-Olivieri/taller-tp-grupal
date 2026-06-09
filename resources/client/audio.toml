@@ -8,3 +8,4 @@ death = { paths = ["/sfx/death.wav"], volume = 16 }
 footstep = { paths = ["/sfx/step1.wav", "/sfx/step2.wav"], volume = 8 }
 resurrection = { paths = ["/sfx/resurrection.wav"], volume = 16 }
 spawn = { paths = ["/sfx/spawn.wav"], volume = 16 }
+sword_attack = { paths = ["/sfx/sword_attack.wav"], volume = 16 }

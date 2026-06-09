@@ -23,7 +23,7 @@ struct MusicConfig {
 };
 
 
-enum class SoundEvent { DEATH, FOOTSTEP, RESURRECTION, SPAWN };
+enum class SoundEvent { DEATH, FOOTSTEP, RESURRECTION, SPAWN, SWORD_ATTACK };
 
 struct SFXConfig {
     std::map<SoundEvent, SoundConfig> configs;
@@ -69,6 +69,7 @@ struct toml::from<SFXConfig> {
                 {"footstep", SoundEvent::FOOTSTEP},
                 {"resurrection", SoundEvent::RESURRECTION},
                 {"spawn", SoundEvent::SPAWN},
+                {"sword_attack", SoundEvent::SWORD_ATTACK},
                 // TODO: Agregar más sonidos...
         });
 

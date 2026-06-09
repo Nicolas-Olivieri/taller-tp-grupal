@@ -2,6 +2,7 @@
 #define ACTIONDTO_H
 
 #include "common/dto/message.h"
+#include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
 #include "common/dto/snapshot/actions/action_types/act_death/death.h"
 #include "common/dto/snapshot/actions/action_types/act_despawn/despawn.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
@@ -11,6 +12,7 @@
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 
 enum class ActionType : uint8_t {
+    ATTACK,
     DESPAWN,
     MESSAGE,
     RESURRECTION,
@@ -23,6 +25,7 @@ enum class ActionType : uint8_t {
 struct ActionDTO: public ProtocolMessageDTO {
     ActionType action;
 
+    AttackDTO attack;
     DespawnDTO despawn;
     ChatMessageDTO chat_message;
     ResurrectionDTO resurrection;
@@ -34,6 +37,8 @@ struct ActionDTO: public ProtocolMessageDTO {
     // TODO: REVISAR CONSTRUCTOR DEPENDIENDO DE COMO SE MANEJEN LAS ACTION EN EL FUTURO.
     // pueden llegar a no necesitar el ActionType dependiendo del contenido.
     //    explicit ActionDTO(ActionType action);
+
+    explicit ActionDTO(const AttackDTO& attack);
 
     explicit ActionDTO(const DespawnDTO& despawn);
 

@@ -99,6 +99,9 @@ void Serializer::serialize(const ActionDTO& action) {
     serialize(static_cast<uint8_t>(action.action));
 
     switch (action.action) {
+        case ActionType::ATTACK:
+            serialize(action.attack);
+            break;
         case ActionType::DESPAWN:
             serialize(action.despawn);
             break;
@@ -200,6 +203,11 @@ void Serializer::serialize(const EquipmentInfoDTO& equipment) {
     serialize(equipment.shield);
     serialize(equipment.helmet);
     serialize(equipment.armor);
+}
+
+void Serializer::serialize(const AttackDTO& attack) {
+    serialize(attack.attacker);
+    serialize(attack.weapon);
 }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {

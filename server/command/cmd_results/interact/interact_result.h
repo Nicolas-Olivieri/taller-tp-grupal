@@ -21,7 +21,7 @@ struct InteractResult {
 
     explicit InteractResult(const AttackStatus attackStatus);
 
-    InteractResult(const int damage_dealt, const bool was_killed);
+    InteractResult(uint8_t weapon, const int damage_dealt, const bool was_killed);
 };
 
 
