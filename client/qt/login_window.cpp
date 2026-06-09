@@ -16,7 +16,11 @@
 
 
 LoginWindow::LoginWindow(AudioManager& audio_manager, QWidget* parent):
-        QMainWindow(parent), ui(new Ui::LoginWindow), audio_manager(audio_manager), allow_close(false), force_close(false) {
+        QMainWindow(parent),
+        ui(new Ui::LoginWindow),
+        audio_manager(audio_manager),
+        allow_close(false),
+        force_close(false) {
     ui->setupUi(this);
 
     // Seteo Stacked Widget para ambas pantallas
@@ -140,7 +144,7 @@ void LoginWindow::exit_window() {
     close();
 }
 
-void LoginWindow::closeEvent(QCloseEvent *event) {
+void LoginWindow::closeEvent(QCloseEvent* event) {
     if (allow_close) {
         event->accept();
         QApplication::quit();
@@ -158,9 +162,7 @@ Socket LoginWindow::get_socket() {
 
 std::string LoginWindow::get_username() { return username; }
 
-bool LoginWindow::was_forced_close() const {
-    return force_close;
-}
+bool LoginWindow::was_forced_close() const { return force_close; }
 
 
 void LoginWindow::mousePressEvent(QMouseEvent* event) {

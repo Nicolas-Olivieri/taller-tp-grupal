@@ -34,7 +34,8 @@ void LobbyHandler::run() {
 
         } catch (const PlayerAlreadyExists& error) {
 
-            // Si falla, quiere decir que en el proceso de creación otro usuario fue más rapido y tomo el nombre
+            // Si falla, quiere decir que en el proceso de creación otro usuario fue más rapido y tomo el
+            // nombre
             protocol.send(ExistenceDTO(true, false));
             return;
         } catch (const ClosedSocket& error) {

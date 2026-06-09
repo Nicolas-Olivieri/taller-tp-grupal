@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
-
 #include <string>
 
 #include <ui_creator_window.h>

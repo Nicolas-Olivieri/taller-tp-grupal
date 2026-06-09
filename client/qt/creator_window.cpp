@@ -6,9 +6,9 @@
 
 #include <toml.hpp>
 
-#include "login_window.h"
 #include "widgets/selector_widget.h"
 
+#include "login_window.h"
 #include "ui_creator_window.h"
 
 CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
@@ -73,13 +73,9 @@ void CreatorWindow::start_game() {
     }
 }
 
-void CreatorWindow::exit_window() {
-    emit exit_creator();
-}
+void CreatorWindow::exit_window() { emit exit_creator(); }
 
-void CreatorWindow::closeEvent(QCloseEvent* event) {
-    event->ignore();
-}
+void CreatorWindow::closeEvent(QCloseEvent* event) { event->ignore(); }
 
 bool CreatorWindow::validate_data() {
     return ui->races_buttons->checkedButton() && ui->archetypes_buttons->checkedButton();
