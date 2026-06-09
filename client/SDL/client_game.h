@@ -8,6 +8,7 @@
 #include <SDL2pp/Renderer.hh>
 #include <SDL2pp/SDL2pp.hh>
 
+#include "audio/audio_manager.h"
 #include "client/connection/connection_handler.h"
 
 #include "camera.h"
@@ -86,7 +87,7 @@ private:
     static SDL_HitTestResult hit_test_callback(SDL_Window*, const SDL_Point* area, void* data);
 
 public:
-    ClientGame(ConnectionHandler& connection, std::string& player_name);
+    ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager);
 
     void run();
 

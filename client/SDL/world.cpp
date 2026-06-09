@@ -7,10 +7,12 @@
 
 #include "camera.h"
 
-World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name):
+World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
+             AudioManager& audio_manager):
         renderer(renderer),
         texture_pool(renderer),
         sprite_creator(renderer),
+        audio_manager(audio_manager),
         world_view(SDL2pp::Point(0, 0),
                    SDL2pp::Point(map_data.world_width * TILE_SIZE, map_data.world_height * TILE_SIZE)),
         player_name(player_name) {
@@ -93,7 +95,11 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
         }
 
         SDL2pp::Point position(player_info.x, player_info.y);
-        players.at(player_info.name)->set_target_position(player_info.direction, position);
+        const auto& player_sprite = players.at(player_info.name);
+        if (position * TILE_SIZE != player_sprite->get_target_position())
+            audio_manager.play_event(SoundEvent::FOOTSTEP);
+
+        player_sprite->set_target_position(player_info.direction, position);
     }
 }
 
@@ -106,7 +112,11 @@ void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_infor
         }
 
         SDL2pp::Point position(creature_info.x, creature_info.y);
-        creatures.at(creature_info.sub_id)->set_target_position(creature_info.direction, position);
+        const auto& creature_sprite = creatures.at(creature_info.sub_id);
+        if (position * TILE_SIZE != creature_sprite->get_target_position())
+            audio_manager.play_event(SoundEvent::FOOTSTEP);
+
+        creature_sprite->set_target_position(creature_info.direction, position);
     }
 }
 

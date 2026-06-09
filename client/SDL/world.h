@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+#include "audio/audio_manager.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/map/client_map_data.h"
 #include "sprites/sprite_creator.h"
@@ -20,6 +21,7 @@ private:
     SDL2pp::Renderer& renderer;
     TexturePool texture_pool;
     SpriteCreator sprite_creator;
+    AudioManager& audio_manager;
 
     SDL2pp::Rect world_view;
     std::string player_name;
@@ -49,7 +51,8 @@ private:
     void erase_taken_loot(const std::vector<LootInfoDTO>& loot_information);
 
 public:
-    World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name);
+    World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
+          AudioManager& audio_manager);
 
     void update_players(const std::vector<PlayerInfoDTO>& players_information);
 
