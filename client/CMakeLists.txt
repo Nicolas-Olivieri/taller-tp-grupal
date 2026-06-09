@@ -35,6 +35,7 @@ target_sources(taller_client
         client_constants.h
 
         TOML/animation_parser.h
+        TOML/audio_parser.h
 
         SDL/client_game.h
         SDL/camera.h
