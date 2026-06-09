@@ -34,6 +34,8 @@ void LobbyHandler::run() {
             // TODO: un jugador se puso el nombre que este quería justo al mismo tiempo y se lo sacó
             std::cout << "[Lobby] " << credentials.username << " is already taken" << std::endl;
             return;
+        } catch (const ClosedSocket& errror) {
+            return;
         }
     } else {
         if (player_repository.is_connected(credentials.username)) {

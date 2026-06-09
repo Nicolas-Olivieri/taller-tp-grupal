@@ -6,6 +6,7 @@
 
 #include <toml.hpp>
 
+#include "login_window.h"
 #include "widgets/selector_widget.h"
 
 #include "ui_creator_window.h"
@@ -16,8 +17,9 @@ CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
 
     // Seteo borde de ventana custom
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-    connect(ui->btnClose, &QPushButton::clicked, this, &QWidget::close);
+    connect(ui->btnClose, &QPushButton::clicked, this, &CreatorWindow::exit_window);
     connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
+    connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &CreatorWindow::exit_window);
 
     load_skins_data();
 
@@ -69,6 +71,10 @@ void CreatorWindow::start_game() {
     } else {
         ui->validation_err->show();
     }
+}
+
+void CreatorWindow::exit_window() {
+    emit exit_creator();
 }
 
 bool CreatorWindow::validate_data() {

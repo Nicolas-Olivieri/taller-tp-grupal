@@ -14,13 +14,14 @@
 
 #include "ui_login_window.h"
 
-LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow) {
+LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow), force_close(false) {
     ui->setupUi(this);
 
     // Seteo borde de ventana custom
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-    connect(ui->btnClose, &QPushButton::clicked, this, &QWidget::close);
+    connect(ui->btnClose, &QPushButton::clicked, this, &LoginWindow::exit_window);
     connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
+    connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &LoginWindow::exit_window);
 
     // Configuro la pantalla de LOGIN
     qApp->setStyleSheet("QToolTip { background-color: #1a0f05; color: #f7e5b3; border: 2px solid #c9a87c; "
@@ -59,6 +60,7 @@ void LoginWindow::connect_match() {
     if (!confirmation.user_exists) {
         const auto creator = new CreatorWindow(QString::fromStdString(username));
         connect(creator, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
+        connect(creator, &CreatorWindow::exit_creator, this, &LoginWindow::exit_window);
 
         setCentralWidget(creator);
 
@@ -102,6 +104,11 @@ bool LoginWindow::can_create_session() {
     return true;
 }
 
+void LoginWindow::exit_window() {
+    force_close = true;
+    QApplication::quit();
+}
+
 Socket LoginWindow::get_socket() {
     if (!socket) {
         throw std::runtime_error("No se pudo conectar correctamente con el servidor");
@@ -110,6 +117,10 @@ Socket LoginWindow::get_socket() {
 }
 
 std::string LoginWindow::get_username() { return username; }
+
+bool LoginWindow::was_forced_close() {
+    return force_close;
+}
 
 
 void LoginWindow::mousePressEvent(QMouseEvent* event) {

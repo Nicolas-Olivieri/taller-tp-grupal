@@ -25,6 +25,8 @@ public:
 
     std::string get_username();
 
+    bool was_forced_close();
+
     ~LoginWindow();
 
 protected:
@@ -37,12 +39,16 @@ private slots:
 
     void send_creation_data(const CreatePlayerDTO& player_data);
 
+    void exit_window();
+
 private:
     Ui::LoginWindow* ui;
     std::optional<Socket> socket;
     std::string username;
 
     QPoint drag_offset;
+
+    bool force_close;
 
     bool can_create_session();
 };
