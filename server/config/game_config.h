@@ -3,8 +3,8 @@
 
 #include <cstdint>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-
 
 struct CooldownData {
     uint8_t attack;
@@ -48,30 +48,42 @@ struct EquipableItemData {
     uint16_t max;
 };
 
-struct WeaponItemData {
-    EquipableItemData itemData;
+struct WeaponData {
     uint8_t range;
     uint16_t mana_cost;  // si es 0 -> No es mágico
 };
 
+struct DropProbabilitiesData {
+    float nothing;
+    float gold;
+    float usable;
+    float equipable;
+};
 
 class GameConfig {
 private:
     CooldownData player_cooldowns;
     CooldownData creature_cooldowns;
+
+    DropProbabilitiesData drop_probabilities;
+
     std::unordered_map<uint8_t, ArchetypeData> archetypes;
     std::unordered_map<uint8_t, RaceData> races;
 
     std::unordered_map<uint8_t, RaceData> creatures;
     std::unordered_map<uint8_t, VariationData> variations;
 
-    std::unordered_map<uint8_t, UsableItemData> usable_items;
-    std::unordered_map<uint8_t, WeaponItemData> weapons_items;
-    std::unordered_map<uint8_t, EquipableItemData> helmets_items;
-    std::unordered_map<uint8_t, EquipableItemData> armors_items;
-    std::unordered_map<uint8_t, EquipableItemData> shields_items;
+    std::unordered_set<uint8_t> armors;
+    std::unordered_set<uint8_t> shields;
+    std::unordered_set<uint8_t> helmets;
+    std::unordered_map<uint8_t, WeaponData> weapons;
+    std::unordered_map<uint8_t, UsableItemData> usables;
+    std::unordered_map<uint8_t, EquipableItemData> equipables;
 
     std::unordered_map<uint8_t, uint16_t> item_prices;
+
+    std::unordered_map<uint8_t, std::vector<uint8_t>> priest_items;
+    std::unordered_map<uint8_t, std::vector<uint8_t>> merchant_items;
 
     GameConfig();
 
@@ -93,17 +105,41 @@ public:
 
     const CooldownData& get_creature_cooldown() const;
 
-    const std::unordered_map<uint8_t, UsableItemData>& get_usables() const;
+    const EquipableItemData& get_equipable(uint8_t id) const;
 
-    const std::unordered_map<uint8_t, WeaponItemData>& get_weapons() const;
+    const UsableItemData& get_usable(uint8_t id) const;
 
-    const std::unordered_map<uint8_t, EquipableItemData>& get_helmets() const;
+    const WeaponData& get_weapon(uint8_t id) const;
 
-    const std::unordered_map<uint8_t, EquipableItemData>& get_armors() const;
-
-    const std::unordered_map<uint8_t, EquipableItemData>& get_shields() const;
+    const DropProbabilitiesData& get_drop_probabilities() const;
 
     uint16_t get_item_price(uint8_t item_id) const;
+
+    bool usables_contains(uint8_t id) const;
+
+    bool weapons_contains(uint8_t id) const;
+
+    bool helmets_contains(uint8_t id) const;
+
+    bool armors_contains(uint8_t id) const;
+
+    bool shields_contains(uint8_t id) const;
+
+    uint8_t get_min_usable_id() const;
+
+    uint8_t get_max_usable_id() const;
+
+    uint8_t get_min_equipable_id() const;
+
+    uint8_t get_max_equipable_id() const;
+
+    const std::vector<uint8_t>& get_priest_items(int id) const;
+
+    int get_priest_max_id() const;
+
+    const std::vector<uint8_t>& get_merchant_items(int id) const;
+
+    int get_merchant_max_id() const;
 };
 
 

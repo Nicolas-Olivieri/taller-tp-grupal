@@ -92,10 +92,12 @@ RequestedCommandDTO Protocol::recv_command() {
 
         return RequestedCommandDTO(command, receiver, content);
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
-               command == CommandType::LIST_ITEMS) {
+               command == CommandType::LIST_ITEMS or command == CommandType::PICKUP) {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
-               command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM) {
+               command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or
+               command == CommandType::USE_ITEM or command == CommandType::DROP_ITEM or
+               command == CommandType::UNEQUIP_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
     } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD) {
@@ -117,9 +119,10 @@ SnapshotDTO Protocol::recv_snapshot() {
 
     std::vector<PlayerInfoDTO> players_information = deserializer.recv_players_information();
     std::vector<CreatureInfoDTO> creatures_information = deserializer.recv_creatures_information();
+    std::vector<LootInfoDTO> loot_information = deserializer.recv_loot_information();
     std::vector<ActionDTO> actions = deserializer.recv_actions();
 
-    return SnapshotDTO(players_information, creatures_information, actions);
+    return SnapshotDTO(players_information, creatures_information, loot_information, actions);
 }
 
 void Protocol::check_header_message_byte(const Message& expected) {

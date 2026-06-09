@@ -1,11 +1,12 @@
 #include "merchant.h"
 
-#include "server/game/player/inventory/item_mapper.h"
+#include "server/config/game_config.h"
 #include "server/game/player/player.h"
-
+#include "server/util/calculator.h"
 
 Merchant::Merchant(const Position& position):
-        VendorAlly(position, AllyType::MERCHANT, ItemMapper::get_random_merchant_items()) {}
+        VendorAlly(position, AllyType::MERCHANT,
+                   Calculator::random_number(0, GameConfig::get().get_merchant_max_id())) {}
 
 
 AllyExecuteResult Merchant::execute(Player& player, const AllyActionPayload& payload) const {
@@ -47,7 +48,7 @@ AllyExecuteResult Merchant::execute(Player& player, const AllyActionPayload& pay
 
 AllyExecuteResult Merchant::handle_sell_item(Player& player, const uint8_t item_id) const {
     try {
-        const uint16_t price = ItemMapper::get_price(item_id);
+        const uint16_t price = GameConfig::get().get_item_price(item_id);
         player.drop_item(item_id);
         // TODO: El porcentaje de precio de venta debería venir del TOML
         player.add_gold(price * 0.70);

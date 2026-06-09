@@ -3,6 +3,8 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "../killable.h"
 #include "../position.h"
@@ -33,6 +35,12 @@ private:
     int resurrection_timer;
     Position target_resurrection_position;
 
+    void drop_excess_gold(std::vector<Loot>& drops);
+
+    void drop_inventory(std::vector<Loot>& drops);
+
+    void drop_equipment(std::vector<Loot>& drops);
+
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
 
@@ -51,7 +59,7 @@ public:
 
     /// Killable
 
-    void drop() override;
+    std::vector<Loot> drop() override;
 
     InteractResult interact(Player& attacker) override;
 
@@ -89,6 +97,10 @@ public:
 
     void add_gold(uint16_t amount);
 
+    void use_item(uint8_t item_id);
+
+    void unequip_item(const uint8_t item_id);
+
     void acquire_item(uint8_t item_id);
 
     void drop_item(uint8_t item_id);
@@ -98,6 +110,10 @@ public:
     void deposit_gold_to_bank(uint16_t amount);
 
     void withdraw_gold_from_bank(uint16_t amount);
+
+    const Equipment& get_equipment() const;
+
+    const std::unordered_map<uint8_t, uint8_t>& get_inventory_items() const;
 
     const std::map<uint8_t, uint8_t>& get_bank_items() const;
 

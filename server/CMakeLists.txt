@@ -9,6 +9,7 @@ target_sources(taller_server
         command/cmd_types/cmd_deposit_gold/deposit_gold_command.cpp
         command/cmd_types/cmd_deposit_item/deposit_item_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
+        command/cmd_types/cmd_drop_item/drop_item_command.cpp
         command/cmd_types/cmd_heal/heal_command.cpp
         command/cmd_types/cmd_interact/interact_command.cpp
         command/cmd_types/cmd_list_items/list_items_command.cpp
@@ -16,11 +17,18 @@ target_sources(taller_server
         command/cmd_types/cmd_resurrect/resurrect_command.cpp
         command/cmd_types/cmd_sell/sell_command.cpp
         command/cmd_types/cmd_spawn/spawn_command.cpp
+        command/cmd_types/cmd_unequip_item/unequip_item_command.cpp
+        command/cmd_types/cmd_use_item/use_item_command.cpp
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.cpp
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.cpp
+        command/cmd_types/cmd_pickup/pickup_command.cpp
 
         command/cmd_results/ally_execute/ally_execute_result.cpp
+        command/cmd_results/drop_item/drop_item_result.cpp
         command/cmd_results/interact/interact_result.cpp
+        command/cmd_results/pickup/pickup_result.cpp
+        command/cmd_results/unequip_item/unequip_item_result.cpp
+        command/cmd_results/use_item/use_item_result.cpp
 
         command/command_factory.cpp
 
@@ -63,7 +71,9 @@ target_sources(taller_server
 
         game/player/bank/bank.cpp
         game/player/inventory/inventory.cpp
-        game/player/inventory/item_mapper.cpp
+        game/items/item_mapper.cpp
+        game/items/equipment.cpp
+        game/items/item.cpp
         game/player/inventory/goldmanager.cpp
 
         game/allies/ally.cpp
@@ -84,14 +94,18 @@ target_sources(taller_server
         command/cmd_types/cmd_deposit_gold/deposit_gold_command.h
         command/cmd_types/cmd_deposit_item/deposit_item_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
+        command/cmd_types/cmd_drop_item/drop_item_command.h
         command/cmd_types/cmd_heal/heal_command.h
         command/cmd_types/cmd_interact/interact_command.h
         command/cmd_types/cmd_list_items/list_items_command.h
         command/cmd_types/cmd_move/move_command.h
         command/cmd_types/cmd_sell/sell_command.h
         command/cmd_types/cmd_spawn/spawn_command.h
+        command/cmd_types/cmd_unequip_item/unequip_item_command.h
+        command/cmd_types/cmd_use_item/use_item_command.h
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.h
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.h
+        command/cmd_types/cmd_pickup/pickup_command.h
         command/cmd_types/cmd_resurrect/resurrect_command.h
 
         command/cmd_results/ally_execute/buy_result.h
@@ -106,10 +120,13 @@ target_sources(taller_server
         command/cmd_results/ally_execute/withdraw_gold_result.h
         command/cmd_results/ally_execute/withdraw_item_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
-
+        command/cmd_results/drop_item/drop_item_result.h
         command/cmd_results/interact/attack_result.h
         command/cmd_results/interact/bind_result.h
         command/cmd_results/interact/interact_result.h
+        command/cmd_results/pickup/pickup_result.h
+        command/cmd_results/unequip_item/unequip_item_result.h
+        command/cmd_results/use_item/use_item_result.h
 
         command/command.h
         command/command_factory.h
@@ -155,8 +172,9 @@ target_sources(taller_server
 
         game/player/bank/bank.h
         game/player/inventory/inventory.h
-        game/equipment.h
-        game/player/inventory/item_mapper.h
+        game/items/equipment.h
+        game/items/item.h
+        game/items/item_mapper.h
         game/player/inventory/goldmanager.h
 
         game/attacker.h

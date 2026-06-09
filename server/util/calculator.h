@@ -3,8 +3,9 @@
 
 #include <cstdint>
 #include <random>
+#include <vector>
 
-#include "server/game/equipment.h"
+#include "server/game/items/equipment.h"
 
 
 class Calculator {
@@ -33,13 +34,19 @@ public:
 
     static bool can_dodge(const int agility);
 
+    static uint16_t calculate_random_drop_gold(uint8_t max_healh);
+
     static uint8_t calculate_averagable_stat(uint8_t archetype_stat, uint8_t race_stat);
 
     static uint8_t calculate_scalable_stat(uint8_t base, uint8_t level, float multiplier);
 
-private:
     static int random_number(const int min, const int max);
 
+    static uint8_t random_number(const uint8_t min, const uint8_t max);
+
+    static int random_from_weighted_probabilities(const std::vector<float>& probabilities);
+
+private:
     static float random_float(const float min, const float max);
 
     static int get_random_from_item(const uint8_t item);

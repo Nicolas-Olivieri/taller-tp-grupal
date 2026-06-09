@@ -4,23 +4,57 @@
 #include <cassert>
 #include <utility>
 
-#include "server/game/player/inventory/item_mapper.h"
+#include "server/config/game_config.h"
 #include "server/game/player/player.h"
 #include "server/util/calculator.h"
 #include "state/idlestate.h"
 
-#define EXTRA_TARGET_RANGE 3
+#define EXTRA_TARGET_RANGE 5  // TODO: toml
 
 // TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
 // ditintos niveles
 Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
                    const Position& position):
-        Killable(race, variation, 5, position),
+        Killable(race, variation, 5, position, Equipment{0, 0, 0, 1}),
         sub_id(sub_id),
         state(std::make_unique<IdleState>()),
         target(nullptr) {}
 
-void Creature::drop() { assert(false); }
+std::vector<Loot> Creature::drop() {
+    std::vector<Loot> drop;
+
+    const DropProbabilitiesData& data = GameConfig::get().get_drop_probabilities();
+
+    std::vector<float> probabilities = {data.nothing, data.gold, data.usable, data.equipable};
+    int index = Calculator::random_from_weighted_probabilities(probabilities);
+
+    GameConfig& config = GameConfig::get();
+
+    switch (static_cast<DropType>(index)) {
+        case DropType::NOTHING:
+            break;
+        case DropType::GOLD:
+            drop.push_back(Loot(Calculator::calculate_random_drop_gold(stats.health.get_max())));
+            break;
+        case DropType::USABLE:
+            drop.push_back(
+                    Loot(Calculator::random_number(config.get_min_usable_id(), config.get_max_usable_id())));
+            break;
+        case DropType::EQUIPABLE: {
+            uint8_t item =
+                    Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
+            // TODO: NI BIEN SE IMPLEMENTE EL BÁCULO DE CURACIÓN SACAR ESTE HARDCODEO
+            if (item == 0 or item == 5)  // TODO: CORREGIME
+                item++;                  // TODO: CORREGIME
+            drop.push_back(Loot(item));  // TODO: CORREGIME
+            // TODO: CORREGIRRRR
+        } break;
+        default:
+            throw std::invalid_argument("There is no known way to drop something of this type");
+    }
+
+    return drop;
+}
 
 CreatureUpdateStatus Creature::update_state(const Position& position, const Direction& direction) {
     CreatureUpdateStatus result = this->state->act(*this, position, direction);
@@ -49,7 +83,7 @@ CreatureUpdateStatus Creature::attack_player() {
 int Creature::attack() {
     current_attack_cooldown = required_attack_cooldown;
 
-    const int mana_cost = ItemMapper::get_mana_cost(equipment.weapon);
+    const int mana_cost = get_attack_cost();
     stats.mana.loose(mana_cost);
 
     return Calculator::calculate_damage(stats.strength, equipment);
@@ -59,22 +93,33 @@ bool Creature::can_attack() const {
     if (current_attack_cooldown != 0)
         return false;
 
-    int mana_cost = ItemMapper::get_mana_cost(equipment.weapon);
+    int mana_cost = get_attack_cost();
 
     return mana_cost <= stats.mana.get_current();
 }
 
 // TODO: modularizar
 bool Creature::can_reach(const Position& other_position) const {
-    uint8_t range = ItemMapper::get_range(equipment.weapon);
-
-    return std::abs(position.get_x() - other_position.get_x()) <= range and
-           std::abs(position.get_y() - other_position.get_y()) <= range;
+    uint8_t range = get_weapon_range();
+    return is_in_range(other_position, range);
 }
 
 bool Creature::can_target(const Position& other_position) const {
-    uint8_t range = ItemMapper::get_range(equipment.weapon) + EXTRA_TARGET_RANGE;
+    uint8_t range = get_weapon_range() + EXTRA_TARGET_RANGE;
+    return is_in_range(other_position, range);
+}
 
+uint8_t Creature::get_weapon_range() const {
+    WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
+    return data.range;
+}
+
+uint16_t Creature::get_attack_cost() const {
+    WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
+    return data.mana_cost;
+}
+
+bool Creature::is_in_range(const Position& other_position, uint8_t range) const {
     return std::abs(position.get_x() - other_position.get_x()) <= range and
            std::abs(position.get_y() - other_position.get_y()) <= range;
 }
@@ -110,3 +155,5 @@ Position Creature::get_target_position() const {
 bool Creature::is_targeting(const Player& player) const { return target == &player; }
 
 const Stats& Creature::get_stats() const { return stats; }
+
+const std::string& Creature::get_target_name() const { return target->get_name(); }

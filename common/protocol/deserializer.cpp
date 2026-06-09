@@ -2,6 +2,7 @@
 
 #include <map>
 #include <stdexcept>
+#include <unordered_map>
 
 #include <arpa/inet.h>
 
@@ -58,6 +59,10 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::WITHDRAW_ITEM:
         case CommandType::DEPOSIT_GOLD:
         case CommandType::WITHDRAW_GOLD:
+        case CommandType::PICKUP:
+        case CommandType::USE_ITEM:
+        case CommandType::DROP_ITEM:
+        case CommandType::UNEQUIP_ITEM:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -109,6 +114,19 @@ std::vector<CreatureInfoDTO> Deserializer::recv_creatures_information() {
     return creature_information;
 }
 
+std::vector<LootInfoDTO> Deserializer::recv_loot_information() {
+    uint16_t size = recv_uint16();
+
+    std::vector<LootInfoDTO> loot_information;
+    loot_information.reserve(size);
+
+    for (uint16_t i = 0; i < size; ++i) {
+        loot_information.push_back(recv_loot_info());
+    }
+
+    return loot_information;
+}
+
 PlayerInfoDTO Deserializer::recv_player_info() {
     std::string name = recv_string();
     Direction direction = recv_direction();
@@ -118,8 +136,11 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     uint16_t excess_gold = recv_uint16();
     AppearanceDTO appearance = recv_appearance();
     PlayerStatsDTO stats = recv_player_stats();
+    InventoryInfoDTO inventory = recv_inventory_info();
+    EquipmentInfoDTO equipment = recv_equipment_info();
 
-    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats);
+    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats, inventory,
+                         equipment);
 }
 
 CreatureInfoDTO Deserializer::recv_creature_info() {
@@ -133,6 +154,13 @@ CreatureInfoDTO Deserializer::recv_creature_info() {
     return CreatureInfoDTO(creature_id, variation_id, sub_id, direction, x, y);
 }
 
+LootInfoDTO Deserializer::recv_loot_info() {
+    bool is_item = recv_uint8();
+    uint16_t x = recv_uint16();
+    uint16_t y = recv_uint16();
+
+    return LootInfoDTO(is_item, x, y);
+}
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
     uint16_t size = recv_uint16();
@@ -279,6 +307,28 @@ PlayerStatsDTO Deserializer::recv_player_stats() {
 
     return PlayerStatsDTO(max_health, current_health, max_mana, current_mana, xp_level, current_xp_amount,
                           max_xp_amount);
+}
+
+InventoryInfoDTO Deserializer::recv_inventory_info() {
+    const uint16_t size = recv_uint16();
+    std::unordered_map<uint8_t, uint8_t> items;
+
+    for (uint16_t i = 0; i < size; ++i) {
+        const uint8_t item_id = recv_uint8();
+        const uint8_t amount = recv_uint8();
+        items[item_id] = amount;
+    }
+
+    return InventoryInfoDTO(items);
+}
+
+EquipmentInfoDTO Deserializer::recv_equipment_info() {
+    const uint8_t weapon = recv_uint8();
+    const uint8_t shield = recv_uint8();
+    const uint8_t helmet = recv_uint8();
+    const uint8_t armor = recv_uint8();
+
+    return EquipmentInfoDTO(weapon, shield, helmet, armor);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {

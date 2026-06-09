@@ -3,6 +3,7 @@
 tiles = [0,98]
 colliders = [0,65]
 npcs = [0,2]
+loot = [0,1]
 body = [0, 9]
 head = [0, 13]
 goblin = [0, 4]

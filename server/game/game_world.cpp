@@ -7,6 +7,8 @@
 #include "allies/banker.h"
 #include "allies/merchant.h"
 #include "allies/priest.h"
+#include "server/command/cmd_results/unequip_item/unequip_item_result.h"
+#include "server/command/cmd_results/use_item/use_item_result.h"
 #include "server/util/server_map_loader.h"
 
 
@@ -18,19 +20,29 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
-    init_creature();
+    init_creature(0);
 }
 
 const std::unordered_map<std::string, Player>& GameWorld::get_players() const { return players; }
 
 const std::unordered_map<uint16_t, Creature>& GameWorld::get_creatures() const { return creatures; }
 
+const std::map<std::pair<uint16_t, uint16_t>, Tile*>& GameWorld::get_lootable_tiles() const {
+    return tiles_with_loot;
+}
+
 WorldUpdateStatus GameWorld::update() {
     std::vector<std::string> resurrected_players;
     for (auto& [name, player]: players) {
+        const Position previous_position = player.get_position();
         player.update();
+
         if (player.did_just_resurrect()) {
             resurrected_players.push_back(name);
+            const Position& resurrect_position = player.get_position();
+
+            grid.get_tile(previous_position).occupy(nullptr);
+            grid.get_tile(resurrect_position).occupy(&player);
         }
     }
 
@@ -51,7 +63,14 @@ WorldUpdateStatus GameWorld::update() {
             }
         }
 
+        std::string target_name = creature.is_targeting_someone() ? creature.get_target_name() : "";
         creatures_status.push_back(move_creature(creature, direction));
+
+        if (!target_name.empty()) {
+            Player& target = players.at(target_name);
+            if (!target.is_alive())
+                drop_player_items(target);
+        }
     }
 
     return WorldUpdateStatus(creatures_status, resurrected_players);
@@ -158,11 +177,20 @@ std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(cons
 
 void GameWorld::remove_dead_creatures() {
     for (auto it = creatures.begin(); it != creatures.end();) {
-        const Creature& creature = it->second;
+        Creature& creature = it->second;
 
         if (!creature.is_alive()) {
-            grid.get_tile(creature.get_position()).occupy(nullptr);
+            const Position& position = creature.get_position();
+            Tile& tile = grid.get_tile(position);
+            tile.occupy(nullptr);
+            tile.add_loot(creature.drop());
+
+            add_tile_if_lootable(tile, position);
+
+            uint16_t new_id = it->first + 1;
             it = creatures.erase(it);
+
+            init_creature(new_id);
         } else {
             it++;
         }
@@ -181,6 +209,7 @@ void GameWorld::remove_player(const std::string& player_name) {
             creature.stop_targeting();
     }
 
+    player_repository.save_progress(it->second);
     player_repository.desconnect(player_name);
     players.erase(it);
     std::cout << "[World] Jugador " << player_name << " desconectado" << std::endl;
@@ -193,11 +222,18 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
     Player& player = players.at(player_name);
 
     try {
-        const Tile& target_tile = grid.get_tile(position);
+        Tile& target_tile = grid.get_tile(position);
         Interactive* occupant = target_tile.occupant();
 
         if (occupant != nullptr) {
-            return occupant->interact(player);
+            InteractResult result = occupant->interact(player);
+
+            if (result.attack.was_killed) {
+                Player& target = players.at(result.attack.player_attacked);
+                drop_and_add(target, target_tile);
+            }
+
+            return result;
         }
         std::cout << "[World] " << player_name << " golpeó al aire" << std::endl;
     } catch (const std::out_of_range&) {
@@ -206,6 +242,11 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
     return InteractResult();
 }
 
+void GameWorld::add_tile_if_lootable(Tile& tile, const Position& position) {
+    std::pair<uint16_t, uint16_t> pair_position = {position.get_x(), position.get_y()};
+    if (not tile.get_loot().empty() && !tiles_with_loot.contains(pair_position))
+        tiles_with_loot.insert({pair_position, &tile});
+}
 
 ResurrectResult GameWorld::resurrect_player(const std::string& player_name) {
     return execute_ally_action(player_name, AllyActionPayload(AllyAction::RESURRECT)).resurrect;
@@ -267,6 +308,112 @@ WithdrawGoldResult GameWorld::withdraw_gold(const std::string& player_name, cons
             .withdraw_gold;
 }
 
+PickUpResult GameWorld::pick_up(const std::string& player_name) {
+    if (!players.contains(player_name))
+        return PickUpResult();
+
+    Player& player = players.at(player_name);
+
+    if (!player.is_alive())
+        return PickUpResult(PickUpStatus::GHOST_FAIL);
+
+    const Position& position = player.get_position();
+
+    Tile& tile = grid.get_tile(position);
+    if (tile.get_loot().empty())
+        return PickUpResult(PickUpStatus(PickUpStatus::NO_LOOT));
+
+    const Loot& loot = tile.get_loot().top();
+
+    PickUpResult result = loot.type == LootType::ITEM ? pick_item_up(player, tile, loot.item) :
+                                                        pick_gold_up(player, tile, loot.gold);
+
+    if (result.status == PickUpStatus::SUCCESS && tile.get_loot().empty())
+        tiles_with_loot.extract({position.get_x(), position.get_y()});
+
+    return result;
+}
+
+PickUpResult GameWorld::pick_item_up(Player& player, Tile& tile, uint8_t item) {
+    try {
+        player.acquire_item(item);
+        tile.get_loot().pop();
+        return PickUpResult(PickUpStatus::SUCCESS);
+    } catch (const InventoryFull& err) {
+    } catch (const SlotFull& err) {}
+
+    return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
+}
+
+PickUpResult GameWorld::pick_gold_up(Player& player, Tile& tile, uint16_t gold) {
+    uint16_t previous_gold = player.get_safe_gold() + player.get_excess_gold();
+    player.add_gold(gold);
+    uint16_t current_gold = player.get_safe_gold() + player.get_excess_gold();
+
+    tile.get_loot().pop();
+
+    if (current_gold - previous_gold == gold) {
+        return PickUpResult(PickUpStatus::SUCCESS);
+    } else if (current_gold - previous_gold == 0) {
+        return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
+    }
+
+    return PickUpResult(PickUpStatus::GOLD_OVERFLOW);
+}
+
+UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t item_id) {
+    if (not players.contains(player_name))
+        return UseItemResult();
+
+    Player& player = players.at(player_name);
+
+    // No debería ocurrir porque los jugadores pierden todo al morir, pero igual
+    if (not player.is_alive())
+        return UseItemResult(UseItemStatus::GHOST_FAIL);
+
+    try {
+        player.use_item(item_id);
+        return UseItemResult(UseItemStatus::SUCCESS);
+
+    } catch (const ItemNotOwned&) {
+        return UseItemResult(UseItemStatus::FAILED);
+    }
+}
+
+UnequipItemResult GameWorld::unequip_item(const std::string& player_name, const uint8_t item_id) {
+    if (not players.contains(player_name))
+        return UnequipItemResult();
+
+    Player& player = players.at(player_name);
+    try {
+        player.unequip_item(item_id);
+        return UnequipItemResult(UnequipItemStatus::SUCCESS);
+
+    } catch (const InventoryFull&) {
+        return UnequipItemResult(UnequipItemStatus::FAILED);
+    }
+}
+
+DropItemResult GameWorld::drop_item(const std::string& player_name, const uint8_t item_id) {
+    if (not players.contains(player_name))
+        return DropItemResult();
+
+    Player& player = players.at(player_name);
+    const Position& position = player.get_position();
+    try {
+        player.drop_item(item_id);
+        Tile& tile = grid.get_tile(position);
+        tile.add_loot(Loot(item_id));
+        add_tile_if_lootable(tile, position);
+        return DropItemResult(DropItemStatus::SUCCESS);
+
+    } catch (const ItemNotOwned&) {
+        return DropItemResult(DropItemStatus::ITEM_NOT_OWNED);
+
+    } catch (const ItemEquipped&) {
+        return DropItemResult(DropItemStatus::ITEM_EQUIPPED);
+    }
+}
 
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {
@@ -360,8 +507,19 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
     }
 }
 
-void GameWorld::init_creature() {
+void GameWorld::init_creature(uint16_t id) {
     Position goblin_position(30, 30);
-    creatures.emplace(1, Creature(0, 0, 0, goblin_position));
-    grid.get_tile(goblin_position).occupy(&creatures.at(1));
+    creatures.emplace(id, Creature(id, 0, 0, goblin_position));
+    grid.get_tile(goblin_position).occupy(&creatures.at(id));
+}
+
+void GameWorld::drop_player_items(Player& player) {
+    Tile& target_tile = grid.get_tile(player.get_position());
+    drop_and_add(player, target_tile);
+}
+
+void GameWorld::drop_and_add(Player& player, Tile& tile) {
+    tile.add_loot(player.drop());
+
+    add_tile_if_lootable(tile, player.get_position());
 }

@@ -19,6 +19,8 @@ public:
 
     bool operator==(const Position& other) const;
 
+    bool operator<(const Position& other) const;
+
     Position move(const Direction& direction) const;
 
     int get_x() const;

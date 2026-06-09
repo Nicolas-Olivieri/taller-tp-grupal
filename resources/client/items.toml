@@ -5,18 +5,22 @@
 [items.bare_hand]
 id = 0
 name = "Manos"
+icon_path = "/hud_items/0.png"
 
 [items.sword]
 id = 1
 name = "Espada"
+icon_path = "/hud_items/1.png"
 
 [items.axe]
 id = 2
 name = "Hacha"
+icon_path = "/hud_items/2.png"
 
 [items.hammer]
 id = 3
 name = "Martillo"
+icon_path = "/hud_items/3.png"
 
 
 # Báculos (Hechizos)
@@ -24,18 +28,22 @@ name = "Martillo"
 [items.ash_stick]
 id = 4
 name = "Vara de fresno"
+icon_path = "/hud_items/4.png"
 
 [items.elven_flute]
 id = 5
 name = "Flauta elfica"
+icon_path = "/hud_items/5.png"
 
 [items.knotty_staff]
 id = 6
 name = "Baculo nudoso"
+icon_path = "/hud_items/6.png"
 
 [items.socketed_staff]
 id = 7
 name = "Baculo engarzado"
+icon_path = "/hud_items/7.png"
 
 
 # Armas a distancia
@@ -43,10 +51,12 @@ name = "Baculo engarzado"
 [items.simple_bow]
 id = 8
 name = "Arco simple"
+icon_path = "/hud_items/8.png"
 
 [items.compound_bow]
 id = 9
 name = "Arco compuesto"
+icon_path = "/hud_items/9.png"
 
 
 # Armaduras
@@ -54,14 +64,17 @@ name = "Arco compuesto"
 [items.leather_armor]
 id = 10
 name = "Armadura de cuero"
+icon_path = "/hud_items/10.png"
 
 [items.plate_armor]
 id = 11
 name = "Armadura de placas"
+icon_path = "/hud_items/11.png"
 
 [items.blue_tunic]
 id = 12
 name = "Tunica azul"
+icon_path = "/hud_items/12.png"
 
 
 # Cascos
@@ -69,14 +82,17 @@ name = "Tunica azul"
 [items.hood]
 id = 13
 name = "Capucha"
+icon_path = "/hud_items/13.png"
 
 [items.iron_helmet]
 id = 14
 name = "Casco de hierro"
+icon_path = "/hud_items/14.png"
 
 [items.magic_hat]
 id = 15
 name = "Sombrero magico"
+icon_path = "/hud_items/15.png"
 
 
 # Escudos
@@ -84,11 +100,13 @@ name = "Sombrero magico"
 [items.turtle_shield]
 id = 16
 name = "Escudo de tortuga"
+icon_path = "/hud_items/16.png"
 
 
 [items.iron_shield]
 id = 17
 name = "Escudo de hierro"
+icon_path = "/hud_items/17.png"
 
 
 # Pociones
@@ -96,8 +114,10 @@ name = "Escudo de hierro"
 [items.health_potion]
 id = 18
 name = "Pocion de vida"
+icon_path = "/hud_items/18.png"
 
 
 [items.mana_potion]
 id = 19
 name = "Pocion de mana"
+icon_path = "/hud_items/19.png"

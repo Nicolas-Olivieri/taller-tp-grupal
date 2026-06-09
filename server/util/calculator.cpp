@@ -1,10 +1,11 @@
 #include "calculator.h"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <random>
 
-#include "server/game/player/inventory/item_mapper.h"
+#include "server/game/items/item_mapper.h"
 
 uint16_t Calculator::calculate_max_health(uint8_t level, uint8_t constitution, float factor_class,
                                           float factor_race) {
@@ -49,9 +50,26 @@ uint32_t Calculator::kill_exp(uint16_t foe_max_health, uint8_t foe_level, uint8_
 }
 
 int Calculator::random_number(const int min, const int max) {
+    assert(min <= max);
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(min, max);
+    return dis(gen);
+}
+
+uint8_t Calculator::random_number(const uint8_t min, const uint8_t max) {
+    assert(min <= max);
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<uint8_t> dis(min, max);
+    return dis(gen);
+}
+
+int Calculator::random_from_weighted_probabilities(const std::vector<float>& probabilities) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::discrete_distribution<int> dis(probabilities.begin(), probabilities.end());
+
     return dis(gen);
 }
 
@@ -68,10 +86,13 @@ uint16_t Calculator::calculate_defense(const Equipment& equipment) {
 }
 
 int Calculator::get_random_from_item(const uint8_t item) {
-    return random_number(ItemMapper::get_min(item), ItemMapper::get_max(item));
+    const EquipableItemData data = GameConfig::get().get_equipable(item);
+
+    return random_number(data.min, data.max);
 }
 
 float Calculator::random_float(const float min, const float max) {
+    assert(min <= max);
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dis(min, max);
@@ -88,3 +109,7 @@ uint8_t Calculator::calculate_scalable_stat(uint8_t base, uint8_t level, float m
 }
 
 bool Calculator::can_dodge(const int agility) { return std::pow(random_float(0.0f, 1.0f), agility) < 0.001f; }
+
+uint16_t Calculator::calculate_random_drop_gold(uint8_t max_healh) {
+    return random_float(0.1, 0.2) * max_healh;
+}
