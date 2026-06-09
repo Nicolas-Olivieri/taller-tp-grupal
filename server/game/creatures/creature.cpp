@@ -13,10 +13,8 @@
 
 // TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
 // ditintos niveles
-Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
-                   const Position& position):
+Creature::Creature(const uint8_t race, const uint8_t variation, const Position& position):
         Killable(race, variation, 5, position, Equipment{0, 0, 0, 1}),
-        sub_id(sub_id),
         state(std::make_unique<IdleState>()),
         target(nullptr) {}
 

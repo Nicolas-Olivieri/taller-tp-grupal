@@ -3,13 +3,14 @@
 #include <vector>
 
 #include "common/dto/message.h"
+#include "common/dto/snapshot/map/asset_info.h"
 
 struct GridMatrixDTO {
     std::vector<std::vector<bool>> walkable_tiles;
-    std::vector<std::vector<uint8_t>> tiles_ids;
+    std::vector<AssetInfoDTO> tiles;
 
     GridMatrixDTO(const std::vector<std::vector<bool>>& walkable_tiles,
-                  std::vector<std::vector<uint8_t>> tiles_ids);
+                  const std::vector<AssetInfoDTO>& tiles);
 };
 
 

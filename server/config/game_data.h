@@ -82,7 +82,7 @@ struct toml::from<RaceData> {
 };
 
 struct VariationData {
-    std::vector<uint8_t> compatible_races;
+    std::unordered_set<uint8_t> compatible_races;
     float factor;
     uint8_t agility;
     float multiplier;
@@ -93,12 +93,19 @@ struct VariationData {
 template <>
 struct toml::from<VariationData> {
     static VariationData from_toml(const toml::value& raw) {
-        return VariationData{toml::find<std::vector<uint8_t>>(raw, "compatible_races"),
-                             toml::find<float>(raw, "factor"),
-                             toml::find<uint8_t>(raw, "agility"),
-                             toml::find<float>(raw, "multiplier"),
-                             toml::find<float>(raw, "max_level_multiplier"),
-                             toml::find<std::vector<uint8_t>>(raw, "equipment")};
+        VariationData data;
+        std::vector<uint8_t> races = toml::find<std::vector<uint8_t>>(raw, "compatible_races");
+        for (const auto& race: races) {
+            data.compatible_races.insert(race);
+        }
+
+        data.factor = toml::find<float>(raw, "factor");
+        data.agility = toml::find<uint8_t>(raw, "agility");
+        data.multiplier = toml::find<float>(raw, "multiplier");
+        data.max_level_multiplier = toml::find<float>(raw, "max_level_multiplier");
+        data.equipment = toml::find<std::vector<uint8_t>>(raw, "equipment");
+
+        return data;
     }
 };
 

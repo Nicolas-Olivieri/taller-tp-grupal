@@ -17,7 +17,6 @@ enum class DropType { NOTHING = 0, GOLD = 1, USABLE = 2, EQUIPABLE = 3 };
 
 class Creature: public Killable, public Attacker {
 private:
-    const uint16_t sub_id;
     std::unique_ptr<CreatureState> state;
 
     Player* target;
@@ -31,7 +30,7 @@ private:
 public:
     // TODO: mover métodos que no son públicos a la sección private
 
-    Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation, const Position& position);
+    Creature(const uint8_t race, const uint8_t variation, const Position& position);
 
     std::vector<Loot> drop() override;
 

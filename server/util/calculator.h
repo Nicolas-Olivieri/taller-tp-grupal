@@ -46,6 +46,16 @@ public:
 
     static int random_from_weighted_probabilities(const std::vector<float>& probabilities);
 
+    template <typename T>
+    static T random_choice(const std::vector<T>& elements) {
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+
+        std::uniform_int_distribution<size_t> dis(0, elements.size() - 1);
+
+        return elements[dis(gen)];
+    }
+
 private:
     static float random_float(const float min, const float max);
 

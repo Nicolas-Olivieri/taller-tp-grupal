@@ -19,15 +19,18 @@ Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         tile_row.reserve(width);
 
         for (uint16_t x = 0; x < width; x++) {
-            try {
-                uint8_t biome_id = config.get_biome_id(grid_data.tiles_ids[y][x]);
-                tile_row.push_back(Tile(grid_data.walkable_tiles[y][x], biome_id));
-            } catch (const std::out_of_range& err) {
-                tile_row.push_back(Tile(grid_data.walkable_tiles[y][x]));
-            }
+            tile_row.push_back(Tile(grid_data.walkable_tiles[y][x]));
         }
 
         tiles_.emplace_back(std::move(tile_row));
+    }
+
+    for (const auto& tile : grid_data.tiles) {
+        try {
+            tiles_[tile.y][tile.x].set_biome_id(config.get_biome_id(tile.id));
+        } catch (const std::out_of_range& err) {
+            tiles_[tile.y][tile.x].set_biome_id(UINT8_MAX);
+        }
     }
 }
 
