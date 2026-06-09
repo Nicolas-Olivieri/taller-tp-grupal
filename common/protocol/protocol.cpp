@@ -104,6 +104,9 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::CLAN_FOUND) {
         const std::string clan_name = deserializer.recv_string();
         return RequestedCommandDTO(command, clan_name);
+    } else if (command == CommandType::CLAN_JOIN) {
+        const std::string clan_name = deserializer.recv_string();
+        return RequestedCommandDTO(command, clan_name);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }

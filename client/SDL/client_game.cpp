@@ -13,6 +13,7 @@
 #include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
 #include "common/dto/events/clan_found_event.h"
+#include "common/dto/events/clan_join_event.h"
 #include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/events/deposit_item_event.h"
 #include "common/dto/events/interact_event.h"
@@ -206,6 +207,8 @@ void ClientGame::handle_text_command(const std::string& text) {
 
     if (text.starts_with("/fundar-clan "))
         handle_clan_foundation(text);
+    if (text.starts_with("/unirse "))
+        handle_clan_join(text);
     // TODO agregar comandos de clanes
 }
 
@@ -454,17 +457,40 @@ void ClientGame::handle_mouse_wheel(const SDL_Event& event) {
 }
 
 void ClientGame::handle_clan_foundation(const std::string& text) {
-    assert(text.starts_with("/fundar-clan "));
-    size_t pos = text.find(' ');
+    const std::string prefix = "/fundar-clan ";
+
+    std::string clan_name = get_clan_name(prefix, text);
+
+    if (clan_name.empty())
+        return;
+
+    connection.push_command(std::make_unique<ClanFoundEventDTO>(clan_name));
+}
+
+void ClientGame::handle_clan_join(const std::string& text) {
+    const std::string prefix = "/unirse ";
+
+    std::string clan_name = get_clan_name(prefix, text);
+
+    if (clan_name.empty())
+        return;
+
+    connection.push_command(std::make_unique<ClanJoinEventDTO>(clan_name));
+}
+
+std::string ClientGame::get_clan_name(const std::string& prefix, const std::string& text) const {
+    assert(not prefix.empty());
+    assert(not text.empty());
+    assert(text.starts_with(prefix));
+    size_t pos = text.find(prefix.back());
     assert(pos != std::string::npos);
 
     std::string clan_name = text.substr(pos + 1);
     if (clan_name.empty())
-        return;
+        return clan_name;
 
-    auto not_space = [](unsigned char ch) { return !std::isspace(ch); };
+    auto not_space = [](uint8_t c) { return !std::isspace(c); };
     clan_name.erase(clan_name.begin(), std::find_if(clan_name.begin(), clan_name.end(), not_space));
     clan_name.erase(std::find_if(clan_name.rbegin(), clan_name.rend(), not_space).base(), clan_name.end());
-
-    connection.push_command(std::make_unique<ClanFoundEventDTO>(clan_name));
+    return clan_name;
 }

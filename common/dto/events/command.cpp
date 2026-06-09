@@ -85,5 +85,5 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::stri
         item_id(0),
         gold_amount(0),
         clan_name(clan_name) {
-    assert(cmd == CommandType::CLAN_FOUND);
+    assert(cmd == CommandType::CLAN_FOUND || cmd == CommandType::CLAN_JOIN);
 }

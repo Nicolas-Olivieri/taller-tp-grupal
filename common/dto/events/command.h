@@ -19,6 +19,7 @@ enum class CommandType : uint8_t {
     DEPOSIT_GOLD,
     WITHDRAW_GOLD,
     CLAN_FOUND,
+    CLAN_JOIN,
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a

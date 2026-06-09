@@ -23,6 +23,7 @@ target_sources(taller_common
         dto/events/withdraw_gold_event.cpp
         dto/events/withdraw_item_event.cpp
         dto/events/clan_found_event.cpp
+        dto/events/clan_join_event.cpp
 
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
@@ -88,6 +89,7 @@ target_sources(taller_common
         dto/events/withdraw_gold_event.h
         dto/events/withdraw_item_event.h
         dto/events/clan_found_event.h
+        dto/events/clan_join_event.h
 
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h

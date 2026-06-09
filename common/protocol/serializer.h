@@ -9,6 +9,7 @@
 #include "common/dto/events/buy_event.h"
 #include "common/dto/events/chatevent.h"
 #include "common/dto/events/clan_found_event.h"
+#include "common/dto/events/clan_join_event.h"
 #include "common/dto/events/deposit_gold_event.h"
 #include "common/dto/events/deposit_item_event.h"
 #include "common/dto/events/event.h"
@@ -128,6 +129,8 @@ public:
     void serialize(const WithdrawGoldEventDTO& event);
 
     void serialize(const ClanFoundEventDTO& event);
+
+    void serialize(const ClanJoinEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

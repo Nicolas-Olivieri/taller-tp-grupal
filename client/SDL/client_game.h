@@ -91,6 +91,10 @@ public:
     void run();
 
     Camera initialize_world_and_camera();
+
+    void handle_clan_join(const std::string& text);
+
+    std::string get_clan_name(const std::string& prefix, const std::string& text) const;
 };
 
 

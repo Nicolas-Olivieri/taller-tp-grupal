@@ -244,3 +244,8 @@ void Serializer::serialize(const ClanFoundEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.clan_name);
 }
+
+void Serializer::serialize(const ClanJoinEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.clan_name);
+}
