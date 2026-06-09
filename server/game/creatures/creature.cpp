@@ -155,3 +155,5 @@ Position Creature::get_target_position() const {
 bool Creature::is_targeting(const Player& player) const { return target == &player; }
 
 const Stats& Creature::get_stats() const { return stats; }
+
+const std::string& Creature::get_target_name() const { return target->get_name(); }

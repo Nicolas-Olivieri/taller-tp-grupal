@@ -137,7 +137,10 @@ InteractResult Player::interact(Player& attacker) {
     //  - fuego amigo (entre compis no nos pegamos)
     //  - zona segura?
 
-    return Killable::interact(attacker);
+    InteractResult result = Killable::interact(attacker);
+    result.attack.player_attacked = player_name;
+
+    return result;
 }
 
 void Player::update_position(const Position& new_position, const Direction& new_direction) {
@@ -174,16 +177,28 @@ void Player::drop_excess_gold(std::vector<Loot>& drops) {
 void Player::drop_inventory(std::vector<Loot>& drops) {
     for (const auto& [item, amount]: inventory.get_items()) {
         for (size_t i = 0; i < amount; i++) {
-            drops.push_back(Loot(item));
+            if (item != NO_ITEM)
+                drops.push_back(Loot(item));
         }
     }
+
+    inventory.clear();
 }
 
 void Player::drop_equipment(std::vector<Loot>& drops) {
-    drops.push_back(Loot(equipment.weapon));
-    drops.push_back(Loot(equipment.armor));
-    drops.push_back(Loot(equipment.shield));
-    drops.push_back(Loot(equipment.helmet));
+    if (equipment.weapon != NO_ITEM)
+        drops.push_back(Loot(equipment.weapon));
+    if (equipment.armor != NO_ITEM)
+        drops.push_back(Loot(equipment.armor));
+    if (equipment.shield != NO_ITEM)
+        drops.push_back(Loot(equipment.shield));
+    if (equipment.helmet != NO_ITEM)
+        drops.push_back(Loot(equipment.helmet));
+
+    equipment.weapon = NO_ITEM;
+    equipment.armor = NO_ITEM;
+    equipment.shield = NO_ITEM;
+    equipment.helmet = NO_ITEM;
 }
 
 void Player::bind_ally(Ally* ally) {

@@ -2,7 +2,7 @@
 #define USE_ITEM_RESULT_H
 
 
-enum class UseItemStatus { SUCCESS, FAILED, MUST_NOT_NOTIFY };
+enum class UseItemStatus { SUCCESS, FAILED, GHOST_FAIL, MUST_NOT_NOTIFY };
 
 
 struct UseItemResult {
