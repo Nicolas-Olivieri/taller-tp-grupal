@@ -30,10 +30,10 @@ void ClanKickCommand::build_snapshot(SnapshotBuilder& builder) {
             error_msg = IS_MEMBER_MSG;
             break;
         case ClanActionStatus::NOT_IN_CLAN:
-            error_msg = std::format("El jugador {} no es un miembro del clan", other_player_name);
+            error_msg = NOT_IN_CLAN_MSG;
             break;
         case ClanActionStatus::NOT_A_PLAYER:
-            error_msg = std::format(NOT_A_PLAYER_MSG, other_player_name);
+            error_msg = std::format("El jugador {} no es un miembro del clan", other_player_name);
             break;
         case ClanActionStatus::IS_ALREADY_MEMBER:
         case ClanActionStatus::IS_BANNED_PLAYER:

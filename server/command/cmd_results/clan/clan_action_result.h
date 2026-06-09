@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-#define NOT_IN_CLAN_MSG "Debes estar en un clan para realizar esta acción"
+#define NOT_IN_CLAN_MSG "Debes estar en un clan para realizar esta accion"
 #define NOT_A_PLAYER_MSG "El jugador {} no existe"
-#define IS_MEMBER_MSG "Solo el fundador del clan puede realizar esa acción"
+#define IS_MEMBER_MSG "Solo el fundador del clan puede realizar esa accion"
 #define IS_ALREADY_MEMBER_MSG "El jugador {} ya es un miembro del clan"
 #define IS_NOT_IN_JOIN_LIST_MSG "El jugador {} no solicito unirse al clan"
 #define CLAN_IS_FULL_MSG "El clan ya esta lleno"

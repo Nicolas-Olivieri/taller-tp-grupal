@@ -20,6 +20,7 @@
 #include "common/dto/events/chat/chatevent.h"
 #include "common/dto/events/clan/clan_found_event.h"
 #include "common/dto/events/clan/clan_join_event.h"
+#include "common/dto/events/clan/clan_remove_player_event.h"
 #include "common/dto/events/clan/clan_request_response_event.h"
 #include "common/dto/events/movement/moveevent.h"
 #include "common/util/rate_timer.h"
@@ -212,7 +213,10 @@ void ClientGame::handle_text_command(const std::string& text) {
         handle_clan_join(text);
     if (text.starts_with("/clan-"))
         handle_clan_operation(text);
-    // TODO agregar comandos de clanes
+    if (text == "/revisar-clan")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::CLAN_REVIEW));
+    if (text == "/dejar-clan")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::CLAN_LEAVE));
 }
 
 void ClientGame::handle_buy_item_command(const std::string& text) {
@@ -517,7 +521,10 @@ void ClientGame::handle_clan_operation(const std::string& text) {
         handle_clan_accept(operation);
     if (operation.starts_with("rechazar "))
         handle_clan_reject(operation);
-    // TODO agregar el resto de operations
+    if (operation.starts_with("kick "))
+        handle_clan_kick(operation);
+    if (operation.starts_with("ban "))
+        handle_clan_ban(operation);
 }
 
 void ClientGame::handle_clan_accept(const std::string& text) {
@@ -534,4 +541,20 @@ void ClientGame::handle_clan_reject(const std::string& text) {
     std::string other_player = extract_prefix(prefix, text);
 
     connection.push_command(std::make_unique<RequestResponseEventDTO>(other_player, false));
+}
+
+void ClientGame::handle_clan_kick(const std::string& text) {
+    const std::string prefix = "kick ";
+
+    std::string other_player = extract_prefix(prefix, text);
+
+    connection.push_command(std::make_unique<ClanRemovePlayerEventDTO>(other_player, false));
+}
+
+void ClientGame::handle_clan_ban(const std::string& text) {
+    const std::string prefix = "ban ";
+
+    std::string other_player = extract_prefix(prefix, text);
+
+    connection.push_command(std::make_unique<ClanRemovePlayerEventDTO>(other_player, true));
 }

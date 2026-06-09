@@ -97,9 +97,16 @@ public:
     std::string extract_prefix(const std::string& prefix, const std::string& text) const;
 
     void trim_text(std::string& text);
+
     void handle_clan_operation(const std::string& text);
+
     void handle_clan_accept(const std::string& text);
+
     void handle_clan_reject(const std::string& text);
+
+    void handle_clan_kick(const std::string& text);
+
+    void handle_clan_ban(const std::string& text);
 };
 
 

@@ -114,7 +114,7 @@ ClanActionResult Clan::kick(const std::string& player_name, const std::string& p
         return ClanActionResult(ClanActionStatus::IS_FOUNDER);
 
     if (not is_member(player_to_kick)) {
-        return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
+        return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
     }
 
     return ClanActionResult(ClanActionStatus::SUCCESS);

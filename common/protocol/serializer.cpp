@@ -254,3 +254,9 @@ void Serializer::serialize(const RequestResponseEventDTO& event) {
     serialize(event.player_name);
     serialize(static_cast<uint8_t>(event.is_accepted));
 }
+
+void Serializer::serialize(const ClanRemovePlayerEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.player_name);
+    serialize(static_cast<uint8_t>(event.is_permanent_removal));
+}

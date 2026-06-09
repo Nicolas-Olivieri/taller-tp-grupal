@@ -16,6 +16,7 @@
 #include "common/dto/events/chat/chatevent.h"
 #include "common/dto/events/clan/clan_found_event.h"
 #include "common/dto/events/clan/clan_join_event.h"
+#include "common/dto/events/clan/clan_remove_player_event.h"
 #include "common/dto/events/clan/clan_request_response_event.h"
 #include "common/dto/events/event.h"
 #include "common/dto/events/movement/moveevent.h"
@@ -134,6 +135,8 @@ public:
     void serialize(const ClanJoinEventDTO& event);
 
     void serialize(const RequestResponseEventDTO& event);
+
+    void serialize(const ClanRemovePlayerEventDTO& event);
 };
 
 #endif  // SERIALIZER_H
