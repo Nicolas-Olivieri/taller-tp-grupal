@@ -1,7 +1,7 @@
 #ifndef DEPOSIT_GOLD_EVENT_DTO_H
 #define DEPOSIT_GOLD_EVENT_DTO_H
 
-#include "event.h"
+#include "common/dto/events/event.h"
 
 
 struct DepositGoldEventDTO: public EventDTO {

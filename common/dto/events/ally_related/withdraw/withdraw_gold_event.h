@@ -1,7 +1,7 @@
 #ifndef WITHDRAW_GOLD_EVENT_H
 #define WITHDRAW_GOLD_EVENT_H
 
-#include "event.h"
+#include "common/dto/events/event.h"
 
 
 struct WithdrawGoldEventDTO: public EventDTO {

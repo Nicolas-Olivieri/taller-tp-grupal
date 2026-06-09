@@ -1,7 +1,7 @@
 #ifndef WITHDRAW_ITEM_EVENT_DTO_H
 #define WITHDRAW_ITEM_EVENT_DTO_H
 
-#include "event.h"
+#include "common/dto/events/event.h"
 
 
 struct WithdrawItemEventDTO: public EventDTO {

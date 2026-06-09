@@ -10,18 +10,22 @@
 
 #include "../client_constants.h"
 #include "client/config/client_config.h"
-#include "common/dto/events/buy_event.h"
-#include "common/dto/events/chatevent.h"
-#include "common/dto/events/deposit_gold_event.h"
-#include "common/dto/events/deposit_item_event.h"
+#include "common/dto/events/ally_related/deposit/deposit_gold_event.h"
+#include "common/dto/events/ally_related/deposit/deposit_item_event.h"
+#include "common/dto/events/ally_related/interact_event.h"
+#include "common/dto/events/ally_related/shop/buy_event.h"
+#include "common/dto/events/ally_related/shop/sell_event.h"
+#include "common/dto/events/ally_related/withdraw/withdraw_gold_event.h"
+#include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
+#include "common/dto/events/chat/chatevent.h"
+#include "common/dto/events/clan/clan_found_event.h"
+#include "common/dto/events/clan/clan_join_event.h"
+#include "common/dto/events/clan/clan_remove_player_event.h"
+#include "common/dto/events/clan/clan_request_response_event.h"
+#include "common/dto/events/movement/moveevent.h"
 #include "common/dto/events/drop_item_event.h"
-#include "common/dto/events/interact_event.h"
-#include "common/dto/events/moveevent.h"
-#include "common/dto/events/sell_event.h"
 #include "common/dto/events/unequip_item_event.h"
 #include "common/dto/events/use_item_event.h"
-#include "common/dto/events/withdraw_gold_event.h"
-#include "common/dto/events/withdraw_item_event.h"
 #include "common/util/rate_timer.h"
 #include "sprites/sprite.h"
 
@@ -210,6 +214,17 @@ void ClientGame::handle_text_command(const std::string& text) {
 
     if (text == "/tirar")
         handle_drop_item_command();
+
+    if (text.starts_with("/fundar-clan "))
+        handle_clan_foundation(text);
+    if (text.starts_with("/unirse "))
+        handle_clan_join(text);
+    if (text.starts_with("/clan-"))
+        handle_clan_operation(text);
+    if (text == "/revisar-clan")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::CLAN_REVIEW));
+    if (text == "/dejar-clan")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::CLAN_LEAVE));
 }
 
 void ClientGame::handle_buy_item_command(const std::string& text) {
@@ -494,4 +509,100 @@ void ClientGame::handle_mouse_wheel(const SDL_Event& event) {
 
     if (event.wheel.y < 0)
         ui.chat_scroll_down();
+}
+
+void ClientGame::handle_clan_foundation(const std::string& text) {
+    const std::string prefix = "/fundar-clan ";
+
+    std::string clan_name = extract_prefix(prefix, text);
+
+    if (clan_name.empty())
+        return;
+
+    trim_text(clan_name);
+
+    connection.push_command(std::make_unique<ClanFoundEventDTO>(clan_name));
+}
+
+void ClientGame::handle_clan_join(const std::string& text) {
+    const std::string prefix = "/unirse ";
+
+    std::string clan_name = extract_prefix(prefix, text);
+
+    if (clan_name.empty())
+        return;
+
+    trim_text(clan_name);
+
+    connection.push_command(std::make_unique<ClanJoinEventDTO>(clan_name));
+}
+
+std::string ClientGame::extract_prefix(const std::string& prefix, const std::string& text) const {
+    assert(not prefix.empty());
+    assert(not text.empty());
+    assert(text.starts_with(prefix));
+    size_t pos = text.find(prefix.back());
+    assert(pos != std::string::npos);
+
+    std::string clan_name = text.substr(pos + 1);
+    if (clan_name.empty())
+        return clan_name;
+
+    return clan_name;
+}
+
+void ClientGame::trim_text(std::string& text) {
+    auto not_space = [](uint8_t c) { return !std::isspace(c); };
+    text.erase(text.begin(), std::find_if(text.begin(), text.end(), not_space));
+    text.erase(std::find_if(text.rbegin(), text.rend(), not_space).base(), text.end());
+}
+
+void ClientGame::handle_clan_operation(const std::string& text) {
+    const std::string prefix = "/clan-";
+
+    std::string operation = extract_prefix(prefix, text);
+
+    if (operation.empty())
+        return;
+
+    if (operation.starts_with("aceptar "))
+        handle_clan_accept(operation);
+    if (operation.starts_with("rechazar "))
+        handle_clan_reject(operation);
+    if (operation.starts_with("kick "))
+        handle_clan_kick(operation);
+    if (operation.starts_with("ban "))
+        handle_clan_ban(operation);
+}
+
+void ClientGame::handle_clan_accept(const std::string& text) {
+    const std::string prefix = "aceptar ";
+
+    std::string other_player = extract_prefix(prefix, text);
+
+    connection.push_command(std::make_unique<RequestResponseEventDTO>(other_player, true));
+}
+
+void ClientGame::handle_clan_reject(const std::string& text) {
+    const std::string prefix = "rechazar ";
+
+    std::string other_player = extract_prefix(prefix, text);
+
+    connection.push_command(std::make_unique<RequestResponseEventDTO>(other_player, false));
+}
+
+void ClientGame::handle_clan_kick(const std::string& text) {
+    const std::string prefix = "kick ";
+
+    std::string other_player = extract_prefix(prefix, text);
+
+    connection.push_command(std::make_unique<ClanRemovePlayerEventDTO>(other_player, false));
+}
+
+void ClientGame::handle_clan_ban(const std::string& text) {
+    const std::string prefix = "ban ";
+
+    std::string other_player = extract_prefix(prefix, text);
+
+    connection.push_command(std::make_unique<ClanRemovePlayerEventDTO>(other_player, true));
 }
