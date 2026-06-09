@@ -328,3 +328,8 @@ void Player::leave_clan() {
 }
 
 bool Player::is_clan_founder() const { return _is_founder; }
+
+void Player::set_xp_level(const uint8_t new_level) {
+    stats.experience.set_level(new_level);
+    stats.upgrade();
+}

@@ -28,6 +28,7 @@ enum class CommandType : uint8_t {
     CLAN_REMOVE_PLAYER,
     CLAN_LEAVE,
     CLAN_REVIEW,
+    CHEAT_XP,
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a
@@ -43,6 +44,7 @@ struct RequestedCommandDTO {
     std::string receiver;
     std::string message;
 
+    // OJO si se cambia esto de uint_8 a algo más cuidado que tmb se usa para enviar el nivel de experiencia
     uint8_t item_id;
 
     uint16_t gold_amount;

@@ -104,6 +104,8 @@ public:
 
     ClanActionResult execute_clan_action(const ClanActionPayload& payload);
 
+    void cheat_player_xp(const std::string& player_name, const uint8_t level);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

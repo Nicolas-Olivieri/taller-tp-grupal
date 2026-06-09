@@ -104,10 +104,7 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD) {
         const uint16_t gold_amount = deserializer.recv_uint16();
         return RequestedCommandDTO(command, gold_amount);
-    } else if (command == CommandType::CLAN_FOUND) {
-        const std::string clan_name = deserializer.recv_string();
-        return RequestedCommandDTO(command, clan_name);
-    } else if (command == CommandType::CLAN_JOIN) {
+    } else if (command == CommandType::CLAN_FOUND or command == CommandType::CLAN_JOIN) {
         const std::string clan_name = deserializer.recv_string();
         return RequestedCommandDTO(command, clan_name);
     } else if (command == CommandType::CLAN_REQUEST_RESPONSE) {
@@ -118,6 +115,9 @@ RequestedCommandDTO Protocol::recv_command() {
         const std::string player_name = deserializer.recv_string();
         const bool is_permanent_removal = deserializer.recv_uint8();
         return RequestedCommandDTO(command, player_name, is_permanent_removal);
+    } else if (command == CommandType::CHEAT_XP) {
+        const uint8_t level = deserializer.recv_uint8();
+        return RequestedCommandDTO(command, level);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }

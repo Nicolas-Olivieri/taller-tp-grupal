@@ -20,6 +20,9 @@ void Health::update_max(uint8_t level, uint8_t constitution) {
     }
 
     this->constitution = constitution;
+
+    if (current_amount > new_max)
+        current_amount = max_amount;
 }
 
 

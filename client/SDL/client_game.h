@@ -104,6 +104,10 @@ private:
     // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes
     static SDL_HitTestResult hit_test_callback(SDL_Window*, const SDL_Point* area, void* data);
 
+    void handle_cheat(const std::string& text);
+
+    void handle_xp_cheat(const std::string& text);
+
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager);
 

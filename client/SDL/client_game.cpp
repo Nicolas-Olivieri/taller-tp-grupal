@@ -1,6 +1,7 @@
 #include "client_game.h"
 
 #include <memory>
+#include <regex>
 #include <utility>
 
 #include <SDL2/SDL.h>
@@ -18,6 +19,7 @@
 #include "common/dto/events/ally_related/withdraw/withdraw_gold_event.h"
 #include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
 #include "common/dto/events/chat/chatevent.h"
+#include "common/dto/events/cheat/cheat_experience_set_event.h"
 #include "common/dto/events/clan/clan_found_event.h"
 #include "common/dto/events/clan/clan_join_event.h"
 #include "common/dto/events/clan/clan_remove_player_event.h"
@@ -225,6 +227,9 @@ void ClientGame::handle_text_command(const std::string& text) {
         connection.push_command(std::make_unique<EventDTO>(CommandType::CLAN_REVIEW));
     if (text == "/dejar-clan")
         connection.push_command(std::make_unique<EventDTO>(CommandType::CLAN_LEAVE));
+
+    if (text.starts_with("/cheat-"))
+        handle_cheat(text);
 }
 
 void ClientGame::handle_buy_item_command(const std::string& text) {
@@ -605,4 +610,33 @@ void ClientGame::handle_clan_ban(const std::string& text) {
     std::string other_player = extract_prefix(prefix, text);
 
     connection.push_command(std::make_unique<ClanRemovePlayerEventDTO>(other_player, true));
+}
+
+void ClientGame::handle_cheat(const std::string& text) {
+    const std::string prefix = "/cheat-";
+
+    std::string cheat_type = extract_prefix(prefix, text);
+
+    if (cheat_type.starts_with("set-xp "))
+        handle_xp_cheat(cheat_type);
+    // TODO agregar el resto de cheats
+}
+
+void ClientGame::handle_xp_cheat(const std::string& text) {
+    const std::string prefix = "set-xp ";
+
+    const std::string level_txt = extract_prefix(prefix, text);
+
+    std::regex only_numbers("^\\d+$");
+
+    if (!std::regex_match(level_txt, only_numbers))
+        return;
+
+    uint8_t level;
+    auto [_, error_code] = std::from_chars(level_txt.data(), level_txt.data() + level_txt.size(), level);
+
+    if (error_code != std::errc())
+        return;
+
+    connection.push_command(std::make_unique<CheatExperienceSetEventDTO>(level));
 }

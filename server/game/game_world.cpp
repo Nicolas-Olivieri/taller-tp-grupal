@@ -631,3 +631,12 @@ void GameWorld::load_clans() {
         clans.insert({data.clan_name, clan});
     }
 }
+
+void GameWorld::cheat_player_xp(const std::string& player_name, const uint8_t level) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+    player.set_xp_level(level);
+}

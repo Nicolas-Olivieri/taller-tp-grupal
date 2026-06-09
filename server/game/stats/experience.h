@@ -17,6 +17,8 @@ public:
     uint32_t get_current_amount() const;
 
     bool earn_xp(uint32_t amount);
+
+    void set_level(uint8_t new_level);
 };
 
 

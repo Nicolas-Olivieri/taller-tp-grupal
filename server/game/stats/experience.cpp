@@ -26,3 +26,8 @@ bool Experience::earn_xp(uint32_t amount) {
 
     return leveled_up;
 }
+
+void Experience::set_level(uint8_t new_level) {
+    current_amount = 0;
+    level = new_level;
+}

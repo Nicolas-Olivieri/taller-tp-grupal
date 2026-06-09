@@ -15,6 +15,7 @@
 #include "common/dto/events/ally_related/withdraw/withdraw_gold_event.h"
 #include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
 #include "common/dto/events/chat/chatevent.h"
+#include "common/dto/events/cheat/cheat_experience_set_event.h"
 #include "common/dto/events/clan/clan_found_event.h"
 #include "common/dto/events/clan/clan_join_event.h"
 #include "common/dto/events/clan/clan_remove_player_event.h"
@@ -168,6 +169,8 @@ public:
     void serialize(const RequestResponseEventDTO& event);
 
     void serialize(const ClanRemovePlayerEventDTO& event);
+
+    void serialize(const CheatExperienceSetEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

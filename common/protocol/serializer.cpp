@@ -306,3 +306,8 @@ void Serializer::serialize(const ClanRemovePlayerEventDTO& event) {
     serialize(event.player_name);
     serialize(static_cast<uint8_t>(event.is_permanent_removal));
 }
+
+void Serializer::serialize(const CheatExperienceSetEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.level);
+}

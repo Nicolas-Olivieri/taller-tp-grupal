@@ -140,6 +140,8 @@ public:
 
     bool is_clan_founder() const;
 
+    void set_xp_level(const uint8_t new_level);
+
 private:
     void complete_delayed_resurrection();
 };
