@@ -6,3 +6,4 @@ forest = { paths = ["/music/forest.mid"], volume = 64 }
 [sfx]
 footstep = { paths = ["/sfx/step1.wav", "/sfx/step2.wav"], volume = 8 }
 resurrection = { paths = ["/sfx/resurrection.wav"], volume = 16 }
+spawn = { paths = ["/sfx/spawn.wav"], volume = 16 }

@@ -92,6 +92,7 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
     for (const PlayerInfoDTO& player_info: players_information) {
         if (!players.contains(player_info.name)) {
             add_new_player(player_info);
+            audio_manager.play_event(SoundEvent::SPAWN);
         }
 
         SDL2pp::Point position(player_info.x, player_info.y);
@@ -109,6 +110,7 @@ void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_infor
     for (const CreatureInfoDTO& creature_info: creatures_information) {
         if (!creatures.contains(creature_info.sub_id)) {
             add_new_creature(creature_info);
+            audio_manager.play_event(SoundEvent::SPAWN);
         }
 
         SDL2pp::Point position(creature_info.x, creature_info.y);
