@@ -2,8 +2,8 @@
 
 #include <algorithm>
 #include <cassert>
-#include <random>
 #include <cstring>
+#include <random>
 
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
 // modelo

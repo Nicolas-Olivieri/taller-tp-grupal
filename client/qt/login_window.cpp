@@ -16,12 +16,24 @@
 
 
 LoginWindow::LoginWindow(AudioManager& audio_manager, QWidget* parent):
-        QMainWindow(parent), ui(new Ui::LoginWindow), audio_manager(audio_manager) {
+        QMainWindow(parent),
+        ui(new Ui::LoginWindow),
+        audio_manager(audio_manager),
+        allow_close(false),
+        force_close(false) {
     ui->setupUi(this);
+
+    // Seteo Stacked Widget para ambas pantallas
+    stacked_widget = new QStackedWidget(this);
+    QWidget* loginPage = takeCentralWidget();
+    stacked_widget->addWidget(loginPage);
+    QWidget* creatorContainer = new QWidget();
+    stacked_widget->addWidget(creatorContainer);
+    setCentralWidget(stacked_widget);
 
     // Seteo borde de ventana custom
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-    connect(ui->btnClose, &QPushButton::clicked, this, &QWidget::close);
+    connect(ui->btnClose, &QPushButton::clicked, this, &LoginWindow::exit_window);
     connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
 
     // Configuro la pantalla de LOGIN
@@ -60,25 +72,43 @@ void LoginWindow::connect_match() {
     }
 
     if (!confirmation.user_exists) {
-        const auto creator = new CreatorWindow(QString::fromStdString(username));
-        connect(creator, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
+        QWidget* container = stacked_widget->widget(1);
+
+        creator_window = new CreatorWindow(QString::fromStdString(username), container);
+        auto* layout = new QHBoxLayout(container);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->addWidget(creator_window);
+
+        connect(creator_window, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
+        connect(creator_window, &CreatorWindow::exit_creator, this, &LoginWindow::exit_window);
+
+        stacked_widget->setCurrentIndex(1);
 
         audio_manager.play_music(MusicTrack::CREATOR);
-        setCentralWidget(creator);
-
     } else {
+        allow_close = true;
         audio_manager.play_music(MusicTrack::FOREST);
         close();
     }
 }
 
 void LoginWindow::send_creation_data(const CreatePlayerDTO& player_data) {
+    audio_manager.play_music(MusicTrack::FOREST);
     Protocol protocol(socket.value());
-
     protocol.send(player_data);
 
-    audio_manager.play_music(MusicTrack::FOREST);
-    close();
+    ExistenceDTO confirmation = protocol.recv_existence();
+    if (!confirmation.user_exists) {
+        allow_close = true;
+        close();
+        return;
+    }
+
+    stacked_widget->setCurrentIndex(0);
+    ui->name_err->setText("Alguien acaba de crearse una cuenta con este nombre. Elegí otro");
+    ui->name_err->show();
+
+    socket.reset();
 }
 
 bool LoginWindow::can_create_session() {
@@ -108,6 +138,20 @@ bool LoginWindow::can_create_session() {
     return true;
 }
 
+void LoginWindow::exit_window() {
+    force_close = true;
+    allow_close = true;
+    close();
+}
+
+void LoginWindow::closeEvent(QCloseEvent* event) {
+    if (allow_close) {
+        event->accept();
+        QApplication::quit();
+    } else {
+        event->ignore();
+    }
+}
 
 Socket LoginWindow::get_socket() {
     if (!socket) {
@@ -117,6 +161,8 @@ Socket LoginWindow::get_socket() {
 }
 
 std::string LoginWindow::get_username() { return username; }
+
+bool LoginWindow::was_forced_close() const { return force_close; }
 
 
 void LoginWindow::mousePressEvent(QMouseEvent* event) {

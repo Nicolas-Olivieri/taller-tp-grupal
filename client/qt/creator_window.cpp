@@ -8,6 +8,7 @@
 
 #include "widgets/selector_widget.h"
 
+#include "login_window.h"
 #include "ui_creator_window.h"
 
 CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
@@ -15,8 +16,9 @@ CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
     ui->setupUi(this);
 
     // Seteo borde de ventana custom
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-    connect(ui->btnClose, &QPushButton::clicked, this, &QWidget::close);
+    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlag(Qt::WindowCloseButtonHint, false);
+    connect(ui->btnClose, &QPushButton::clicked, this, &CreatorWindow::exit_window);
     connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
 
     load_skins_data();
@@ -70,6 +72,10 @@ void CreatorWindow::start_game() {
         ui->validation_err->show();
     }
 }
+
+void CreatorWindow::exit_window() { emit exit_creator(); }
+
+void CreatorWindow::closeEvent(QCloseEvent* event) { event->ignore(); }
 
 bool CreatorWindow::validate_data() {
     return ui->races_buttons->checkedButton() && ui->archetypes_buttons->checkedButton();

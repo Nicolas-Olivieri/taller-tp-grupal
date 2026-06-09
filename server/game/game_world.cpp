@@ -8,9 +8,9 @@
 #include "allies/banker.h"
 #include "allies/merchant.h"
 #include "allies/priest.h"
-#include "server/game/clan/clan.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
+#include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
 
 

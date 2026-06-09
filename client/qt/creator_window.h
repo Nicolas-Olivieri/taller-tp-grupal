@@ -23,6 +23,11 @@ public:
 signals:
     void finish_creation(CreatePlayerDTO player_data);
 
+    void exit_creator();
+
+protected:
+    void closeEvent(QCloseEvent* event) override;
+
 private:
     Ui::CreatorWindow* ui;
     SelectorWidget* head_selector;
@@ -35,6 +40,8 @@ private:
     void load_skins_data();
 
     void start_game();
+
+    void exit_window();
 
     bool validate_data();
 };

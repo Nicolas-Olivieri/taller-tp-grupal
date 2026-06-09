@@ -16,9 +16,12 @@ int Client::run() {
     lobby.show();
 
     int error = app.exec();
-
     if (error)
         return error;
+
+    if (lobby.was_forced_close()) {
+        return 0;
+    }
 
     Socket socket = lobby.get_socket();
     ConnectionHandler connection(std::move(socket));
