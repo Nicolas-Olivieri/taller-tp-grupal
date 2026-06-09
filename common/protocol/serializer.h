@@ -6,18 +6,19 @@
 #include <string>
 #include <vector>
 
-#include "common/dto/events/buy_event.h"
-#include "common/dto/events/chatevent.h"
-#include "common/dto/events/clan_found_event.h"
-#include "common/dto/events/clan_join_event.h"
-#include "common/dto/events/deposit_gold_event.h"
-#include "common/dto/events/deposit_item_event.h"
+#include "common/dto/events/ally_related/deposit/deposit_gold_event.h"
+#include "common/dto/events/ally_related/deposit/deposit_item_event.h"
+#include "common/dto/events/ally_related/interact_event.h"
+#include "common/dto/events/ally_related/shop/buy_event.h"
+#include "common/dto/events/ally_related/shop/sell_event.h"
+#include "common/dto/events/ally_related/withdraw/withdraw_gold_event.h"
+#include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
+#include "common/dto/events/chat/chatevent.h"
+#include "common/dto/events/clan/clan_found_event.h"
+#include "common/dto/events/clan/clan_join_event.h"
+#include "common/dto/events/clan/clan_request_response_event.h"
 #include "common/dto/events/event.h"
-#include "common/dto/events/interact_event.h"
-#include "common/dto/events/moveevent.h"
-#include "common/dto/events/sell_event.h"
-#include "common/dto/events/withdraw_gold_event.h"
-#include "common/dto/events/withdraw_item_event.h"
+#include "common/dto/events/movement/moveevent.h"
 #include "common/dto/lobby/ally_info.h"
 #include "common/dto/lobby/create_player.h"
 #include "common/dto/lobby/credentials.h"
@@ -131,6 +132,8 @@ public:
     void serialize(const ClanFoundEventDTO& event);
 
     void serialize(const ClanJoinEventDTO& event);
+
+    void serialize(const RequestResponseEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

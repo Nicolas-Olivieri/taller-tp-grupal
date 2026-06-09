@@ -11,19 +11,20 @@ target_sources(taller_common
         logger.cpp
         dto/lobby/credentials.cpp
 
-        dto/events/buy_event.cpp
+        dto/events/ally_related/shop/buy_event.cpp
         dto/events/event.cpp
-        dto/events/moveevent.cpp
-        dto/events/interact_event.cpp
+        dto/events/movement/moveevent.cpp
+        dto/events/ally_related/interact_event.cpp
         dto/events/command.cpp
-        dto/events/chatevent.cpp
-        dto/events/deposit_gold_event.cpp
-        dto/events/deposit_item_event.cpp
-        dto/events/sell_event.cpp
-        dto/events/withdraw_gold_event.cpp
-        dto/events/withdraw_item_event.cpp
-        dto/events/clan_found_event.cpp
-        dto/events/clan_join_event.cpp
+        dto/events/chat/chatevent.cpp
+        dto/events/ally_related/deposit/deposit_gold_event.cpp
+        dto/events/ally_related/deposit/deposit_item_event.cpp
+        dto/events/ally_related/shop/sell_event.cpp
+        dto/events/ally_related/withdraw/withdraw_gold_event.cpp
+        dto/events/ally_related/withdraw/withdraw_item_event.cpp
+        dto/events/clan/clan_found_event.cpp
+        dto/events/clan/clan_join_event.cpp
+        dto/events/clan/clan_request_response_event.cpp
 
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
@@ -77,19 +78,20 @@ target_sources(taller_common
         dto/message.h
         dto/lobby/credentials.h
 
-        dto/events/buy_event.h
+        dto/events/ally_related/shop/buy_event.h
         dto/events/event.h
-        dto/events/moveevent.h
-        dto/events/interact_event.h
+        dto/events/movement/moveevent.h
+        dto/events/ally_related/interact_event.h
         dto/events/command.h
-        dto/events/chatevent.h
-        dto/events/deposit_gold_event.h
-        dto/events/deposit_item_event.h
-        dto/events/sell_event.h
-        dto/events/withdraw_gold_event.h
-        dto/events/withdraw_item_event.h
-        dto/events/clan_found_event.h
-        dto/events/clan_join_event.h
+        dto/events/chat/chatevent.h
+        dto/events/ally_related/deposit/deposit_gold_event.h
+        dto/events/ally_related/deposit/deposit_item_event.h
+        dto/events/ally_related/shop/sell_event.h
+        dto/events/ally_related/withdraw/withdraw_gold_event.h
+        dto/events/ally_related/withdraw/withdraw_item_event.h
+        dto/events/clan/clan_found_event.h
+        dto/events/clan/clan_join_event.h
+        dto/events/clan/clan_request_response_event.h
 
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h

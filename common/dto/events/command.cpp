@@ -12,7 +12,8 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const Direction
         message(""),
         item_id(0),
         gold_amount(0),
-        clan_name() {}
+        clan_name(),
+        command_selector(false) {}
 
 
 RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const int x, const int y):
@@ -24,7 +25,8 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const int x, co
         message(""),
         item_id(0),
         gold_amount(0),
-        clan_name() {}
+        clan_name(),
+        command_selector(false) {}
 
 
 RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::string& receiver,
@@ -37,7 +39,8 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::stri
         message(content),
         item_id(0),
         gold_amount(0),
-        clan_name() {}
+        clan_name(),
+        command_selector(false) {}
 
 
 RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd):
@@ -49,7 +52,10 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd):
         message(""),
         item_id(0),
         gold_amount(0),
-        clan_name() {}
+        clan_name(),
+        command_selector(false)
+
+{}
 
 
 RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const uint8_t item_id):
@@ -61,7 +67,8 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const uint8_t i
         message(""),
         item_id(item_id),
         gold_amount(0),
-        clan_name() {}
+        clan_name(),
+        command_selector(false) {}
 
 
 RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const uint16_t gold_amount):
@@ -73,7 +80,8 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const uint16_t 
         message(""),
         item_id(0),
         gold_amount(gold_amount),
-        clan_name() {}
+        clan_name(),
+        command_selector(false) {}
 
 RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::string& clan_name):
         command(cmd),
@@ -84,6 +92,21 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::stri
         message(),
         item_id(0),
         gold_amount(0),
-        clan_name(clan_name) {
+        clan_name(clan_name),
+        command_selector(false) {
     assert(cmd == CommandType::CLAN_FOUND || cmd == CommandType::CLAN_JOIN);
 }
+
+RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::string& player_name,
+                                         bool command_selector):
+        command(cmd),
+        player_name(player_name),
+        direction(Direction::IDLE),
+        x(0),
+        y(0),
+        receiver(),
+        message(),
+        item_id(0),
+        gold_amount(0),
+        clan_name(),
+        command_selector(command_selector) {}

@@ -94,7 +94,12 @@ public:
 
     void handle_clan_join(const std::string& text);
 
-    std::string get_clan_name(const std::string& prefix, const std::string& text) const;
+    std::string extract_prefix(const std::string& prefix, const std::string& text) const;
+
+    void trim_text(std::string& text);
+    void handle_clan_operation(const std::string& text);
+    void handle_clan_accept(const std::string& text);
+    void handle_clan_reject(const std::string& text);
 };
 
 

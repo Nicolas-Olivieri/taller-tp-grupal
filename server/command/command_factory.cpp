@@ -15,7 +15,9 @@
 #include "cmd_types/cmd_sell/sell_command.h"
 #include "cmd_types/cmd_withdraw_gold/withdraw_gold_command.h"
 #include "cmd_types/cmd_withdraw_item/withdraw_item_command.h"
+#include "server/command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_join/clan_join_command.h"
+#include "server/command/cmd_types/cmd_clan/cmd_reject/clan_reject_command.h"
 
 
 CommandFactory::CommandFactory(const std::string& player_name): player_name(player_name) {}
@@ -64,6 +66,11 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::CLAN_JOIN:
             return std::make_unique<ClanJoinCommand>(player_name, dto.clan_name);
+
+        case CommandType::CLAN_REQUEST_RESPONSE:
+            if (dto.command_selector)
+                return std::make_unique<ClanAcceptCommand>(player_name, dto.player_name);
+            return std::make_unique<ClanRejectCommand>(player_name, dto.player_name);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");
