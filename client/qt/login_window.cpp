@@ -14,7 +14,9 @@
 
 #include "ui_login_window.h"
 
-LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow), allow_close(false), force_close(false) {
+
+LoginWindow::LoginWindow(AudioManager& audio_manager, QWidget* parent):
+        QMainWindow(parent), ui(new Ui::LoginWindow), audio_manager(audio_manager), allow_close(false), force_close(false) {
     ui->setupUi(this);
 
     // Seteo Stacked Widget para ambas pantallas
@@ -40,6 +42,7 @@ LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::Login
     ui->name_err->hide();
 
     connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::connect_match);
+    audio_manager.play_music(MusicTrack::LOGIN);
 }
 
 void LoginWindow::connect_match() {
@@ -76,13 +79,17 @@ void LoginWindow::connect_match() {
         connect(creator_window, &CreatorWindow::exit_creator, this, &LoginWindow::exit_window);
 
         stacked_widget->setCurrentIndex(1);
+
+        audio_manager.play_music(MusicTrack::CREATOR);
     } else {
         allow_close = true;
+        audio_manager.play_music(MusicTrack::FOREST);
         close();
     }
 }
 
 void LoginWindow::send_creation_data(const CreatePlayerDTO& player_data) {
+    audio_manager.play_music(MusicTrack::FOREST);
     Protocol protocol(socket.value());
     protocol.send(player_data);
 

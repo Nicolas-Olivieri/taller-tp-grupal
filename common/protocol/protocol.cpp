@@ -92,7 +92,8 @@ RequestedCommandDTO Protocol::recv_command() {
 
         return RequestedCommandDTO(command, receiver, content);
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
-               command == CommandType::LIST_ITEMS or command == CommandType::PICKUP) {
+               command == CommandType::LIST_ITEMS or command == CommandType::CLAN_REVIEW or
+               command == CommandType::CLAN_LEAVE or command == CommandType::PICKUP) {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
                command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or
@@ -103,12 +104,26 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD) {
         const uint16_t gold_amount = deserializer.recv_uint16();
         return RequestedCommandDTO(command, gold_amount);
+    } else if (command == CommandType::CLAN_FOUND) {
+        const std::string clan_name = deserializer.recv_string();
+        return RequestedCommandDTO(command, clan_name);
+    } else if (command == CommandType::CLAN_JOIN) {
+        const std::string clan_name = deserializer.recv_string();
+        return RequestedCommandDTO(command, clan_name);
+    } else if (command == CommandType::CLAN_REQUEST_RESPONSE) {
+        const std::string player_name = deserializer.recv_string();
+        const bool is_accepted = deserializer.recv_uint8();
+        return RequestedCommandDTO(command, player_name, is_accepted);
+    } else if (command == CommandType::CLAN_REMOVE_PLAYER) {
+        const std::string player_name = deserializer.recv_string();
+        const bool is_permanent_removal = deserializer.recv_uint8();
+        return RequestedCommandDTO(command, player_name, is_permanent_removal);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }
 
     /* TODO 2: agregar los siguientes al implementar los correspondientes
-    comandos item_id clan_name
+    comandos item_id
     */
 }
 

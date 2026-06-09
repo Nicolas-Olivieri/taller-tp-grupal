@@ -9,6 +9,7 @@
 #include <ui_creator_window.h>
 #include <ui_login_window.h>
 
+#include "client/SDL/audio/audio_manager.h"
 #include "common/socket.h"
 
 #include "creator_window.h"
@@ -21,7 +22,7 @@ class LoginWindow: public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit LoginWindow(QWidget* parent = nullptr);
+    explicit LoginWindow(AudioManager& audio_manager, QWidget* parent = nullptr);
 
     Socket get_socket();
 
@@ -53,6 +54,8 @@ private:
     CreatorWindow* creator_window;
 
     QPoint drag_offset;
+
+    AudioManager& audio_manager;
 
     bool allow_close;
     bool force_close;

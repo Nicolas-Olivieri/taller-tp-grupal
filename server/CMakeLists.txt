@@ -22,6 +22,14 @@ target_sources(taller_server
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.cpp
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.cpp
         command/cmd_types/cmd_pickup/pickup_command.cpp
+        command/cmd_types/cmd_clan/cmd_found/clan_found_command.cpp
+        command/cmd_types/cmd_clan/cmd_join/clan_join_command.cpp
+        command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.cpp
+        command/cmd_types/cmd_clan/cmd_reject/clan_reject_command.cpp
+        command/cmd_types/cmd_clan/cmd_review/clan_review_command.cpp
+        command/cmd_types/cmd_clan/cmd_leave/clan_leave_command.cpp
+        command/cmd_types/cmd_clan/cmd_kick/clan_kick_command.cpp
+        command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.cpp
 
         command/cmd_results/ally_execute/ally_execute_result.cpp
         command/cmd_results/drop_item/drop_item_result.cpp
@@ -29,6 +37,7 @@ target_sources(taller_server
         command/cmd_results/pickup/pickup_result.cpp
         command/cmd_results/unequip_item/unequip_item_result.cpp
         command/cmd_results/use_item/use_item_result.cpp
+        command/cmd_results/clan/clan_action_result.cpp
 
         command/command_factory.cpp
 
@@ -52,6 +61,9 @@ target_sources(taller_server
         game/creatures/state/followingstate.cpp
         game/creatures/state/attackingstate.cpp
 
+        game/clan/clan.cpp
+        game/clan/clan_action_payload.cpp
+
         connection/acceptor.cpp
         connection/lobbyhandler.cpp
         connection/game_acceptor.cpp
@@ -66,8 +78,10 @@ target_sources(taller_server
         persistance/playerindex.cpp
         persistance/playerrepository.cpp
         persistance/names_monitor.cpp
+        persistance/clan_data.cpp
 
         config/game_config.cpp
+        config/game_data.cpp
 
         game/player/bank/bank.cpp
         game/player/inventory/inventory.cpp
@@ -107,6 +121,14 @@ target_sources(taller_server
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.h
         command/cmd_types/cmd_pickup/pickup_command.h
         command/cmd_types/cmd_resurrect/resurrect_command.h
+        command/cmd_types/cmd_clan/cmd_found/clan_found_command.h
+        command/cmd_types/cmd_clan/cmd_join/clan_join_command.h
+        command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h
+        command/cmd_types/cmd_clan/cmd_reject/clan_reject_command.h
+        command/cmd_types/cmd_clan/cmd_review/clan_review_command.h
+        command/cmd_types/cmd_clan/cmd_leave/clan_leave_command.h
+        command/cmd_types/cmd_clan/cmd_kick/clan_kick_command.h
+        command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.h
 
         command/cmd_results/ally_execute/buy_result.h
         command/cmd_results/ally_execute/deposit_gold_result.h
@@ -127,6 +149,7 @@ target_sources(taller_server
         command/cmd_results/pickup/pickup_result.h
         command/cmd_results/unequip_item/unequip_item_result.h
         command/cmd_results/use_item/use_item_result.h
+        command/cmd_results/clan/clan_action_result.h
 
         command/command.h
         command/command_factory.h
@@ -153,6 +176,9 @@ target_sources(taller_server
         game/creatures/state/followingstate.h
         game/creatures/state/attackingstate.h
 
+        game/clan/clan.h
+        game/clan/clan_action_payload.h
+
         connection/acceptor.h
         connection/lobbyhandler.h
         connection/connectioninfo.h
@@ -168,7 +194,9 @@ target_sources(taller_server
         persistance/playerindex.h
         persistance/playerrepository.h
         persistance/names_monitor.h
+        persistance/clan_data.h
         config/game_config.h
+        config/game_data.h
 
         game/player/bank/bank.h
         game/player/inventory/inventory.h

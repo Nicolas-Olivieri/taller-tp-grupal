@@ -1,7 +1,7 @@
 #ifndef MOVEEVENTDTO_H
 #define MOVEEVENTDTO_H
 
-#include "event.h"
+#include "common/dto/events/event.h"
 
 struct MoveEventDTO: public EventDTO {
     Direction direction;

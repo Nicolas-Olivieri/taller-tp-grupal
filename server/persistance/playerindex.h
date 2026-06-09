@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 struct PlayerNotFound: public std::runtime_error {
     PlayerNotFound(): std::runtime_error("There is no player with this username.") {}
@@ -40,6 +42,8 @@ public:
     uint32_t get(const std::string& username);
 
     bool exists(const std::string& username);
+
+    std::vector<std::pair<std::string, uint32_t>> get_all_entries();
 
     ~PlayerIndex();
 };

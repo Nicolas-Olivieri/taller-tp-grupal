@@ -1,7 +1,7 @@
 #ifndef DEPOSIT_ITEM_EVENT_DTO_H
 #define DEPOSIT_ITEM_EVENT_DTO_H
 
-#include "event.h"
+#include "common/dto/events/event.h"
 
 
 struct DepositItemEventDTO: public EventDTO {
