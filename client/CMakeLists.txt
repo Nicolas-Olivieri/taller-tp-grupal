@@ -8,6 +8,7 @@ target_sources(taller_client
         SDL/camera.cpp
         SDL/world.cpp
 
+        SDL/audio/audio_manager.cpp
         SDL/audio/sound_pool.cpp
 
         SDL/sprites/animation.cpp
@@ -43,6 +44,7 @@ target_sources(taller_client
         SDL/camera.h
         SDL/world.h
 
+        SDL/audio/audio_manager.h
         SDL/audio/sound_pool.h
 
         SDL/sprites/animation.h
