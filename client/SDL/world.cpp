@@ -178,6 +178,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 if (players.contains(action.despawn.player_despawned)) {
                     auto player = players.extract(action.despawn.player_despawned);
                     map_items.erase(player.mapped());
+                    audio_manager.play_event(SoundEvent::DESPAWN);
                 }
                 break;
             case ActionType::RESURRECTION:
