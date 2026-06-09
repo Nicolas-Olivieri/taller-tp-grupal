@@ -15,18 +15,21 @@ AssetSelector::AssetSelector(const QHash<uint8_t, AssetData>& tiles,
     for (const auto& tile_data: tiles) {
         auto* item = new QListWidgetItem(QIcon(tile_data.img), tile_data.name);
         item->setData(Qt::UserRole, tile_data.id);
+        item->setToolTip(tile_data.name);
         ui->tiles_list->addItem(item);
     }
 
     for (const auto& coll_data: colliders) {
         auto* item = new QListWidgetItem(QIcon(coll_data.img), coll_data.name);
         item->setData(Qt::UserRole, coll_data.id);
+        item->setToolTip(coll_data.name);
         ui->colliders_list->addItem(item);
     }
 
     for (const auto& npcs_data: npcs) {
         auto* item = new QListWidgetItem(npcs_data.img, npcs_data.name);
         item->setData(Qt::UserRole, npcs_data.id);
+        item->setToolTip(npcs_data.name);
         ui->npcs_list->addItem(item);
     }
 

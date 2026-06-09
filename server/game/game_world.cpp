@@ -508,7 +508,7 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
 }
 
 void GameWorld::init_creature(uint16_t id) {
-    Position goblin_position(15, 15);
+    Position goblin_position(30, 30);
     creatures.emplace(id, Creature(id, 0, 0, goblin_position));
     grid.get_tile(goblin_position).occupy(&creatures.at(id));
 }

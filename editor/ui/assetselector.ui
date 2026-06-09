@@ -26,9 +26,15 @@
    <attribute name="title">
     <string>Tiles</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QListWidget" name="tiles_list">
+      <property name="styleSheet">
+       <string notr="true">QListWidget::item {
+    padding: 2px;
+    margin: 0px;
+}</string>
+      </property>
       <property name="frameShape">
        <enum>QFrame::Shape::NoFrame</enum>
       </property>
@@ -45,7 +51,7 @@
        </size>
       </property>
       <property name="textElideMode">
-       <enum>Qt::TextElideMode::ElideNone</enum>
+       <enum>Qt::TextElideMode::ElideRight</enum>
       </property>
       <property name="verticalScrollMode">
        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
@@ -54,34 +60,34 @@
        <enum>QListView::Movement::Static</enum>
       </property>
       <property name="resizeMode">
-       <enum>QListView::ResizeMode::Adjust</enum>
-      </property>
-      <property name="layoutMode">
-       <enum>QListView::LayoutMode::SinglePass</enum>
+       <enum>QListView::ResizeMode::Fixed</enum>
       </property>
       <property name="spacing">
        <number>0</number>
       </property>
       <property name="gridSize">
        <size>
-        <width>100</width>
-        <height>100</height>
+        <width>120</width>
+        <height>120</height>
        </size>
       </property>
       <property name="viewMode">
        <enum>QListView::ViewMode::IconMode</enum>
       </property>
-      <property name="modelColumn">
-       <number>0</number>
-      </property>
       <property name="uniformItemSizes">
-       <bool>true</bool>
+       <bool>false</bool>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
       </property>
       <property name="selectionRectVisible">
        <bool>true</bool>
       </property>
       <property name="itemAlignment">
-       <set>Qt::AlignmentFlag::AlignJustify</set>
+       <set>Qt::AlignmentFlag::AlignHCenter</set>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -91,7 +97,7 @@
    <attribute name="title">
     <string>Colisionables</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QListWidget" name="colliders_list">
       <property name="frameShape">
@@ -110,7 +116,7 @@
        </size>
       </property>
       <property name="textElideMode">
-       <enum>Qt::TextElideMode::ElideNone</enum>
+       <enum>Qt::TextElideMode::ElideRight</enum>
       </property>
       <property name="verticalScrollMode">
        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
@@ -119,34 +125,34 @@
        <enum>QListView::Movement::Static</enum>
       </property>
       <property name="resizeMode">
-       <enum>QListView::ResizeMode::Adjust</enum>
-      </property>
-      <property name="layoutMode">
-       <enum>QListView::LayoutMode::SinglePass</enum>
+       <enum>QListView::ResizeMode::Fixed</enum>
       </property>
       <property name="spacing">
        <number>0</number>
       </property>
       <property name="gridSize">
        <size>
-        <width>100</width>
-        <height>100</height>
+        <width>120</width>
+        <height>120</height>
        </size>
       </property>
       <property name="viewMode">
        <enum>QListView::ViewMode::IconMode</enum>
       </property>
-      <property name="modelColumn">
-       <number>0</number>
-      </property>
       <property name="uniformItemSizes">
-       <bool>true</bool>
+       <bool>false</bool>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
       </property>
       <property name="selectionRectVisible">
        <bool>true</bool>
       </property>
       <property name="itemAlignment">
-       <set>Qt::AlignmentFlag::AlignJustify</set>
+       <set>Qt::AlignmentFlag::AlignHCenter</set>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -156,7 +162,7 @@
    <attribute name="title">
     <string>NPCs</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QListWidget" name="npcs_list">
       <property name="frameShape">
@@ -175,7 +181,7 @@
        </size>
       </property>
       <property name="textElideMode">
-       <enum>Qt::TextElideMode::ElideNone</enum>
+       <enum>Qt::TextElideMode::ElideRight</enum>
       </property>
       <property name="verticalScrollMode">
        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
@@ -183,31 +189,37 @@
       <property name="movement">
        <enum>QListView::Movement::Static</enum>
       </property>
+      <property name="isWrapping" stdset="0">
+       <bool>true</bool>
+      </property>
       <property name="resizeMode">
        <enum>QListView::ResizeMode::Fixed</enum>
-      </property>
-      <property name="layoutMode">
-       <enum>QListView::LayoutMode::SinglePass</enum>
       </property>
       <property name="spacing">
        <number>0</number>
       </property>
       <property name="gridSize">
        <size>
-        <width>100</width>
-        <height>100</height>
+        <width>120</width>
+        <height>120</height>
        </size>
       </property>
       <property name="viewMode">
        <enum>QListView::ViewMode::IconMode</enum>
       </property>
-      <property name="modelColumn">
-       <number>0</number>
-      </property>
       <property name="uniformItemSizes">
-       <bool>true</bool>
+       <bool>false</bool>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
       </property>
       <property name="selectionRectVisible">
+       <bool>true</bool>
+      </property>
+      <property name="itemAlignment">
+       <set>Qt::AlignmentFlag::AlignHCenter</set>
+      </property>
+      <property name="sortingEnabled">
        <bool>true</bool>
       </property>
      </widget>

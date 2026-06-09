@@ -35,6 +35,10 @@ void Sprite::set_target_position(const Direction new_direction, const SDL2pp::Po
 }
 
 void Sprite::update_visual_position() {
+    if (!direction.has_value()) {
+        return;
+    }
+
     if (position == target_position) {
         direction = Direction::IDLE;
         return;

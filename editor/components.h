@@ -15,6 +15,7 @@ struct AssetData {
     int tile_width;
     int tile_height;
     QRect unwalkable_area;
+    bool inverse_unwalkable;
 };
 
 
