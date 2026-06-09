@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 
 #include "common/dto/lobby/existence.h"
+#include "common/dto/snapshot/info/inventory_info.h"
 
 Serializer::Serializer(std::vector<uint8_t>& buffer): buffer(buffer), offset(0) {}
 
@@ -60,6 +61,7 @@ void Serializer::serialize(const SnapshotDTO& snapshot) {
     serialize(static_cast<uint8_t>(Message::SNAPSHOT));
     serialize(snapshot.players_information);
     serialize(snapshot.creatures_information);
+    serialize(snapshot.loot_information);
     serialize(snapshot.actions);
 }
 
@@ -72,6 +74,8 @@ void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(info.excess_gold);
     serialize(info.appearance);
     serialize(info.stats);
+    serialize(info.inventory);
+    serialize(info.equipment);
 }
 
 void Serializer::serialize(const CreatureInfoDTO& info) {
@@ -83,6 +87,11 @@ void Serializer::serialize(const CreatureInfoDTO& info) {
     serialize(info.y);
 }
 
+void Serializer::serialize(const LootInfoDTO& info) {
+    serialize(static_cast<uint8_t>(info.is_item));
+    serialize(info.x);
+    serialize(info.y);
+}
 
 // TODO: se debería serializar dependiendo de action.action (ActionType)
 void Serializer::serialize(const ActionDTO& action) {
@@ -183,6 +192,15 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
     serialize(stats.max_xp_amount);
 }
 
+void Serializer::serialize(const InventoryInfoDTO& inventory) { serialize(inventory.items); }
+
+void Serializer::serialize(const EquipmentInfoDTO& equipment) {
+    serialize(equipment.weapon);
+    serialize(equipment.shield);
+    serialize(equipment.helmet);
+    serialize(equipment.armor);
+}
+
 void Serializer::serialize(const ResurrectionDTO& resurrection) {
     serialize(resurrection.player_resurrected);
     serialize(resurrection.original_appearance);
@@ -242,6 +260,21 @@ void Serializer::serialize(const WithdrawGoldEventDTO& event) {
 void Serializer::serialize(const ClanFoundEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.clan_name);
+}
+
+void Serializer::serialize(const UseItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
+
+void Serializer::serialize(const DropItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
+}
+
+void Serializer::serialize(const UnequipItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item_id);
 }
 
 void Serializer::serialize(const ClanJoinEventDTO& event) {

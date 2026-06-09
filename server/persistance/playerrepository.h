@@ -29,6 +29,8 @@ public:
 
     void run() override;
 
+    void save_progress(const Player& player);
+
     void save_progress(const std::unordered_map<std::string, Player>& players);
 
     void create(const std::string& username, uint8_t archetype, uint8_t race, uint8_t body, uint8_t head);

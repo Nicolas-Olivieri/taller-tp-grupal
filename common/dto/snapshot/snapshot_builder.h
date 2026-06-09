@@ -2,12 +2,15 @@
 #ifndef SNAPSHOT_BUILDER_H
 #define SNAPSHOT_BUILDER_H
 
+#include <map>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "server/game/creatures/creature.h"
 #include "server/game/player/player.h"
+#include "server/game/tile.h"
 
 #include "snapshot.h"
 
@@ -16,6 +19,7 @@ class SnapshotBuilder {
 
     std::vector<PlayerInfoDTO> players_info;
     std::vector<CreatureInfoDTO> creatures_info;
+    std::vector<LootInfoDTO> loot_info;
     std::vector<ActionDTO> actions;
 
 public:
@@ -26,6 +30,8 @@ public:
     void add_players(const std::unordered_map<std::string, Player>& players);
 
     void add_creatures(const std::unordered_map<uint16_t, Creature>& creatures);
+
+    void add_loot(const std::map<std::pair<uint16_t, uint16_t>, Tile*>& lootable_tiles);
 
     void add_action(const ActionDTO& action);
 
@@ -39,6 +45,8 @@ private:
     PlayerInfoDTO convert_to_info(const std::string& player_name, const Player& player);
 
     CreatureInfoDTO convert_to_info(uint16_t sub_id, const Creature& creature);
+
+    LootInfoDTO convert_to_info(const std::pair<uint16_t, uint16_t>& position, Tile& tile);
 };
 
 

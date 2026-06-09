@@ -19,7 +19,10 @@ target_sources(taller_common
         dto/events/chat/chatevent.cpp
         dto/events/ally_related/deposit/deposit_gold_event.cpp
         dto/events/ally_related/deposit/deposit_item_event.cpp
+        dto/events/drop_item_event.cpp
         dto/events/ally_related/shop/sell_event.cpp
+        dto/events/unequip_item_event.cpp
+        dto/events/use_item_event.cpp
         dto/events/ally_related/withdraw/withdraw_gold_event.cpp
         dto/events/ally_related/withdraw/withdraw_item_event.cpp
         dto/events/clan/clan_found_event.cpp
@@ -39,6 +42,9 @@ target_sources(taller_common
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/info/creatureinfo.cpp
+        dto/snapshot/info/equipment_info.cpp
+        dto/snapshot/info/inventory_info.cpp
+        dto/snapshot/info/lootinfo.cpp
 
         dto/snapshot/map/asset_info.cpp
         dto/snapshot/map/client_map_data.cpp
@@ -87,7 +93,10 @@ target_sources(taller_common
         dto/events/chat/chatevent.h
         dto/events/ally_related/deposit/deposit_gold_event.h
         dto/events/ally_related/deposit/deposit_item_event.h
+        dto/events/drop_item_event.h
         dto/events/ally_related/shop/sell_event.h
+        dto/events/unequip_item_event.h
+        dto/events/use_item_event.h
         dto/events/ally_related/withdraw/withdraw_gold_event.h
         dto/events/ally_related/withdraw/withdraw_item_event.h
         dto/events/clan/clan_found_event.h
@@ -107,6 +116,9 @@ target_sources(taller_common
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/info/creatureinfo.h
+        dto/snapshot/info/equipment_info.h
+        dto/snapshot/info/inventory_info.h
+        dto/snapshot/info/lootinfo.h
 
         dto/snapshot/map/asset_info.h
         dto/snapshot/map/client_map_data.h

@@ -9,13 +9,12 @@
 #include <toml.hpp>
 
 #include "client/SDL/sprites/animation.h"
-#include "client/client_constants.h"
 #include "common/direction.h"
 #include "common/util/toml_helper.h"
 
 template <typename keyType>
 struct AnimationData {
-    std::map<SpriteCategory, std::map<keyType, Animation>> animations;
+    std::map<SpriteCategory, std::map<keyType, Animation>> data;
 };
 
 struct AnimationTypesData {
@@ -23,29 +22,63 @@ struct AnimationTypesData {
     std::map<SpriteCategory, std::map<uint8_t, Animation>> item_animations;
 };
 
-template <typename keyType>
-struct toml::from<AnimationData<keyType>> {
-    static AnimationData<keyType> from_toml(const value& raw) {
-        AnimationData<keyType> data;
+template <>
+struct toml::from<AnimationData<Direction>> {
+    static AnimationData<Direction> from_toml(const value& raw) {
+        AnimationData<Direction> walking_animations;
         const auto& file = raw.as_table();
 
         for (const auto& [category, raw_cat_anim]: file) {
             SpriteCategory parsed_cat = TomlHelper::get_sprite_category(category);
-            std::map<keyType, Animation> category_animations;
+            std::map<Direction, Animation> category_animations;
 
             const auto& animations_data = raw_cat_anim.as_table();
 
             for (const auto& [animation_id, frames]: animations_data) {
-                auto dir = static_cast<keyType>(std::stoi(animation_id));
+                auto id = static_cast<Direction>(std::stoi(animation_id));
                 auto vec = toml::get<std::vector<int>>(frames);
                 Animation anim(vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-
-                category_animations.insert({{dir, std::move(anim)}});
+                category_animations.insert({{id, anim}});
             }
 
-            data.animations.insert({{parsed_cat, std::move(category_animations)}});
+            walking_animations.data.insert({{parsed_cat, std::move(category_animations)}});
         }
-        return data;
+        return walking_animations;
+    }
+};
+
+template <>
+struct toml::from<AnimationData<uint8_t>> {
+    static AnimationData<uint8_t> from_toml(const value& raw) {
+        AnimationData<uint8_t> item_animations;
+        const auto& categories = raw.as_table();
+
+        for (const auto& [category, raw_cat_anim]: categories) {
+            std::map<uint8_t, Animation> category_animations;
+            SpriteCategory parsed_cat = TomlHelper::get_sprite_category(category);
+            const auto& animations = raw_cat_anim.as_array();
+
+            for (auto& animation: animations) {
+                auto vec = toml::get<std::vector<int>>(animation.at("data"));
+                Animation anim(vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
+
+                if (animation.contains("id")) {
+                    auto id = static_cast<uint8_t>(toml::get<int>(animation.at("id")));
+                    category_animations.insert({{id, anim}});
+
+                } else if (animation.contains("id_range")) {
+                    auto range = toml::get<std::vector<int>>(animation.at("id_range"));
+                    const uint8_t start = static_cast<uint8_t>(range[0]);
+                    const uint8_t end = static_cast<uint8_t>(range[1]);
+                    for (uint8_t id = start; id <= end; ++id) {
+                        category_animations.insert({{id, anim}});
+                    }
+                }
+            }
+            item_animations.data.insert({{parsed_cat, std::move(category_animations)}});
+        }
+
+        return item_animations;
     }
 };
 
@@ -53,20 +86,20 @@ struct toml::from<AnimationData<keyType>> {
 template <>
 struct toml::from<AnimationTypesData> {
     static AnimationTypesData from_toml(const value& v) {
-        AnimationTypesData data;
+        AnimationTypesData animations;
         const auto& table = v.as_table();
 
         if (table.contains("walking")) {
             auto walking_data = toml::get<AnimationData<Direction>>(table.at("walking"));
-            data.walking_animations = std::move(walking_data.animations);
+            animations.walking_animations = std::move(walking_data.data);
         }
 
         if (table.contains("items")) {
             auto item_data = toml::get<AnimationData<uint8_t>>(table.at("items"));
-            data.item_animations = std::move(item_data.animations);
+            animations.item_animations = std::move(item_data.data);
         }
 
-        return data;
+        return animations;
     }
 };
 

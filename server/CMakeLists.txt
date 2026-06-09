@@ -9,6 +9,7 @@ target_sources(taller_server
         command/cmd_types/cmd_deposit_gold/deposit_gold_command.cpp
         command/cmd_types/cmd_deposit_item/deposit_item_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
+        command/cmd_types/cmd_drop_item/drop_item_command.cpp
         command/cmd_types/cmd_heal/heal_command.cpp
         command/cmd_types/cmd_interact/interact_command.cpp
         command/cmd_types/cmd_list_items/list_items_command.cpp
@@ -16,8 +17,11 @@ target_sources(taller_server
         command/cmd_types/cmd_resurrect/resurrect_command.cpp
         command/cmd_types/cmd_sell/sell_command.cpp
         command/cmd_types/cmd_spawn/spawn_command.cpp
+        command/cmd_types/cmd_unequip_item/unequip_item_command.cpp
+        command/cmd_types/cmd_use_item/use_item_command.cpp
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.cpp
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.cpp
+        command/cmd_types/cmd_pickup/pickup_command.cpp
         command/cmd_types/cmd_clan/cmd_found/clan_found_command.cpp
         command/cmd_types/cmd_clan/cmd_join/clan_join_command.cpp
         command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.cpp
@@ -28,7 +32,11 @@ target_sources(taller_server
         command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.cpp
 
         command/cmd_results/ally_execute/ally_execute_result.cpp
+        command/cmd_results/drop_item/drop_item_result.cpp
         command/cmd_results/interact/interact_result.cpp
+        command/cmd_results/pickup/pickup_result.cpp
+        command/cmd_results/unequip_item/unequip_item_result.cpp
+        command/cmd_results/use_item/use_item_result.cpp
         command/cmd_results/clan/clan_action_result.cpp
 
         command/command_factory.cpp
@@ -73,6 +81,7 @@ target_sources(taller_server
         persistance/clan_data.cpp
 
         config/game_config.cpp
+        config/game_data.cpp
 
         game/player/bank/bank.cpp
         game/player/inventory/inventory.cpp
@@ -99,14 +108,18 @@ target_sources(taller_server
         command/cmd_types/cmd_deposit_gold/deposit_gold_command.h
         command/cmd_types/cmd_deposit_item/deposit_item_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
+        command/cmd_types/cmd_drop_item/drop_item_command.h
         command/cmd_types/cmd_heal/heal_command.h
         command/cmd_types/cmd_interact/interact_command.h
         command/cmd_types/cmd_list_items/list_items_command.h
         command/cmd_types/cmd_move/move_command.h
         command/cmd_types/cmd_sell/sell_command.h
         command/cmd_types/cmd_spawn/spawn_command.h
+        command/cmd_types/cmd_unequip_item/unequip_item_command.h
+        command/cmd_types/cmd_use_item/use_item_command.h
         command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.h
         command/cmd_types/cmd_withdraw_item/withdraw_item_command.h
+        command/cmd_types/cmd_pickup/pickup_command.h
         command/cmd_types/cmd_resurrect/resurrect_command.h
         command/cmd_types/cmd_clan/cmd_found/clan_found_command.h
         command/cmd_types/cmd_clan/cmd_join/clan_join_command.h
@@ -129,10 +142,13 @@ target_sources(taller_server
         command/cmd_results/ally_execute/withdraw_gold_result.h
         command/cmd_results/ally_execute/withdraw_item_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
-
+        command/cmd_results/drop_item/drop_item_result.h
         command/cmd_results/interact/attack_result.h
         command/cmd_results/interact/bind_result.h
         command/cmd_results/interact/interact_result.h
+        command/cmd_results/pickup/pickup_result.h
+        command/cmd_results/unequip_item/unequip_item_result.h
+        command/cmd_results/use_item/use_item_result.h
         command/cmd_results/clan/clan_action_result.h
 
         command/command.h
@@ -180,6 +196,7 @@ target_sources(taller_server
         persistance/names_monitor.h
         persistance/clan_data.h
         config/game_config.h
+        config/game_data.h
 
         game/player/bank/bank.h
         game/player/inventory/inventory.h

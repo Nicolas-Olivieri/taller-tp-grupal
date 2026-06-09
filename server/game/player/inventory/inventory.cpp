@@ -51,6 +51,10 @@ void Inventory::acquire_item(uint8_t item) {
 }
 
 void Inventory::unequip_item(Equipment& equipment, uint8_t item_id) {
+    if (not items_amounts.contains(item_id) and items_amounts.size() >= max_item_amount) {
+        throw InventoryFull();
+    }
+
     Item item = ItemMapper::parse_item(item_id);
     bool could_unequip = std::visit(Unequip{equipment}, item);
 
@@ -81,3 +85,5 @@ void Inventory::add_amount_safely(uint8_t item) {
 }
 
 const std::unordered_map<uint8_t, uint8_t>& Inventory::get_items() const { return this->items_amounts; }
+
+void Inventory::clear() { items_amounts.clear(); }

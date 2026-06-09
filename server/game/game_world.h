@@ -2,9 +2,11 @@
 #define GAME_WORLD_H
 
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "allies/ally_action_payload.h"
@@ -14,6 +16,10 @@
 #include "player/player.h"
 #include "server/command/cmd_results/ally_execute/list_outcomes.h"
 #include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/command/cmd_results/drop_item/drop_item_result.h"
+#include "server/command/cmd_results/pickup/pickup_result.h"
+#include "server/command/cmd_results/unequip_item/unequip_item_result.h"
+#include "server/command/cmd_results/use_item/use_item_result.h"
 #include "server/command/cmd_results/clan/clan_action_result.h"
 #include "server/game/clan/clan.h"
 #include "server/game/clan/clan_action_payload.h"
@@ -32,6 +38,8 @@ private:
 
     std::unordered_map<uint16_t, Creature> creatures;
 
+    std::map<std::pair<uint16_t, uint16_t>, Tile*> tiles_with_loot;
+
     std::vector<std::unique_ptr<Ally>> allies;
 
     PlayerRepository& player_repository;
@@ -46,6 +54,8 @@ public:
     const std::unordered_map<std::string, Player>& get_players() const;
 
     const std::unordered_map<uint16_t, Creature>& get_creatures() const;
+
+    const std::map<std::pair<uint16_t, uint16_t>, Tile*>& get_lootable_tiles() const;
 
     WorldUpdateStatus update();
 
@@ -80,6 +90,14 @@ public:
 
     WithdrawGoldResult withdraw_gold(const std::string& player_name, uint16_t gold_amount);
 
+    PickUpResult pick_up(const std::string& player_name);
+
+    UseItemResult use_item(const std::string& player_name, uint8_t item_id);
+
+    UnequipItemResult unequip_item(const std::string& player_name, uint8_t item_id);
+
+    DropItemResult drop_item(const std::string& player_name, uint8_t item_id);
+
     FoundClanResult found_clan(const std::string& player_name, const std::string& clan_name);
 
     JoinClanResult join_clan(const std::string& player_name, const std::string& clan_name);
@@ -97,11 +115,21 @@ private:
 
     Direction next_movement(const Creature& creature);
 
-    void init_creature();
+    PickUpResult pick_item_up(Player& player, Tile& tile, uint8_t item);
+
+    PickUpResult pick_gold_up(Player& player, Tile& tile, uint16_t gold);
+
+    void init_creature(uint16_t id);
 
     void remove_dead_creatures();
 
     void init_npc(const std::vector<AllyInfoDTO>& npcs);
+
+    void add_tile_if_lootable(Tile& tile, const Position& position);
+
+    void drop_player_items(Player& player);
+
+    void drop_and_add(Player& player, Tile& tile);
 
     void load_clans();
 };

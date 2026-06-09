@@ -1,0 +1,4 @@
+[music]
+creator = { paths = ["/music/creator.mid"], volume = 64 }
+login = { paths = ["/music/login.mid"], volume = 32 }
+forest = { paths = ["/music/forest.mid"], volume = 64 }

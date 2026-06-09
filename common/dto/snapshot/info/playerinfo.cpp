@@ -4,7 +4,8 @@
 
 PlayerInfoDTO::PlayerInfoDTO(const std::string& name, const Direction& direction, uint16_t x, uint16_t y,
                              uint16_t safe_gold, uint16_t excess_gold, const AppearanceDTO& appearance,
-                             const PlayerStatsDTO& stats):
+                             const PlayerStatsDTO& stats, const InventoryInfoDTO& inventory,
+                             const EquipmentInfoDTO& equipment):
         name(name),
         direction(direction),
         x(x),
@@ -12,11 +13,14 @@ PlayerInfoDTO::PlayerInfoDTO(const std::string& name, const Direction& direction
         safe_gold(safe_gold),
         excess_gold(excess_gold),
         appearance(appearance),
-        stats(stats) {}
+        stats(stats),
+        inventory(inventory),
+        equipment(equipment) {}
 
 size_t PlayerInfoDTO::message_size() const {
     return sizeof(uint16_t) + name.size() + sizeof(direction) + sizeof(x) + sizeof(y) + sizeof(uint16_t) * 2 +
-           appearance.message_size() + stats.message_size();
+           appearance.message_size() + stats.message_size() + inventory.message_size() +
+           equipment.message_size();
 }
 
 void PlayerInfoDTO::accept(Serializer& serializer) const { serializer.serialize(*this); }

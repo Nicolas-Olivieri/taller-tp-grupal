@@ -1,82 +1,42 @@
 #ifndef GAME_CONFIG_H
 #define GAME_CONFIG_H
 
-#include <cstdint>
-#include <unordered_map>
-#include <unordered_set>
+#include <string>
 #include <vector>
 
-struct CooldownData {
-    uint8_t attack;
-    uint8_t move;
-};
-
-struct ArchetypeData {
-    float health_factor;
-    float mana_factor;
-    float meditation_factor;
-    uint8_t agility;
-    float constitution_multiplier;
-    float intelligence_multiplier;
-    float strength_multiplier;
-};
-
-struct RaceData {
-    float health_factor;
-    float mana_factor;
-    uint8_t recovery_factor;
-    uint8_t agility;
-    uint8_t constitution;
-    uint8_t intelligence;
-    uint8_t strength;
-};
-
-struct VariationData {
-    std::vector<uint8_t> compatible_races;
-    float factor;
-    uint8_t agility;
-    float multiplier;
-};
-
-struct UsableItemData {
-    uint8_t type_effect;     // vida = 0 o mana = 1
-    uint16_t effect_amount;  // 100, 200, etc.
-};
-
-struct EquipableItemData {
-    uint16_t min;
-    uint16_t max;
-};
-
-struct WeaponData {
-    uint8_t range;
-    uint16_t mana_cost;  // si es 0 -> No es mágico
-};
-
+#include "game_data.h"
 
 class GameConfig {
 private:
-    CooldownData player_cooldowns;
-    CooldownData creature_cooldowns;
-    std::unordered_map<uint8_t, ArchetypeData> archetypes;
-    std::unordered_map<uint8_t, RaceData> races;
-
-    std::unordered_map<uint8_t, RaceData> creatures;
-    std::unordered_map<uint8_t, VariationData> variations;
-
-    std::unordered_set<uint8_t> armors;
-    std::unordered_set<uint8_t> shields;
-    std::unordered_set<uint8_t> helmets;
-    std::unordered_map<uint8_t, WeaponData> weapons;
-    std::unordered_map<uint8_t, UsableItemData> usables;
-    std::unordered_map<uint8_t, EquipableItemData> equipables;
-
-    std::unordered_map<uint8_t, uint16_t> item_prices;
-
-    std::unordered_map<uint8_t, std::vector<uint8_t>> priest_items;
-    std::unordered_map<uint8_t, std::vector<uint8_t>> merchant_items;
+    PlayerStatsData player_stats;
+    CreatureStatsData creature_stats;
+    ItemsData items;
+    CooldownsData cooldowns;
+    TradersData traders;
+    DropProbabilitiesData drop_probabilities;
 
     GameConfig();
+
+    template <typename T>
+    T retrieve_config_data(const PathsData& data, const std::string& path_id) {
+        if (!data.paths.contains(path_id))
+            throw std::runtime_error("No se encontró el path al archivo TOML: " + path_id);
+
+        const auto root = toml::parse(CONFIG_PATH + data.paths.at(path_id));
+
+        return toml::get<T>(root);
+    }
+
+    template <typename T>
+    T retrieve_config_data(const PathsData& data, const std::string& path_id,
+                           const std::string& sub_category) {
+        if (!data.paths.contains(path_id))
+            throw std::runtime_error("No se encontró el path al archivo TOML: " + path_id);
+
+        const auto root = toml::parse(CONFIG_PATH + data.paths.at(path_id));
+
+        return toml::find<T>(root, sub_category);
+    }
 
 public:
     static GameConfig& get();
@@ -90,6 +50,8 @@ public:
 
     const RaceData& get_creature(uint8_t id) const;
 
+    uint8_t get_creature_base_level(uint8_t id) const;
+
     const VariationData& get_variation(uint8_t id) const;
 
     const CooldownData& get_player_cooldown() const;
@@ -102,6 +64,8 @@ public:
 
     const WeaponData& get_weapon(uint8_t id) const;
 
+    const DropProbabilitiesData& get_drop_probabilities() const;
+
     uint16_t get_item_price(uint8_t item_id) const;
 
     bool usables_contains(uint8_t id) const;
@@ -113,6 +77,14 @@ public:
     bool armors_contains(uint8_t id) const;
 
     bool shields_contains(uint8_t id) const;
+
+    uint8_t get_min_usable_id() const;
+
+    uint8_t get_max_usable_id() const;
+
+    uint8_t get_min_equipable_id() const;
+
+    uint8_t get_max_equipable_id() const;
 
     const std::vector<uint8_t>& get_priest_items(int id) const;
 

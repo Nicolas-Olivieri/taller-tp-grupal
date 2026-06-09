@@ -2,6 +2,8 @@
 #define CREATURE_H
 
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "server/command/cmd_results/interact/interact_result.h"
 #include "server/game/attacker.h"
@@ -10,6 +12,8 @@
 #include "state/creaturestate.h"
 
 #include "updatestatus.h"
+
+enum class DropType { NOTHING = 0, GOLD = 1, USABLE = 2, EQUIPABLE = 3 };
 
 class Creature: public Killable, public Attacker {
 private:
@@ -29,7 +33,7 @@ public:
 
     Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation, const Position& position);
 
-    void drop() override;
+    std::vector<Loot> drop() override;
 
     CreatureUpdateStatus update_state(const Position& position, const Direction& direction);
 
@@ -64,6 +68,8 @@ public:
     bool is_targeting(const Player& playter) const;
 
     const Stats& get_stats() const;
+
+    const std::string& get_target_name() const;
 };
 
 #endif  // CREATURE_H

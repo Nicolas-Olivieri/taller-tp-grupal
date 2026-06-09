@@ -7,12 +7,16 @@
 #include "cmd_types/cmd_clan/cmd_found/clan_found_command.h"
 #include "cmd_types/cmd_deposit_gold/deposit_gold_command.h"
 #include "cmd_types/cmd_deposit_item/deposit_item_command.h"
+#include "cmd_types/cmd_drop_item/drop_item_command.h"
 #include "cmd_types/cmd_heal/heal_command.h"
 #include "cmd_types/cmd_interact/interact_command.h"
 #include "cmd_types/cmd_list_items/list_items_command.h"
 #include "cmd_types/cmd_move/move_command.h"
+#include "cmd_types/cmd_pickup/pickup_command.h"
 #include "cmd_types/cmd_resurrect/resurrect_command.h"
 #include "cmd_types/cmd_sell/sell_command.h"
+#include "cmd_types/cmd_unequip_item/unequip_item_command.h"
+#include "cmd_types/cmd_use_item/use_item_command.h"
 #include "cmd_types/cmd_withdraw_gold/withdraw_gold_command.h"
 #include "cmd_types/cmd_withdraw_item/withdraw_item_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
@@ -64,6 +68,18 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::WITHDRAW_GOLD:
             return std::make_unique<WithdrawGoldCommand>(player_name, dto.gold_amount);
+
+        case CommandType::PICKUP:
+            return std::make_unique<PickUpCommand>(player_name);
+
+        case CommandType::USE_ITEM:
+            return std::make_unique<UseItemCommand>(player_name, dto.item_id);
+
+        case CommandType::UNEQUIP_ITEM:
+            return std::make_unique<UnequipItemCommand>(player_name, dto.item_id);
+
+        case CommandType::DROP_ITEM:
+            return std::make_unique<DropItemCommand>(player_name, dto.item_id);
 
         case CommandType::CLAN_FOUND:
             return std::make_unique<ClanFoundCommand>(player_name, dto.clan_name);

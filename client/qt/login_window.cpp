@@ -14,7 +14,9 @@
 
 #include "ui_login_window.h"
 
-LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow) {
+
+LoginWindow::LoginWindow(AudioManager& audio_manager, QWidget* parent):
+        QMainWindow(parent), ui(new Ui::LoginWindow), audio_manager(audio_manager) {
     ui->setupUi(this);
 
     // Seteo borde de ventana custom
@@ -32,6 +34,7 @@ LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::Login
     ui->name_err->hide();
 
     connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::connect_match);
+    audio_manager.play_music(MusicTrack::LOGIN);
 }
 
 void LoginWindow::connect_match() {
@@ -60,9 +63,11 @@ void LoginWindow::connect_match() {
         const auto creator = new CreatorWindow(QString::fromStdString(username));
         connect(creator, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
 
+        audio_manager.play_music(MusicTrack::CREATOR);
         setCentralWidget(creator);
 
     } else {
+        audio_manager.play_music(MusicTrack::FOREST);
         close();
     }
 }
@@ -72,6 +77,7 @@ void LoginWindow::send_creation_data(const CreatePlayerDTO& player_data) {
 
     protocol.send(player_data);
 
+    audio_manager.play_music(MusicTrack::FOREST);
     close();
 }
 
@@ -101,6 +107,7 @@ bool LoginWindow::can_create_session() {
     }
     return true;
 }
+
 
 Socket LoginWindow::get_socket() {
     if (!socket) {

@@ -3,6 +3,8 @@
 
 
 #include <deque>
+#include <map>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -20,6 +22,11 @@ struct BarValue {
     size_t max;
 };
 
+struct InventorySlotData {
+    uint8_t item_id;
+    uint8_t amount;
+};
+
 class UserInterface {
 private:
     SDL2pp::Renderer& renderer;
@@ -28,6 +35,7 @@ private:
     SDL2pp::Font menu_title_font;
     SDL2pp::Font menu_font;
     SDL2pp::Font chat_font;
+    SDL2pp::Font item_amount_font;
     // TODO convertirlo en un sprite
     SDL2pp::Texture ui_texture;
     std::string& player_name;
@@ -51,6 +59,24 @@ private:
     SDL2pp::Rect username_rect = {770, 55, 240, 35};
     /* SDL2pp::Rect clan_name = {770, 100, 240, 20}; */
     SDL2pp::Rect inventory_rect = {770, 157, 240, 35};
+
+    std::vector<InventorySlotData> current_inventory;
+    const std::vector<SDL2pp::Rect> inventory_slots = {
+            {806, 220, 34, 34}, {874, 220, 34, 34}, {942, 220, 34, 34},
+            {806, 284, 34, 34}, {874, 284, 34, 34}, {942, 284, 34, 34},
+            {806, 348, 34, 34}, {874, 348, 34, 34}, {942, 348, 34, 34}};
+
+    std::optional<uint8_t> bound_item_id;
+    std::optional<int> bound_slot_index;
+
+    std::vector<uint8_t> current_equipment;
+    const std::vector<SDL2pp::Rect> equipment_slots = {{780, 447, 34, 34},   // Espada
+                                                       {842, 447, 34, 34},   // Escudo
+                                                       {906, 447, 34, 34},   // Casco
+                                                       {968, 447, 34, 34}};  // Armadura
+
+    std::map<uint8_t, std::unique_ptr<SDL2pp::Texture>> item_textures;
+
     SDL2pp::Rect stats_rect = {770, 519, 240, 35};
 
     SDL2pp::Rect health_rect = {791, 599, 216, 15};
@@ -74,6 +100,14 @@ private:
 
     void render_bar_value(const SDL2pp::Rect& box, const BarValue& value);
 
+    void render_inventory();
+
+    void render_equipment();
+
+    void render_item(const SDL2pp::Rect& slot, uint8_t item_id);
+
+    void render_item_amount(const SDL2pp::Rect& slot, uint8_t amount);
+
     void handle_chat_message(const ActionDTO& action);
 
     void handle_chat_list(const ActionDTO& action);
@@ -89,6 +123,8 @@ private:
     bool is_receiver(const MessageType& type);
 
     size_t get_visible_lines() const;
+
+    SDL2pp::Texture& get_item_texture(uint8_t item_id);
 
 public:
     UserInterface(SDL2pp::Renderer& renderer, std::string& player_name);
@@ -113,6 +149,20 @@ public:
     void chat_scroll_to_bottom();
 
     bool is_over_chat(const int x, const int y);
+
+    int get_inventory_slot_at(int x, int y) const;
+
+    std::optional<uint8_t> get_item_in_inventory_slot(int slot_index) const;
+
+    void bind_item(int slot_index);
+
+    std::optional<uint8_t> get_bound_item_id() const;
+
+    void clear_bound_item();
+
+    int get_equipment_slot_at(int x, int y) const;
+
+    std::optional<uint8_t> get_item_in_equipment_slot(int slot_index) const;
 };
 
 

@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "../killable.h"
 #include "../position.h"
@@ -37,6 +38,12 @@ private:
     bool _is_founder;
     std::string clan_name;
 
+    void drop_excess_gold(std::vector<Loot>& drops);
+
+    void drop_inventory(std::vector<Loot>& drops);
+
+    void drop_equipment(std::vector<Loot>& drops);
+
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
 
@@ -55,7 +62,7 @@ public:
 
     /// Killable
 
-    void drop() override;
+    std::vector<Loot> drop() override;
 
     InteractResult interact(Player& attacker) override;
 

@@ -23,6 +23,9 @@
 #include "common/dto/events/clan/clan_remove_player_event.h"
 #include "common/dto/events/clan/clan_request_response_event.h"
 #include "common/dto/events/movement/moveevent.h"
+#include "common/dto/events/drop_item_event.h"
+#include "common/dto/events/unequip_item_event.h"
+#include "common/dto/events/use_item_event.h"
 #include "common/util/rate_timer.h"
 #include "sprites/sprite.h"
 
@@ -192,6 +195,8 @@ void ClientGame::handle_text_command(const std::string& text) {
         connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
     if (text == "/listar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::LIST_ITEMS));
+    if (text == "/tomar")
+        connection.push_command(std::make_unique<EventDTO>(CommandType::PICKUP));
     if (text.starts_with("/comprar "))
         handle_buy_item_command(text);
     if (text.starts_with("/vender "))
@@ -206,6 +211,9 @@ void ClientGame::handle_text_command(const std::string& text) {
         handle_withdraw_gold_command(text);
     else if (text.starts_with("/retirar "))
         handle_withdraw_item_command(text);
+
+    if (text == "/tirar")
+        handle_drop_item_command();
 
     if (text.starts_with("/fundar-clan "))
         handle_clan_foundation(text);
@@ -323,6 +331,20 @@ void ClientGame::handle_withdraw_item_command(const std::string& text) {
     }
 }
 
+void ClientGame::handle_drop_item_command() {
+    auto bound_id = ui.get_bound_item_id();
+    if (bound_id.has_value()) {
+        connection.push_command(std::make_unique<DropItemEventDTO>(bound_id.value()));
+        ui.clear_bound_item();
+
+    } else {
+        std::vector<ActionDTO> local_error;
+        local_error.push_back(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name,
+                                                       "No tenes ningun item seleccionado para tirar")));
+        ui.update_chat(local_error);
+    }
+}
+
 void ClientGame::send_private_message() {
     size_t first_space = chat_text.find(' ');
 
@@ -353,6 +375,7 @@ void ClientGame::update_state_from_server() {
         return;
     world.update_players(snapshot.players_information);
     world.update_creatures(snapshot.creatures_information);
+    world.update_loot(snapshot.loot_information);
     ui.update_player_state(snapshot.players_information);
     // TODO añadir el resto del manejo de sprites
 }
@@ -404,6 +427,31 @@ bool ClientGame::is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport) 
 void ClientGame::handle_ui_click(const SDL_Event& event) {
     int x = event.button.x;
     int y = event.button.y;
+
+    const int inventory_slot_index = ui.get_inventory_slot_at(x, y);
+    if (inventory_slot_index != -1) {
+        if (event.button.button == SDL_BUTTON_LEFT) {
+            ui.bind_item(inventory_slot_index);
+
+        } else if (event.button.button == SDL_BUTTON_RIGHT) {
+            auto item_id = ui.get_item_in_inventory_slot(inventory_slot_index);
+            if (item_id.has_value())
+                connection.push_command(std::make_unique<UseItemEventDTO>(item_id.value()));
+        }
+
+        return;
+    }
+
+    const int equipment_slot_index = ui.get_equipment_slot_at(x, y);
+    if (equipment_slot_index != -1) {
+        if (event.button.button == SDL_BUTTON_RIGHT) {
+            auto item_id = ui.get_item_in_equipment_slot(equipment_slot_index);
+            if (item_id.has_value())
+                connection.push_command(std::make_unique<UnequipItemEventDTO>(item_id.value()));
+        }
+
+        return;
+    }
 
     if (event.button.button == SDL_BUTTON_LEFT) {
         // Clic izquierdo sobre el chat

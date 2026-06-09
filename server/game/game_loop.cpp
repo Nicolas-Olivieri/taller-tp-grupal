@@ -109,6 +109,7 @@ void GameLoop::broadcast_resurrected_players(SnapshotBuilder& builder,
 void GameLoop::broadcast(SnapshotBuilder& builder) {
     builder.add_players(game_world.get_players());
     builder.add_creatures(game_world.get_creatures());
+    builder.add_loot(game_world.get_lootable_tiles());
     broadcaster.broadcast(builder.build());
 }
 

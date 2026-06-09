@@ -78,19 +78,9 @@ private:
 
     void handle_withdraw_item_command(const std::string& text);
 
+    void handle_drop_item_command();
+
     void handle_clan_foundation(const std::string& text);
-
-    void send_private_message();
-
-    // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes
-    static SDL_HitTestResult hit_test_callback(SDL_Window*, const SDL_Point* area, void* data);
-
-public:
-    ClientGame(ConnectionHandler& connection, std::string& player_name);
-
-    void run();
-
-    Camera initialize_world_and_camera();
 
     void handle_clan_join(const std::string& text);
 
@@ -107,6 +97,18 @@ public:
     void handle_clan_kick(const std::string& text);
 
     void handle_clan_ban(const std::string& text);
+
+    void send_private_message();
+
+    // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes
+    static SDL_HitTestResult hit_test_callback(SDL_Window*, const SDL_Point* area, void* data);
+
+public:
+    ClientGame(ConnectionHandler& connection, std::string& player_name);
+
+    void run();
+
+    Camera initialize_world_and_camera();
 };
 
 

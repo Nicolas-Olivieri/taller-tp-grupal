@@ -20,7 +20,41 @@ Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t vari
         state(std::make_unique<IdleState>()),
         target(nullptr) {}
 
-void Creature::drop() { assert(false); }
+std::vector<Loot> Creature::drop() {
+    std::vector<Loot> drop;
+
+    const DropProbabilitiesData& data = GameConfig::get().get_drop_probabilities();
+
+    std::vector<float> probabilities = {data.nothing, data.gold, data.usable, data.equipable};
+    int index = Calculator::random_from_weighted_probabilities(probabilities);
+
+    GameConfig& config = GameConfig::get();
+
+    switch (static_cast<DropType>(index)) {
+        case DropType::NOTHING:
+            break;
+        case DropType::GOLD:
+            drop.push_back(Loot(Calculator::calculate_random_drop_gold(stats.health.get_max())));
+            break;
+        case DropType::USABLE:
+            drop.push_back(
+                    Loot(Calculator::random_number(config.get_min_usable_id(), config.get_max_usable_id())));
+            break;
+        case DropType::EQUIPABLE: {
+            uint8_t item =
+                    Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
+            // TODO: NI BIEN SE IMPLEMENTE EL BÁCULO DE CURACIÓN SACAR ESTE HARDCODEO
+            if (item == 0 or item == 5)  // TODO: CORREGIME
+                item++;                  // TODO: CORREGIME
+            drop.push_back(Loot(item));  // TODO: CORREGIME
+            // TODO: CORREGIRRRR
+        } break;
+        default:
+            throw std::invalid_argument("There is no known way to drop something of this type");
+    }
+
+    return drop;
+}
 
 CreatureUpdateStatus Creature::update_state(const Position& position, const Direction& direction) {
     CreatureUpdateStatus result = this->state->act(*this, position, direction);
@@ -121,3 +155,5 @@ Position Creature::get_target_position() const {
 bool Creature::is_targeting(const Player& player) const { return target == &player; }
 
 const Stats& Creature::get_stats() const { return stats; }
+
+const std::string& Creature::get_target_name() const { return target->get_name(); }

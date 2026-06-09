@@ -12,6 +12,7 @@
 struct ItemDisplayData {
     // TODO: Agregar el resto de atributos de un ítem para el cliente
     std::string name;
+    std::string icon_path;
 };
 
 
@@ -31,6 +32,8 @@ public:
     std::string get_item_name(uint8_t item_id) const;
 
     std::optional<uint8_t> get_item_id(const std::string& item_name) const;
+
+    std::string get_item_icon_path(uint8_t item_id);
 
 private:
     ClientConfig();

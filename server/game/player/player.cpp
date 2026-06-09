@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <random>
 #include <cstring>
 
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
@@ -143,7 +144,10 @@ InteractResult Player::interact(Player& attacker) {
     //  - fuego amigo (entre compis no nos pegamos)
     //  - zona segura?
 
-    return Killable::interact(attacker);
+    InteractResult result = Killable::interact(attacker);
+    result.attack.player_attacked = player_name;
+
+    return result;
 }
 
 void Player::update_position(const Position& new_position, const Direction& new_direction) {
@@ -153,13 +157,55 @@ void Player::update_position(const Position& new_position, const Direction& new_
     Killable::update_position(new_position, new_direction);
 }
 
-void Player::drop() {
+std::vector<Loot> Player::drop() {
+    std::vector<Loot> drops;
+
+    drop_excess_gold(drops);
+    drop_inventory(drops);
+    drop_equipment(drops);
+
+    static std::random_device rd;
+    static std::mt19937 generator(rd());
+
+    // Randomizamos el orden del Loot para que no sepas que te va a tocar!
+    std::shuffle(drops.begin(), drops.end(), generator);
+
+    return drops;
+}
+
+void Player::drop_excess_gold(std::vector<Loot>& drops) {
     uint16_t excess_gold = gold_manager.get_excess_gold();
-    gold_manager.spend(excess_gold);
+    if (excess_gold > 0) {
+        gold_manager.spend(excess_gold);
+        drops.push_back(Loot(excess_gold));
+    }
+}
 
-    // TODO: hacer que se dropeen
+void Player::drop_inventory(std::vector<Loot>& drops) {
+    for (const auto& [item, amount]: inventory.get_items()) {
+        for (size_t i = 0; i < amount; i++) {
+            if (item != NO_ITEM)
+                drops.push_back(Loot(item));
+        }
+    }
 
-    assert(false);
+    inventory.clear();
+}
+
+void Player::drop_equipment(std::vector<Loot>& drops) {
+    if (equipment.weapon != NO_ITEM)
+        drops.push_back(Loot(equipment.weapon));
+    if (equipment.armor != NO_ITEM)
+        drops.push_back(Loot(equipment.armor));
+    if (equipment.shield != NO_ITEM)
+        drops.push_back(Loot(equipment.shield));
+    if (equipment.helmet != NO_ITEM)
+        drops.push_back(Loot(equipment.helmet));
+
+    equipment.weapon = NO_ITEM;
+    equipment.armor = NO_ITEM;
+    equipment.shield = NO_ITEM;
+    equipment.helmet = NO_ITEM;
 }
 
 void Player::bind_ally(Ally* ally) {
