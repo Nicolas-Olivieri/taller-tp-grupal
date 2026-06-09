@@ -15,3 +15,6 @@ path = "/server/traders.toml"
 
 [server.drops]
 path = "/server/drops.toml"
+
+[server.biomes]
+path = "/server/biomes.toml"

@@ -28,7 +28,8 @@ void ClanFoundCommand::build_snapshot(SnapshotBuilder& builder) {
             error_msg = std::format("Ya existe el clan \"{}\", prueba con otro nombre", clan_name);
             break;
         case FoundClanResult::CLAN_NAME_LONG:
-            error_msg = std::format("El nombre de clan \"{}\" excede los {} caracteres", clan_name, CLAN_NAME);
+            error_msg =
+                    std::format("El nombre de clan \"{}\" excede los {} caracteres", clan_name, CLAN_NAME);
             break;
         case FoundClanResult::NO_RESULT:
         default:

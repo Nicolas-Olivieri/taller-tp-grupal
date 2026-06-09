@@ -13,12 +13,30 @@
 
 // TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
 // ditintos niveles
-Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
-                   const Position& position):
-        Killable(race, variation, 5, position, Equipment{0, 0, 0, 1}),
-        sub_id(sub_id),
+Creature::Creature(const uint8_t race, const uint8_t variation, const Position& position):
+        Killable(race, variation, 5, position, equipment_from_variation(variation)),
         state(std::make_unique<IdleState>()),
         target(nullptr) {}
+
+Equipment Creature::equipment_from_variation(uint8_t variation) {
+    GameConfig& config = GameConfig::get();
+
+    Equipment equipment;
+
+    const VariationData& variation_data = config.get_variation(variation);
+    for (const auto& item_id: variation_data.equipment) {
+        if (config.weapons_contains(item_id))
+            equipment.weapon = item_id;
+        if (config.armors_contains(item_id))
+            equipment.armor = item_id;
+        if (config.shields_contains(item_id))
+            equipment.shield = item_id;
+        if (config.helmets_contains(item_id))
+            equipment.helmet = item_id;
+    }
+
+    return equipment;
+}
 
 std::vector<Loot> Creature::drop() {
     std::vector<Loot> drop;

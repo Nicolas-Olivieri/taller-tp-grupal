@@ -14,6 +14,7 @@ private:
     CooldownsData cooldowns;
     TradersData traders;
     DropProbabilitiesData drop_probabilities;
+    TilesBiomeData biomes;
 
     GameConfig();
 
@@ -93,6 +94,10 @@ public:
     const std::vector<uint8_t>& get_merchant_items(int id) const;
 
     int get_merchant_max_id() const;
+
+    uint8_t get_biome_id(uint8_t tile_id) const;
+
+    const BiomeData& get_biome(uint8_t id) const;
 };
 
 

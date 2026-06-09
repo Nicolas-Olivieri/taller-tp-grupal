@@ -12,6 +12,7 @@ GameConfig::GameConfig() {
     items = retrieve_config_data<ItemsData>(paths_data, "items");
     traders = retrieve_config_data<TradersData>(paths_data, "traders");
     drop_probabilities = retrieve_config_data<DropProbabilitiesData>(paths_data, "drops", "probabilities");
+    biomes = retrieve_config_data<TilesBiomeData>(paths_data, "biomes");
 }
 
 GameConfig& GameConfig::get() {
@@ -61,7 +62,7 @@ uint8_t GameConfig::get_max_usable_id() const { return items.max_usable_id; }
 
 uint8_t GameConfig::get_min_equipable_id() const { return items.min_equipable_id; }
 
-uint8_t GameConfig::get_max_equipable_id() const { return items.max_usable_id; }
+uint8_t GameConfig::get_max_equipable_id() const { return items.max_equipable_id; }
 
 const std::vector<uint8_t>& GameConfig::get_priest_items(int id) const { return traders.priests.items[id]; }
 
@@ -72,3 +73,7 @@ const std::vector<uint8_t>& GameConfig::get_merchant_items(int id) const {
 }
 
 int GameConfig::get_merchant_max_id() const { return traders.merchants.items.size() - 1; }
+
+uint8_t GameConfig::get_biome_id(uint8_t tile_id) const { return biomes.tiles_biome.at(tile_id); }
+
+const BiomeData& GameConfig::get_biome(uint8_t id) const { return biomes.biomes.at(id); }

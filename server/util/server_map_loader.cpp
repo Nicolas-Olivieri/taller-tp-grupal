@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <utility>
 #include <vector>
 
 #include <netinet/in.h>
@@ -25,7 +26,8 @@ ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
 
 ServerMapDataDTO ServerMapLoader::get_server_data() {
     // Leo los 4 bytes de offset (inicio y fin de bytes del servidor)
-    parse_int<uint32_t>();
+    parse_int<uint16_t>();
+    const auto server_end = parse_int<uint16_t>();
 
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
@@ -39,7 +41,6 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
         }
         grid_values.push_back(row);
     }
-    GridMatrixDTO grid(grid_values);
 
     const auto npc_amount = parse_int<uint16_t>();
     std::vector<AllyInfoDTO> npcs;
@@ -50,6 +51,13 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
 
         npcs.emplace_back(static_cast<AllyType>(id), x, y);
     }
+
+    // TODO: perdón ori, pero va a haber que tocar cómo se guarda el mapa y cómo se recupera esta info en el
+    // server
+    map.seekg(server_end);
+    std::vector<AssetInfoDTO> tiles = get_assets();
+
+    GridMatrixDTO grid(grid_values, tiles);
 
     map.close();
 
