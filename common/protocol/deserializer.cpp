@@ -136,6 +136,7 @@ std::vector<LootInfoDTO> Deserializer::recv_loot_information() {
 
 PlayerInfoDTO Deserializer::recv_player_info() {
     std::string name = recv_string();
+    std::string clan_name = recv_string();
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
@@ -146,8 +147,8 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     InventoryInfoDTO inventory = recv_inventory_info();
     EquipmentInfoDTO equipment = recv_equipment_info();
 
-    return PlayerInfoDTO(name, direction, x, y, safe_gold, excess_gold, appearance, stats, inventory,
-                         equipment);
+    return PlayerInfoDTO(name, clan_name, direction, x, y, safe_gold, excess_gold, appearance, stats,
+                         inventory, equipment);
 }
 
 CreatureInfoDTO Deserializer::recv_creature_info() {

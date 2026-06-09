@@ -31,7 +31,7 @@ class UserInterface {
 private:
     SDL2pp::Renderer& renderer;
     SDL2pp::Font user_font;
-    /* SDL2pp::Font clan_font; */
+    SDL2pp::Font clan_font;
     SDL2pp::Font menu_title_font;
     SDL2pp::Font menu_font;
     SDL2pp::Font chat_font;
@@ -57,7 +57,10 @@ private:
     SDL2pp::Rect input_box = {45, 190, 580, 25};
 
     SDL2pp::Rect username_rect = {770, 55, 240, 35};
-    /* SDL2pp::Rect clan_name = {770, 100, 240, 20}; */
+
+    SDL2pp::Rect clan_rect = {770, 100, 240, 20};
+    std::string clan_name;
+
     SDL2pp::Rect inventory_rect = {770, 157, 240, 35};
 
     std::vector<InventorySlotData> current_inventory;
