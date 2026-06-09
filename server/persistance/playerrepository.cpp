@@ -1,5 +1,7 @@
 #include "playerrepository.h"
 
+#include <cassert>
+#include <cstring>
 #include <utility>
 
 #define REQUESTS_LIM UINT8_MAX
@@ -66,3 +68,38 @@ bool PlayerRepository::is_connected(const std::string& username) {
 void PlayerRepository::connect(const std::string& username) { players_connected.insert(username); }
 
 void PlayerRepository::desconnect(const std::string& username) { players_connected.erase(username); }
+
+std::vector<ClanData> PlayerRepository::get_saved_clans() {
+    std::vector<std::pair<std::string, uint32_t>> entries = index.get_all_entries();
+
+    std::unordered_map<std::string, ClanData> clan_map;
+
+    for (const auto& [username, offset]: entries) {
+        PlayerData player_data = database.get(offset);
+
+        const char* clan_ptr = reinterpret_cast<const char*>(player_data.clan);
+        std::string clan_name(clan_ptr, strnlen(clan_ptr, CLAN_NAME));
+
+        if (clan_name.empty()) {
+            continue;
+        }
+
+        if (not clan_map.contains(clan_name))
+            clan_map.insert({clan_name, ClanData()});
+
+        assert(clan_map.contains(clan_name));
+
+        auto& clan_data = clan_map.at(clan_name);
+        clan_data.add_player(username, player_data);
+    }
+
+    std::vector<ClanData> clans;
+    clans.reserve(clan_map.size());
+
+    for (auto& [clan_name, clan_data]: clan_map) {
+        assert(clan_name == clan_data.clan_name);
+        clans.push_back(std::move(clan_data));
+    }
+
+    return clans;
+}

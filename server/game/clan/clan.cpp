@@ -24,6 +24,11 @@ void Clan::check_is_in_clan(const std::string& player_name) {
 Clan::Clan(const std::string& clan_name, const std::string& founder_name):
         clan_name(clan_name), founder(founder_name) {}
 
+Clan::Clan(const ClanData& data):
+        clan_name(data.clan_name),
+        founder(data.founder_name),
+        members(data.members.begin(), data.members.end()) {}
+
 ClanActionResult Clan::execute(const ClanActionPayload& payload) {
     const std::string& player_name = payload.player_name;
     const std::string& other_player = payload.other_player;

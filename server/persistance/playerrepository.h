@@ -4,11 +4,13 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "common/queue.h"
 #include "common/thread/thread.h"
 #include "server/game/player/player.h"
 
+#include "clan_data.h"
 #include "names_monitor.h"
 #include "playerdatabase.h"
 #include "playerindex.h"
@@ -41,6 +43,8 @@ public:
 
     // elimina al nombre de la lista de usuarios conectados, si no está el jugador, no hace nada
     void desconnect(const std::string& username);
+
+    std::vector<ClanData> get_saved_clans();
 
     ~PlayerRepository();
 };

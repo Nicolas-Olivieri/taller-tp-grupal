@@ -1,6 +1,8 @@
 #include "player.h"
 
+#include <algorithm>
 #include <cassert>
+#include <cstring>
 
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
 // modelo
@@ -21,9 +23,13 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         just_resurrected(false),
         is_resurrecting(false),
         resurrection_timer(0),
-        target_resurrection_position(0, 0) {
+        target_resurrection_position(0, 0),
+        _is_founder(persisted_data.is_founder) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
+
+    const char* clan_ptr = reinterpret_cast<const char*>(persisted_data.clan);
+    clan_name = std::string(clan_ptr, strnlen(clan_ptr, CLAN_NAME));
 }
 
 // Constructor para jugador que se conecta por primera vez
@@ -43,7 +49,9 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         just_resurrected(false),
         is_resurrecting(false),
         resurrection_timer(0),
-        target_resurrection_position(0, 0) {}
+        target_resurrection_position(0, 0),
+        _is_founder(false),
+        clan_name("") {}
 
 int Player::attack() {
     if (bound_ally != nullptr) {
@@ -258,6 +266,19 @@ void Player::complete_delayed_resurrection() {
 
 std::string Player::get_clan_name() const { return clan_name; }
 
-void Player::set_clan_name(const std::string& _clan_name) { clan_name = _clan_name; }
+void Player::join_clan(const std::string& _clan_name) {
+    clan_name = _clan_name;
+    _is_founder = false;
+}
 
-void Player::leave_clan() { clan_name.clear(); }
+void Player::found_clan(const std::string& _clan_name) {
+    clan_name = _clan_name;
+    _is_founder = true;
+}
+
+void Player::leave_clan() {
+    clan_name.clear();
+    _is_founder = false;
+}
+
+bool Player::is_clan_founder() const { return _is_founder; }

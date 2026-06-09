@@ -102,6 +102,8 @@ private:
     void remove_dead_creatures();
 
     void init_npc(const std::vector<AllyInfoDTO>& npcs);
+
+    void load_clans();
 };
 
 

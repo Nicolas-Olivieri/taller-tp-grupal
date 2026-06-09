@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "server/command/cmd_results/clan/clan_action_result.h"
+#include "server/persistance/clan_data.h"
 
 #include "clan_action_payload.h"
 
@@ -24,8 +25,7 @@ class Clan {
 public:
     static constexpr uint8_t MIN_LEVEL_REQUIRED_TO_FOUND_CLAN = 6;
 
-    // TODO definir parámetros
-    Clan(/* clan_data */);
+    explicit Clan(const ClanData& data);
 
     /// Principales operaciones
     // Fundar clan

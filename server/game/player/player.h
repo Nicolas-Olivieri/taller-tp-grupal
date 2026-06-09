@@ -34,6 +34,7 @@ private:
     int resurrection_timer;
     Position target_resurrection_position;
 
+    bool _is_founder;
     std::string clan_name;
 
 public:
@@ -124,9 +125,13 @@ public:
 
     std::string get_clan_name() const;
 
-    void set_clan_name(const std::string& _clan_name);
+    void join_clan(const std::string& _clan_name);
+
+    void found_clan(const std::string& _clan_name);
 
     void leave_clan();
+
+    bool is_clan_founder() const;
 
 private:
     void complete_delayed_resurrection();

@@ -21,6 +21,7 @@ void GameWorld::init() {
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
     init_creature();
+    load_clans();
 }
 
 const std::unordered_map<std::string, Player>& GameWorld::get_players() const { return players; }
@@ -390,7 +391,7 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
     Clan new_clan(clan_name, player_name);
 
     clans.insert({clan_name, std::move(new_clan)});
-    player.set_clan_name(clan_name);
+    player.found_clan(clan_name);
     return FoundClanResult::SUCCESS;
 }
 
@@ -417,7 +418,7 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
         switch (payload.type) {
             case ClanActionType::ACCEPT: {
                 Player& player_accepted = players.at(payload.other_player);
-                player_accepted.set_clan_name(clan_name);
+                player_accepted.join_clan(clan_name);
                 break;
             }
             case ClanActionType::LEAVE:
@@ -457,4 +458,13 @@ JoinClanResult GameWorld::join_clan(const std::string& player_name, const std::s
 
     clans.at(clan_name).recv_join_request(player_name);
     return JoinClanResult::SUCCESS;
+}
+
+void GameWorld::load_clans() {
+    std::vector<ClanData> saved_clans = player_repository.get_saved_clans();
+
+    for (const auto& data: saved_clans) {
+        Clan clan(data);
+        clans.insert({data.clan_name, clan});
+    }
 }

@@ -1,5 +1,6 @@
 #include "playerdata.h"
 
+#include <algorithm>
 #include <cstring>
 
 #include "server/game/player/player.h"
@@ -63,4 +64,9 @@ PlayerData::PlayerData(const Player& player) {
     race = stats.race_id;
     body = player.get_body();
     head = player.get_head();
+
+    is_founder = player.is_clan_founder();
+
+    std::memcpy(clan, player.get_clan_name().data(),
+                std::min(static_cast<int>(player.get_clan_name().size()), CLAN_NAME));
 }
