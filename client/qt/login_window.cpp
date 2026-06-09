@@ -14,14 +14,21 @@
 
 #include "ui_login_window.h"
 
-LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow), force_close(false) {
+LoginWindow::LoginWindow(QWidget* parent): QMainWindow(parent), ui(new Ui::LoginWindow), allow_close(false), force_close(false) {
     ui->setupUi(this);
+
+    // Seteo Stacked Widget para ambas pantallas
+    stacked_widget = new QStackedWidget(this);
+    QWidget* loginPage = takeCentralWidget();
+    stacked_widget->addWidget(loginPage);
+    QWidget* creatorContainer = new QWidget();
+    stacked_widget->addWidget(creatorContainer);
+    setCentralWidget(stacked_widget);
 
     // Seteo borde de ventana custom
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     connect(ui->btnClose, &QPushButton::clicked, this, &LoginWindow::exit_window);
     connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
-    connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &LoginWindow::exit_window);
 
     // Configuro la pantalla de LOGIN
     qApp->setStyleSheet("QToolTip { background-color: #1a0f05; color: #f7e5b3; border: 2px solid #c9a87c; "
@@ -58,23 +65,39 @@ void LoginWindow::connect_match() {
     }
 
     if (!confirmation.user_exists) {
-        const auto creator = new CreatorWindow(QString::fromStdString(username));
-        connect(creator, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
-        connect(creator, &CreatorWindow::exit_creator, this, &LoginWindow::exit_window);
+        QWidget* container = stacked_widget->widget(1);
 
-        setCentralWidget(creator);
+        creator_window = new CreatorWindow(QString::fromStdString(username), container);
+        auto* layout = new QHBoxLayout(container);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->addWidget(creator_window);
 
+        connect(creator_window, &CreatorWindow::finish_creation, this, &LoginWindow::send_creation_data);
+        connect(creator_window, &CreatorWindow::exit_creator, this, &LoginWindow::exit_window);
+
+        stacked_widget->setCurrentIndex(1);
     } else {
+        allow_close = true;
         close();
     }
 }
 
 void LoginWindow::send_creation_data(const CreatePlayerDTO& player_data) {
     Protocol protocol(socket.value());
-
     protocol.send(player_data);
 
-    close();
+    ExistenceDTO confirmation = protocol.recv_existence();
+    if (!confirmation.user_exists) {
+        allow_close = true;
+        close();
+        return;
+    }
+
+    stacked_widget->setCurrentIndex(0);
+    ui->name_err->setText("Alguien acaba de crearse una cuenta con este nombre. Elegí otro");
+    ui->name_err->show();
+
+    socket.reset();
 }
 
 bool LoginWindow::can_create_session() {
@@ -106,7 +129,17 @@ bool LoginWindow::can_create_session() {
 
 void LoginWindow::exit_window() {
     force_close = true;
-    QApplication::quit();
+    allow_close = true;
+    close();
+}
+
+void LoginWindow::closeEvent(QCloseEvent *event) {
+    if (allow_close) {
+        event->accept();
+        QApplication::quit();
+    } else {
+        event->ignore();
+    }
 }
 
 Socket LoginWindow::get_socket() {
@@ -118,7 +151,7 @@ Socket LoginWindow::get_socket() {
 
 std::string LoginWindow::get_username() { return username; }
 
-bool LoginWindow::was_forced_close() {
+bool LoginWindow::was_forced_close() const {
     return force_close;
 }
 

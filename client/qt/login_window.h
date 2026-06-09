@@ -2,6 +2,8 @@
 #define LOBBYWINDOW_H
 
 #include <QMainWindow>
+#include <QStackedWidget>
+
 #include <string>
 
 #include <ui_creator_window.h>
@@ -25,7 +27,7 @@ public:
 
     std::string get_username();
 
-    bool was_forced_close();
+    bool was_forced_close() const;
 
     ~LoginWindow();
 
@@ -33,6 +35,7 @@ protected:
     // Para permitir el borde custom
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
+    void closeEvent(QCloseEvent* event) override;
 
 private slots:
     void connect_match();
@@ -46,8 +49,12 @@ private:
     std::optional<Socket> socket;
     std::string username;
 
+    QStackedWidget* stacked_widget;
+    CreatorWindow* creator_window;
+
     QPoint drag_offset;
 
+    bool allow_close;
     bool force_close;
 
     bool can_create_session();

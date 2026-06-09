@@ -25,6 +25,9 @@ signals:
 
     void exit_creator();
 
+protected:
+    void closeEvent(QCloseEvent* event) override;
+
 private:
     Ui::CreatorWindow* ui;
     SelectorWidget* head_selector;

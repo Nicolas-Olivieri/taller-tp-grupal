@@ -16,10 +16,10 @@ CreatorWindow::CreatorWindow(const QString& username, QWidget* parent):
     ui->setupUi(this);
 
     // Seteo borde de ventana custom
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlag(Qt::WindowCloseButtonHint, false);
     connect(ui->btnClose, &QPushButton::clicked, this, &CreatorWindow::exit_window);
     connect(ui->btnMinimize, &QPushButton::clicked, this, &QWidget::showMinimized);
-    connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &CreatorWindow::exit_window);
 
     load_skins_data();
 
@@ -75,6 +75,10 @@ void CreatorWindow::start_game() {
 
 void CreatorWindow::exit_window() {
     emit exit_creator();
+}
+
+void CreatorWindow::closeEvent(QCloseEvent* event) {
+    event->ignore();
 }
 
 bool CreatorWindow::validate_data() {

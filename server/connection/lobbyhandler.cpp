@@ -30,11 +30,14 @@ void LobbyHandler::run() {
             CreatePlayerDTO appearance = protocol.recv_appearance();
             create_player(credentials.username, appearance);
 
-        } catch (const PlayerAlreadyExists& errror) {
-            // TODO: un jugador se puso el nombre que este quería justo al mismo tiempo y se lo sacó
-            std::cout << "[Lobby] " << credentials.username << " is already taken" << std::endl;
+            protocol.send(ExistenceDTO(false, false));
+
+        } catch (const PlayerAlreadyExists& error) {
+
+            // Si falla, quiere decir que en el proceso de creación otro usuario fue más rapido y tomo el nombre
+            protocol.send(ExistenceDTO(true, false));
             return;
-        } catch (const ClosedSocket& errror) {
+        } catch (const ClosedSocket& error) {
             return;
         }
     } else {
