@@ -3,9 +3,10 @@
 
 #include <map>
 
-#include "animation.h"
-#include "common/util/constants.h"
 #include "common/direction.h"
+#include "common/util/constants.h"
+
+#include "animation.h"
 
 class AnimationPool {
 private:

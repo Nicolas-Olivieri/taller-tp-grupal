@@ -58,7 +58,7 @@ struct toml::from<AnimationData<uint8_t>> {
             SpriteCategory parsed_cat = TomlHelper::get_sprite_category(category);
             const auto& animations = raw_cat_anim.as_array();
 
-            for (auto& animation : animations) {
+            for (auto& animation: animations) {
                 auto vec = toml::get<std::vector<int>>(animation.at("data"));
                 Animation anim(vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
 
@@ -69,7 +69,7 @@ struct toml::from<AnimationData<uint8_t>> {
                 } else if (animation.contains("id_range")) {
                     auto range = toml::get<std::vector<int>>(animation.at("id_range"));
                     const uint8_t start = static_cast<uint8_t>(range[0]);
-                    const uint8_t end   = static_cast<uint8_t>(range[1]);
+                    const uint8_t end = static_cast<uint8_t>(range[1]);
                     for (uint8_t id = start; id <= end; ++id) {
                         category_animations.insert({{id, anim}});
                     }
