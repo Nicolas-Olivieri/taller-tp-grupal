@@ -181,6 +181,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 if (players.contains(action.resurrection.player_resurrected)) {
                     Sprite* sprite = players.at(action.resurrection.player_resurrected).get();
                     sprite_creator.update_appearance(*sprite, action.resurrection.original_appearance);
+                    audio_manager.play_event(SoundEvent::RESURRECTION);
                 }
                 break;
             case ActionType::DEATH:
