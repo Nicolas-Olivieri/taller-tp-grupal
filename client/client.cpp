@@ -10,7 +10,7 @@
 #include "SDL/client_game.h"
 #include "client/qt/login_window.h"
 
-Client::Client(int argc, char* argv[]): app(argc, argv) {}
+Client::Client(int argc, char* argv[]): app(argc, argv), lobby(audio_manager) {}
 
 int Client::run() {
     lobby.show();

@@ -11,6 +11,7 @@
 class Client {
 private:
     QApplication app;
+    AudioManager audio_manager;
     LoginWindow lobby;
 
 public:

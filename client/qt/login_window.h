@@ -1,15 +1,13 @@
 #ifndef LOBBYWINDOW_H
 #define LOBBYWINDOW_H
 
-#include <QMainWindow>
+
 #include <string>
 
-#include <SDL2pp/Mixer.hh>
-#include <SDL2pp/Music.hh>
-#include <SDL2pp/SDL.hh>
 #include <ui_creator_window.h>
 #include <ui_login_window.h>
 
+#include "client/SDL/audio/audio_manager.h"
 #include "common/socket.h"
 
 #include "creator_window.h"
@@ -22,7 +20,7 @@ class LoginWindow: public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit LoginWindow(QWidget* parent = nullptr);
+    explicit LoginWindow(AudioManager& audio_manager, QWidget* parent = nullptr);
 
     Socket get_socket();
 
@@ -47,15 +45,9 @@ private:
 
     QPoint drag_offset;
 
-    std::optional<SDL2pp::SDL> sdl;
-    std::optional<SDL2pp::Mixer> mixer;
-    std::optional<SDL2pp::Music> background_music;
+    AudioManager& audio_manager;
 
     bool can_create_session();
-
-    void init_music(const std::string& audio_path, uint8_t volume);
-
-    void set_background_music(const std::string& audio_path, uint8_t volume);
 };
 
 #endif  // LOBBYWINDOW_H
