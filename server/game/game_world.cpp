@@ -546,6 +546,9 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
     if (current_level < Clan::MIN_LEVEL_REQUIRED_TO_FOUND_CLAN)
         return FoundClanResult::NOT_ENOUGH_LEVEL;
 
+    if (clan_name.size() > CLAN_NAME)
+        return FoundClanResult::CLAN_NAME_LONG;
+
     Clan new_clan(clan_name, player_name);
 
     clans.insert({clan_name, std::move(new_clan)});
