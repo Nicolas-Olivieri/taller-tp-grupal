@@ -46,6 +46,9 @@ void ClanAcceptCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::CLAN_IS_FULL:
             error_msg = CLAN_IS_FULL_MSG;
             break;
+        case ClanActionStatus::PLAYER_HAS_CLAN:
+            error_msg = std::format("{} ya se unio a otro clan", other_player_name);
+            break;
         case ClanActionStatus::IS_FOUNDER:
         case ClanActionStatus::NO_RESULT:
         default:

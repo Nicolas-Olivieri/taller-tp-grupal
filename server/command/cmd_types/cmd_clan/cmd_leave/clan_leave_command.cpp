@@ -5,7 +5,7 @@
 ClanLeaveCommand::ClanLeaveCommand(const std::string& player_name): player_name(player_name) {}
 
 void ClanLeaveCommand::execute(GameWorld& world) {
-    result = world.execute_clan_action(ClanActionPayload(ClanActionType::BAN, player_name));
+    result = world.execute_clan_action(ClanActionPayload(ClanActionType::LEAVE, player_name));
 }
 
 void ClanLeaveCommand::build_snapshot(SnapshotBuilder& builder) {

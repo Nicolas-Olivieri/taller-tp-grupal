@@ -8,7 +8,7 @@
 ClanReviewCommand::ClanReviewCommand(const std::string& player_name): player_name(player_name) {}
 
 void ClanReviewCommand::execute(GameWorld& world) {
-    result = world.execute_clan_action(ClanActionPayload(ClanActionType::BAN, player_name));
+    result = world.execute_clan_action(ClanActionPayload(ClanActionType::REVIEW, player_name));
 }
 
 void ClanReviewCommand::build_snapshot(SnapshotBuilder& builder) {
@@ -40,28 +40,17 @@ void ClanReviewCommand::build_review(SnapshotBuilder& builder) {
     lines.reserve(1 + 2 + 2 + result.banned_players.size() + 1 + result.clan_members.size() + 1 +
                   result.joining_requests.size());
 
-    // TODO borrar los fors comentados si fuciona bien
+    lines.push_back("Revision del clan:");
 
-    lines.push_back("    Revision del clan:");
-    lines.push_back("  Fundador:");
-    lines.push_back(player_name);
-    lines.push_back(std::format("  Miembros: "));
+    lines.push_back(std::format("* Miembros: ({} / {})", result.clan_members.size() + 1, Clan::MAX_MEMBERS));
+    lines.push_back(std::format("{} - Fundador", player_name));
     std::copy(result.clan_members.begin(), result.clan_members.end(), std::back_inserter(lines));
-    //    for (const auto& member: result.clan_members) {
-    //        lines.push_back(member);
-    //    }
-    lines.push_back(
-            std::format("  Capacidad del clan: {}/{}", result.clan_members.size() + 1, Clan::MAX_MEMBERS));
+
+    lines.push_back(std::format("* Solicitudes de union del clan: ({})", result.joining_requests.size()));
     std::copy(result.joining_requests.begin(), result.joining_requests.end(), std::back_inserter(lines));
-    //    lines.push_back("  Solicitudes de union del clan");
-    //    for (const auto& request: result.joining_requests) {
-    //        lines.push_back(request);
-    //    }
-    lines.push_back("  Jugadores baneados del clan");
+
+    lines.push_back(std::format("* Jugadores baneados del clan: ({})", result.banned_players.size()));
     std::copy(result.banned_players.begin(), result.banned_players.end(), std::back_inserter(lines));
-    //    for (const auto& banned_player: result.banned_players) {
-    //        lines.push_back(banned_player);
-    //    }
 
     assert(lines.size() < UINT16_MAX);
     builder.add_action(ActionDTO(ChatListDTO(MessageType::CLAN, lines, player_name)));

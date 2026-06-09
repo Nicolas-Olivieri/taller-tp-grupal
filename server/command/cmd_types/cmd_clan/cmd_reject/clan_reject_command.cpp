@@ -7,7 +7,7 @@ ClanRejectCommand::ClanRejectCommand(const std::string& player_name, const std::
 
 void ClanRejectCommand::execute(GameWorld& world) {
     result = world.execute_clan_action(
-            ClanActionPayload(ClanActionType::ACCEPT, player_name, other_player_name));
+            ClanActionPayload(ClanActionType::REJECT, player_name, other_player_name));
 }
 
 void ClanRejectCommand::build_snapshot(SnapshotBuilder& builder) {
@@ -42,9 +42,9 @@ void ClanRejectCommand::build_snapshot(SnapshotBuilder& builder) {
 }
 
 void ClanRejectCommand::notify_success(SnapshotBuilder& builder) {
-    builder.add_action(ActionDTO(
-            ChatMessageDTO(MessageType::CLAN, player_name,
-                           std::format("Se rechazo correctamente la solicitud de {}", other_player_name))));
+    builder.add_action(ActionDTO(ChatMessageDTO(
+            MessageType::CLAN, player_name,
+            std::format("Rechazaste la solicitud de {} de unirse al clan", other_player_name))));
     builder.add_action(ActionDTO(
             ChatMessageDTO(MessageType::CLAN, other_player_name,
                            std::format("{} rechazo tu solicitud de unirte a su clan", player_name))));

@@ -117,6 +117,9 @@ ClanActionResult Clan::kick(const std::string& player_name, const std::string& p
         return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
     }
 
+    assert(members.contains(player_to_kick));
+    members.extract(player_to_kick);
+
     return ClanActionResult(ClanActionStatus::SUCCESS);
 }
 
@@ -161,5 +164,15 @@ ClanActionResult Clan::leave(const std::string& player_name) {
     if (is_founder(player_name))
         return ClanActionResult(ClanActionStatus::IS_FOUNDER);
 
+    assert(members.contains(player_name));
+    members.extract(player_name);
+
     return ClanActionResult(ClanActionStatus::SUCCESS);
+}
+
+void Clan::remove(const std::string& player_name) {
+    if (joining_requests.contains(player_name))
+        joining_requests.extract(player_name);
+    if (members.contains(player_name))
+        members.extract(player_name);
 }

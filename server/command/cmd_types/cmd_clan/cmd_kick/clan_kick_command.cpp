@@ -7,8 +7,8 @@ ClanKickCommand::ClanKickCommand(const std::string& player_name, const std::stri
         player_name(player_name), other_player_name(other_player_name) {}
 
 void ClanKickCommand::execute(GameWorld& world) {
-    result =
-            world.execute_clan_action(ClanActionPayload(ClanActionType::BAN, player_name, other_player_name));
+    result = world.execute_clan_action(
+            ClanActionPayload(ClanActionType::KICK, player_name, other_player_name));
 }
 
 void ClanKickCommand::build_snapshot(SnapshotBuilder& builder) {

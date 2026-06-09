@@ -17,9 +17,6 @@ void ClanBanCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::SUCCESS:
             builder.add_action(ActionDTO(ChatMessageDTO(MessageType::CLAN, player_name,
                                                         std::format("{} fue baneado", other_player_name))));
-            builder.add_action(
-                    ActionDTO(ChatMessageDTO(MessageType::CLAN, other_player_name,
-                                             std::format("Fuiste baneado del clan de {}", player_name))));
             return;
 
         case ClanActionStatus::IS_MEMBER:

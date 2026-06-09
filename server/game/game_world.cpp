@@ -406,18 +406,23 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
     if (clan_name.empty())
         return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
 
-    if ((not payload.other_player.empty()) and players.contains(payload.other_player))
+    if ((not players.contains(payload.other_player)) and (not payload.other_player.empty()))
         return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
 
     assert(clans.contains(clan_name));
 
     Clan& clan = clans.at(clan_name);
+
     ClanActionResult result = clan.execute(payload);
 
     if (result.status == ClanActionStatus::SUCCESS) {
         switch (payload.type) {
             case ClanActionType::ACCEPT: {
                 Player& player_accepted = players.at(payload.other_player);
+                if (not player_accepted.get_clan_name().empty()) {
+                    clan.remove(payload.other_player);
+                    return ClanActionResult(ClanActionStatus::PLAYER_HAS_CLAN);
+                }
                 player_accepted.join_clan(clan_name);
                 break;
             }

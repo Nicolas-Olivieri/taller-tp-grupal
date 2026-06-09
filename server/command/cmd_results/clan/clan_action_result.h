@@ -28,7 +28,8 @@ enum class ClanActionStatus {
     IS_ALREADY_MEMBER,
     IS_BANNED_PLAYER,
     IS_NOT_IN_JOIN_LIST,
-    CLAN_IS_FULL
+    CLAN_IS_FULL,
+    PLAYER_HAS_CLAN,
 
 };
 

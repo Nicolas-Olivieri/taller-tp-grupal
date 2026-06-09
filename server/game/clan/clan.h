@@ -35,6 +35,8 @@ public:
 
     void recv_join_request(const std::string& player_name);
 
+    void remove(const std::string& player_name);
+
 private:
     ClanActionResult accept(const std::string& player_name, const std::string& player_to_accept);
 
