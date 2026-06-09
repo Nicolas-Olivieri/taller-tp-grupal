@@ -21,6 +21,9 @@ enum class CommandType : uint8_t {
     CLAN_FOUND,
     CLAN_JOIN,
     CLAN_REQUEST_RESPONSE,
+    CLAN_REMOVE_PLAYER,
+    CLAN_LEAVE,
+    CLAN_REVIEW,
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a

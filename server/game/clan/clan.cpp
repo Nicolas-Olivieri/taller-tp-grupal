@@ -67,15 +67,19 @@ ClanActionResult Clan::accept(const std::string& player_name, const std::string&
     if (not is_founder(player_name))
         return ClanActionResult(ClanActionStatus::IS_MEMBER);
 
-    if (is_member(player_name))
+    if (is_member(player_to_accept))
         return ClanActionResult(ClanActionStatus::IS_ALREADY_MEMBER);
 
-    if (is_banned(player_name))
-        return ClanActionResult(ClanActionStatus::IS_BANNED_PLAYER);
-
-    if (not has_pending_request(player_name))
+    if (not has_pending_request(player_to_accept))
         return ClanActionResult(ClanActionStatus::IS_NOT_IN_JOIN_LIST);
 
+    if (is_banned(player_to_accept))
+        return ClanActionResult(ClanActionStatus::IS_BANNED_PLAYER);
+
+    if (MAX_MEMBERS == members.size() + 1)
+        return ClanActionResult(ClanActionStatus::CLAN_IS_FULL);
+
+    assert(has_pending_request(player_to_accept));
     joining_requests.extract(player_to_accept);
     members.insert(player_to_accept);
 

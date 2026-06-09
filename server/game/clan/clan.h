@@ -20,9 +20,9 @@ class Clan {
     std::unordered_set<std::string> joining_requests;
     std::unordered_set<std::string> banned_players;
 
-    static const uint8_t MAX_MEMBERS = 16;
 
 public:
+    static constexpr uint8_t MAX_MEMBERS = 16;
     static constexpr uint8_t MIN_LEVEL_REQUIRED_TO_FOUND_CLAN = 6;
 
     explicit Clan(const ClanData& data);

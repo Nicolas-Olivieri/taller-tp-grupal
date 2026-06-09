@@ -406,7 +406,7 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
     if (clan_name.empty())
         return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
 
-    if (not(payload.other_player.empty() and players.contains(payload.other_player)))
+    if ((not payload.other_player.empty()) and players.contains(payload.other_player))
         return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
 
     assert(clans.contains(clan_name));
