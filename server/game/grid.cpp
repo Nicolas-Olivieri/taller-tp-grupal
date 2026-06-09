@@ -25,7 +25,7 @@ Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         tiles_.emplace_back(std::move(tile_row));
     }
 
-    for (const auto& tile : grid_data.tiles) {
+    for (const auto& tile: grid_data.tiles) {
         try {
             tiles_[tile.y][tile.x].set_biome_id(config.get_biome_id(tile.id));
         } catch (const std::out_of_range& err) {

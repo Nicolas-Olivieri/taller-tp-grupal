@@ -1,7 +1,7 @@
 #include "grid_matrix.h"
 
-#include <utility>
 #include <iostream>
+#include <utility>
 #include <vector>
 
 GridMatrixDTO::GridMatrixDTO(const std::vector<std::vector<bool>>& walkable_tiles,

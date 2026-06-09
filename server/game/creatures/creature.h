@@ -28,6 +28,7 @@ private:
     bool is_in_range(const Position& other_position, uint8_t range) const;
 
     Equipment equipment_from_variation(uint8_t variation);
+
 public:
     // TODO: mover métodos que no son públicos a la sección private
 

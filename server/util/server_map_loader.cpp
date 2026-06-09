@@ -1,8 +1,8 @@
 #include "server_map_loader.h"
 
 #include <fstream>
-#include <utility>
 #include <iostream>
+#include <utility>
 #include <vector>
 
 #include <netinet/in.h>

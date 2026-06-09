@@ -24,7 +24,7 @@ Equipment Creature::equipment_from_variation(uint8_t variation) {
     Equipment equipment;
 
     const VariationData& variation_data = config.get_variation(variation);
-    for (const auto& item_id : variation_data.equipment) {
+    for (const auto& item_id: variation_data.equipment) {
         if (config.weapons_contains(item_id))
             equipment.weapon = item_id;
         if (config.armors_contains(item_id))
@@ -34,7 +34,7 @@ Equipment Creature::equipment_from_variation(uint8_t variation) {
         if (config.helmets_contains(item_id))
             equipment.helmet = item_id;
     }
-    
+
     return equipment;
 }
 
