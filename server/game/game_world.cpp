@@ -11,7 +11,7 @@
 #include "server/command/cmd_results/use_item/use_item_result.h"
 #include "server/util/server_map_loader.h"
 
-#define MAX_CREATURE_AMOUNT 10
+#define MAX_CREATURE_AMOUNT 8
 
 GameWorld::GameWorld(PlayerRepository& player_repository): grid(), player_repository(player_repository) {}
 
