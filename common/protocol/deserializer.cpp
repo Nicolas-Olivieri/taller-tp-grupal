@@ -184,6 +184,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_attack());
         case ActionType::DESPAWN:
             return ActionDTO(recv_despawn());
+        case ActionType::HEAL:
+            return ActionDTO(recv_heal());
         case ActionType::MESSAGE:
             return ActionDTO(recv_chat_message());
         case ActionType::RESURRECTION:
@@ -209,6 +211,7 @@ ActionType Deserializer::recv_action_type() {
         // luego borrar este comentario
         case ActionType::ATTACK:
         case ActionType::DESPAWN:
+        case ActionType::HEAL:
         case ActionType::MESSAGE:
         case ActionType::RESURRECTION:
         case ActionType::DEATH:
@@ -235,6 +238,12 @@ DespawnDTO Deserializer::recv_despawn() {
     std::string player_despawned = recv_string();
 
     return DespawnDTO(player_despawned);
+}
+
+HealDTO Deserializer::recv_heal() {
+    const std::string player_healed = recv_string();
+
+    return HealDTO(player_healed);
 }
 
 std::vector<AllyInfoDTO> Deserializer::recv_allies_information() {

@@ -105,6 +105,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::DESPAWN:
             serialize(action.despawn);
             break;
+        case ActionType::HEAL:
+            serialize(action.heal);
+            break;
         case ActionType::MESSAGE:
             serialize(action.chat_message);
             break;
@@ -166,6 +169,8 @@ void Serializer::serialize(const InteractEventDTO& event) {
 }
 
 void Serializer::serialize(const DespawnDTO& despawn) { serialize(despawn.player_despawned); }
+
+void Serializer::serialize(const HealDTO& heal) { serialize(heal.player_healed); }
 
 void Serializer::serialize(const AllyInfoDTO& info) {
     serialize(static_cast<uint8_t>(info.type));

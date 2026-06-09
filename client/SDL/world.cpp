@@ -181,6 +181,11 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                     audio_manager.play_event(SoundEvent::DESPAWN);
                 }
                 break;
+
+            case ActionType::HEAL:
+                audio_manager.play_event(SoundEvent::HEAL);
+                break;
+
             case ActionType::RESURRECTION:
                 if (players.contains(action.resurrection.player_resurrected)) {
                     Sprite* sprite = players.at(action.resurrection.player_resurrected).get();
@@ -199,6 +204,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
             case ActionType::ATTACK:
                 // TODO: Cambiar el SFX según el arma con la que se atacó
                 audio_manager.play_event(SoundEvent::SWORD_ATTACK);
+                break;
 
             default:
                 break;

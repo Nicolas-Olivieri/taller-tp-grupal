@@ -14,6 +14,8 @@ size_t ActionDTO::message_size() const {
             return base + attack.message_size();
         case ActionType::DESPAWN:
             return base + despawn.message_size();
+        case ActionType::HEAL:
+            return base + heal.message_size();
         case ActionType::MESSAGE:
             return base + chat_message.message_size();
         case ActionType::RESURRECTION:
@@ -33,6 +35,17 @@ size_t ActionDTO::message_size() const {
 }
 
 void ActionDTO::accept(Serializer& serializer) const { serializer.serialize(*this); }
+
+// TODO: Agregar constructores por defecto para evitar tener que inicializar siempre los que no se usan
+ActionDTO::ActionDTO(const HealDTO& heal):
+        action(ActionType::HEAL),
+        despawn(""),
+        heal(heal),
+        chat_message(MessageType::SYSTEM, "", "", ""),
+        resurrection("", {}),
+        death(""),
+        list(MessageType::SYSTEM, {}, ""),
+        items() {}
 
 ActionDTO::ActionDTO(const AttackDTO& attack):
         action(ActionType::ATTACK),

@@ -44,6 +44,8 @@ private:
 
     DespawnDTO recv_despawn();
 
+    HealDTO recv_heal();
+
     ChatMessageDTO recv_chat_message();
 
     PlayerStatsDTO recv_player_stats();

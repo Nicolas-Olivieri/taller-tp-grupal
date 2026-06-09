@@ -5,6 +5,7 @@
 #include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
 #include "common/dto/snapshot/actions/action_types/act_death/death.h"
 #include "common/dto/snapshot/actions/action_types/act_despawn/despawn.h"
+#include "common/dto/snapshot/actions/action_types/act_heal/heal.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_bank/list_bank.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
@@ -14,6 +15,7 @@
 enum class ActionType : uint8_t {
     ATTACK,
     DESPAWN,
+    HEAL,
     MESSAGE,
     RESURRECTION,
     DEATH,
@@ -27,6 +29,7 @@ struct ActionDTO: public ProtocolMessageDTO {
 
     AttackDTO attack;
     DespawnDTO despawn;
+    HealDTO heal;
     ChatMessageDTO chat_message;
     ResurrectionDTO resurrection;
     DeathDTO death;
@@ -41,6 +44,8 @@ struct ActionDTO: public ProtocolMessageDTO {
     explicit ActionDTO(const AttackDTO& attack);
 
     explicit ActionDTO(const DespawnDTO& despawn);
+
+    explicit ActionDTO(const HealDTO& heal);
 
     explicit ActionDTO(const ChatMessageDTO& message);
 

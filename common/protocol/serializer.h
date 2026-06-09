@@ -111,6 +111,8 @@ public:
 
     void serialize(const DespawnDTO& despawn);
 
+    void serialize(const HealDTO& heal);
+
     void serialize(const InteractEventDTO& event);
 
     void serialize(const ChatMessageDTO& message);
