@@ -13,6 +13,28 @@ SoundPool::SoundPool():
 }
 
 
+void SoundPool::preload_sfx(const std::string& path) {
+    if (not sounds.contains(path)) {
+        try {
+            sounds.emplace(path, SDL2pp::Chunk(path));
+
+        } catch (const std::exception& e) {
+            std::cerr << "[SoundPool] Error cargando SFX (" << path << "): " << e.what() << std::endl;
+        }
+    }
+}
+
+
+void SoundPool::play_sfx(const std::string& path, const int volume) {
+    preload_sfx(path);
+    if (sounds.contains(path)) {
+        SDL2pp::Chunk& chunk = sounds.at(path);
+        chunk.SetVolume(volume);
+        Mix_PlayChannel(-1, chunk.Get(), 0);
+    }
+}
+
+
 void SoundPool::play_music(const std::string& path, const int volume) {
     if (current_music_path == path) {
         return;

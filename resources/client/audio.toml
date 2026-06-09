@@ -2,3 +2,6 @@
 creator = { paths = ["/music/creator.mid"], volume = 64 }
 login = { paths = ["/music/login.mid"], volume = 32 }
 forest = { paths = ["/music/forest.mid"], volume = 64 }
+
+[sfx]
+footstep = { paths = ["/sfx/step1.wav", "/sfx/step2.wav"], volume = 8 }
