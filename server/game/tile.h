@@ -11,13 +11,14 @@
 class Tile {
 private:
     bool is_walkable_;
+    uint8_t biome;
     Interactive* occupant_;
     std::stack<Loot> loot_;
 
 public:
     explicit Tile(bool is_walkable);
 
-    explicit Tile(Interactive* occupant);
+    Tile(bool is_walkable, uint8_t biome_id);
 
     bool is_walkable() const;
 

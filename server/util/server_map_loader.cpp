@@ -1,7 +1,7 @@
 #include "server_map_loader.h"
 
 #include <fstream>
-#include <iostream>
+#include <utility>
 #include <vector>
 
 #include <netinet/in.h>
@@ -25,7 +25,8 @@ ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
 
 ServerMapDataDTO ServerMapLoader::get_server_data() {
     // Leo los 4 bytes de offset (inicio y fin de bytes del servidor)
-    parse_int<uint32_t>();
+    const auto server_start = parse_int<uint16_t>();
+    const auto server_end = parse_int<uint16_t>();
 
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
@@ -39,7 +40,6 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
         }
         grid_values.push_back(row);
     }
-    GridMatrixDTO grid(grid_values);
 
     const auto npc_amount = parse_int<uint16_t>();
     std::vector<AllyInfoDTO> npcs;
@@ -50,6 +50,23 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
 
         npcs.emplace_back(static_cast<AllyType>(id), x, y);
     }
+
+    // TODO: perdón ori, pero va a haber que tocar cómo se guarda el mapa y cómo se recupera esta info en el
+    // server
+    map.ignore(server_end - server_start);
+    std::vector<AssetInfoDTO> tiles = get_assets();
+    std::vector<std::vector<uint8_t>> tiles_ids(width);
+
+    for (uint16_t i = 0; i < width; i++) {
+        std::vector<uint8_t> col(height);
+        tiles_ids[i] = col;
+    }
+
+    for (const auto& tile: tiles) {
+        tiles_ids[tile.x][tile.y] = tile.id;
+    }
+
+    GridMatrixDTO grid(grid_values, std::move(tiles_ids));
 
     map.close();
 

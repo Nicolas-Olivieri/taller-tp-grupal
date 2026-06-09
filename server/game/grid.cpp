@@ -3,18 +3,29 @@
 #include <algorithm>
 #include <utility>
 
+#include "server/config/game_config.h"
+
 Grid::Grid(): width_(0), height_(0) {}
 
 Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         width_(width),
         height_(height),
         directions({Direction::DOWN, Direction::RIGHT, Direction::LEFT, Direction::UP}) {
-    for (const auto& row: grid_data.walkable_tiles) {
-        std::vector<Tile> tile_row;
-        tile_row.reserve(row.size());
 
-        std::ranges::transform(row, std::back_inserter(tile_row),
-                               [](auto tile_value) { return Tile(tile_value); });
+    GameConfig& config = GameConfig::get();
+
+    for (uint16_t y = 0; y < height; y++) {
+        std::vector<Tile> tile_row;
+        tile_row.reserve(width);
+
+        for (uint16_t x = 0; x < width; x++) {
+            try {
+                uint8_t biome_id = config.get_biome_id(grid_data.tiles_ids[y][x]);
+                tile_row.push_back(Tile(grid_data.walkable_tiles[y][x], biome_id));
+            } catch (const std::out_of_range& err) {
+                tile_row.push_back(Tile(grid_data.walkable_tiles[y][x]));
+            }
+        }
 
         tiles_.emplace_back(std::move(tile_row));
     }

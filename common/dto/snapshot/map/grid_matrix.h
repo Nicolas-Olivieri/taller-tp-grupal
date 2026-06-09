@@ -4,14 +4,12 @@
 
 #include "common/dto/message.h"
 
-struct GridMatrixDTO: public ProtocolMessageDTO {
+struct GridMatrixDTO {
     std::vector<std::vector<bool>> walkable_tiles;
+    std::vector<std::vector<uint8_t>> tiles_ids;
 
-    explicit GridMatrixDTO(const std::vector<std::vector<bool>>& walkable_tiles);
-
-    size_t message_size() const override;
-
-    void accept(Serializer& serializer) const override;
+    GridMatrixDTO(const std::vector<std::vector<bool>>& walkable_tiles,
+                  std::vector<std::vector<uint8_t>> tiles_ids);
 };
 
 
