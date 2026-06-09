@@ -713,14 +713,474 @@ unwalkable = [0, 0, 0, 0]
 # COLLIDERS :::::::::::::::::::::::::::::::
 # =========================================
 
-
-
 [[colliders]]
 id = 0
-name = "Carreta"
+name = "Arbol 1"
+width = 4
+height = 8
+unwalkable = [0, 1, 2, 1]
+
+[[colliders]]
+id = 1
+name = "Arbol 2"
+width = 8
+height = 8
+unwalkable = [3, 7, 2, 1]
+
+[[colliders]]
+id = 2
+name = "Arbol 3"
+width = 8
+height = 8
+unwalkable = [4, 7, 2, 1]
+
+[[colliders]]
+id = 3
+name = "Arbol 4"
+width = 8
+height = 8
+unwalkable = [3, 7, 2, 1]
+
+[[colliders]]
+id = 4
+name = "Arbol 5"
+width = 6
+height = 8
+unwalkable = [2, 7, 2, 1]
+
+[[colliders]]
+id = 5
+name = "Arbol 6"
+width = 10
+height = 11
+unwalkable = [1, 10, 4, 1]
+
+[[colliders]]
+id = 6
+name = "Arbol 7"
+width = 10
+height = 11
+unwalkable = [1, 10, 4, 1]
+
+[[colliders]]
+id = 7
+name = "Arbol 8"
+width = 11
+height = 7
+unwalkable = [4, 5, 3, 2]
+
+[[colliders]]
+id = 8
+name = "Arbol 9"
+width = 7
+height = 7
+unwalkable = [2, 6, 3, 1]
+
+[[colliders]]
+id = 9
+name = "Arbol 10"
+width = 7
+height = 7
+unwalkable = [2, 6, 3, 1]
+
+[[colliders]]
+id = 10
+name = "Planta 1"
+width = 4
+height = 2
+unwalkable = [0, 0, 0, 0]
+
+[[colliders]]
+id = 11
+name = "Plata 2"
 width = 3
 height = 2
-unwalkable = [0,1,3,1]
+unwalkable = [0, 0, 0, 0]
+
+[[colliders]]
+id = 12
+name = "Planta 3"
+width = 3
+height = 2
+unwalkable = [0, 1, 2, 1]
+
+[[colliders]]
+id = 13
+name = "Planta 4"
+width = 5
+height = 3
+unwalkable = [1, 1, 2, 1]
+
+[[colliders]]
+id = 14
+name = "Planta 5"
+width = 3
+height = 2
+unwalkable = [0, 0, 0, 0]
+
+[[colliders]]
+id = 15
+name = "Planta 6"
+width = 3
+height = 2
+unwalkable = [0, 0, 0, 0]
+
+[[colliders]]
+id = 16
+name = "Planta 7"
+width = 3
+height = 2
+unwalkable = [0, 0, 0, 0]
+
+[[colliders]]
+id = 17
+name = "Planta 8"
+width = 3
+height = 2
+unwalkable = [0, 0, 0, 0]
+
+[[colliders]]
+id = 18
+name = "Planta 9"
+width = 3
+height = 2
+unwalkable = [0, 0, 0, 0]
+
+[[colliders]]
+id = 19
+name = "Planta 10"
+width = 3
+height = 3
+unwalkable = [0, 2, 2, 1]
+
+[[colliders]]
+id = 20
+name = "Planta 11"
+width = 3
+height = 4
+unwalkable = [0, 2, 2, 2]
+
+[[colliders]]
+id = 21
+name = "Hongo 1"
+width = 9
+height = 8
+unwalkable = [1, 6, 4, 2]
+
+[[colliders]]
+id = 22
+name = "Hongo 2"
+width = 3
+height = 3
+unwalkable = [0, 2, 2, 1]
+
+[[colliders]]
+id = 23
+name = "Hongo 3"
+width = 3
+height = 3
+unwalkable = [1, 2, 1, 2]
+
+[[colliders]]
+id = 24
+name = "Hongo 4"
+width = 3
+height = 3
+unwalkable = [1, 2, 1, 2]
+
+[[colliders]]
+id = 25
+name = "Piedra 1"
+width = 2
+height = 2
+unwalkable = [0, 0, 2, 2]
+
+[[colliders]]
+id = 26
+name = "Piedra 2"
+width = 3
+height = 2
+unwalkable = [0, 0, 3, 2]
+
+[[colliders]]
+id = 27
+name = "Piedra 3"
+width = 5
+height = 4
+unwalkable = [0, 0, 4, 4]
+
+[[colliders]]
+id = 28
+name = "Piedra 4"
+width = 4
+height = 2
+unwalkable = [0, 0, 4, 2]
+
+[[colliders]]
+id = 29
+name = "Piedra 5"
+width = 4
+height = 4
+unwalkable = [0, 1, 2, 2]
+
+[[colliders]]
+id = 30
+name = "Piedra 6"
+width = 4
+height = 4
+unwalkable = [0, 1, 3, 2]
+
+[[colliders]]
+id = 31
+name = "Piedra 7"
+width = 8
+height = 7
+unwalkable = [0, 5, 7, 2]
+
+[[colliders]]
+id = 32
+name = "Piedra 8"
+width = 7
+height = 6
+unwalkable = [0, 4, 6, 2]
+
+[[colliders]]
+id = 33
+name = "Casa desierto 1"
+width = 9
+height = 8
+unwalkable = [1, 3, 7, 5]
+
+[[colliders]]
+id = 34
+name = "Casa desierto 2"
+width = 11
+height = 13
+unwalkable = [2, 9, 6, 4]
+
+[[colliders]]
+id = 35
+name = "Tienda 1"
+width = 8
+height = 5
+unwalkable = [0, 2, 5, 3]
+
+[[colliders]]
+id = 36
+name = "Tienda 2"
+width = 7
+height = 5
+unwalkable = [0, 2, 6, 3]
+
+[[colliders]]
+id = 37
+name = "Tienda 3"
+width = 7
+height = 5
+unwalkable = [0, 2, 5, 3]
+
+[[colliders]]
+id = 38
+name = "Aljibe"
+width = 5
+height = 4
+unwalkable = [0, 1, 4, 3]
+
+[[colliders]]
+id = 39
+name = "Altar"
+width = 4
+height = 3
+unwalkable = [0, 2, 4, 1]
+
+[[colliders]]
+id = 40
+name = "Banner azul"
+width = 2
+height = 3
+unwalkable = [0, 2, 1, 1]
+
+[[colliders]]
+id = 41
+name = "Banner rojo"
+width = 2
+height = 3
+unwalkable = [0, 2, 1, 1]
+
+[[colliders]]
+id = 42
+name = "Barril"
+width = 1
+height = 2
+unwalkable = [0, 1, 1, 1]
+
+[[colliders]]
+id = 43
+name = "Carreta"
+width = 6
+height = 3
+unwalkable = [0, 1, 6, 2]
+
+[[colliders]]
+id = 44
+name = "Espadas"
+width = 2
+height = 2
+unwalkable = [0, 1, 1, 1]
+
+[[colliders]]
+id = 45
+name = "Frutas 1"
+width = 3
+height = 3
+unwalkable = [0, 1, 2, 2]
+
+[[colliders]]
+id = 46
+name = "Frutas 2"
+width = 3
+height = 3
+unwalkable = [0, 1, 2, 2]
+
+[[colliders]]
+id = 47
+name = "Tronco 1"
+width = 3
+height = 2
+unwalkable = [0, 1, 3, 1]
+
+[[colliders]]
+id = 48
+name = "Tronco 2"
+width = 3
+height = 2
+unwalkable = [0, 0, 3, 2]
+
+[[colliders]]
+id = 49
+name = "Tronco 3"
+width = 3
+height = 2
+unwalkable = [0, 2, 2, 1]
+
+[[colliders]]
+id = 50
+name = "Tronco 4"
+width = 2
+height = 3
+unwalkable = [0, 1, 2, 2]
+
+[[colliders]]
+id = 51
+name = "Tronco 5"
+width = 3
+height = 2
+unwalkable = [0, 1, 2, 1]
+
+[[colliders]]
+id = 52
+name = "Mesa mágica"
+width = 5
+height = 2
+unwalkable = [0, 1, 5, 1]
+
+[[colliders]]
+id = 53
+name = "Mesa oro"
+width = 5
+height = 2
+unwalkable = [0, 1, 5, 1]
+
+[[colliders]]
+id = 54
+name = "Poste 1"
+width = 3
+height = 4
+unwalkable = [1, 3, 1, 1]
+
+[[colliders]]
+id = 55
+name = "Poste 2"
+width = 3
+height = 4
+unwalkable = [1, 3, 1, 1]
+
+[[colliders]]
+id = 56
+name = "Poste 3"
+width = 3
+height = 4
+unwalkable = [0, 3, 1, 1]
+
+[[colliders]]
+id = 57
+name = "Poste 4"
+width = 3
+height = 4
+unwalkable = [0, 3, 2, 1]
+
+[[colliders]]
+id = 58
+name = "Poste 5"
+width = 3
+height = 4
+unwalkable = [0, 3, 2, 1]
+
+[[colliders]]
+id = 59
+name = "Poste 6"
+width = 2
+height = 4
+unwalkable = [0, 3, 1, 1]
+
+[[colliders]]
+id = 60
+name = "Ropa 1"
+width = 1
+height = 2
+unwalkable = [0, 1, 1, 1]
+
+[[colliders]]
+id = 61
+name = "Ropa 2"
+width = 1
+height = 2
+unwalkable = [0, 1, 1, 1]
+
+[[colliders]]
+id = 62
+name = "Tiburon colgante"
+width = 5
+height = 7
+unwalkable = [0, 4, 3, 3]
+
+[[colliders]]
+id = 63
+name = "Yunque"
+width = 1
+height = 2
+unwalkable = [0, 1, 1, 1]
+
+[[colliders]]
+id = 64
+name = "Fogata"
+width = 1
+height = 1
+unwalkable = [0, 0, 1, 1]
+
+[[colliders]]
+id = 65
+name = "Fuente"
+width = 4
+height = 4
+unwalkable = [0, 1, 4, 3]
+
+
+
+# =========================================
+# NPCS ::::::::::::::::::::::::::::::::::::
+# =========================================
+
 
 [[npcs]]
 id = 0

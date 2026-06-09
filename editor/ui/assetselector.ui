@@ -56,6 +56,9 @@
       <property name="verticalScrollMode">
        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
       </property>
+      <property name="movement">
+       <enum>QListView::Movement::Static</enum>
+      </property>
       <property name="resizeMode">
        <enum>QListView::ResizeMode::Fixed</enum>
       </property>
@@ -118,8 +121,11 @@
       <property name="verticalScrollMode">
        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
       </property>
+      <property name="movement">
+       <enum>QListView::Movement::Static</enum>
+      </property>
       <property name="resizeMode">
-       <enum>QListView::ResizeMode::Adjust</enum>
+       <enum>QListView::ResizeMode::Fixed</enum>
       </property>
       <property name="spacing">
        <number>0</number>
@@ -134,7 +140,7 @@
        <enum>QListView::ViewMode::IconMode</enum>
       </property>
       <property name="uniformItemSizes">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="wordWrap">
        <bool>false</bool>
@@ -179,6 +185,9 @@
       </property>
       <property name="verticalScrollMode">
        <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+      </property>
+      <property name="movement">
+       <enum>QListView::Movement::Static</enum>
       </property>
       <property name="isWrapping" stdset="0">
        <bool>true</bool>

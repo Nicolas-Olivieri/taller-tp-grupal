@@ -1,7 +1,7 @@
 # cat = [primer_arch.png, ultimo_arch.png]
 [file_ids]
 tiles = [0,98]
-colliders = [0,0]
+colliders = [0,65]
 npcs = [0,2]
 body = [0, 3]
 head = [0, 4]
