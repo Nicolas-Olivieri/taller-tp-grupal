@@ -1,12 +1,13 @@
 #ifndef LOBBYWINDOW_H
 #define LOBBYWINDOW_H
 
-#include <QMainWindow>
+
 #include <string>
 
 #include <ui_creator_window.h>
 #include <ui_login_window.h>
 
+#include "client/SDL/audio/audio_manager.h"
 #include "common/socket.h"
 
 #include "creator_window.h"
@@ -19,7 +20,7 @@ class LoginWindow: public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit LoginWindow(QWidget* parent = nullptr);
+    explicit LoginWindow(AudioManager& audio_manager, QWidget* parent = nullptr);
 
     Socket get_socket();
 
@@ -43,6 +44,8 @@ private:
     std::string username;
 
     QPoint drag_offset;
+
+    AudioManager& audio_manager;
 
     bool can_create_session();
 };
