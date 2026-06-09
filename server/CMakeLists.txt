@@ -68,6 +68,7 @@ target_sources(taller_server
         persistance/names_monitor.cpp
 
         config/game_config.cpp
+        config/game_data.cpp
 
         game/player/bank/bank.cpp
         game/player/inventory/inventory.cpp
@@ -169,6 +170,7 @@ target_sources(taller_server
         persistance/playerrepository.h
         persistance/names_monitor.h
         config/game_config.h
+        config/game_data.h
 
         game/player/bank/bank.h
         game/player/inventory/inventory.h
