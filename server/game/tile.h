@@ -2,27 +2,22 @@
 #define TILE_H
 
 #include <stack>
-#include <stdexcept>
 #include <vector>
 
 #include "interactive.h"
 #include "loot.h"
 
-struct UnknownBiome: public std::runtime_error {
-    UnknownBiome(): std::runtime_error("This tile does not belong to an specific biome.") {}
-};
 
 class Tile {
 private:
     bool is_walkable_;
-    uint8_t biome;
     Interactive* occupant_;
     std::stack<Loot> loot_;
 
 public:
     explicit Tile(bool is_walkable);
 
-    Tile(bool is_walkable, uint8_t biome_id);
+    explicit Tile(Interactive* occupant);
 
     bool is_walkable() const;
 
@@ -35,10 +30,6 @@ public:
     void add_loot(const std::vector<Loot>& drops);
 
     void occupy(Interactive* occupant);
-
-    void set_biome_id(uint8_t biome_id);
-
-    uint8_t get_biome_id();
 };
 
 

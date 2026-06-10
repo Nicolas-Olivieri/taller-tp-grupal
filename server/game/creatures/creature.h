@@ -17,6 +17,7 @@ enum class DropType { NOTHING = 0, GOLD = 1, USABLE = 2, EQUIPABLE = 3 };
 
 class Creature: public Killable, public Attacker {
 private:
+    const uint16_t sub_id;
     std::unique_ptr<CreatureState> state;
 
     Player* target;
@@ -27,12 +28,10 @@ private:
 
     bool is_in_range(const Position& other_position, uint8_t range) const;
 
-    Equipment equipment_from_variation(uint8_t variation);
-
 public:
     // TODO: mover métodos que no son públicos a la sección private
 
-    Creature(const uint8_t race, const uint8_t variation, const Position& position);
+    Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation, const Position& position);
 
     std::vector<Loot> drop() override;
 

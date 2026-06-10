@@ -13,7 +13,6 @@
 #include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
 
-#define MAX_CREATURE_AMOUNT 8
 
 GameWorld::GameWorld(PlayerRepository& player_repository): grid(), player_repository(player_repository) {}
 
@@ -23,6 +22,7 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
+    init_creature(0);
     load_clans();
 }
 
@@ -50,9 +50,6 @@ WorldUpdateStatus GameWorld::update() {
     }
 
     remove_dead_creatures();
-
-    spawn_creature();
-
     std::vector<CreatureUpdateStatus> creatures_status(creatures.size());
 
     for (auto& [id, creature]: creatures) {
@@ -193,50 +190,14 @@ void GameWorld::remove_dead_creatures() {
 
             add_tile_if_lootable(tile, position);
 
+            uint16_t new_id = it->first + 1;
             it = creatures.erase(it);
+
+            init_creature(new_id);
         } else {
             it++;
         }
     }
-}
-
-void GameWorld::spawn_creature() {
-    if (creatures.size() >= MAX_CREATURE_AMOUNT)
-        return;
-
-    // TODO: capaz podemos hacer algo para tener tile random cercana a un jugador nomás
-    const Position creature_position = grid.spawn();
-    Tile& tile = grid.get_tile(creature_position);
-
-    uint8_t biome_id;
-    try {
-        biome_id = tile.get_biome_id();
-    } catch (const UnknownBiome& err) {
-        return;
-    }
-
-    const BiomeData& biome_data = GameConfig::get().get_biome(biome_id);
-    uint8_t creature_id = Calculator::random_choice(biome_data.creatures);
-
-    std::vector<uint8_t> valid_variations = filter_valid_variations(creature_id, biome_data.variations);
-    uint8_t variation_id = Calculator::random_choice(valid_variations);
-
-    Creature creature(creature_id, variation_id, creature_position);
-    creatures.insert({creatures.size(), std::move(creature)});
-}
-
-std::vector<uint8_t> GameWorld::filter_valid_variations(uint8_t creature_id,
-                                                        const std::vector<uint8_t>& biome_variations) {
-    std::vector<uint8_t> filtered;
-    GameConfig& config = GameConfig::get();
-
-    for (const auto& variation_id: biome_variations) {
-        const VariationData& variation = config.get_variation(variation_id);
-        if (variation.compatible_races.contains(creature_id))
-            filtered.push_back(variation_id);
-    }
-
-    return filtered;
 }
 
 void GameWorld::remove_player(const std::string& player_name) {
@@ -547,6 +508,12 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
             allies.push_back(std::move(ally));
         }
     }
+}
+
+void GameWorld::init_creature(uint16_t id) {
+    Position goblin_position(30, 30);
+    creatures.emplace(id, Creature(id, 0, 0, goblin_position));
+    grid.get_tile(goblin_position).occupy(&creatures.at(id));
 }
 
 void GameWorld::drop_player_items(Player& player) {

@@ -82,7 +82,7 @@ struct toml::from<RaceData> {
 };
 
 struct VariationData {
-    std::unordered_set<uint8_t> compatible_races;
+    std::vector<uint8_t> compatible_races;
     float factor;
     uint8_t agility;
     float multiplier;
@@ -93,19 +93,12 @@ struct VariationData {
 template <>
 struct toml::from<VariationData> {
     static VariationData from_toml(const toml::value& raw) {
-        VariationData data;
-        std::vector<uint8_t> races = toml::find<std::vector<uint8_t>>(raw, "compatible_races");
-        for (const auto& race: races) {
-            data.compatible_races.insert(race);
-        }
-
-        data.factor = toml::find<float>(raw, "factor");
-        data.agility = toml::find<uint8_t>(raw, "agility");
-        data.multiplier = toml::find<float>(raw, "multiplier");
-        data.max_level_multiplier = toml::find<float>(raw, "max_level_multiplier");
-        data.equipment = toml::find<std::vector<uint8_t>>(raw, "equipment");
-
-        return data;
+        return VariationData{toml::find<std::vector<uint8_t>>(raw, "compatible_races"),
+                             toml::find<float>(raw, "factor"),
+                             toml::find<uint8_t>(raw, "agility"),
+                             toml::find<float>(raw, "multiplier"),
+                             toml::find<float>(raw, "max_level_multiplier"),
+                             toml::find<std::vector<uint8_t>>(raw, "equipment")};
     }
 };
 
@@ -197,19 +190,6 @@ struct toml::from<TraderSetData> {
         }
 
         return data;
-    }
-};
-
-struct BiomeData {
-    std::vector<uint8_t> creatures;
-    std::vector<uint8_t> variations;
-};
-
-template <>
-struct toml::from<BiomeData> {
-    static BiomeData from_toml(const toml::value& raw) {
-        return BiomeData{toml::find<std::vector<uint8_t>>(raw, "creatures"),
-                         toml::find<std::vector<uint8_t>>(raw, "variations")};
     }
 };
 
@@ -387,36 +367,6 @@ struct toml::from<TradersData> {
 
         data.priests = toml::find<TraderSetData>(traders_node, "priests");
         data.merchants = toml::find<TraderSetData>(traders_node, "merchants");
-
-        return data;
-    }
-};
-
-struct TilesBiomeData {
-    std::unordered_map<uint8_t, uint8_t> tiles_biome;
-    std::unordered_map<uint8_t, BiomeData> biomes;
-};
-
-template <>
-struct toml::from<TilesBiomeData> {
-    static TilesBiomeData from_toml(const toml::value& raw) {
-        TilesBiomeData data;
-        const auto& tiles_biomes_table = raw.as_table();
-
-        if (!tiles_biomes_table.contains("biomes"))
-            throw std::runtime_error("No se encontró un TOML con la información de biomas");
-
-        for (const auto& [name, value]: tiles_biomes_table.at("biomes").as_table()) {
-            uint8_t id = toml::find<uint8_t>(value, "id");
-            std::vector<uint8_t> tiles = toml::find<std::vector<uint8_t>>(value, "tiles");
-
-            for (const auto& tile_id: tiles) {
-                data.tiles_biome[tile_id] = id;
-            }
-
-            BiomeData biome = toml::get<BiomeData>(value);
-            data.biomes[id] = biome;
-        }
 
         return data;
     }

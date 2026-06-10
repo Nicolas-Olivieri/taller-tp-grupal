@@ -121,12 +121,9 @@ private:
 
     PickUpResult pick_gold_up(Player& player, Tile& tile, uint16_t gold);
 
+    void init_creature(uint16_t id);
+
     void remove_dead_creatures();
-
-    void spawn_creature();
-
-    std::vector<uint8_t> filter_valid_variations(uint8_t creature_id,
-                                                 const std::vector<uint8_t>& biome_variations);
 
     void init_npc(const std::vector<AllyInfoDTO>& npcs);
 

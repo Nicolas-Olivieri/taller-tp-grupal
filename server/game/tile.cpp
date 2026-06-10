@@ -1,7 +1,11 @@
 #include "tile.h"
 
 
-Tile::Tile(const bool is_walkable): is_walkable_(is_walkable), biome(UINT8_MAX), occupant_(nullptr) {}
+Tile::Tile(const bool is_walkable): is_walkable_(is_walkable), occupant_(nullptr) {}
+
+
+Tile::Tile(Interactive* occupant): is_walkable_(true), occupant_(occupant), loot_(std::stack<Loot>()) {}
+
 
 bool Tile::is_walkable() const { return is_walkable_; }
 
@@ -17,11 +21,3 @@ void Tile::add_loot(const std::vector<Loot>& drops) {
 }
 
 void Tile::occupy(Interactive* occupant) { occupant_ = occupant; }
-
-void Tile::set_biome_id(uint8_t biome_id) { biome = biome_id; }
-
-uint8_t Tile::get_biome_id() {
-    if (biome == UINT8_MAX)
-        throw UnknownBiome();
-    return biome;
-}

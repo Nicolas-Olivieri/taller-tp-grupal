@@ -3,14 +3,15 @@
 #include <vector>
 
 #include "common/dto/message.h"
-#include "common/dto/snapshot/map/asset_info.h"
 
-struct GridMatrixDTO {
+struct GridMatrixDTO: public ProtocolMessageDTO {
     std::vector<std::vector<bool>> walkable_tiles;
-    std::vector<AssetInfoDTO> tiles;
 
-    GridMatrixDTO(const std::vector<std::vector<bool>>& walkable_tiles,
-                  const std::vector<AssetInfoDTO>& tiles);
+    explicit GridMatrixDTO(const std::vector<std::vector<bool>>& walkable_tiles);
+
+    size_t message_size() const override;
+
+    void accept(Serializer& serializer) const override;
 };
 
 
