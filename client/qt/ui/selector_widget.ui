@@ -66,7 +66,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../resources/lobby/creator.qrc">
+          <iconset resource="../../../resources/lobby/creator.qrc">
            <normaloff>:/images/creator/ui/btn_izq.png</normaloff>:/images/creator/ui/btn_izq.png</iconset>
          </property>
          <property name="iconSize">
@@ -128,7 +128,7 @@
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="../../resources/lobby/creator.qrc">:/images/creator/ui/fondo_opc.png</pixmap>
+           <pixmap resource="../../../resources/lobby/creator.qrc">:/images/creator/ui/fondo_opc.png</pixmap>
           </property>
          </widget>
          <widget class="QSpinBox" name="optionBox">
@@ -151,7 +151,7 @@
 border: none;
 selection-background-color: transparent;
 selection-color: #f7e5b3;
-</string>
+color:  rgb(246, 245, 244);</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -189,7 +189,7 @@ selection-color: #f7e5b3;
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../../resources/lobby/creator.qrc">
+          <iconset resource="../../../resources/lobby/creator.qrc">
            <normaloff>:/images/creator/ui/btn_der.png</normaloff>:/images/creator/ui/btn_der.png</iconset>
          </property>
          <property name="iconSize">
@@ -210,6 +210,9 @@ selection-color: #f7e5b3;
          <pointsize>14</pointsize>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">color:  rgb(246, 245, 244);</string>
+       </property>
        <property name="text">
         <string>Vestuario</string>
        </property>
@@ -223,7 +226,7 @@ selection-color: #f7e5b3;
   </layout>
  </widget>
  <resources>
-  <include location="../../resources/lobby/creator.qrc"/>
+  <include location="../../../resources/lobby/creator.qrc"/>
  </resources>
  <connections/>
 </ui>

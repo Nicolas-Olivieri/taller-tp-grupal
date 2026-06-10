@@ -31,7 +31,13 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <widget class="QLabel" name="frame">
     <property name="geometry">
      <rect>
@@ -110,7 +116,7 @@
     </property>
     <property name="styleSheet">
      <string notr="true">background: transparent;
-border: none;</string>
+border: none;color:  rgb(246, 245, 244);</string>
     </property>
     <property name="frame">
      <bool>false</bool>
@@ -136,7 +142,7 @@ border: none;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background: transparent;
-border: none;</string>
+border: none;color:  rgb(246, 245, 244);</string>
     </property>
     <property name="frame">
      <bool>false</bool>
@@ -162,7 +168,7 @@ border: none;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background: transparent;
-border: none;</string>
+border: none;color:  rgb(246, 245, 244);</string>
     </property>
     <property name="frame">
      <bool>false</bool>
@@ -253,6 +259,9 @@ p {
       <pointsize>14</pointsize>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color:  rgb(246, 245, 244);</string>
+    </property>
     <property name="text">
      <string>HOST</string>
     </property>
@@ -280,6 +289,9 @@ p {
       <family>Nimbus Roman [UKWN]</family>
       <pointsize>14</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:  rgb(246, 245, 244);</string>
     </property>
     <property name="text">
      <string>PUERTO</string>
@@ -309,6 +321,9 @@ p {
       <underline>false</underline>
       <strikeout>false</strikeout>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:  rgb(246, 245, 244);</string>
     </property>
     <property name="text">
      <string>USUARIO</string>

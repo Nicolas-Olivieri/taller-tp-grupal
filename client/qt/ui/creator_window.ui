@@ -31,6 +31,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QLabel" name="bg">
    <property name="geometry">
     <rect>
@@ -44,7 +47,7 @@
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="../../resources/lobby/creator.qrc">:/images/creator/interfaz.png</pixmap>
+    <pixmap resource="../../../resources/lobby/creator.qrc">:/images/creator/interfaz.png</pixmap>
    </property>
   </widget>
   <widget class="QLabel" name="username">
@@ -61,6 +64,9 @@
      <family>Nimbus Roman [UKWN]</family>
      <pointsize>17</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color:  rgb(246, 245, 244);</string>
    </property>
    <property name="text">
     <string>Placeholder</string>
@@ -82,7 +88,7 @@
     <string/>
    </property>
    <property name="icon">
-    <iconset resource="../../resources/lobby/creator.qrc">
+    <iconset resource="../../../resources/lobby/creator.qrc">
      <normaloff>:/images/creator/ui/btn_comenzar.png</normaloff>:/images/creator/ui/btn_comenzar.png</iconset>
    </property>
    <property name="iconSize">
@@ -112,6 +118,9 @@
         <family>Nimbus Roman [UKWN]</family>
         <pointsize>16</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color:  rgb(246, 245, 244);</string>
       </property>
       <property name="text">
        <string>CLASES</string>
@@ -155,7 +164,7 @@ QPushButton:hover:!checked {
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/lobby/creator.qrc">
+         <iconset resource="../../../resources/lobby/creator.qrc">
           <normaloff>:/images/creator/ui/clerigo.png</normaloff>:/images/creator/ui/clerigo.png</iconset>
         </property>
         <property name="iconSize">
@@ -213,7 +222,7 @@ QPushButton:hover:!checked {
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/lobby/creator.qrc">
+         <iconset resource="../../../resources/lobby/creator.qrc">
           <normaloff>:/images/creator/ui/mago.png</normaloff>:/images/creator/ui/mago.png</iconset>
         </property>
         <property name="iconSize">
@@ -246,6 +255,9 @@ QPushButton:hover:!checked {
           <family>Nimbus Roman [UKWN]</family>
           <pointsize>14</pointsize>
          </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color:  rgb(246, 245, 244);</string>
         </property>
         <property name="text">
          <string>Mago</string>
@@ -287,7 +299,7 @@ QPushButton:hover:!checked {
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/lobby/creator.qrc">
+         <iconset resource="../../../resources/lobby/creator.qrc">
           <normaloff>:/images/creator/ui/paladin.png</normaloff>:/images/creator/ui/paladin.png</iconset>
         </property>
         <property name="iconSize">
@@ -345,7 +357,7 @@ QPushButton:hover:!checked {
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/lobby/creator.qrc">
+         <iconset resource="../../../resources/lobby/creator.qrc">
           <normaloff>:/images/creator/ui/guerrero.png</normaloff>:/images/creator/ui/guerrero.png</iconset>
         </property>
         <property name="iconSize">
@@ -379,6 +391,9 @@ QPushButton:hover:!checked {
           <pointsize>14</pointsize>
          </font>
         </property>
+        <property name="styleSheet">
+         <string notr="true">color:  rgb(246, 245, 244);</string>
+        </property>
         <property name="text">
          <string>Clérigo</string>
         </property>
@@ -395,6 +410,9 @@ QPushButton:hover:!checked {
           <pointsize>14</pointsize>
          </font>
         </property>
+        <property name="styleSheet">
+         <string notr="true">color:  rgb(246, 245, 244);</string>
+        </property>
         <property name="text">
          <string>Paladín</string>
         </property>
@@ -410,6 +428,9 @@ QPushButton:hover:!checked {
           <family>Nimbus Roman [UKWN]</family>
           <pointsize>14</pointsize>
          </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color:  rgb(246, 245, 244);</string>
         </property>
         <property name="text">
          <string>Guerrero</string>
@@ -443,6 +464,9 @@ QPushButton:hover:!checked {
         <family>Nimbus Roman [UKWN]</family>
         <pointsize>16</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color:  rgb(246, 245, 244);</string>
       </property>
       <property name="text">
        <string>APARIENCIA</string>
@@ -478,6 +502,9 @@ QPushButton:hover:!checked {
         <pointsize>16</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">color:  rgb(246, 245, 244);</string>
+      </property>
       <property name="text">
        <string>RAZAS</string>
       </property>
@@ -496,6 +523,9 @@ QPushButton:hover:!checked {
           <pointsize>14</pointsize>
          </font>
         </property>
+        <property name="styleSheet">
+         <string notr="true">color:  rgb(246, 245, 244);</string>
+        </property>
         <property name="text">
          <string>Gnomo</string>
         </property>
@@ -511,6 +541,9 @@ QPushButton:hover:!checked {
           <family>Nimbus Roman [UKWN]</family>
           <pointsize>14</pointsize>
          </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color:  rgb(246, 245, 244);</string>
         </property>
         <property name="text">
          <string>Humano</string>
@@ -528,6 +561,9 @@ QPushButton:hover:!checked {
           <pointsize>14</pointsize>
          </font>
         </property>
+        <property name="styleSheet">
+         <string notr="true">color:  rgb(246, 245, 244);</string>
+        </property>
         <property name="text">
          <string>Enano</string>
         </property>
@@ -543,6 +579,9 @@ QPushButton:hover:!checked {
           <family>Nimbus Roman [UKWN]</family>
           <pointsize>14</pointsize>
          </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color:  rgb(246, 245, 244);</string>
         </property>
         <property name="text">
          <string>Elfo</string>
@@ -584,7 +623,7 @@ QPushButton:hover:!checked {
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/lobby/creator.qrc">
+         <iconset resource="../../../resources/lobby/creator.qrc">
           <normaloff>:/images/creator/ui/gnomo.png</normaloff>:/images/creator/ui/gnomo.png</iconset>
         </property>
         <property name="iconSize">
@@ -642,7 +681,7 @@ QPushButton:hover:!checked {
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/lobby/creator.qrc">
+         <iconset resource="../../../resources/lobby/creator.qrc">
           <normaloff>:/images/creator/ui/humano.png</normaloff>:/images/creator/ui/humano.png</iconset>
         </property>
         <property name="iconSize">
@@ -702,7 +741,7 @@ QPushButton:hover:!checked {
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/lobby/creator.qrc">
+         <iconset resource="../../../resources/lobby/creator.qrc">
           <normaloff>:/images/creator/ui/elfo.png</normaloff>:/images/creator/ui/elfo.png</iconset>
         </property>
         <property name="iconSize">
@@ -760,7 +799,7 @@ QPushButton:hover:!checked {
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../resources/lobby/creator.qrc">
+         <iconset resource="../../../resources/lobby/creator.qrc">
           <normaloff>:/images/creator/ui/enano.png</normaloff>:/images/creator/ui/enano.png</iconset>
         </property>
         <property name="iconSize">
@@ -845,7 +884,7 @@ QPushButton:hover:!checked {
     <string/>
    </property>
    <property name="icon">
-    <iconset resource="../../resources/lobby/lobby.qrc">
+    <iconset resource="../../../resources/lobby/lobby.qrc">
      <normaloff>:/images/btn_cerrar.png</normaloff>:/images/btn_cerrar.png</iconset>
    </property>
    <property name="iconSize">
@@ -871,7 +910,7 @@ QPushButton:hover:!checked {
     <string/>
    </property>
    <property name="icon">
-    <iconset resource="../../resources/lobby/lobby.qrc">
+    <iconset resource="../../../resources/lobby/lobby.qrc">
      <normaloff>:/images/btn_minimizar.png</normaloff>:/images/btn_minimizar.png</iconset>
    </property>
    <property name="iconSize">
@@ -883,12 +922,12 @@ QPushButton:hover:!checked {
   </widget>
  </widget>
  <resources>
-  <include location="../../resources/lobby/lobby.qrc"/>
-  <include location="../../resources/lobby/creator.qrc"/>
+  <include location="../../../resources/lobby/lobby.qrc"/>
+  <include location="../../../resources/lobby/creator.qrc"/>
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="races_buttons"/>
   <buttongroup name="archetypes_buttons"/>
+  <buttongroup name="races_buttons"/>
  </buttongroups>
 </ui>
