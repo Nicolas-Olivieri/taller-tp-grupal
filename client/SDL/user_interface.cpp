@@ -34,8 +34,7 @@ void UserInterface::render_fields() {
     render_inventory();
     render_equipment();
 
-    // TODO: revisar por qué el texto imprime mal las tildes
-    render_text("Estadisticas", stats_rect, FontType::UI_MENU_TITLE);
+    render_text("Estadísticas", stats_rect, FontType::UI_MENU_TITLE);
 
     for (const auto& [box, value]: bar_values) {
         render_bar_value(box, value);
@@ -52,7 +51,7 @@ void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box
         return;
 
     SDL2pp::Font& font = font_manager.get_font(font_type);
-    SDL2pp::Texture text_texture(renderer, font.RenderText_Solid(text, white));
+    SDL2pp::Texture text_texture(renderer, font.RenderUTF8_Solid(text, white));
 
     const int text_w = std::min(text_texture.GetWidth(), box_limit.w);
     const int text_h = std::min(text_texture.GetHeight(), box_limit.h);
@@ -125,7 +124,7 @@ void UserInterface::render_item_amount(const SDL2pp::Rect& slot, const uint8_t a
         return;
 
     SDL2pp::Font& font = font_manager.get_font(FontType::UI_ITEM_AMOUNT);
-    SDL2pp::Texture text_tex(renderer, font.RenderText_Solid(std::to_string(amount), white));
+    SDL2pp::Texture text_tex(renderer, font.RenderUTF8_Solid(std::to_string(amount), white));
 
     const int text_w = text_tex.GetWidth();
     const int text_h = text_tex.GetHeight();
@@ -150,7 +149,7 @@ void UserInterface::render_chat_history() {
             continue;
 
         SDL2pp::Font& font = font_manager.get_font(FontType::UI_CHAT);
-        SDL2pp::Texture line_texture(renderer, font.RenderText_Solid(text, color));
+        SDL2pp::Texture line_texture(renderer, font.RenderUTF8_Solid(text, color));
 
         int current_y = history_messages.y + ((i - start) * LINE_SPACING);
         int text_w = line_texture.GetWidth();
@@ -173,7 +172,7 @@ void UserInterface::render_chat_input(const std::string& input, bool is_chat_act
         return;
 
     SDL2pp::Font& font = font_manager.get_font(FontType::UI_CHAT);
-    SDL2pp::Texture text_texture(renderer, font.RenderText_Blended(display_text, white));
+    SDL2pp::Texture text_texture(renderer, font.RenderUTF8_Blended(display_text, white));
 
     int text_w = text_texture.GetWidth();
     int text_h = text_texture.GetHeight();

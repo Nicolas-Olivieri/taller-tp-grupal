@@ -15,10 +15,6 @@
 
 class SpriteLabel {
 private:
-    // TODO: Esto debería venir de ClientConfig
-    const std::unordered_map<uint8_t, std::string> id_to_string{
-            {0, "Goblin"}, {1, "Esqueleto"}, {2, "Zombie"}, {3, "Arana"}, {4, "Orco"}, {5, "Golem"}};
-
     // TODO: Refactorizar inicialización de colores (se me ocurre un ColorManager o ColorConfig)
     SDL_Color yellow = {235, 224, 70, 255};
     SDL_Color white = {255, 255, 255, 255};

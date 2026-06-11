@@ -1,6 +1,7 @@
 #include "sprite_label.h"
 
 #include "client/SDL/user_interface.h"
+#include "client/config/client_config.h"
 #include "common/dto/snapshot/info/creatureinfo.h"
 
 #define LABEL_HEALTH_BAR "/barra_vida.bmp"
@@ -25,7 +26,7 @@ SpriteLabel::SpriteLabel(SDL2pp::Renderer& renderer, FontManager& font_manager,
                          const CreatureInfoDTO& creature_info):
         renderer(renderer),
         font_manager(font_manager),
-        name(id_to_string.at(creature_info.creature)),
+        name(ClientConfig::get().get_creature_name(creature_info.creature)),
         xp_level(creature_info.stats.xp_level),
         health_texture(renderer, DATA_PATH LABEL_HEALTH_BAR),
         current_health(creature_info.stats.current_health),
@@ -87,7 +88,7 @@ void SpriteLabel::render(const SDL2pp::Point render_position, const SDL2pp::Poin
 void SpriteLabel::refresh_name_level_texture() {
     const std::string text = name + " - " + std::to_string(xp_level);
     name_level_texture = std::make_unique<SDL2pp::Texture>(
-            renderer, font_manager.get_font(FontType::LABEL_NAME_LEVEL).RenderText_Solid(text, white));
+            renderer, font_manager.get_font(FontType::LABEL_NAME_LEVEL).RenderUTF8_Solid(text, white));
 }
 
 
@@ -99,7 +100,7 @@ void SpriteLabel::refresh_clan_texture() {
 
     const std::string text = "<" + clan + ">";
     clan_texture = std::make_unique<SDL2pp::Texture>(
-            renderer, font_manager.get_font(FontType::LABEL_CLAN).RenderText_Solid(text, yellow));
+            renderer, font_manager.get_font(FontType::LABEL_CLAN).RenderUTF8_Solid(text, yellow));
 }
 
 
