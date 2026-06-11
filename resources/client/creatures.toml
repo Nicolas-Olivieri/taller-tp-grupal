@@ -1,0 +1,23 @@
+[creatures.goblin]
+id = 0
+name = "Goblin"
+
+[creatures.skeleton]
+id = 1
+name = "Esqueleto"
+
+[creatures.zombie]
+id = 2
+name = "Zombi"
+
+[creatures.spider]
+id = 3
+name = "Araña"
+
+[creatures.orc]
+id = 4
+name = "Orco"
+
+[creatures.golem]
+id = 5
+name = "Gólem"
