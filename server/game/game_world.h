@@ -59,7 +59,7 @@ public:
 
     WorldUpdateStatus update();
 
-    CreatureUpdateStatus move_creature(Creature& creature, const Direction& direction);
+    void move_creature(Creature& creature, const Direction& direction);
 
     void move_player(const std::string& player_name, Direction direction);
 
@@ -114,6 +114,8 @@ private:
     const Ally* find_closest_priest(const Player& player) const;
 
     AllyExecuteResult start_delayed_resurrection(Player& player, const Ally* priest) const;
+
+    CreatureUpdate manage_creature_attack(Creature& creature);
 
     Direction next_movement(const Creature& creature);
 

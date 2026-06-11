@@ -50,7 +50,8 @@ WorldUpdateStatus GameWorld::update() {
     }
 
     remove_dead_creatures();
-    std::vector<CreatureUpdateStatus> creatures_status(creatures.size());
+    std::vector<CreatureUpdate> creatures_status;
+    creatures_status.reserve(creatures.size());
 
     for (auto& [id, creature]: creatures) {
         creature.update();
@@ -66,14 +67,13 @@ WorldUpdateStatus GameWorld::update() {
             }
         }
 
-        std::string target_name = creature.is_targeting_someone() ? creature.get_target_name() : "";
-        creatures_status.push_back(move_creature(creature, direction));
+        CreatureUpdate creature_update = manage_creature_attack(creature);
+        creatures_status.push_back(creature_update);
 
-        if (!target_name.empty()) {
-            Player& target = players.at(target_name);
-            if (!target.is_alive())
-                drop_player_items(target);
-        }
+        if (creature_update.status == CreatureStatus::MOVING)
+            move_creature(creature, direction);
+
+        creature.update_state();
     }
 
     return WorldUpdateStatus(creatures_status, resurrected_players);
@@ -85,27 +85,38 @@ Direction GameWorld::next_movement(const Creature& creature) {
                                              grid.random_movement(current);
 }
 
-CreatureUpdateStatus GameWorld::move_creature(Creature& creature, const Direction& direction) {
+CreatureUpdate GameWorld::manage_creature_attack(Creature& creature) {
+    if (!creature.can_reach_target())
+        return CreatureUpdate(CreatureStatus::MOVING);
+
+    if (creature.is_targeting_someone() && creature.can_attack()) {
+        CreatureUpdate creature_update = creature.attack_player();
+
+        Player& target = players.at(creature.get_target_name());
+        if (!target.is_alive())
+            drop_player_items(target);
+
+        return creature_update;
+    }
+
+    return CreatureUpdate(CreatureStatus::WAITING);
+}
+
+void GameWorld::move_creature(Creature& creature, const Direction& direction) {
     Position current = creature.get_position();
-    creature.update_state();
 
-    if (creature.can_attack() && creature.can_reach_target()) {
-        return creature.attack_player();
+    if (!creature.can_move() || direction == Direction::IDLE)
+        return;
+
+    Position target = current.move(direction);
+    Tile& tile = grid.get_tile(target);
+
+    if (tile.is_walkable() && tile.occupant() == nullptr) {
+        grid.get_tile(current).occupy(nullptr);
+        tile.occupy(&creature);
+
+        creature.update_position(target, direction);
     }
-
-    if (creature.can_move() && direction != Direction::IDLE) {
-        Position target = current.move(direction);
-        Tile& tile = grid.get_tile(target);
-
-        if (tile.is_walkable() && tile.occupant() == nullptr) {
-            grid.get_tile(current).occupy(nullptr);
-            tile.occupy(&creature);
-
-            creature.update_position(target, direction);
-        }
-    }
-
-    return CreatureUpdateStatus();
 }
 
 void GameWorld::move_player(const std::string& player_name, const Direction direction) {
@@ -508,7 +519,7 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
 
 void GameWorld::init_creature(uint16_t id) {
     Position goblin_position(30, 30);
-    creatures.emplace(id, Creature(id, 0, 4, goblin_position));
+    creatures.emplace(id, Creature(0, 4, goblin_position));
     grid.get_tile(goblin_position).occupy(&creatures.at(id));
 }
 

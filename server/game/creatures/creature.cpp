@@ -9,14 +9,13 @@
 #include "server/util/calculator.h"
 #include "state/idlestate.h"
 
-#define EXTRA_TARGET_RANGE 5  // TODO: toml
+#define EXTRA_TARGET_RANGE 4  // TODO: toml
+#define EXTRA_TARGET_RANGE_LIMIT 8
 
 // TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
 // ditintos niveles
-Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
-                   const Position& position):
+Creature::Creature(const uint8_t race, const uint8_t variation, const Position& position):
         Killable(race, variation, random_level(race, variation), position, equip_items(variation)),
-        sub_id(sub_id),
         state(&IdleState::get()),
         target(nullptr) {}
 
@@ -94,19 +93,19 @@ InteractResult Creature::interact(Player& attacker) {
     return Killable::interact(attacker);
 }
 
-CreatureUpdateStatus Creature::attack_player() {
-    assert(can_reach(target->get_position()) && can_attack());
+CreatureUpdate Creature::attack_player() {
+    assert(is_targeting_someone() && can_reach(target->get_position()) && can_attack());
 
     const uint16_t damage = attack();
 
     if (Calculator::can_dodge(target->get_stats().agility)) {
-        return CreatureUpdateStatus(stats.race_id, target->get_name(), 0, false);
+        return CreatureUpdate(stats.race_id, target->get_name(), 0, false);
     }
 
     const uint16_t damage_applied = target->receive_damage(damage);
     const bool was_killed = !target->is_alive();
 
-    return CreatureUpdateStatus(stats.race_id, target->get_name(), damage_applied, was_killed);
+    return CreatureUpdate(stats.race_id, target->get_name(), damage_applied, was_killed);
 }
 
 int Creature::attack() {
@@ -134,7 +133,7 @@ bool Creature::can_reach(const Position& other_position) const {
 }
 
 bool Creature::can_target(const Position& other_position) const {
-    uint8_t range = get_weapon_range() + EXTRA_TARGET_RANGE;
+    uint8_t range = std::min(EXTRA_TARGET_RANGE_LIMIT, get_weapon_range() + EXTRA_TARGET_RANGE);
     return is_in_range(other_position, range);
 }
 
