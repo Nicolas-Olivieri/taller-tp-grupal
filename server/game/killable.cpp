@@ -29,9 +29,7 @@ Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Positio
         stats(race_id, variation_id, level),
         equipment(equipment),
         position(position),
-        direction(Direction::IDLE) {
-    std::cout << "creature attack cooldown: " << required_attack_cooldown << std::endl;
-}
+        direction(Direction::IDLE) {}
 
 bool Killable::can_move() const { return current_move_cooldown == 0; }
 

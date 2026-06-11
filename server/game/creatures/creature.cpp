@@ -15,10 +15,21 @@
 // ditintos niveles
 Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
                    const Position& position):
-        Killable(race, variation, 5, position, Equipment{0, 0, 0, 1}),
+        Killable(race, variation, random_level(race, variation), position, Equipment{0, 0, 0, 1}),
         sub_id(sub_id),
         state(std::make_unique<IdleState>()),
         target(nullptr) {}
+
+uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
+    GameConfig& config = GameConfig::get();
+
+    uint8_t level =  Calculator::calculate_creature_level(config.get_creature_base_level(race),
+                                                config.get_variation(variation).max_level_multiplier);
+
+    std::cout << "Creature level: " << static_cast<int>(level) << std::endl;
+
+    return level;
+}
 
 std::vector<Loot> Creature::drop() {
     std::vector<Loot> drop;
