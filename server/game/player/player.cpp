@@ -136,12 +136,17 @@ InteractResult Player::interact(Player& attacker) {
     if (not is_alive())
         return InteractResult(AttackStatus::DEAD_TARGET);
 
+    // Suprimo el linter porque marca como si hubiera una función llamada separada del paréntesis
+    // ej: get_clan_name ().empty()
+    if ((not get_clan_name().empty()) and (get_clan_name() == attacker.get_clan_name())) {  // NOLINT
+        return InteractResult(AttackStatus::IS_CLANMATE);
+    }
+
     // TODO Falta considerar
     //  - Fair game
     //  - Daño de los compis del clan?
     //      (en update del GameWorld -> por cada jugador recorremos las n casillas más cercanas y desde
     //      ahí player expone un método que le agrega boost y lo usa en su attack)
-    //  - fuego amigo (entre compis no nos pegamos)
     //  - zona segura?
 
     InteractResult result = Killable::interact(attacker);

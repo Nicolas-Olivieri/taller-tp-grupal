@@ -6,7 +6,7 @@
 #include <vector>
 
 InteractCommand::InteractCommand(const std::string& player_name, const int x, const int y):
-        player_name(player_name), position(x, y), result() {}
+        player_name(player_name), position(x, y), result(), attacked_clan_name("") {}
 
 void InteractCommand::execute(GameWorld& world) {
     result = world.interact(player_name, position);
@@ -18,6 +18,7 @@ void InteractCommand::execute(GameWorld& world) {
                 continue;
             if (player.get_position() == position) {
                 result.attack.player_attacked = name;
+                attacked_clan_name = player.get_clan_name();
             }
         }
     }
@@ -47,7 +48,8 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
     static std::map<AttackStatus, std::string> status_to_message(
             {{AttackStatus::OUT_OF_RANGE, "El objetivo esta fuera de alcance"},
              {AttackStatus::DEAD_TARGET, "El objetivo ya esta muerto"},
-             {AttackStatus::CANNOT_ATTACK, "No es posible atacar en este momento"}});
+             {AttackStatus::CANNOT_ATTACK, "No es posible atacar en este momento"},
+             {AttackStatus::IS_CLANMATE, "No puedes atacar a alguien de tu mismo clan"}});
 
     if (status_to_message.contains(status)) {
         const std::string message = status_to_message.at(status);
@@ -80,6 +82,11 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
                 std::format("Le quitaste {} de vida a {}", result.attack.damage_dealt, player_attacked));
         lines_to_attacked.push_back(
                 std::format("{} te quito {} de vida", player_name, result.attack.damage_dealt));
+
+        builder.add_action(ActionDTO(ClanMessageDTO(attacked_clan_name,
+                                                    std::format("{} le quito {} de vida a {}", player_name,
+                                                                result.attack.damage_dealt, player_attacked),
+                                                    player_attacked)));
 
         if (result.attack.was_killed) {
             lines.push_back(std::format("Mataste a {}", player_attacked));

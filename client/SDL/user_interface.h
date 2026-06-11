@@ -119,6 +119,8 @@ private:
 
     void handle_list_items(const ActionDTO& action);
 
+    void handle_clan_message(const ActionDTO& action);
+
     SDL_Color assign_message_color(const MessageType& type);
 
     bool is_receiver_or_sender(const MessageType& type);

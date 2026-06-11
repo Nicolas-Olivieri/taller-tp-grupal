@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-enum class AttackStatus { HIT, OUT_OF_RANGE, DEAD_TARGET, CANNOT_ATTACK, TARGET_DODGED };
+enum class AttackStatus { HIT, OUT_OF_RANGE, DEAD_TARGET, CANNOT_ATTACK, TARGET_DODGED, IS_CLANMATE };
 
 // TODO va a tener que incluir el clan name para notificar a los compis
 struct AttackResult {
