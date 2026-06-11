@@ -47,7 +47,9 @@ CreatureInfoDTO SnapshotBuilder::convert_to_info(uint16_t sub_id, const Creature
     Stats stats = creature.get_stats();
 
     return CreatureInfoDTO(stats.race_id, stats.archetype_id, sub_id, creature.get_direction(),
-                           position.get_x(), position.get_y());
+                           position.get_x(), position.get_y(),
+                           CreatureStatsDTO(stats.health.get_max(), stats.health.get_current(),
+                                            stats.experience.get_level()));
 }
 
 LootInfoDTO SnapshotBuilder::convert_to_info(const std::pair<uint16_t, uint16_t>& position, Tile& tile) {
