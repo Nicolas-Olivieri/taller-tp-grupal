@@ -29,7 +29,6 @@
 #include "position.h"
 #include "world_update_status.h"
 
-
 class GameWorld {
 private:
     Grid grid;
@@ -37,6 +36,7 @@ private:
     std::unordered_map<std::string, Player> players;
 
     std::unordered_map<uint16_t, Creature> creatures;
+    uint16_t current_creature_id;
 
     std::map<std::pair<uint16_t, uint16_t>, Tile*> tiles_with_loot;
 
@@ -123,9 +123,11 @@ private:
 
     PickUpResult pick_gold_up(Player& player, Tile& tile, uint16_t gold);
 
-    void init_creature(uint16_t id);
-
     void remove_dead_creatures();
+
+    void spawn_random_creature();
+
+    uint16_t get_next_creature_id();
 
     void init_npc(const std::vector<AllyInfoDTO>& npcs);
 

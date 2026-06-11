@@ -13,7 +13,6 @@ AttackingState& AttackingState::get() {
 
 CreatureState* AttackingState::next(Creature& creature) {
     if (!creature.can_reach_target()) {
-        std::cout << "attacking -> following" << std::endl;
         return &FollowingState::get();
     }
 

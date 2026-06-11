@@ -13,7 +13,6 @@ IdleState& IdleState::get() {
 
 CreatureState* IdleState::next(Creature& creature) {
     if (creature.is_targeting_someone()) {
-        std::cout << "idle -> following" << std::endl;
         return &FollowingState::get();
     }
 

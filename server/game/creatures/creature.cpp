@@ -25,8 +25,6 @@ uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
     uint8_t level = Calculator::calculate_creature_level(
             config.get_creature_base_level(race), config.get_variation(variation).max_level_multiplier);
 
-    std::cout << "Creature level: " << static_cast<int>(level) << std::endl;
-
     return level;
 }
 

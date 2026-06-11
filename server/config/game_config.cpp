@@ -61,7 +61,7 @@ uint8_t GameConfig::get_max_usable_id() const { return items.max_usable_id; }
 
 uint8_t GameConfig::get_min_equipable_id() const { return items.min_equipable_id; }
 
-uint8_t GameConfig::get_max_equipable_id() const { return items.max_usable_id; }
+uint8_t GameConfig::get_max_equipable_id() const { return items.max_equipable_id; }
 
 const std::vector<uint8_t>& GameConfig::get_priest_items(int id) const { return traders.priests.items[id]; }
 

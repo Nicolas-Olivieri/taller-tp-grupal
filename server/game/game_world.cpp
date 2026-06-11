@@ -13,8 +13,10 @@
 #include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
 
+#define MAX_CREATURE_AMOUNT 10  // TODO: toml
 
-GameWorld::GameWorld(PlayerRepository& player_repository): grid(), player_repository(player_repository) {}
+GameWorld::GameWorld(PlayerRepository& player_repository):
+        grid(), current_creature_id(0), player_repository(player_repository) {}
 
 void GameWorld::init() {
     ServerMapLoader loader;
@@ -22,7 +24,6 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
-    init_creature(0);
     load_clans();
 }
 
@@ -55,6 +56,10 @@ WorldUpdateStatus GameWorld::update() {
     }
 
     remove_dead_creatures();
+
+    if (creatures.size() < MAX_CREATURE_AMOUNT)
+        spawn_random_creature();
+
     std::vector<CreatureUpdate> creatures_status;
     creatures_status.reserve(creatures.size());
 
@@ -179,14 +184,36 @@ void GameWorld::remove_dead_creatures() {
 
             add_tile_if_lootable(tile, position);
 
-            uint16_t new_id = it->first + 1;
             it = creatures.erase(it);
-
-            init_creature(new_id);
         } else {
             it++;
         }
     }
+}
+
+void GameWorld::spawn_random_creature() {
+    // TODO: cambiar este método para considerar biomas
+    uint8_t variation_id = Calculator::random_number(0, 2);
+    const VariationData& variation = GameConfig::get().get_variation(variation_id);
+
+    uint8_t creature_id = Calculator::random_choice(variation.compatible_races);
+
+    Position spawn_position = grid.spawn();
+    uint16_t id = get_next_creature_id();
+
+    creatures.emplace(id, Creature(creature_id, variation_id, spawn_position));
+    grid.get_tile(spawn_position).occupy(&creatures.at(id));
+}
+
+uint16_t GameWorld::get_next_creature_id() {
+    assert(MAX_CREATURE_AMOUNT < UINT16_MAX);
+
+    // Aprovecha el overflow de UINT16_MAX -> 0 para volver a usar los ids que se liberaron
+    while (creatures.contains(current_creature_id)) current_creature_id++;
+
+    uint16_t id = current_creature_id++;
+
+    return id;
 }
 
 void GameWorld::remove_player(const std::string& player_name) {
@@ -497,12 +524,6 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
             allies.push_back(std::move(ally));
         }
     }
-}
-
-void GameWorld::init_creature(uint16_t id) {
-    Position goblin_position(30, 30);
-    creatures.emplace(id, Creature(0, 0, goblin_position));
-    grid.get_tile(goblin_position).occupy(&creatures.at(id));
 }
 
 void GameWorld::drop_player_items(Player& player) {
