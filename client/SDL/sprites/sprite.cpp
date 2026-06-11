@@ -1,6 +1,7 @@
 #include "sprite.h"
 
 #include <algorithm>
+#include <utility>
 
 #define MIN_PIXELS_PER_STEP 3
 #define CHANGE_RATE 0.3
@@ -114,3 +115,16 @@ bool Sprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) c
 void Sprite::remove_all_layers() { layers.clear(); }
 
 SDL2pp::Point Sprite::get_ground_position() const { return position + size - render_offset; }
+
+bool Sprite::has_label() const { return label != nullptr; }
+
+SpriteLabel& Sprite::get_label() const { return *label.get(); }
+
+void Sprite::set_label(std::unique_ptr<SpriteLabel> new_label) { label = std::move(new_label); }
+
+void Sprite::render_overlay(const SDL2pp::Point& camera_offset) const {
+    if (not label)
+        return;
+
+    label->render(position - camera_offset - render_offset, size);
+}
