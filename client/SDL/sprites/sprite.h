@@ -8,6 +8,7 @@
 #include "sprite_layer.h"
 
 class Sprite {
+    friend class SpriteCreator;
 private:
     SDL2pp::Point position;
     SDL2pp::Point target_position;
@@ -40,6 +41,8 @@ public:
     bool is_idle() const;
 
     bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const;
+
+    bool layer_is_different(Layer layer, int id) const;
 
     void remove_all_layers();
 

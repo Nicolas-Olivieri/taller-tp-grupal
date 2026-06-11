@@ -101,6 +101,8 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
             audio_manager.play_event(SoundEvent::FOOTSTEP);
 
         player_sprite->set_target_position(player_info.direction, position);
+
+        sprite_creator.update_appearance(*player_sprite, player_info.appearance, player_info.equipment);
     }
 }
 

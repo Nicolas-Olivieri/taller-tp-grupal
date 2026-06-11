@@ -71,9 +71,12 @@ void Sprite::update_frame(const int iteration) {
 void Sprite::render(const SDL2pp::Point& camera_offset) {
     const SDL2pp::Point render_position = position - camera_offset - render_offset;
 
-    if (direction == Direction::UP) {
-        for (auto layer = layers.rbegin(); layer != layers.rend(); ++layer) {
-            layer->second.render(render_position);
+    if (direction == Direction::UP || layers.at(Layer::BODY).last_action == Direction::UP) {
+        const auto order = {Layer::SHIELD, Layer::WEAPON, Layer::BODY, Layer::HEAD, Layer::HELMET};
+        for (auto& layer : order) {
+            if (layers.contains(layer)) {
+                layers.at(layer).render(render_position);
+            }
         }
         return;
     }
@@ -109,6 +112,10 @@ bool Sprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) c
         }
     }
     return false;
+}
+
+bool Sprite::layer_is_different(const Layer layer, const int id) const {
+    return (!layers.contains(layer) && id != 0) || (layers.contains(layer) && layers.at(layer).texture_is_different(id));
 }
 
 void Sprite::remove_all_layers() { layers.clear(); }

@@ -20,16 +20,17 @@ private:
     SDL2pp::Point offset;
     SDL2pp::Rect frame;
     std::optional<Direction> last_action;
+    uint8_t id;
 
     SDL2pp::Texture& texture;
     std::variant<Animation, std::map<Direction, Animation>> animations;
     SDL2pp::Renderer& renderer;
 
 public:
-    SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const SDL2pp::Point& offset,
+    SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, uint8_t id, const SDL2pp::Point& offset,
                 Animation animation);
 
-    SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const SDL2pp::Point& offset,
+    SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, uint8_t id, const SDL2pp::Point& offset,
                 std::map<Direction, Animation>& animations);
 
     void render(const SDL2pp::Point& base_position);
@@ -39,6 +40,8 @@ public:
     void set_base_frame();
 
     bool has_static_animation() const;
+
+    bool texture_is_different(int other) const;
 };
 
 

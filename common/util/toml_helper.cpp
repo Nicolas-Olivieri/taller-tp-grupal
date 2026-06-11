@@ -9,7 +9,8 @@ SpriteCategory TomlHelper::get_sprite_category(const std::string& category) {
             {"npcs", SpriteCategory::NPC},          {"goblin", SpriteCategory::GOBLIN},
             {"skeleton", SpriteCategory::SKELETON}, {"zombie", SpriteCategory::ZOMBIE},
             {"spider", SpriteCategory::SPIDER},     {"orc", SpriteCategory::ORC},
-            {"golem", SpriteCategory::GOLEM},       {"loot", SpriteCategory::LOOT}};
+            {"golem", SpriteCategory::GOLEM},       {"loot", SpriteCategory::LOOT},
+            {"equipment", SpriteCategory::EQUIPMENT}};
 
     return map.at(category);
 }

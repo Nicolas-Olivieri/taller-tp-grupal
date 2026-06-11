@@ -24,6 +24,8 @@ private:
     SpriteLayer create_sprite_layer(SpriteCategory category, uint8_t id,
                                     const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
 
+    void update_layer(Sprite &player, SpriteCategory category, Layer layer, uint8_t id);
+
 public:
     explicit SpriteCreator(SDL2pp::Renderer& renderer);
 
@@ -37,7 +39,9 @@ public:
 
     Sprite create_sprite(const LootInfoDTO& loot_info);
 
-    void update_appearance(Sprite& player, const AppearanceDTO& appearance);
+    void update_appearance(Sprite &player, const AppearanceDTO& appearance, const EquipmentInfoDTO &equipment);
+
+    void update_appearance(Sprite &player, const AppearanceDTO &appearance);
 
     void convert_to_ghost(Sprite& player);
 };

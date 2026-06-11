@@ -17,7 +17,8 @@ enum class SpriteCategory : uint8_t {
     COLLIDER,
     NPC,
 
-    LOOT
+    LOOT,
+    EQUIPMENT
 };
 
 #endif  // CONSTANTS_H
