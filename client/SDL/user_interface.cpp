@@ -9,24 +9,12 @@
 #include "client/config/client_config.h"
 
 // TODO: revisar constantes
-#define FONT "/augusta.ttf"
-#define CLAN_NAME_FONT_SIZE 24
-#define USERNAME_FONT_SIZE 35
-#define MENU_TITLE_FONT_SIZE 20
-#define MENU_FONT_SIZE 17
-#define CHAT_FONT_SIZE 19
-#define ITEM_AMOUNT_FONT_SIZE 14
 #define LINE_SPACING 21
 #define MAX_CHAT_HISTORY 100
 
-UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name):
+UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager):
         renderer(renderer),
-        user_font(DATA_PATH FONT, USERNAME_FONT_SIZE),
-        clan_font(DATA_PATH FONT, CLAN_NAME_FONT_SIZE),
-        menu_title_font(DATA_PATH FONT, MENU_TITLE_FONT_SIZE),
-        menu_font(DATA_PATH FONT, MENU_FONT_SIZE),
-        chat_font(DATA_PATH FONT, CHAT_FONT_SIZE),
-        item_amount_font(DATA_PATH FONT, ITEM_AMOUNT_FONT_SIZE),
+        font_manager(font_manager),
         ui_texture(renderer, DATA_PATH "/interfaz_principal.bmp"),
         player_name(player_name),
         clan_name(""),
@@ -39,33 +27,35 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
 void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
 
 void UserInterface::render_fields() {
-    render_text(player_name, username_rect, user_font);
-    render_text(clan_name, clan_rect, clan_font);
+    render_text(player_name, username_rect, FontType::UI_USERNAME);
+    render_text(clan_name, clan_rect, FontType::UI_CLAN);
 
-    render_text("Inventario", inventory_rect, menu_title_font);
+    render_text("Inventario", inventory_rect, FontType::UI_MENU_TITLE);
     render_inventory();
     render_equipment();
 
     // TODO: revisar por qué el texto imprime mal las tildes
-    render_text("Estadisticas", stats_rect, menu_title_font);
+    render_text("Estadisticas", stats_rect, FontType::UI_MENU_TITLE);
 
     for (const auto& [box, value]: bar_values) {
         render_bar_value(box, value);
     }
 
     for (const auto& [box, value]: field_values) {
-        render_text(value, box, menu_font);
+        render_text(value, box, FontType::UI_MENU);
     }
 }
 
-void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box_limit, SDL2pp::Font& font) {
+void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box_limit,
+                                const FontType& font_type) const {
     if (text == "")
         return;
 
+    SDL2pp::Font& font = font_manager.get_font(font_type);
     SDL2pp::Texture text_texture(renderer, font.RenderText_Solid(text, white));
 
-    int text_w = std::min(text_texture.GetWidth(), box_limit.w);
-    int text_h = std::min(text_texture.GetHeight(), box_limit.h);
+    const int text_w = std::min(text_texture.GetWidth(), box_limit.w);
+    const int text_h = std::min(text_texture.GetHeight(), box_limit.h);
 
     SDL2pp::Rect centered_box = {box_limit.x + (box_limit.w - text_w) / 2,
                                  box_limit.y + (box_limit.h - text_h) / 2, text_w, text_h};
@@ -85,8 +75,7 @@ void UserInterface::render_bar_value(const SDL2pp::Rect& box, const BarValue& va
 
     std::stringstream text;
     text << value.current << " / " << value.max;
-
-    render_text(text.str(), box, menu_font);
+    render_text(text.str(), box, FontType::UI_MENU);
 }
 
 void UserInterface::render_inventory() {
@@ -135,7 +124,8 @@ void UserInterface::render_item_amount(const SDL2pp::Rect& slot, const uint8_t a
     if (amount == 0)
         return;
 
-    SDL2pp::Texture text_tex(renderer, item_amount_font.RenderText_Solid(std::to_string(amount), white));
+    SDL2pp::Font& font = font_manager.get_font(FontType::UI_ITEM_AMOUNT);
+    SDL2pp::Texture text_tex(renderer, font.RenderText_Solid(std::to_string(amount), white));
 
     const int text_w = text_tex.GetWidth();
     const int text_h = text_tex.GetHeight();
@@ -159,7 +149,8 @@ void UserInterface::render_chat_history() {
         if (text.empty())
             continue;
 
-        SDL2pp::Texture line_texture(renderer, chat_font.RenderText_Solid(text, color));
+        SDL2pp::Font& font = font_manager.get_font(FontType::UI_CHAT);
+        SDL2pp::Texture line_texture(renderer, font.RenderText_Solid(text, color));
 
         int current_y = history_messages.y + ((i - start) * LINE_SPACING);
         int text_w = line_texture.GetWidth();
@@ -181,7 +172,8 @@ void UserInterface::render_chat_input(const std::string& input, bool is_chat_act
     if (display_text.empty())
         return;
 
-    SDL2pp::Texture text_texture(renderer, chat_font.RenderText_Blended(display_text, white));
+    SDL2pp::Font& font = font_manager.get_font(FontType::UI_CHAT);
+    SDL2pp::Texture text_texture(renderer, font.RenderText_Blended(display_text, white));
 
     int text_w = text_texture.GetWidth();
     int text_h = text_texture.GetHeight();
