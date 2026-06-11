@@ -12,7 +12,14 @@
 #define IS_NOT_IN_JOIN_LIST_MSG "El jugador {} no solicito unirse al clan"
 #define CLAN_IS_FULL_MSG "El clan ya esta lleno"
 
-enum class FoundClanResult { SUCCESS, NOT_ENOUGH_LEVEL, ALREADY_IN_CLAN, CLAN_ALREADY_EXISTS, CLAN_NAME_LONG, NO_RESULT };
+enum class FoundClanResult {
+    SUCCESS,
+    NOT_ENOUGH_LEVEL,
+    ALREADY_IN_CLAN,
+    CLAN_ALREADY_EXISTS,
+    CLAN_NAME_LONG,
+    NO_RESULT
+};
 
 enum class JoinClanResult { SUCCESS, ALREADY_IN_CLAN, CLAN_NOT_FOUND, NO_RESULT };
 

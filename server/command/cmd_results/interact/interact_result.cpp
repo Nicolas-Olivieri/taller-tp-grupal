@@ -6,12 +6,18 @@
 #include "common/npc_type.h"
 
 InteractResult::InteractResult(): type(InteractionType::MUST_NOT_NOTIFY), attack(), bind() {
+    attack.weapon = 0;
+    attack.damage_dealt = 0;
     attack.was_killed = false;
+    attack.player_attacked = "";
 }
 
 InteractResult::InteractResult(const AttackStatus attackStatus): type(InteractionType::ATTACK), bind() {
     attack.status = attackStatus;
+    attack.weapon = 0;
+    attack.damage_dealt = 0;
     attack.was_killed = false;
+    attack.player_attacked = "";
 }
 
 InteractResult::InteractResult(const uint8_t weapon, const int damage_dealt, const bool was_killed):
@@ -20,6 +26,7 @@ InteractResult::InteractResult(const uint8_t weapon, const int damage_dealt, con
     attack.weapon = weapon;
     attack.damage_dealt = damage_dealt;
     attack.was_killed = was_killed;
+    attack.player_attacked = "";
 }
 
 InteractResult::InteractResult(const AllyType& allyType): type(InteractionType::BIND), attack() {
@@ -28,8 +35,6 @@ InteractResult::InteractResult(const AllyType& allyType): type(InteractionType::
             {AllyType::MERCHANT, BindResult::MERCHANT},
             {AllyType::BANKER, BindResult::BANKER},
     });
-
-    attack.was_killed = false;
 
     if (!result_map.contains(allyType))
         throw std::runtime_error(
