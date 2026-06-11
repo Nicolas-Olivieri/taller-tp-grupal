@@ -11,6 +11,8 @@ target_sources(taller_client
         SDL/audio/audio_manager.cpp
         SDL/audio/sound_pool.cpp
 
+        SDL/fonts/font_manager.cpp
+
         SDL/sprites/animation.cpp
         SDL/sprites/animation_pool.cpp
         SDL/sprites/sprite.cpp
@@ -39,6 +41,7 @@ target_sources(taller_client
 
         TOML/animation_parser.h
         TOML/audio_parser.h
+        TOML/font_parser.h
 
         SDL/client_game.h
         SDL/camera.h
@@ -46,6 +49,8 @@ target_sources(taller_client
 
         SDL/audio/audio_manager.h
         SDL/audio/sound_pool.h
+
+        SDL/fonts/font_manager.h
 
         SDL/sprites/animation.h
         SDL/sprites/animation_pool.h
