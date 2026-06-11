@@ -15,7 +15,7 @@
 // ditintos niveles
 Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
                    const Position& position):
-        Killable(race, variation, random_level(race, variation), position, Equipment{0, 0, 0, 1}),
+        Killable(race, variation, random_level(race, variation), position, equip_items(variation)),
         sub_id(sub_id),
         state(std::make_unique<IdleState>()),
         target(nullptr) {}
@@ -29,6 +29,26 @@ uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
     std::cout << "Creature level: " << static_cast<int>(level) << std::endl;
 
     return level;
+}
+
+Equipment Creature::equip_items(uint8_t variation) {
+    GameConfig& config = GameConfig::get();
+    Equipment equipment{ NO_ITEM, NO_ITEM, NO_ITEM, NO_ITEM };
+
+    const std::vector<uint8_t>& items = config.get_variation(variation).equipment; 
+
+    for (const auto& item : items) {
+        if (config.weapons_contains(item))
+            equipment.weapon = item;
+        else if (config.armors_contains(item))
+            equipment.armor = item;
+        else if (config.helmets_contains(item))
+            equipment.helmet = item;
+        else if (config.shields_contains(item))
+            equipment.shield = item;
+    }
+
+    return equipment;
 }
 
 std::vector<Loot> Creature::drop() {

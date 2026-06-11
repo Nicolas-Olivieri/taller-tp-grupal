@@ -30,6 +30,8 @@ private:
 
     static uint8_t random_level(uint8_t race, uint8_t variation);
 
+    static Equipment equip_items(uint8_t variation);
+
 public:
     // TODO: mover métodos que no son públicos a la sección private
 
