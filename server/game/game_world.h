@@ -136,6 +136,8 @@ private:
     void drop_and_add(Player& player, Tile& tile);
 
     void load_clans();
+
+    void exchange_position(const Position& old_position, const Position& new_position, Interactive* occupant);
 };
 
 

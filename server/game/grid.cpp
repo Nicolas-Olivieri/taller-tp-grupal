@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <utility>
 
+#define IDLE_WEIGHT 4  // TODO: toml
+
 Grid::Grid(): width_(0), height_(0) {}
 
 Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
@@ -55,7 +57,7 @@ bool Grid::is_tile_available(int x, int y) const {
 // TODO: seguramente se puede hacer sin crear tantos objetos
 Direction Grid::closest_movement(const Position& current, const Position& target) const {
     Direction closest_direction = Direction::IDLE;
-    float min_distance = current.distance_to(target);
+    float min_distance = MAXFLOAT;
 
     for (const auto& direction: directions) {
         Position position = current.move(direction);
@@ -75,7 +77,7 @@ Direction Grid::closest_movement(const Position& current, const Position& target
 Direction Grid::random_movement(const Position& current) const {
     static std::random_device rd;
     static std::default_random_engine generator(rd());
-    std::uniform_int_distribution<size_t> get_random_width(0, directions.size() + 4);
+    std::uniform_int_distribution<size_t> get_random_width(0, directions.size() + IDLE_WEIGHT);
 
     size_t index = get_random_width(generator);
     Direction direction = index < directions.size() ? directions[index] : Direction::IDLE;

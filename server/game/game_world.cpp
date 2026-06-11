@@ -34,6 +34,12 @@ const std::map<std::pair<uint16_t, uint16_t>, Tile*>& GameWorld::get_lootable_ti
     return tiles_with_loot;
 }
 
+void GameWorld::exchange_position(const Position& old_position, const Position& new_position,
+                                  Interactive* occupant) {
+    grid.get_tile(old_position).occupy(nullptr);
+    grid.get_tile(new_position).occupy(occupant);
+}
+
 WorldUpdateStatus GameWorld::update() {
     std::vector<std::string> resurrected_players;
     for (auto& [name, player]: players) {
@@ -44,8 +50,7 @@ WorldUpdateStatus GameWorld::update() {
             resurrected_players.push_back(name);
             const Position& resurrect_position = player.get_position();
 
-            grid.get_tile(previous_position).occupy(nullptr);
-            grid.get_tile(resurrect_position).occupy(&player);
+            exchange_position(previous_position, resurrect_position, &player);
         }
     }
 
@@ -109,12 +114,9 @@ void GameWorld::move_creature(Creature& creature, const Direction& direction) {
         return;
 
     Position target = current.move(direction);
-    Tile& tile = grid.get_tile(target);
 
-    if (tile.is_walkable() && tile.occupant() == nullptr) {
-        grid.get_tile(current).occupy(nullptr);
-        tile.occupy(&creature);
-
+    if (grid.is_tile_available(target.get_x(), target.get_y())) {
+        exchange_position(current, target, &creature);
         creature.update_position(target, direction);
     }
 }
@@ -138,33 +140,13 @@ void GameWorld::move_player(const std::string& player_name, const Direction dire
     const Position target = current.move(direction);
 
     try {
-        Tile& tile = grid.get_tile(target);
-
-        // validar colisiones
-        if (not tile.is_walkable()) {
-            std::cout << "[World] Jugador " << player_name << " colisionó con el mapa" << std::endl;
-            return;  // o disparar evento de movimiento inválido
+        if (grid.is_tile_available(target.get_x(), target.get_y())) {
+            exchange_position(current, target, &player);
+            player.update_position(target, direction);
         }
 
-        if (tile.occupant() != nullptr) {
-            std::cout << "[World] Jugador " << player_name << " colisionó con otra entidad" << std::endl;
-            return;  // o disparar evento de movimiento inválido
-        }
-
-        // efectuar movimiento
-        grid.get_tile(current).occupy(nullptr);
-        tile.occupy(&player);
-
-        player.update_position(target, direction);
-
-        // notificar el evento de movimiento
-        std::cout << "[World] Jugador " << player_name << " se movió a " << target << std::endl;
-
-    } catch (const std::out_of_range& _) {
-        std::cout << "[World] Límite del mapa alcanzado" << std::endl;
-    }
+    } catch (const std::out_of_range& _) {}
 }
-
 
 void GameWorld::add_player(const std::string& player_name, const PlayerData& data) {
     const auto it = emplace_player(player_name, data);
@@ -519,7 +501,7 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
 
 void GameWorld::init_creature(uint16_t id) {
     Position goblin_position(30, 30);
-    creatures.emplace(id, Creature(0, 4, goblin_position));
+    creatures.emplace(id, Creature(0, 0, goblin_position));
     grid.get_tile(goblin_position).occupy(&creatures.at(id));
 }
 

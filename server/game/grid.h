@@ -22,14 +22,14 @@ private:
     std::vector<std::vector<Tile>> tiles_;
     std::vector<Direction> directions;
 
-    bool is_tile_available(int x, int y) const;
-
 public:
     Grid();
 
     Grid(int width, int height, const GridMatrixDTO& grid_data);
 
     Tile& get_tile(const Position& position);
+
+    bool is_tile_available(int x, int y) const;
 
     Position spawn() const;
 
