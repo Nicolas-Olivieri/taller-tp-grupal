@@ -49,7 +49,18 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
             {{AttackStatus::OUT_OF_RANGE, "El objetivo esta fuera de alcance"},
              {AttackStatus::DEAD_TARGET, "El objetivo ya esta muerto"},
              {AttackStatus::CANNOT_ATTACK, "No es posible atacar en este momento"},
-             {AttackStatus::IS_CLANMATE, "No puedes atacar a alguien de tu mismo clan"}});
+             {AttackStatus::IS_CLANMATE, "No puedes atacar a alguien de tu mismo clan"},
+             {AttackStatus::ATTACKER_IS_NEWBIE,
+              std::format("No puedes atacar a otro jugador siendo newbie (de nivel {} o menor)",
+                          Player::MAX_NEWBIE_LEVEL)},
+             {AttackStatus::ATTACKED_PLAYER_IS_NEWBIE,
+              std::format("No puedes atacar a un newbie (jugador de nivel {} o menor)",
+                          Player::MAX_NEWBIE_LEVEL)},
+             {AttackStatus::FAIR_PLAY, std::format("No puedes atacar ni ser atacado por un jugador que "
+                                                   "tengas más de {} niveles de diferencia",
+                                                   Player::FAIR_PLAY_GAP)}
+
+            });
 
     if (status_to_message.contains(status)) {
         const std::string message = status_to_message.at(status);

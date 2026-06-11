@@ -142,8 +142,18 @@ InteractResult Player::interact(Player& attacker) {
         return InteractResult(AttackStatus::IS_CLANMATE);
     }
 
+    const uint8_t own_level = stats.experience.get_level();
+    const uint8_t attacker_level = attacker.stats.experience.get_level();
+    if (own_level <= MAX_NEWBIE_LEVEL)
+        return InteractResult(AttackStatus::ATTACKED_PLAYER_IS_NEWBIE);
+
+    if (attacker_level <= MAX_NEWBIE_LEVEL)
+        return InteractResult(AttackStatus::ATTACKER_IS_NEWBIE);
+
+    if (std::abs(own_level - attacker_level) > FAIR_PLAY_GAP)
+        return InteractResult(AttackStatus::FAIR_PLAY);
+
     // TODO Falta considerar
-    //  - Fair game
     //  - Daño de los compis del clan?
     //      (en update del GameWorld -> por cada jugador recorremos las n casillas más cercanas y desde
     //      ahí player expone un método que le agrega boost y lo usa en su attack)
