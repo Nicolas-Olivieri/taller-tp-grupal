@@ -17,14 +17,14 @@ Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t vari
                    const Position& position):
         Killable(race, variation, random_level(race, variation), position, equip_items(variation)),
         sub_id(sub_id),
-        state(std::make_unique<IdleState>()),
+        state(&IdleState::get()),
         target(nullptr) {}
 
 uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
     GameConfig& config = GameConfig::get();
 
-    uint8_t level =  Calculator::calculate_creature_level(config.get_creature_base_level(race),
-                                                config.get_variation(variation).max_level_multiplier);
+    uint8_t level = Calculator::calculate_creature_level(
+            config.get_creature_base_level(race), config.get_variation(variation).max_level_multiplier);
 
     std::cout << "Creature level: " << static_cast<int>(level) << std::endl;
 
@@ -33,11 +33,11 @@ uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
 
 Equipment Creature::equip_items(uint8_t variation) {
     GameConfig& config = GameConfig::get();
-    Equipment equipment{ NO_ITEM, NO_ITEM, NO_ITEM, NO_ITEM };
+    Equipment equipment{NO_ITEM, NO_ITEM, NO_ITEM, NO_ITEM};
 
-    const std::vector<uint8_t>& items = config.get_variation(variation).equipment; 
+    const std::vector<uint8_t>& items = config.get_variation(variation).equipment;
 
-    for (const auto& item : items) {
+    for (const auto& item: items) {
         if (config.weapons_contains(item))
             equipment.weapon = item;
         else if (config.armors_contains(item))
@@ -87,12 +87,7 @@ std::vector<Loot> Creature::drop() {
     return drop;
 }
 
-CreatureUpdateStatus Creature::update_state(const Position& position, const Direction& direction) {
-    CreatureUpdateStatus result = this->state->act(*this, position, direction);
-    this->state->next(*this);
-
-    return result;
-}
+void Creature::update_state() { this->state = this->state->next(*this); }
 
 InteractResult Creature::interact(Player& attacker) {
     target = &attacker;
@@ -102,10 +97,13 @@ InteractResult Creature::interact(Player& attacker) {
 CreatureUpdateStatus Creature::attack_player() {
     assert(can_reach(target->get_position()) && can_attack());
 
-    if (Calculator::can_dodge(target->get_stats().agility))
-        return CreatureUpdateStatus(stats.race_id, target->get_name(), 0, false);
+    const uint16_t damage = attack();
 
-    const uint16_t damage_applied = target->receive_damage(*this);
+    if (Calculator::can_dodge(target->get_stats().agility)) {
+        return CreatureUpdateStatus(stats.race_id, target->get_name(), 0, false);
+    }
+
+    const uint16_t damage_applied = target->receive_damage(damage);
     const bool was_killed = !target->is_alive();
 
     return CreatureUpdateStatus(stats.race_id, target->get_name(), damage_applied, was_killed);
@@ -173,8 +171,6 @@ bool Creature::is_targeting_someone() const {
 bool Creature::is_target_alive() const { return is_targeting_someone() && target->is_alive(); }
 
 bool Creature::can_reach_target() { return is_targeting_someone() && can_reach(target->get_position()); }
-
-void Creature::set_state(std::unique_ptr<CreatureState> new_state) { state = std::move(new_state); }
 
 Position Creature::get_target_position() const {
     if (!is_targeting_someone())

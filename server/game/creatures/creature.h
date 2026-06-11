@@ -18,7 +18,7 @@ enum class DropType { NOTHING = 0, GOLD = 1, USABLE = 2, EQUIPABLE = 3 };
 class Creature: public Killable, public Attacker {
 private:
     const uint16_t sub_id;
-    std::unique_ptr<CreatureState> state;
+    CreatureState* state;
 
     Player* target;
 
@@ -39,7 +39,7 @@ public:
 
     std::vector<Loot> drop() override;
 
-    CreatureUpdateStatus update_state(const Position& position, const Direction& direction);
+    void update_state();
 
     InteractResult interact(Player&) override;
 
@@ -62,8 +62,6 @@ public:
     bool is_targeting_someone() const;
 
     bool is_target_alive() const;
-
-    void set_state(std::unique_ptr<CreatureState> state);
 
     bool can_reach_target();
 

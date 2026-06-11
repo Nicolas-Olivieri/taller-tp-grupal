@@ -5,10 +5,9 @@
 
 class FollowingState: public CreatureState {
 public:
-    CreatureUpdateStatus act(Creature& creature, const Position& position,
-                             const Direction& direction) override;
+    static FollowingState& get();
 
-    void next(Creature& creature) override;
+    CreatureState* next(Creature& creature) override;
 };
 
 #endif  // FOLLOWINGSTATE_H

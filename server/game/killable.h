@@ -54,7 +54,7 @@ public:
 
     virtual void update();
 
-    uint16_t receive_damage(Attacker& attacker);
+    uint16_t receive_damage(uint16_t damage);
 
     virtual ~Killable() = default;
 };

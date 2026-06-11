@@ -6,21 +6,16 @@
 
 #include "followingstate.h"
 
-CreatureUpdateStatus AttackingState::act(Creature& creature, const Position& position,
-                                         const Direction& direction) {
-    if (creature.can_move()) {
-        creature.update_position(position, direction);
-    }
-
-    if (creature.can_attack() && creature.can_reach_target()) {
-        return creature.attack_player();
-    }
-
-    return CreatureUpdateStatus();
+AttackingState& AttackingState::get() {
+    static AttackingState instance;
+    return instance;
 }
 
-void AttackingState::next(Creature& creature) {
-    if (!creature.can_reach_target() || !creature.can_attack()) {
-        creature.set_state(std::make_unique<FollowingState>());
+CreatureState* AttackingState::next(Creature& creature) {
+    if (!creature.can_reach_target()) {
+        std::cout << "attacking -> following" << std::endl;
+        return &FollowingState::get();
     }
+
+    return this;
 }
