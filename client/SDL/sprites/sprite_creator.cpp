@@ -9,8 +9,11 @@
 
 #define HEAD_OFFSET 21
 
-SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
-        texture_pool(TexturePool(renderer)), animation_pool(AnimationPool()), renderer(renderer) {}
+SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer, FontManager& font_manager):
+        texture_pool(TexturePool(renderer)),
+        animation_pool(AnimationPool()),
+        renderer(renderer),
+        font_manager(font_manager) {}
 
 
 #define GHOST_HEAD_ID 0
@@ -29,6 +32,8 @@ Sprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
     const SDL2pp::Point size = body_rect.Union(head_rect).GetSize();
 
     Sprite sprite(std::move(body), position, player_info.direction, size);
+    sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, player_info));
+
     sprite.add_layer(Layer::HEAD, std::move(head));
 
     if (player_info.stats.current_health == 0)
@@ -45,6 +50,8 @@ Sprite SpriteCreator::create_sprite(const CreatureInfoDTO& creature_info) {
     const SDL2pp::Point size = creature.frame.GetSize();
 
     Sprite sprite(std::move(creature), position, creature_info.direction, size);
+    sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, creature_info));
+
     return sprite;
 }
 

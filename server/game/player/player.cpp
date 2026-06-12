@@ -110,14 +110,6 @@ void Player::update() {
             complete_delayed_resurrection();
         }
     }
-
-    stats.health.update();
-
-    if (is_meditating) {
-        stats.mana.meditate();
-    } else {
-        stats.mana.update();
-    }
 }
 
 bool Player::can_reach(const Position& other_position) const {

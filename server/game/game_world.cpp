@@ -13,8 +13,10 @@
 #include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
 
+#define MAX_CREATURE_AMOUNT 10  // TODO: toml
 
-GameWorld::GameWorld(PlayerRepository& player_repository): grid(), player_repository(player_repository) {}
+GameWorld::GameWorld(PlayerRepository& player_repository):
+        grid(), current_creature_id(0), player_repository(player_repository) {}
 
 void GameWorld::init() {
     ServerMapLoader loader;
@@ -22,7 +24,6 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
-    init_creature(0);
     load_clans();
 }
 
@@ -32,6 +33,12 @@ const std::unordered_map<uint16_t, Creature>& GameWorld::get_creatures() const {
 
 const std::map<std::pair<uint16_t, uint16_t>, Tile*>& GameWorld::get_lootable_tiles() const {
     return tiles_with_loot;
+}
+
+void GameWorld::exchange_position(const Position& old_position, const Position& new_position,
+                                  Interactive* occupant) {
+    grid.get_tile(old_position).occupy(nullptr);
+    grid.get_tile(new_position).occupy(occupant);
 }
 
 WorldUpdateStatus GameWorld::update() {
@@ -44,13 +51,18 @@ WorldUpdateStatus GameWorld::update() {
             resurrected_players.push_back(name);
             const Position& resurrect_position = player.get_position();
 
-            grid.get_tile(previous_position).occupy(nullptr);
-            grid.get_tile(resurrect_position).occupy(&player);
+            exchange_position(previous_position, resurrect_position, &player);
         }
     }
 
+    remove_lonely_creatures();
     remove_dead_creatures();
-    std::vector<CreatureUpdateStatus> creatures_status(creatures.size());
+
+    if (creatures.size() < MAX_CREATURE_AMOUNT)
+        spawn_random_creature();
+
+    std::vector<CreatureUpdate> creatures_status;
+    creatures_status.reserve(creatures.size());
 
     for (auto& [id, creature]: creatures) {
         creature.update();
@@ -66,14 +78,13 @@ WorldUpdateStatus GameWorld::update() {
             }
         }
 
-        std::string target_name = creature.is_targeting_someone() ? creature.get_target_name() : "";
-        creatures_status.push_back(move_creature(creature, direction));
+        CreatureUpdate creature_update = manage_creature_attack(creature);
+        creatures_status.push_back(creature_update);
 
-        if (!target_name.empty()) {
-            Player& target = players.at(target_name);
-            if (!target.is_alive())
-                drop_player_items(target);
-        }
+        if (creature_update.status == CreatureStatus::MOVING)
+            move_creature(creature, direction);
+
+        creature.update_state();
     }
 
     return WorldUpdateStatus(creatures_status, resurrected_players);
@@ -85,31 +96,35 @@ Direction GameWorld::next_movement(const Creature& creature) {
                                              grid.random_movement(current);
 }
 
-CreatureUpdateStatus GameWorld::move_creature(Creature& creature, const Direction& direction) {
+CreatureUpdate GameWorld::manage_creature_attack(Creature& creature) {
+    if (!creature.can_reach_target())
+        return CreatureUpdate(CreatureStatus::MOVING);
+
+    if (creature.is_targeting_someone() && creature.can_attack()) {
+        CreatureUpdate creature_update = creature.attack_player();
+
+        Player& target = players.at(creature.get_target_name());
+        if (!target.is_alive())
+            drop_player_items(target);
+
+        return creature_update;
+    }
+
+    return CreatureUpdate(CreatureStatus::WAITING);
+}
+
+void GameWorld::move_creature(Creature& creature, const Direction& direction) {
     Position current = creature.get_position();
 
-    if (direction == Direction::IDLE || !creature.can_move()) {
-        return creature.update_state(current, Direction::IDLE);
-    }
+    if (!creature.can_move() || direction == Direction::IDLE)
+        return;
 
     Position target = current.move(direction);
 
-    try {
-        Tile& tile = grid.get_tile(target);
-
-        if (tile.is_walkable() && tile.occupant() == nullptr) {
-            grid.get_tile(current).occupy(nullptr);
-            tile.occupy(&creature);
-
-            creature.update_state(target, direction);
-        } else {
-            creature.update_state(current, Direction::IDLE);
-        }
-    } catch (const std::out_of_range& _) {
-        creature.update_state(current, Direction::IDLE);
+    if (grid.is_tile_available(target.get_x(), target.get_y())) {
+        exchange_position(current, target, &creature);
+        creature.update_position(target, direction);
     }
-
-    return CreatureUpdateStatus();
 }
 
 void GameWorld::move_player(const std::string& player_name, const Direction direction) {
@@ -131,33 +146,13 @@ void GameWorld::move_player(const std::string& player_name, const Direction dire
     const Position target = current.move(direction);
 
     try {
-        Tile& tile = grid.get_tile(target);
-
-        // validar colisiones
-        if (not tile.is_walkable()) {
-            std::cout << "[World] Jugador " << player_name << " colisionó con el mapa" << std::endl;
-            return;  // o disparar evento de movimiento inválido
+        if (grid.is_tile_available(target.get_x(), target.get_y())) {
+            exchange_position(current, target, &player);
+            player.update_position(target, direction);
         }
 
-        if (tile.occupant() != nullptr) {
-            std::cout << "[World] Jugador " << player_name << " colisionó con otra entidad" << std::endl;
-            return;  // o disparar evento de movimiento inválido
-        }
-
-        // efectuar movimiento
-        grid.get_tile(current).occupy(nullptr);
-        tile.occupy(&player);
-
-        player.update_position(target, direction);
-
-        // notificar el evento de movimiento
-        std::cout << "[World] Jugador " << player_name << " se movió a " << target << std::endl;
-
-    } catch (const std::out_of_range& _) {
-        std::cout << "[World] Límite del mapa alcanzado" << std::endl;
-    }
+    } catch (const std::out_of_range& _) {}
 }
-
 
 void GameWorld::add_player(const std::string& player_name, const PlayerData& data) {
     const auto it = emplace_player(player_name, data);
@@ -178,6 +173,19 @@ std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(cons
     }
 }
 
+void GameWorld::remove_lonely_creatures() {
+    for (auto it = creatures.begin(); it != creatures.end();) {
+        const Creature& creature = it->second;
+
+        if (creature.is_lonely_creature()) {
+            grid.get_tile(creature.get_position()).occupy(nullptr);
+            it = creatures.erase(it);
+        } else {
+            it++;
+        }
+    }
+}
+
 void GameWorld::remove_dead_creatures() {
     for (auto it = creatures.begin(); it != creatures.end();) {
         Creature& creature = it->second;
@@ -190,14 +198,36 @@ void GameWorld::remove_dead_creatures() {
 
             add_tile_if_lootable(tile, position);
 
-            uint16_t new_id = it->first + 1;
             it = creatures.erase(it);
-
-            init_creature(new_id);
         } else {
             it++;
         }
     }
+}
+
+void GameWorld::spawn_random_creature() {
+    // TODO: cambiar este método para considerar biomas
+    uint8_t variation_id = Calculator::random_number(0, 2);
+    const VariationData& variation = GameConfig::get().get_variation(variation_id);
+
+    uint8_t creature_id = Calculator::random_choice(variation.compatible_races);
+
+    Position spawn_position = grid.spawn();
+    uint16_t id = get_next_creature_id();
+
+    creatures.emplace(id, Creature(creature_id, variation_id, spawn_position));
+    grid.get_tile(spawn_position).occupy(&creatures.at(id));
+}
+
+uint16_t GameWorld::get_next_creature_id() {
+    assert(MAX_CREATURE_AMOUNT < UINT16_MAX);
+
+    // Aprovecha el overflow de UINT16_MAX -> 0 para volver a usar los ids que se liberaron
+    while (creatures.contains(current_creature_id)) current_creature_id++;
+
+    uint16_t id = current_creature_id++;
+
+    return id;
 }
 
 void GameWorld::remove_player(const std::string& player_name) {
@@ -508,12 +538,6 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
             allies.push_back(std::move(ally));
         }
     }
-}
-
-void GameWorld::init_creature(uint16_t id) {
-    Position goblin_position(30, 30);
-    creatures.emplace(id, Creature(id, 0, 0, goblin_position));
-    grid.get_tile(goblin_position).occupy(&creatures.at(id));
 }
 
 void GameWorld::drop_player_items(Player& player) {

@@ -62,21 +62,22 @@ void GameLoop::update_world(SnapshotBuilder& builder) {
     const WorldUpdateStatus world_update_status = game_world.update();
 
     // TODO: no sé si esta responsabilidad va acá
-    for (const auto& status: world_update_status.creatures) {
-        if (!status.did_attack)
+    for (const auto& update: world_update_status.creatures) {
+        if (update.status != CreatureStatus::ATTACKED)
             continue;
-        std::string msg = format_creature_attack_message(status);
 
-        if (status.killed_target)
-            builder.add_action(ActionDTO(DeathDTO(status.player_name)));
-        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, status.player_name, msg)));
+        if (update.killed_target)
+            builder.add_action(ActionDTO(DeathDTO(update.player_name)));
+
+        std::string msg = format_creature_attack_message(update);
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, update.player_name, msg)));
     }
 
     broadcast_resurrected_players(builder, world_update_status.resurrected_players);
 }
 
 // TODO: no sé si esta responsabilidad va acá
-std::string GameLoop::format_creature_attack_message(const CreatureUpdateStatus& status) {
+std::string GameLoop::format_creature_attack_message(const CreatureUpdate& status) {
     // TODO: los númeritos...
     static std::unordered_map<uint8_t, std::string> creature_to_name = {
             {0, "Goblin"}, {1, "Esqueleto"}, {2, "Zombie"}, {3, "Araña"}, {4, "Orco"}, {5, "Golem"}};

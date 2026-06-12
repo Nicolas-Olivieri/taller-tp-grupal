@@ -50,9 +50,20 @@ private:
 
     void erase_taken_loot(const std::vector<LootInfoDTO>& loot_information);
 
+    template <typename Range>
+    std::vector<std::shared_ptr<Sprite>> filter_sprites(const Camera& camera, Range&& sprites) const {
+        std::vector<std::shared_ptr<Sprite>> viewed_sprites;
+        auto is_visible = [&camera](const std::shared_ptr<Sprite>& item) {
+            return item->intersects(camera.get_view(), camera.get_view().GetTopLeft());
+        };
+
+        std::ranges::copy_if(sprites, std::back_inserter(viewed_sprites), is_visible);
+        return viewed_sprites;
+    }
+
 public:
     World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
-          AudioManager& audio_manager);
+          AudioManager& audio_manager, FontManager& font_manager);
 
     void update_players(const std::vector<PlayerInfoDTO>& players_information);
 
@@ -68,6 +79,14 @@ public:
 
     std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
             const Camera& camera, const std::set<std::shared_ptr<Sprite>>& sprites) const;
+
+    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
+            const Camera& camera,
+            const std::map<std::string, std::shared_ptr<Sprite>>& players_sprites) const;
+
+    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
+            const Camera& camera, const std::map<uint16_t, std::shared_ptr<Sprite>>& creatures_sprites) const;
+
 
     Sprite& get_client_player();
 

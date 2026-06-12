@@ -35,17 +35,18 @@
 #include "key_mapper.h"
 
 
-ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager):
+ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,
+                       FontManager& font_manager):
         sdl(SDL2pp::SDL(SDL_INIT_VIDEO)),
         window(SDL2pp::Window("Argentum Online", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                               SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS)),
         renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         connection(connection),
         player_name(player_name),
-        world(renderer, connection.receive_map(), player_name, audio_manager),
+        world(renderer, connection.receive_map(), player_name, audio_manager, font_manager),
         key_being_pressed(SDLK_UNKNOWN),
         camera(initialize_world_and_camera()),
-        ui(renderer, player_name),
+        ui(renderer, player_name, font_manager),
         keep_running(true),
         just_restored(false),
         is_chat_active(false),
