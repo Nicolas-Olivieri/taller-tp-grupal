@@ -26,6 +26,8 @@ private:
 
     void update_layer(Sprite &player, SpriteCategory category, Layer layer, uint8_t id);
 
+    SDL2pp::Point get_layer_offset(Layer layer);
+
 public:
     explicit SpriteCreator(SDL2pp::Renderer& renderer);
 

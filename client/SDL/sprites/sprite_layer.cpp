@@ -56,3 +56,5 @@ bool SpriteLayer::has_static_animation() const { return std::holds_alternative<A
 bool SpriteLayer::texture_is_different(const int other) const {
     return other != id;
 }
+
+std::optional<Direction> SpriteLayer::get_last_action() const { return last_action; }

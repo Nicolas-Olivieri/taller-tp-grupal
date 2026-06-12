@@ -8,21 +8,23 @@
 #include "sprite_layer.h"
 
 #define HEAD_OFFSET 21
+#define GHOST_HEAD_ID 0
+#define GHOST_BODY_ID 0
 
 SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
         texture_pool(TexturePool(renderer)), animation_pool(AnimationPool()), renderer(renderer) {}
 
-
-#define GHOST_HEAD_ID 0
-#define GHOST_BODY_ID 0
 
 Sprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
     const SDL2pp::Point position(player_info.x, player_info.y);
     const AppearanceDTO& appearance_data = player_info.appearance;
 
     SpriteLayer head = create_sprite_layer(SpriteCategory::HEAD, appearance_data.head);
-    SpriteLayer body =
-            create_sprite_layer(SpriteCategory::BODY, appearance_data.body, SDL2pp::Point(0, HEAD_OFFSET));
+    head.update_frame(0, player_info.direction);
+
+    auto offset = get_layer_offset(Layer::BODY);
+    SpriteLayer body = create_sprite_layer(SpriteCategory::BODY, appearance_data.body, offset);
+    body.update_frame(0, player_info.direction);
 
     SDL2pp::Rect head_rect(head.offset, head.frame.GetSize());
     SDL2pp::Rect body_rect(body.offset, body.frame.GetSize());
@@ -33,6 +35,8 @@ Sprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
 
     if (player_info.stats.current_health == 0)
         convert_to_ghost(sprite);
+
+    update_appearance(sprite, player_info.appearance, player_info.equipment);
 
     return sprite;
 }
@@ -81,24 +85,13 @@ void SpriteCreator::update_appearance(Sprite& player, const AppearanceDTO& appea
 }
 
 void SpriteCreator::update_appearance(Sprite& player, const AppearanceDTO& appearance) {
-    player.remove_all_layers();
-
-    SpriteLayer head = create_sprite_layer(SpriteCategory::HEAD, appearance.head);
-    SpriteLayer body = create_sprite_layer(SpriteCategory::BODY, appearance.body, SDL2pp::Point(0, HEAD_OFFSET));
-
-    player.add_layer(Layer::BODY, std::move(body));
-    player.add_layer(Layer::HEAD, std::move(head));
+    update_layer(player, SpriteCategory::BODY, Layer::BODY, appearance.body);
+    update_layer(player, SpriteCategory::HEAD, Layer::HEAD, appearance.head);
 }
 
 void SpriteCreator::convert_to_ghost(Sprite& player) {
-    player.remove_all_layers();
-
-    SpriteLayer head = create_sprite_layer(SpriteCategory::HEAD, GHOST_HEAD_ID);
-    SpriteLayer body =
-            create_sprite_layer(SpriteCategory::BODY, GHOST_BODY_ID, SDL2pp::Point(0, HEAD_OFFSET));
-
-    player.add_layer(Layer::BODY, std::move(body));
-    player.add_layer(Layer::HEAD, std::move(head));
+    const AppearanceDTO ghost_appearance = {GHOST_BODY_ID, GHOST_HEAD_ID};
+    update_appearance(player, ghost_appearance);
 }
 
 
@@ -127,9 +120,19 @@ void SpriteCreator::update_layer(Sprite& player, const SpriteCategory category, 
     }
     player.remove_layer(layer);
 
-    auto offset = layer == Layer::HELMET ? SDL2pp::Point(0, 0) : SDL2pp::Point(0, HEAD_OFFSET);
+    const auto offset = get_layer_offset(layer);
 
     SpriteLayer new_layer = create_sprite_layer(category, id, offset);
-    new_layer.update_frame(0, player.direction);
+    new_layer.update_frame(0, player.get_current_direction());
     player.add_layer(layer, std::move(new_layer));
+}
+
+SDL2pp::Point SpriteCreator::get_layer_offset(const Layer layer) {
+    switch (layer) {
+        case Layer::HEAD:
+        case Layer::HELMET:
+            return {0, 0};
+        default:
+            return {0, HEAD_OFFSET};
+    }
 }

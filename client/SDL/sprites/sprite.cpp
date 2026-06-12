@@ -71,12 +71,13 @@ void Sprite::update_frame(const int iteration) {
 void Sprite::render(const SDL2pp::Point& camera_offset) {
     const SDL2pp::Point render_position = position - camera_offset - render_offset;
 
-    if (direction == Direction::UP || layers.at(Layer::BODY).last_action == Direction::UP) {
-        const auto order = {Layer::SHIELD, Layer::WEAPON, Layer::BODY, Layer::HEAD, Layer::HELMET};
-        for (auto& layer : order) {
-            if (layers.contains(layer)) {
-                layers.at(layer).render(render_position);
-            }
+    if (direction == Direction::UP || this->get_last_direction() == Direction::UP) {
+        for (auto layer = layers.rbegin(); layer != layers.rend(); ++layer) {
+            layer->second.render(render_position);
+        }
+        // Vuelvo a renderizar el casco para que se vea por encima de lo demás
+        if (layers.contains(Layer::HELMET)) {
+            layers.at(Layer::HELMET).render(render_position);
         }
         return;
     }
@@ -91,6 +92,12 @@ SDL2pp::Point Sprite::get_position() const { return position; }
 SDL2pp::Point Sprite::get_size() const { return size; }
 
 bool Sprite::is_idle() const { return direction == Direction::IDLE; }
+
+std::optional<Direction> Sprite::get_last_direction() const { return layers.at(Layer::BODY).get_last_action(); }
+
+std::optional<Direction> Sprite::get_current_direction() const { return direction; }
+
+std::map<Layer, SpriteLayer> Sprite::get_all_layers() const { return layers; }
 
 int Sprite::get_new_coordinate(const int& current_coordinate, const int& coordinate_diff) {
     const int coordinate_movement = coordinate_diff * CHANGE_RATE;

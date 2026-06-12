@@ -42,6 +42,8 @@ public:
     bool has_static_animation() const;
 
     bool texture_is_different(int other) const;
+
+    std::optional<Direction> get_last_action() const;
 };
 
 
