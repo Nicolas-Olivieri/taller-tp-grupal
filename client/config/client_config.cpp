@@ -11,8 +11,8 @@
 
 
 ClientConfig::ClientConfig() {
-    loadFromFile(std::string(DATA_PATH) + std::string(CLIENT_ITEMS_PATH));
-    loadFromFile(std::string(DATA_PATH) + std::string(CLIENT_CREATURES_PATH));
+    loadFromFile(std::string(CONFIG_PATH) + std::string(CLIENT_ITEMS_PATH));
+    loadFromFile(std::string(CONFIG_PATH) + std::string(CLIENT_CREATURES_PATH));
 }
 
 
