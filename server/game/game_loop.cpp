@@ -73,7 +73,7 @@ void GameLoop::update_world(SnapshotBuilder& builder) {
 }
 
 void GameLoop::broadcast_creature_attack(SnapshotBuilder& builder, const CreatureUpdate& update) {
-    assert(update.status != CreatureStatus::ATTACKED);
+    assert(update.status == CreatureStatus::ATTACKED);
     std::string msg = CreatureFormatter::get_attack_message(update);
 
     if (update.killed_target)

@@ -10,24 +10,24 @@ std::string CreatureFormatter::get_creature_name(uint8_t creature_id) {
     return creature_to_name.at(creature_id);
 }
 
-std::string CreatureFormatter::get_attack_message(const CreatureUpdateStatus& status) {
-    const std::string creature_name = get_creature_name(status.creature_id);
+std::string CreatureFormatter::get_attack_message(const CreatureUpdate& update) {
+    const std::string creature_name = get_creature_name(update.creature_id);
 
-    if (status.damage_dealt == 0) {
+    if (update.damage_dealt == 0) {
         return std::format("Esquivaste el ataque de {}!!", creature_name);
-    } else if (status.killed_target) {
+    } else if (update.killed_target) {
         return std::format("{} te mató", creature_name);
     }
 
-    return std::format("{} te quitó {} de vida", creature_name, status.damage_dealt);
+    return std::format("{} te quitó {} de vida", creature_name, update.damage_dealt);
 }
 
-std::string CreatureFormatter::get_clan_attack_message(const CreatureUpdateStatus& status) {
-    const std::string creature_name = get_creature_name(status.creature_id);
+std::string CreatureFormatter::get_clan_attack_message(const CreatureUpdate& update) {
+    const std::string creature_name = get_creature_name(update.creature_id);
 
-    if (status.killed_target)
-        return std::format("{} mató a {}", creature_name, status.player_name);
+    if (update.killed_target)
+        return std::format("{} mató a {}", creature_name, update.player_name);
 
 
-    return std::format("{} le quito {} de vida a {}", creature_name, status.damage_dealt, status.player_name);
+    return std::format("{} le quito {} de vida a {}", creature_name, update.damage_dealt, update.player_name);
 }

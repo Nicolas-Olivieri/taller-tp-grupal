@@ -10,9 +10,9 @@
 
 class CreatureFormatter {
 public:
-    static std::string get_attack_message(const CreatureUpdateStatus& status);
+    static std::string get_attack_message(const CreatureUpdate& update);
 
-    static std::string get_clan_attack_message(const CreatureUpdateStatus& status);
+    static std::string get_clan_attack_message(const CreatureUpdate& update);
 
 private:
     static std::string get_creature_name(uint8_t creature_id);
