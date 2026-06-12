@@ -5,6 +5,7 @@
 
 #include "common/dto/snapshot/snapshot_builder.h"
 #include "common/util/rate_timer.h"
+#include "server/game/creatures/creature_formatter.h"
 
 #include "world_update_status.h"
 
@@ -65,30 +66,27 @@ void GameLoop::update_world(SnapshotBuilder& builder) {
     for (const auto& status: world_update_status.creatures) {
         if (!status.did_attack)
             continue;
-        std::string msg = format_creature_attack_message(status);
-
-        if (status.killed_target)
-            builder.add_action(ActionDTO(DeathDTO(status.player_name)));
-        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, status.player_name, msg)));
+        broadcast_creature_attack(builder, status);
     }
 
     broadcast_resurrected_players(builder, world_update_status.resurrected_players);
 }
 
-// TODO: no sé si esta responsabilidad va acá
-std::string GameLoop::format_creature_attack_message(const CreatureUpdateStatus& status) {
-    // TODO: los númeritos...
-    static std::unordered_map<uint8_t, std::string> creature_to_name = {
-            {0, "Goblin"}, {1, "Esqueleto"}, {2, "Zombie"}, {3, "Araña"}, {4, "Orco"}, {5, "Golem"}};
+void GameLoop::broadcast_creature_attack(SnapshotBuilder& builder, const CreatureUpdateStatus& status) {
+    assert(status.did_attack);
+    std::string msg = CreatureFormatter::get_attack_message(status);
 
-    if (status.damage_dealt == 0) {
-        return std::format("Esquivaste el ataque de {}!!", creature_to_name.at(status.creature_id));
-    } else if (status.killed_target) {
-        return std::format("{} te mato", creature_to_name.at(status.creature_id));
+    if (status.killed_target)
+        builder.add_action(ActionDTO(DeathDTO(status.player_name)));
+    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, status.player_name, msg)));
+
+    assert(game_world.get_players().contains(status.player_name));
+    std::string clan_name = game_world.get_players().at(status.player_name).get_clan_name();
+
+    if (not clan_name.empty()) {
+        std::string clan_msg = CreatureFormatter::get_clan_attack_message(status);
+        builder.add_action(ActionDTO(ClanMessageDTO(clan_name, clan_msg, status.player_name)));
     }
-
-    return std::format("{} te quito {} de vida", creature_to_name.at(status.creature_id),
-                       status.damage_dealt);
 }
 
 

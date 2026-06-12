@@ -61,6 +61,7 @@ target_sources(taller_server
         game/creatures/state/idlestate.cpp
         game/creatures/state/followingstate.cpp
         game/creatures/state/attackingstate.cpp
+        game/creatures/creature_formatter.cpp
 
         game/clan/clan.cpp
         game/clan/clan_action_payload.cpp
@@ -177,6 +178,7 @@ target_sources(taller_server
         game/creatures/state/idlestate.h
         game/creatures/state/followingstate.h
         game/creatures/state/attackingstate.h
+        game/creatures/creature_formatter.h
 
         game/clan/clan.h
         game/clan/clan_action_payload.h

@@ -103,6 +103,11 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
             lines.push_back(std::format("Mataste a {}", player_attacked));
             lines_to_attacked.push_back(std::format("{} te mato", player_name, result.attack.damage_dealt));
 
+            builder.add_action(ActionDTO(ClanMessageDTO(
+                    attacked_clan_name, std::format("{} mató a {}", player_name, player_attacked),
+                    player_attacked)));
+
+
             builder.add_action(ActionDTO(DeathDTO(player_attacked)));
         }
 
