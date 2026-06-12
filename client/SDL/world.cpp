@@ -226,9 +226,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 
             case ActionType::ATTACK:
                 if (players.contains(action.attack.attacker)) {
-                    const Sprite* sprite = players.at(action.attack.attacker).get();
-                    // TODO: Cambiar el SFX según el arma con la que se atacó
-                    play_event(SoundEvent::SWORD_ATTACK, sprite->get_position());
+                    handle_attack(action.attack);
                 }
                 break;
 
@@ -238,6 +236,23 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
     }
 }
 
+void World::handle_attack(const AttackDTO& attack) {
+    const Sprite* sprite = players.at(attack.attacker).get();
+
+    // TODO: Este mapa debería estar en otro lugar (o que el SoundEvent sea un atributo de un ítem en
+    //  ClientConfig)
+    static const std::map<uint8_t, SoundEvent> weapon_to_sound_event{
+            {0, SoundEvent::FISTS_ATTACK},  {1, SoundEvent::SWORD_ATTACK},      {2, SoundEvent::AXE_ATTACK},
+            {3, SoundEvent::HAMMER_ATTACK}, {4, SoundEvent::MAGIC_ARROW_SPELL}, {5, SoundEvent::HEAL_SPELL},
+            {6, SoundEvent::MISSILE_SPELL}, {7, SoundEvent::EXPLOSION_SPELL},   {8, SoundEvent::BOW_ATTACK},
+            {9, SoundEvent::BOW_ATTACK},
+    };
+
+    if (not weapon_to_sound_event.contains(attack.weapon))
+        return;
+
+    play_event(weapon_to_sound_event.at(attack.weapon), sprite->get_position());
+}
 
 void World::add_new_player(const PlayerInfoDTO& info) {
     Sprite player = sprite_creator.create_sprite(info);
@@ -281,6 +296,9 @@ void World::play_event(const SoundEvent& event, const SDL2pp::Point& source) {
     constexpr double MAX_DISTANCE = 12 * TILE_SIZE;
     if (distance >= MAX_DISTANCE)
         return;
+
+    // TODO: Como idea, se podría multiplicar también por un factor aleatorio para que el sonido
+    //  se escuche más o menos fuerte (entre un 10% más y un 10% menos, por ejemplo)
 
     audio_manager.play_event(event, 1.0 - distance / MAX_DISTANCE);
 }
