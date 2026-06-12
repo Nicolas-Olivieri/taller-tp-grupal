@@ -649,6 +649,8 @@ void ClientGame::handle_cheat(const std::string& text) {
         handle_xp_cheat(cheat_type);
     else if (cheat_type.starts_with("gain-gold "))
         handle_gold_cheat(cheat_type);
+    else if (cheat_type == "kill-self")
+        handle_kill_self_cheat();
 
     // TODO agregar el resto de cheats
 }
@@ -689,4 +691,8 @@ void ClientGame::handle_gold_cheat(const std::string& text) {
         return;
 
     connection.push_command(std::make_unique<CheatGoldGainEventDTO>(gold_amount));
+}
+
+void ClientGame::handle_kill_self_cheat() {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::CHEAT_DEATH));
 }

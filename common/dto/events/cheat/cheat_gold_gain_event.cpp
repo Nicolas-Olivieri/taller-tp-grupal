@@ -2,12 +2,9 @@
 
 #include "common/protocol/serializer.h"
 
-CheatGoldGainEventDTO::CheatGoldGainEventDTO(uint16_t amount): EventDTO(CommandType::CHEAT_GOLD), amount(amount) {}
+CheatGoldGainEventDTO::CheatGoldGainEventDTO(uint16_t amount):
+        EventDTO(CommandType::CHEAT_GOLD), amount(amount) {}
 
-size_t CheatGoldGainEventDTO::message_size() const {
-    return EventDTO::message_size() + sizeof(amount);
-}
+size_t CheatGoldGainEventDTO::message_size() const { return EventDTO::message_size() + sizeof(amount); }
 
-void CheatGoldGainEventDTO::accept(Serializer& serializer) const {
-    serializer.serialize(*this);
-}
+void CheatGoldGainEventDTO::accept(Serializer& serializer) const { serializer.serialize(*this); }

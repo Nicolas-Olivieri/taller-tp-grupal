@@ -108,6 +108,8 @@ public:
 
     void cheat_player_gold(const std::string& player_name, const uint16_t gold_amount);
 
+    void cheat_kill_player(const std::string& player_name);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

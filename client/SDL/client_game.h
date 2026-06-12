@@ -112,6 +112,8 @@ private:
 
     void handle_gold_cheat(const std::string& text);
 
+    void handle_kill_self_cheat();
+
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,
                FontManager& font_manager);

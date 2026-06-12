@@ -140,6 +140,8 @@ public:
 
     void set_xp_level(const uint8_t new_level);
 
+    void die();
+
 private:
     void complete_delayed_resurrection();
 

@@ -330,3 +330,5 @@ void Player::upgrade() {
     stats.upgrade();
     gold_manager.update_max(stats.experience.get_level());
 }
+
+void Player::die() { stats.health.set_current(0); }

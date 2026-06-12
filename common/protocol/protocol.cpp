@@ -93,7 +93,8 @@ RequestedCommandDTO Protocol::recv_command() {
         return RequestedCommandDTO(command, receiver, content);
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS or command == CommandType::CLAN_REVIEW or
-               command == CommandType::CLAN_LEAVE or command == CommandType::PICKUP) {
+               command == CommandType::CLAN_LEAVE or command == CommandType::PICKUP or
+               command == CommandType::CHEAT_DEATH) {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
                command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or

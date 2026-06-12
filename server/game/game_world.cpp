@@ -674,3 +674,17 @@ void GameWorld::cheat_player_gold(const std::string& player_name, const uint16_t
     Player& player = players.at(player_name);
     player.add_gold(gold_amount);
 }
+
+void GameWorld::cheat_kill_player(const std::string& player_name) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    if (!player.is_alive())
+        return;
+
+    player.die();
+    drop_and_add(player, grid.get_tile(player.get_position()));
+}
