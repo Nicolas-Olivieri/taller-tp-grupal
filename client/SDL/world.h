@@ -50,6 +50,8 @@ private:
 
     void erase_taken_loot(const std::vector<LootInfoDTO>& loot_information);
 
+    void play_event(const SoundEvent& event, const SDL2pp::Point& source);
+
     template <typename Range>
     std::vector<std::shared_ptr<Sprite>> filter_sprites(const Camera& camera, Range&& sprites) const {
         std::vector<std::shared_ptr<Sprite>> viewed_sprites;

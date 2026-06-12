@@ -1,6 +1,7 @@
 #include "world.h"
 
 #include <algorithm>
+#include <cmath>
 #include <memory>
 #include <ranges>
 #include <unordered_set>
@@ -108,13 +109,13 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
     for (const PlayerInfoDTO& player_info: players_information) {
         if (!players.contains(player_info.name)) {
             add_new_player(player_info);
-            audio_manager.play_event(SoundEvent::SPAWN);
+            play_event(SoundEvent::SPAWN, SDL2pp::Point(player_info.x, player_info.y) * TILE_SIZE);
         }
 
         SDL2pp::Point position(player_info.x, player_info.y);
         const auto& player_sprite = players.at(player_info.name);
         if (position * TILE_SIZE != player_sprite->get_target_position())
-            audio_manager.play_event(SoundEvent::FOOTSTEP);
+            play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(player_info.x, player_info.y) * TILE_SIZE);
 
         player_sprite->set_target_position(player_info.direction, position);
         sprite_creator.update_label(*player_sprite, player_info);
@@ -127,13 +128,13 @@ void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_infor
     for (const CreatureInfoDTO& creature_info: creatures_information) {
         if (!creatures.contains(creature_info.sub_id)) {
             add_new_creature(creature_info);
-            audio_manager.play_event(SoundEvent::SPAWN);
+            play_event(SoundEvent::SPAWN, SDL2pp::Point(creature_info.x, creature_info.y) * TILE_SIZE);
         }
 
         SDL2pp::Point position(creature_info.x, creature_info.y);
         const auto& creature_sprite = creatures.at(creature_info.sub_id);
         if (position * TILE_SIZE != creature_sprite->get_target_position())
-            audio_manager.play_event(SoundEvent::FOOTSTEP);
+            play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(creature_info.x, creature_info.y) * TILE_SIZE);
 
         creature_sprite->set_target_position(creature_info.direction, position);
         sprite_creator.update_label(*creature_sprite, creature_info);
@@ -148,9 +149,9 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
 
     for (auto it = creatures.begin(); it != creatures.end();) {
         if (!sub_ids.contains(it->first)) {
+            play_event(SoundEvent::DEATH, it->second.get()->get_position());
             map_items.erase(it->second);
             it = creatures.erase(it);
-            audio_manager.play_event(SoundEvent::DEATH);
         } else {
             it++;
         }
@@ -195,33 +196,40 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
             case ActionType::DESPAWN:
                 if (players.contains(action.despawn.player_despawned)) {
                     auto player = players.extract(action.despawn.player_despawned);
+                    play_event(SoundEvent::DESPAWN, player.mapped()->get_position());
                     map_items.erase(player.mapped());
-                    audio_manager.play_event(SoundEvent::DESPAWN);
                 }
                 break;
 
             case ActionType::HEAL:
-                audio_manager.play_event(SoundEvent::HEAL);
+                if (players.contains(action.heal.player_healed)) {
+                    const Sprite* sprite = players.at(action.heal.player_healed).get();
+                    play_event(SoundEvent::HEAL, sprite->get_position());
+                }
                 break;
 
             case ActionType::RESURRECTION:
                 if (players.contains(action.resurrection.player_resurrected)) {
                     Sprite* sprite = players.at(action.resurrection.player_resurrected).get();
                     sprite_creator.update_appearance(*sprite, action.resurrection.original_appearance);
-                    audio_manager.play_event(SoundEvent::RESURRECTION);
+                    play_event(SoundEvent::RESURRECTION, sprite->get_position());
                 }
                 break;
+
             case ActionType::DEATH:
                 if (players.contains(action.death.player_dead)) {
                     Sprite* sprite = players.at(action.death.player_dead).get();
                     sprite_creator.convert_to_ghost(*sprite);
-                    audio_manager.play_event(SoundEvent::DEATH);
+                    play_event(SoundEvent::DEATH, sprite->get_position());
                 }
                 break;
 
             case ActionType::ATTACK:
-                // TODO: Cambiar el SFX según el arma con la que se atacó
-                audio_manager.play_event(SoundEvent::SWORD_ATTACK);
+                if (players.contains(action.attack.attacker)) {
+                    const Sprite* sprite = players.at(action.attack.attacker).get();
+                    // TODO: Cambiar el SFX según el arma con la que se atacó
+                    play_event(SoundEvent::SWORD_ATTACK, sprite->get_position());
+                }
                 break;
 
             default:
@@ -261,3 +269,18 @@ void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, u
 Sprite& World::get_client_player() { return *players.at(player_name).get(); }
 
 SDL2pp::Rect& World::get_world_size() { return world_view; }
+
+void World::play_event(const SoundEvent& event, const SDL2pp::Point& source) {
+    const SDL2pp::Point listener = get_client_player().get_position();
+
+    const int dx = source.x - listener.x;
+    const int dy = source.y - listener.y;
+    const double distance = std::sqrt(dx * dx + dy * dy);
+
+    // TODO: Este límite debería venir del ClientConfig
+    constexpr double MAX_DISTANCE = 12 * TILE_SIZE;
+    if (distance >= MAX_DISTANCE)
+        return;
+
+    audio_manager.play_event(event, 1.0 - distance / MAX_DISTANCE);
+}
