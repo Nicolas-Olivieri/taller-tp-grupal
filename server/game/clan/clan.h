@@ -4,10 +4,12 @@
 #include <cstdint>
 #include <deque>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
 #include "server/command/cmd_results/clan/clan_action_result.h"
+#include "server/game/player/player.h"
 #include "server/persistance/clan_data.h"
 
 #include "clan_action_payload.h"
@@ -33,6 +35,8 @@ public:
     void recv_join_request(const std::string& player_name);
 
     void remove(const std::string& player_name);
+
+    void set_buffed_players(std::unordered_map<std::string, Player>& world_players);
 
 private:
     ClanActionResult accept(const std::string& player_name, const std::string& player_to_accept);

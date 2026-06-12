@@ -76,6 +76,10 @@ WorldUpdateStatus GameWorld::update() {
         }
     }
 
+    for (auto& [_, clan]: clans) {
+        clan.set_buffed_players(players);
+    }
+
     return WorldUpdateStatus(creatures_status, resurrected_players);
 }
 

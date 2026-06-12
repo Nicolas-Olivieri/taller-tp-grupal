@@ -59,7 +59,7 @@ int Player::attack() {
     WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
     stats.mana.loose(data.mana_cost);
 
-    return Calculator::calculate_damage(stats.strength, equipment);
+    return Calculator::calculate_damage(stats.strength, equipment, clan.get_clan_buff_factor());
 }
 
 const Stats& Player::get_stats() const { return stats; }
@@ -151,9 +151,6 @@ InteractResult Player::interact(Player& attacker) {
         return InteractResult(AttackStatus::FAIR_PLAY);
 
     // TODO Falta considerar
-    //  - Daño de los compis del clan?
-    //      (en update del GameWorld -> por cada jugador recorremos las n casillas más cercanas y desde
-    //      ahí player expone un método que le agrega boost y lo usa en su attack)
     //  - zona segura?
 
     InteractResult result = Killable::interact(attacker);
@@ -335,4 +332,8 @@ bool Player::is_clan_founder() const { return clan.is_founder(); }
 void Player::set_xp_level(const uint8_t new_level) {
     stats.experience.set_level(new_level);
     stats.upgrade();
+}
+
+void Player::set_near_clan_mates(const uint8_t near_clan_mates_amount) {
+    clan.set_near_clan_mates(near_clan_mates_amount);
 }

@@ -9,6 +9,7 @@
 class ClanMembership {
     std::string clan_name;
     bool _is_founder;
+    uint8_t near_clan_mates;
 
 public:
     ClanMembership();
@@ -24,6 +25,10 @@ public:
     const std::string& get_clan_name() const;
 
     bool is_founder() const;
+
+    void set_near_clan_mates(uint8_t amount);
+
+    float get_clan_buff_factor() const;
 };
 
 

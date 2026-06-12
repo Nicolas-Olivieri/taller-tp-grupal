@@ -146,6 +146,8 @@ public:
 
     void set_xp_level(const uint8_t new_level);
 
+    void set_near_clan_mates(const uint8_t near_clan_mates_amount);
+
 private:
     void complete_delayed_resurrection();
 };

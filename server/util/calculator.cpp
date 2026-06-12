@@ -113,3 +113,7 @@ bool Calculator::can_dodge(const int agility) { return std::pow(random_float(0.0
 uint16_t Calculator::calculate_random_drop_gold(uint8_t max_healh) {
     return random_float(0.1, 0.2) * max_healh;
 }
+
+uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& equipment, float buff_factor) {
+    return calculate_damage(strength, equipment) * buff_factor;
+}
