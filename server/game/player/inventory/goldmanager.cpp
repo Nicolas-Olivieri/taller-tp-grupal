@@ -12,6 +12,9 @@ GoldManager::GoldManager(uint16_t gold_amount, uint8_t level): current_gold(0) {
 void GoldManager::update_max(uint8_t level) {
     max_safe_gold = Calculator::calculate_max_gold(level);
     max_total_gold = max_safe_gold + Calculator::calculate_max_excess_gold(max_safe_gold);
+
+    if (current_gold > max_total_gold)
+        current_gold = max_total_gold;
 }
 
 void GoldManager::add(uint16_t amount) {

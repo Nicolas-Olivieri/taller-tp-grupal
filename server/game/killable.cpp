@@ -75,7 +75,9 @@ InteractResult Killable::interact(Player& attacker) {
                                          attacker.stats.experience.get_level()) :
                     Calculator::attack_exp(damage_applied, this->stats.experience.get_level(),
                                            attacker.stats.experience.get_level());
-    attacker.earn_xp(earned_xp);
+    try {
+        attacker.earn_xp(earned_xp);
+    } catch (const MaxLevelExceeded& error) {}
 
     return InteractResult(attacker.get_equipment().weapon, damage_applied, was_killed);
 }

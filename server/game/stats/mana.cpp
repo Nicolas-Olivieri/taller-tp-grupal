@@ -2,7 +2,7 @@
 
 #include "server/util/calculator.h"
 
-#define FPS 30
+#define FPS 30  // TODO: toml
 
 
 Mana::Mana(uint8_t recovery_factor, float factor_class, float factor_race, float factor_class_meditation,
@@ -15,13 +15,7 @@ Mana::Mana(uint8_t recovery_factor, float factor_class, float factor_race, float
 
 void Mana::update_max(uint8_t level, uint8_t intelligence) {
     const int new_max = Calculator::calculate_max_mana(level, intelligence, factor_class, factor_race);
-
-    const int difference = new_max - max_amount;
     max_amount = new_max;
-
-    if (difference > 0) {
-        current_amount += difference;
-    }
 
     this->intelligence = intelligence;
 

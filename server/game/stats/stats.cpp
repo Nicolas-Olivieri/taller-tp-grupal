@@ -41,6 +41,8 @@ const RaceData& Stats::creature() const { return GameConfig::get().get_creature(
 
 const VariationData& Stats::variation() const { return GameConfig::get().get_variation(archetype_id); }
 
+// TODO: para más robustez del sistema, estaría bueno agregar algo para que las creatures no llamen a este
+// método
 void Stats::upgrade() {
     uint8_t new_level = experience.get_level();
 

@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -16,6 +17,9 @@
 #include "server/persistance/playerdata.h"
 #include "server/util/calculator.h"
 
+struct MaxLevelExceeded: std::runtime_error {
+    MaxLevelExceeded(): std::runtime_error("Player cannot keep leveling up.") {}
+};
 
 class Player: public Killable, public Attacker {
 private:
@@ -37,12 +41,6 @@ private:
 
     bool _is_founder;
     std::string clan_name;
-
-    void drop_excess_gold(std::vector<Loot>& drops);
-
-    void drop_inventory(std::vector<Loot>& drops);
-
-    void drop_equipment(std::vector<Loot>& drops);
 
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
@@ -144,6 +142,14 @@ public:
 
 private:
     void complete_delayed_resurrection();
+
+    void upgrade();
+
+    void drop_excess_gold(std::vector<Loot>& drops);
+
+    void drop_inventory(std::vector<Loot>& drops);
+
+    void drop_equipment(std::vector<Loot>& drops);
 };
 
 

@@ -81,7 +81,7 @@ uint16_t Player::get_excess_gold() const { return gold_manager.get_excess_gold()
 
 void Player::earn_xp(uint32_t amount) {
     if (stats.experience.earn_xp(amount))
-        stats.upgrade();
+        upgrade();
 }
 
 bool Player::can_attack() const {
@@ -323,5 +323,10 @@ bool Player::is_clan_founder() const { return _is_founder; }
 
 void Player::set_xp_level(const uint8_t new_level) {
     stats.experience.set_level(new_level);
+    upgrade();
+}
+
+void Player::upgrade() {
     stats.upgrade();
+    gold_manager.update_max(stats.experience.get_level());
 }
