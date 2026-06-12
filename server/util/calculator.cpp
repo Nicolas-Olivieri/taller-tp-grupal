@@ -77,12 +77,12 @@ uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& e
     return strength * get_random_from_item(equipment.weapon);
 }
 
-uint16_t Calculator::calculate_defense(const Equipment& equipment) {
+uint16_t Calculator::calculate_defense(const Equipment& equipment, const float& buff_factor) {
     const int helmet_defense = equipment.helmet == NO_ITEM ? 0 : get_random_from_item(equipment.helmet);
     const int armor_defense = equipment.armor == NO_ITEM ? 0 : get_random_from_item(equipment.armor);
     const int shield_defense = equipment.shield == NO_ITEM ? 0 : get_random_from_item(equipment.shield);
 
-    return helmet_defense + armor_defense + shield_defense;
+    return (helmet_defense + armor_defense + shield_defense) * buff_factor;
 }
 
 int Calculator::get_random_from_item(const uint8_t item) {

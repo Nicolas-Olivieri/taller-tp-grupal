@@ -46,7 +46,7 @@ void Killable::update_position(const Position& new_position, const Direction& ne
 
 uint16_t Killable::receive_damage(Attacker& attacker) {
     const uint16_t damage = attacker.attack();
-    const uint16_t defense = Calculator::calculate_defense(equipment);
+    const uint16_t defense = Calculator::calculate_defense(equipment, clan.get_clan_buff_factor());
 
     const uint16_t damage_applied = damage > defense ? damage - defense : 0;
 
