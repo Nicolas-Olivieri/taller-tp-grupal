@@ -9,7 +9,7 @@
 #define CLIENT_ITEMS_PATH "/client/items.toml"
 
 
-ClientConfig::ClientConfig() { loadFromFile(std::string(DATA_PATH) + CLIENT_ITEMS_PATH); }
+ClientConfig::ClientConfig() { loadFromFile(std::string(CONFIG_PATH) + CLIENT_ITEMS_PATH); }
 
 
 ClientConfig& ClientConfig::get() {
