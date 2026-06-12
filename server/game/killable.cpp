@@ -7,8 +7,8 @@
 #include "server/util/calculator.h"
 
 
-Killable::Killable(const uint8_t archetype_id, const uint8_t race_id, const uint32_t current_xp_amount,
-                   const uint8_t level, const Position position, const Equipment& equipment):
+Killable::Killable(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t level,
+                   Position position, const Equipment& equipment, const char* clan_ptr, bool is_clan_founder):
         required_attack_cooldown(GameConfig::get().get_player_cooldown().attack),
         required_move_cooldown(GameConfig::get().get_player_cooldown().move),
         current_attack_cooldown(0),
@@ -17,7 +17,8 @@ Killable::Killable(const uint8_t archetype_id, const uint8_t race_id, const uint
         stats(archetype_id, race_id, current_xp_amount, level),
         equipment(equipment),
         position(position),
-        direction(Direction::IDLE) {}
+        direction(Direction::IDLE),
+        clan(clan_ptr, is_clan_founder) {}
 
 Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position,
                    const Equipment& equipment):
@@ -29,7 +30,8 @@ Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Positio
         stats(race_id, variation_id, level),
         equipment(equipment),
         position(position),
-        direction(Direction::IDLE) {
+        direction(Direction::IDLE),
+        clan() {
     std::cout << "creature attack cooldown: " << required_attack_cooldown << std::endl;
 }
 

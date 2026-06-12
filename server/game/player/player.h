@@ -37,8 +37,6 @@ private:
     int resurrection_timer;
     Position target_resurrection_position;
 
-    ClanMembership clan;
-
     void drop_excess_gold(std::vector<Loot>& drops);
 
     void drop_inventory(std::vector<Loot>& drops);
@@ -46,9 +44,6 @@ private:
     void drop_equipment(std::vector<Loot>& drops);
 
 public:
-    static constexpr uint8_t MAX_NEWBIE_LEVEL = 12;
-    static constexpr uint8_t FAIR_PLAY_GAP = 10;
-
     Player(const std::string& player_name, const PlayerData& persisted_data);
 
     Player(const std::string& player_name, const PlayerData& persisted_data,

@@ -12,7 +12,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
                  persisted_data.xp_level, Position(persisted_data.position_x, persisted_data.position_y),
                  Equipment{persisted_data.helmet_id, persisted_data.armor_id, persisted_data.shield_id,
-                           persisted_data.weapon_id}),
+                           persisted_data.weapon_id},
+                 reinterpret_cast<const char*>(persisted_data.clan), persisted_data.is_founder),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
@@ -23,8 +24,7 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         just_resurrected(false),
         is_resurrecting(false),
         resurrection_timer(0),
-        target_resurrection_position(0, 0),
-        clan(reinterpret_cast<const char*>(persisted_data.clan), persisted_data.is_founder) {
+        target_resurrection_position(0, 0) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
 }
@@ -35,7 +35,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
                  persisted_data.xp_level, starting_position,
                  Equipment{persisted_data.helmet_id, persisted_data.armor_id, persisted_data.shield_id,
-                           persisted_data.weapon_id}),
+                           persisted_data.weapon_id},
+                 nullptr, false),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
@@ -46,8 +47,7 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         just_resurrected(false),
         is_resurrecting(false),
         resurrection_timer(0),
-        target_resurrection_position(0, 0),
-        clan() {}
+        target_resurrection_position(0, 0) {}
 
 int Player::attack() {
     if (bound_ally != nullptr) {

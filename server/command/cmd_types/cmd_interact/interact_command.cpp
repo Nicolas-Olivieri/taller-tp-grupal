@@ -52,13 +52,13 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
              {AttackStatus::IS_CLANMATE, "No puedes atacar a alguien de tu mismo clan"},
              {AttackStatus::ATTACKER_IS_NEWBIE,
               std::format("No puedes atacar a otro jugador siendo newbie (de nivel {} o menor)",
-                          Player::MAX_NEWBIE_LEVEL)},
+                          GameConfig::get().get_fair_play().max_newbie_level)},
              {AttackStatus::ATTACKED_PLAYER_IS_NEWBIE,
               std::format("No puedes atacar a un newbie (jugador de nivel {} o menor)",
-                          Player::MAX_NEWBIE_LEVEL)},
+                          GameConfig::get().get_fair_play().max_newbie_level)},
              {AttackStatus::FAIR_PLAY, std::format("No puedes atacar ni ser atacado por un jugador que "
                                                    "tengas más de {} niveles de diferencia",
-                                                   Player::FAIR_PLAY_GAP)}
+                                                   GameConfig::get().get_fair_play().fair_play_gap)}
 
             });
 
