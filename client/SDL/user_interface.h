@@ -48,8 +48,8 @@ private:
     SDL_Color red = {214, 30, 30, 255};
     SDL_Color light_blue = {44, 172, 230, 140};
 
-    SDL2pp::Rect history_messages = {20, 35, 600, 147};
-    SDL2pp::Rect input_box = {45, 190, 580, 25};
+    SDL2pp::Rect history_messages = {20, 35, 710, 147};
+    SDL2pp::Rect input_box = {45, 190, 690, 25};
 
     SDL2pp::Rect username_rect = {770, 55, 240, 35};
 

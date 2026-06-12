@@ -38,7 +38,7 @@ private:
 
     bool is_chat_active;
     std::string chat_text;
-    const SDL2pp::Rect chat_icon = {5, 190, 45, 30};
+    const SDL2pp::Rect chat_icon = {10, 190, 736, 30};
 
     // TODO: acá meter las cosas del chat
 
