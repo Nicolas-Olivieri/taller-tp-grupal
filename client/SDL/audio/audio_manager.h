@@ -21,7 +21,7 @@ private:
 public:
     AudioManager();
 
-    void play_event(const SoundEvent& event);
+    void play_event(const SoundEvent& event, float attenuation = 1.0f);
 
     void play_music(const MusicTrack& track);
 
