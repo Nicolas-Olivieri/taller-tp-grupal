@@ -113,3 +113,12 @@ bool Calculator::can_dodge(const int agility) { return std::pow(random_float(0.0
 uint16_t Calculator::calculate_random_drop_gold(uint8_t max_healh) {
     return random_float(0.1, 0.2) * max_healh;
 }
+
+uint8_t Calculator::calculate_creature_level(uint8_t base, float multiplier) {
+    return base * random_float(1, multiplier);
+}
+
+uint8_t Calculator::random_choice(const std::vector<uint8_t>& elems) {
+    uint8_t index = random_number(0, elems.size() - 1);
+    return elems[index];
+}

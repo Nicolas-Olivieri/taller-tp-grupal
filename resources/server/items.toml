@@ -8,7 +8,7 @@ mana_cost = 0
 
 [weapons.sword]
 id = 1
-price = 100
+price = 230
 min_value = 2
 max_value = 5
 range = 1
@@ -16,7 +16,7 @@ mana_cost = 0
 
 [weapons.axe]
 id = 2
-price = 200
+price = 560
 min_value = 4
 max_value = 5
 range = 1
@@ -24,7 +24,7 @@ mana_cost = 0
 
 [weapons.hammer]
 id = 3
-price = 300
+price = 610
 min_value = 1
 max_value = 9
 range = 1
@@ -32,7 +32,7 @@ mana_cost = 0
 
 [weapons.ash_stick]
 id = 4
-price = 400
+price = 370
 min_value = 2
 max_value = 4
 range = 4
@@ -49,7 +49,7 @@ mana_cost = 5
 
 [weapons.knotty_staff]
 id = 6
-price = 600
+price = 710
 min_value = 4
 max_value = 8
 range = 5
@@ -57,7 +57,7 @@ mana_cost = 15
 
 [weapons.socketed_staff]
 id = 7
-price = 7000
+price = 1120
 min_value = 8
 max_value = 20
 range = 6
@@ -65,7 +65,7 @@ mana_cost = 30
 
 [weapons.simple_bow]
 id = 8
-price = 800
+price = 520
 min_value = 1
 max_value  = 4
 range = 5
@@ -73,7 +73,7 @@ mana_cost = 0
 
 [weapons.compound_bow]
 id = 9
-price = 900
+price = 880
 min_value = 4
 max_value  = 16
 range = 7
@@ -83,19 +83,19 @@ mana_cost = 0
 
 [armors.leather]
 id = 10
-price = 1000
+price = 670
 min_value = 2
 max_value = 6
 
 [armors.plate]
 id = 11
-price = 1100
+price = 1420
 min_value = 15
 max_value = 30
 
 [armors.blue_tunic]
 id = 12
-price = 1200
+price = 890
 min_value = 6
 max_value = 10
 
@@ -103,19 +103,19 @@ max_value = 10
 
 [helmets.hood]
 id = 13
-price = 1300
+price = 550
 min_value = 1
 max_value = 4
 
 [helmets.iron_helmet]
 id = 14
-price = 1400
+price = 710
 min_value = 4
 max_value = 8
 
 [helmets.magic_hat]
 id = 15
-price = 1500
+price = 850
 min_value = 4
 max_value = 12
 
@@ -123,13 +123,13 @@ max_value = 12
 
 [shields.turtle]
 id = 16
-price = 1600
+price = 390
 min_value = 1
 max_value = 2
 
 [shields.iron]
 id = 17
-price = 1700
+price = 610
 min_value = 1
 max_value = 4
 
@@ -137,12 +137,12 @@ max_value = 4
 
 [usables.health]
 id = 18
-price = 180
+price = 90
 type = 0
-effect = 100
+effect = 170
 
 [usables.mana]
 id = 19
-price = 190
+price = 110
 type = 1
-effect = 100
+effect = 130

@@ -29,9 +29,7 @@ Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Positio
         stats(race_id, variation_id, level),
         equipment(equipment),
         position(position),
-        direction(Direction::IDLE) {
-    std::cout << "creature attack cooldown: " << required_attack_cooldown << std::endl;
-}
+        direction(Direction::IDLE) {}
 
 bool Killable::can_move() const { return current_move_cooldown == 0; }
 
@@ -42,10 +40,8 @@ void Killable::update_position(const Position& new_position, const Direction& ne
     current_move_cooldown = required_move_cooldown;
 }
 
-uint16_t Killable::receive_damage(Attacker& attacker) {
-    const uint16_t damage = attacker.attack();
+uint16_t Killable::receive_damage(uint16_t damage) {
     const uint16_t defense = Calculator::calculate_defense(equipment);
-
     const uint16_t damage_applied = damage > defense ? damage - defense : 0;
 
     // TODO: creo que este método puede dejar de ser bool
@@ -61,10 +57,12 @@ InteractResult Killable::interact(Player& attacker) {
     if (not attacker.can_attack())
         return InteractResult(AttackStatus::CANNOT_ATTACK);
 
+    const uint16_t damage = attacker.attack();
+
     if (Calculator::can_dodge(stats.agility))
         return InteractResult(AttackStatus::TARGET_DODGED);
 
-    const uint16_t damage_applied = receive_damage(attacker);
+    const uint16_t damage_applied = receive_damage(damage);
 
     // TODO notificar el caso particular?
     if (damage_applied == 0)
@@ -96,6 +94,14 @@ void Killable::update() {
     current_move_cooldown--;
     if (current_move_cooldown <= 0) {
         current_move_cooldown = 0;
+    }
+
+    stats.health.update();
+
+    if (is_meditating) {
+        stats.mana.meditate();
+    } else {
+        stats.mana.update();
     }
 }
 

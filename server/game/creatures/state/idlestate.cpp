@@ -6,17 +6,15 @@
 
 #include "followingstate.h"
 
-CreatureUpdateStatus IdleState::act(Creature& creature, const Position& position,
-                                    const Direction& direction) {
-    if (creature.can_move()) {
-        creature.update_position(position, direction);
-    }
-
-    return CreatureUpdateStatus();
+IdleState& IdleState::get() {
+    static IdleState instance;
+    return instance;
 }
 
-void IdleState::next(Creature& creature) {
+CreatureState* IdleState::next(Creature& creature) {
     if (creature.is_targeting_someone()) {
-        creature.set_state(std::make_unique<FollowingState>());
+        return &FollowingState::get();
     }
+
+    return this;
 }
