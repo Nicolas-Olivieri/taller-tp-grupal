@@ -77,12 +77,12 @@ uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& e
     return strength * get_random_from_item(equipment.weapon);
 }
 
-uint16_t Calculator::calculate_defense(const Equipment& equipment) {
+uint16_t Calculator::calculate_defense(const Equipment& equipment, const float& buff_factor) {
     const int helmet_defense = equipment.helmet == NO_ITEM ? 0 : get_random_from_item(equipment.helmet);
     const int armor_defense = equipment.armor == NO_ITEM ? 0 : get_random_from_item(equipment.armor);
     const int shield_defense = equipment.shield == NO_ITEM ? 0 : get_random_from_item(equipment.shield);
 
-    return helmet_defense + armor_defense + shield_defense;
+    return (helmet_defense + armor_defense + shield_defense) * buff_factor;
 }
 
 int Calculator::get_random_from_item(const uint8_t item) {
@@ -112,6 +112,10 @@ bool Calculator::can_dodge(const int agility) { return std::pow(random_float(0.0
 
 uint16_t Calculator::calculate_random_drop_gold(uint8_t max_healh) {
     return random_float(0.1, 0.2) * max_healh;
+}
+
+uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& equipment, float buff_factor) {
+    return calculate_damage(strength, equipment) * buff_factor;
 }
 
 uint8_t Calculator::calculate_creature_level(uint8_t base, float multiplier) {

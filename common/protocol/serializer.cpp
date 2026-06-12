@@ -134,6 +134,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::LIST_BANK:
             serialize(action.bank);
             break;
+        case ActionType::CLAN_MESSAGE:
+            serialize(action.clan_msg);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -319,4 +322,10 @@ void Serializer::serialize(const ClanRemovePlayerEventDTO& event) {
 void Serializer::serialize(const CheatExperienceSetEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.level);
+}
+
+void Serializer::serialize(const ClanMessageDTO& clan_msg) {
+    serialize(clan_msg.receiver_clan);
+    serialize(clan_msg.content);
+    serialize(clan_msg.sender);
 }

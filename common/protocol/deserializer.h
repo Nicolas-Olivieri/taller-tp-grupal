@@ -68,6 +68,8 @@ private:
 
     ListItemsDTO recv_list_items();
 
+    ClanMessageDTO recv_clan_message();
+
     AssetInfoDTO recv_asset_info();
 
 public:

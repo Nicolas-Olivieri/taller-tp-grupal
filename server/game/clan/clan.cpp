@@ -2,7 +2,11 @@
 
 #include <cassert>
 #include <format>
+#include <ranges>
 #include <utility>
+
+#include "server/config/game_config.h"
+#include "server/game/position.h"
 
 bool Clan::is_founder(const std::string& player_name) const { return player_name == founder; }
 
@@ -76,7 +80,7 @@ ClanActionResult Clan::accept(const std::string& player_name, const std::string&
     if (is_banned(player_to_accept))
         return ClanActionResult(ClanActionStatus::IS_BANNED_PLAYER);
 
-    if (MAX_MEMBERS == members.size() + 1)
+    if (GameConfig::get().get_clan_constats().max_members_per_clan == members.size() + 1)
         return ClanActionResult(ClanActionStatus::CLAN_IS_FULL);
 
     assert(has_pending_request(player_to_accept));
@@ -175,4 +179,38 @@ void Clan::remove(const std::string& player_name) {
         joining_requests.extract(player_name);
     if (members.contains(player_name))
         members.extract(player_name);
+}
+
+void Clan::set_buffed_players(std::unordered_map<std::string, Player>& world_players) {
+    std::unordered_map<std::string, Position> players_to_position;
+
+    players_to_position.reserve(members.size() + 1);
+    for (const auto& member: members) {
+        if (not world_players.contains(member))
+            continue;
+
+        if (not world_players.at(member).is_alive())
+            continue;
+
+        players_to_position.insert({member, world_players.at(member).get_position()});
+    }
+
+    if (world_players.contains(founder) and world_players.at(founder).is_alive())
+        players_to_position.insert({founder, world_players.at(founder).get_position()});
+
+
+    for (const auto& [name, position]: players_to_position) {
+        uint8_t near_clan_mates = 0;
+
+        for (const auto& [other_name, other_position]: players_to_position) {
+            if (name == other_name)
+                continue;
+
+            const float distance = position.distance_to(other_position);
+            if (distance <= GameConfig::get().get_clan_constats().max_distance_to_consider_near_clan_mate)
+                ++near_clan_mates;
+        }
+        Player& player = world_players.at(name);
+        player.set_near_clan_mates(near_clan_mates);
+    }
 }

@@ -30,7 +30,9 @@ public:
 
     static uint16_t calculate_damage(const uint8_t strength, const Equipment& equipment);
 
-    static uint16_t calculate_defense(const Equipment& equipment);
+    static uint16_t calculate_damage(const uint8_t strength, const Equipment& equipment, float buff_factor);
+
+    static uint16_t calculate_defense(const Equipment& equipment, const float& buff_factor);
 
     static bool can_dodge(const int agility);
 

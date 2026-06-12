@@ -90,6 +90,10 @@ WorldUpdateStatus GameWorld::update() {
         creature.update_state();
     }
 
+    for (auto& [_, clan]: clans) {
+        clan.set_buffed_players(players);
+    }
+
     return WorldUpdateStatus(creatures_status, resurrected_players);
 }
 
@@ -570,7 +574,7 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
         return FoundClanResult::ALREADY_IN_CLAN;
 
     const uint8_t current_level = player.get_stats().experience.get_level();
-    if (current_level < Clan::MIN_LEVEL_REQUIRED_TO_FOUND_CLAN)
+    if (current_level < GameConfig::get().get_clan_constats().min_level_required_to_found_clan)
         return FoundClanResult::NOT_ENOUGH_LEVEL;
 
     if (clan_name.size() > CLAN_NAME)

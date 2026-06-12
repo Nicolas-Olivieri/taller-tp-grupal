@@ -7,8 +7,8 @@
 #include "server/util/calculator.h"
 
 
-Killable::Killable(const uint8_t archetype_id, const uint8_t race_id, const uint32_t current_xp_amount,
-                   const uint8_t level, const Position position, const Equipment& equipment):
+Killable::Killable(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t level,
+                   Position position, const Equipment& equipment, const char* clan_ptr, bool is_clan_founder):
         required_attack_cooldown(GameConfig::get().get_player_cooldown().attack),
         required_move_cooldown(GameConfig::get().get_player_cooldown().move),
         current_attack_cooldown(0),
@@ -17,7 +17,11 @@ Killable::Killable(const uint8_t archetype_id, const uint8_t race_id, const uint
         stats(archetype_id, race_id, current_xp_amount, level),
         equipment(equipment),
         position(position),
-        direction(Direction::IDLE) {}
+        direction(Direction::IDLE),
+        clan() {
+    if (clan_ptr != nullptr)
+        clan = ClanMembership(clan_ptr, is_clan_founder);
+}
 
 Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position,
                    const Equipment& equipment):
@@ -29,7 +33,8 @@ Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Positio
         stats(race_id, variation_id, level),
         equipment(equipment),
         position(position),
-        direction(Direction::IDLE) {}
+        direction(Direction::IDLE),
+        clan() {}
 
 bool Killable::can_move() const { return current_move_cooldown == 0; }
 
@@ -40,8 +45,9 @@ void Killable::update_position(const Position& new_position, const Direction& ne
     current_move_cooldown = required_move_cooldown;
 }
 
+
 uint16_t Killable::receive_damage(uint16_t damage) {
-    const uint16_t defense = Calculator::calculate_defense(equipment);
+    const uint16_t defense = Calculator::calculate_defense(equipment, clan.get_clan_buff_factor());
     const uint16_t damage_applied = damage > defense ? damage - defense : 0;
 
     // TODO: creo que este método puede dejar de ser bool

@@ -147,6 +147,8 @@ public:
 
     void serialize(const ListItemsDTO& list);
 
+    void serialize(const ClanMessageDTO& clan_msg);
+
     void serialize(const BuyEventDTO& event);
 
     void serialize(const SellEventDTO& event);

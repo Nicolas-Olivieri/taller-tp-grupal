@@ -215,6 +215,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_list_items());
         case ActionType::LIST_BANK:
             return ActionDTO(recv_list_bank());
+        case ActionType::CLAN_MESSAGE:
+            return ActionDTO(recv_clan_message());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -235,6 +237,7 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::MESSAGE_LIST:
         case ActionType::LIST_ITEMS:
         case ActionType::LIST_BANK:
+        case ActionType::CLAN_MESSAGE:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -448,4 +451,11 @@ AssetInfoDTO Deserializer::recv_asset_info() {
     const uint16_t y = recv_uint16();
 
     return AssetInfoDTO(id, x, y);
+}
+ClanMessageDTO Deserializer::recv_clan_message() {
+    const std::string receiver_clan = recv_string();
+    const std::string content = recv_string();
+    const std::string sender = recv_string();
+
+    return ClanMessageDTO(receiver_clan, content, sender);
 }
