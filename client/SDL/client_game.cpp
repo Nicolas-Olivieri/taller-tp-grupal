@@ -157,6 +157,11 @@ void ClientGame::handle_chat_events(const SDL_Event& event) {
         return;
     }
 
+    if (event.type == SDL_KEYUP) {
+        key_being_pressed = SDLK_UNKNOWN;
+        return;
+    }
+
     if (event.type != SDL_KEYDOWN)
         return;
 
@@ -199,7 +204,7 @@ void ClientGame::handle_text_command(const std::string& text) {
     if (text == "/listar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::LIST_ITEMS));
     if (text == "/tomar")
-        connection.push_command(std::make_unique<EventDTO>(CommandType::PICKUP));
+        handle_pick_up_command();
     if (text.starts_with("/comprar "))
         handle_buy_item_command(text);
     if (text.starts_with("/vender "))
@@ -231,6 +236,10 @@ void ClientGame::handle_text_command(const std::string& text) {
 
     if (text.starts_with("/cheat-"))
         handle_cheat(text);
+}
+
+void ClientGame::handle_pick_up_command() {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::PICKUP));
 }
 
 void ClientGame::handle_buy_item_command(const std::string& text) {
@@ -396,6 +405,23 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
 
         connection.push_command(std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
         key_being_pressed = key_pressed;
+    }
+
+    if (!KeyMapper::is_command_key(key_pressed))
+        return;
+
+    switch (key_pressed) {
+    case SDLK_c:
+        toggle_chat();
+        break;
+    case SDLK_e:
+        handle_pick_up_command();
+        break;
+    case SDLK_q:
+        handle_drop_item_command();
+        break;
+    default:
+        throw std::runtime_error("Esta tecla aún no tiene una funcionalidad asignada");
     }
 }
 

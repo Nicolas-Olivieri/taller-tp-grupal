@@ -79,6 +79,8 @@ private:
 
     void handle_withdraw_item_command(const std::string& text);
 
+    void handle_pick_up_command();
+
     void handle_drop_item_command();
 
     void handle_clan_foundation(const std::string& text);
