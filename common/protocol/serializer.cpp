@@ -86,7 +86,15 @@ void Serializer::serialize(const CreatureInfoDTO& info) {
     serialize(static_cast<uint8_t>(info.direction));
     serialize(info.x);
     serialize(info.y);
+    serialize(info.stats);
 }
+
+void Serializer::serialize(const CreatureStatsDTO& stats) {
+    serialize(stats.max_health);
+    serialize(stats.current_health);
+    serialize(stats.xp_level);
+}
+
 
 void Serializer::serialize(const LootInfoDTO& info) {
     serialize(static_cast<uint8_t>(info.is_item));

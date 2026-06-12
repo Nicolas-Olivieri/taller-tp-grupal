@@ -37,11 +37,14 @@ void AudioManager::load_sfx_config(toml::basic_value<toml::type_config>::array_t
 }
 
 
-void AudioManager::play_event(const SoundEvent& event) {
+void AudioManager::play_event(const SoundEvent& event, const float attenuation) {
+    if (attenuation <= 0.0f)
+        return;
+
     if (event_to_paths.contains(event)) {
         const auto& [paths, volume] = event_to_paths.at(event);
         size_t& current_index = event_index[event];
-        sound_pool.play_sfx(paths[current_index], volume);
+        sound_pool.play_sfx(paths[current_index], volume * attenuation);
         current_index = (current_index + 1) % paths.size();
     }
 }

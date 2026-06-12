@@ -34,6 +34,7 @@
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
+#include "common/dto/snapshot/info/creature_stats.h"
 #include "common/dto/snapshot/info/inventory_info.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/map/client_map_data.h"
@@ -106,6 +107,8 @@ public:
     void serialize(const PlayerInfoDTO& info);
 
     void serialize(const CreatureInfoDTO& info);
+
+    void serialize(const CreatureStatsDTO& stats);
 
     void serialize(const LootInfoDTO& info);
 

@@ -48,6 +48,10 @@ public:
 
     static int random_from_weighted_probabilities(const std::vector<float>& probabilities);
 
+    static uint8_t calculate_creature_level(uint8_t base, float multiplier);
+
+    static uint8_t random_choice(const std::vector<uint8_t>& elems);
+
 private:
     static float random_float(const float min, const float max);
 

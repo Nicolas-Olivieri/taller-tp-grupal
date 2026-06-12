@@ -41,7 +41,7 @@ private:
 
     void broadcast(SnapshotBuilder& builder);
 
-    void broadcast_creature_attack(SnapshotBuilder& builder, const CreatureUpdateStatus& status);
+    void broadcast_creature_attack(SnapshotBuilder& builder, const CreatureUpdate& status);
 
     void broadcast_resurrected_players(SnapshotBuilder& builder,
                                        const std::vector<std::string>& resurrected_players) const;

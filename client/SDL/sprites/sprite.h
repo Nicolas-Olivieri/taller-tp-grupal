@@ -1,10 +1,13 @@
 #ifndef SPRITE_H
 #define SPRITE_H
+
 #include <map>
+#include <memory>
 
 #include "../../../common/direction.h"
 #include "../../client_constants.h"
 
+#include "sprite_label.h"
 #include "sprite_layer.h"
 
 class Sprite {
@@ -17,6 +20,8 @@ private:
     SDL2pp::Point render_offset;
 
     std::map<Layer, SpriteLayer> layers;
+
+    std::unique_ptr<SpriteLabel> label;
 
 public:
     Sprite(SpriteLayer&& base, SDL2pp::Point position, SDL2pp::Point size);
@@ -44,6 +49,14 @@ public:
     void remove_all_layers();
 
     SDL2pp::Point get_ground_position() const;
+
+    bool has_label() const;
+
+    SpriteLabel& get_label() const;
+
+    void set_label(std::unique_ptr<SpriteLabel> new_label);
+
+    void render_overlay(const SDL2pp::Point& camera_offset) const;
 
 private:
     int get_new_coordinate(const int& current_coordinate, const int& coordinate_diff);

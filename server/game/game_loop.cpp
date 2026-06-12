@@ -63,29 +63,29 @@ void GameLoop::update_world(SnapshotBuilder& builder) {
     const WorldUpdateStatus world_update_status = game_world.update();
 
     // TODO: no sé si esta responsabilidad va acá
-    for (const auto& status: world_update_status.creatures) {
-        if (!status.did_attack)
+    for (const auto& update: world_update_status.creatures) {
+        if (update.status != CreatureStatus::ATTACKED)
             continue;
-        broadcast_creature_attack(builder, status);
+        broadcast_creature_attack(builder, update);
     }
 
     broadcast_resurrected_players(builder, world_update_status.resurrected_players);
 }
 
-void GameLoop::broadcast_creature_attack(SnapshotBuilder& builder, const CreatureUpdateStatus& status) {
-    assert(status.did_attack);
-    std::string msg = CreatureFormatter::get_attack_message(status);
+void GameLoop::broadcast_creature_attack(SnapshotBuilder& builder, const CreatureUpdate& update) {
+    assert(update.status != CreatureStatus::ATTACKED);
+    std::string msg = CreatureFormatter::get_attack_message(update);
 
-    if (status.killed_target)
-        builder.add_action(ActionDTO(DeathDTO(status.player_name)));
-    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, status.player_name, msg)));
+    if (update.killed_target)
+        builder.add_action(ActionDTO(DeathDTO(update.player_name)));
+    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, update.player_name, msg)));
 
-    assert(game_world.get_players().contains(status.player_name));
-    std::string clan_name = game_world.get_players().at(status.player_name).get_clan_name();
+    assert(game_world.get_players().contains(update.player_name));
+    std::string clan_name = game_world.get_players().at(update.player_name).get_clan_name();
 
     if (not clan_name.empty()) {
-        std::string clan_msg = CreatureFormatter::get_clan_attack_message(status);
-        builder.add_action(ActionDTO(ClanMessageDTO(clan_name, clan_msg, status.player_name)));
+        std::string clan_msg = CreatureFormatter::get_clan_attack_message(update);
+        builder.add_action(ActionDTO(ClanMessageDTO(clan_name, clan_msg, update.player_name)));
     }
 }
 

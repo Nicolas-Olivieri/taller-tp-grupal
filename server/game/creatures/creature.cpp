@@ -9,16 +9,45 @@
 #include "server/util/calculator.h"
 #include "state/idlestate.h"
 
-#define EXTRA_TARGET_RANGE 5  // TODO: toml
+#define EXTRA_TARGET_RANGE 4  // TODO: toml
+#define EXTRA_TARGET_RANGE_LIMIT 8
+#define MAX_ATTACK_COOLDOWNS_WITHOUT_ACT 20  // TODO: pensar otro nombre
 
-// TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
-// ditintos niveles
-Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
-                   const Position& position):
-        Killable(race, variation, 5, position, Equipment{0, 0, 0, 1}),
-        sub_id(sub_id),
-        state(std::make_unique<IdleState>()),
-        target(nullptr) {}
+Creature::Creature(const uint8_t race, const uint8_t variation, const Position& position):
+        Killable(race, variation, random_level(race, variation), position, equip_items(variation)),
+        state(&IdleState::get()),
+        target(nullptr),
+        is_alone(false),
+        count_to_loneliness(required_attack_cooldown * MAX_ATTACK_COOLDOWNS_WITHOUT_ACT) {}
+
+uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
+    GameConfig& config = GameConfig::get();
+
+    uint8_t level = Calculator::calculate_creature_level(
+            config.get_creature_base_level(race), config.get_variation(variation).max_level_multiplier);
+
+    return level;
+}
+
+Equipment Creature::equip_items(uint8_t variation) {
+    GameConfig& config = GameConfig::get();
+    Equipment equipment{NO_ITEM, NO_ITEM, NO_ITEM, NO_ITEM};
+
+    const std::vector<uint8_t>& items = config.get_variation(variation).equipment;
+
+    for (const auto& item: items) {
+        if (config.weapons_contains(item))
+            equipment.weapon = item;
+        else if (config.armors_contains(item))
+            equipment.armor = item;
+        else if (config.helmets_contains(item))
+            equipment.helmet = item;
+        else if (config.shields_contains(item))
+            equipment.shield = item;
+    }
+
+    return equipment;
+}
 
 std::vector<Loot> Creature::drop() {
     std::vector<Loot> drop;
@@ -56,28 +85,42 @@ std::vector<Loot> Creature::drop() {
     return drop;
 }
 
-CreatureUpdateStatus Creature::update_state(const Position& position, const Direction& direction) {
-    CreatureUpdateStatus result = this->state->act(*this, position, direction);
-    this->state->next(*this);
+void Creature::update() {
+    Killable::update();
 
-    return result;
+    if (current_attack_cooldown == 0 && target == nullptr) {
+        count_to_loneliness--;
+    } else {
+        count_to_loneliness = required_attack_cooldown * MAX_ATTACK_COOLDOWNS_WITHOUT_ACT;
+    }
+
+    if (count_to_loneliness == 0) {
+        is_alone = true;
+    }
 }
+
+bool Creature::is_lonely_creature() const { return is_alone; }
+
+void Creature::update_state() { this->state = this->state->next(*this); }
 
 InteractResult Creature::interact(Player& attacker) {
     target = &attacker;
     return Killable::interact(attacker);
 }
 
-CreatureUpdateStatus Creature::attack_player() {
-    assert(can_reach(target->get_position()) && can_attack());
+CreatureUpdate Creature::attack_player() {
+    assert(is_targeting_someone() && can_reach(target->get_position()) && can_attack());
 
-    if (Calculator::can_dodge(target->get_stats().agility))
-        return CreatureUpdateStatus(stats.race_id, target->get_name(), 0, false);
+    const uint16_t damage = attack();
 
-    const uint16_t damage_applied = target->receive_damage(*this);
+    if (Calculator::can_dodge(target->get_stats().agility)) {
+        return CreatureUpdate(stats.race_id, target->get_name(), 0, false);
+    }
+
+    const uint16_t damage_applied = target->receive_damage(damage);
     const bool was_killed = !target->is_alive();
 
-    return CreatureUpdateStatus(stats.race_id, target->get_name(), damage_applied, was_killed);
+    return CreatureUpdate(stats.race_id, target->get_name(), damage_applied, was_killed);
 }
 
 int Creature::attack() {
@@ -105,7 +148,7 @@ bool Creature::can_reach(const Position& other_position) const {
 }
 
 bool Creature::can_target(const Position& other_position) const {
-    uint8_t range = get_weapon_range() + EXTRA_TARGET_RANGE;
+    uint8_t range = std::min(EXTRA_TARGET_RANGE_LIMIT, get_weapon_range() + EXTRA_TARGET_RANGE);
     return is_in_range(other_position, range);
 }
 
@@ -142,8 +185,6 @@ bool Creature::is_targeting_someone() const {
 bool Creature::is_target_alive() const { return is_targeting_someone() && target->is_alive(); }
 
 bool Creature::can_reach_target() { return is_targeting_someone() && can_reach(target->get_position()); }
-
-void Creature::set_state(std::unique_ptr<CreatureState> new_state) { state = std::move(new_state); }
 
 Position Creature::get_target_position() const {
     if (!is_targeting_someone())

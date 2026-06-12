@@ -1,17 +1,19 @@
 #include "world.h"
 
 #include <algorithm>
+#include <cmath>
 #include <memory>
+#include <ranges>
 #include <unordered_set>
 #include <vector>
 
 #include "camera.h"
 
 World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
-             AudioManager& audio_manager):
+             AudioManager& audio_manager, FontManager& font_manager):
         renderer(renderer),
         texture_pool(renderer),
-        sprite_creator(renderer),
+        sprite_creator(renderer, font_manager),
         audio_manager(audio_manager),
         world_view(SDL2pp::Point(0, 0),
                    SDL2pp::Point(map_data.world_width * TILE_SIZE, map_data.world_height * TILE_SIZE)),
@@ -22,17 +24,17 @@ World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::
 void World::init_assets(const ClientMapDataDTO& map_data) {
     for (const auto& tile_data: map_data.tiles) {
         Sprite tile = sprite_creator.create_sprite(SpriteCategory::TILE, tile_data);
-        map_tiles.emplace(std::make_shared<Sprite>(tile));
+        map_tiles.emplace(std::make_shared<Sprite>(std::move(tile)));
     }
 
     for (const auto& collider_data: map_data.colliders) {
         Sprite collider = sprite_creator.create_sprite(SpriteCategory::COLLIDER, collider_data);
-        map_items.emplace(std::make_shared<Sprite>(collider));
+        map_items.emplace(std::make_shared<Sprite>(std::move(collider)));
     }
 
     for (const auto& npc_data: map_data.npcs) {
         Sprite npc = sprite_creator.create_sprite(SpriteCategory::NPC, npc_data);
-        map_items.emplace(std::make_shared<Sprite>(npc));
+        map_items.emplace(std::make_shared<Sprite>(std::move(npc)));
     }
 }
 
@@ -57,6 +59,8 @@ void World::render_in_z_order(const Camera& camera) const {
     auto viewed_tiles = filter_viewed_sprites(camera, map_tiles);
     auto viewed_loot = filter_viewed_sprites(camera, map_loot);
     auto viewed_items = filter_viewed_sprites(camera, map_items);
+    auto viewed_players = filter_viewed_sprites(camera, players);
+    auto viewed_creatures = filter_viewed_sprites(camera, creatures);
 
     // Ordeno los items por y
     std::ranges::stable_sort(viewed_items, cmp_by_y_coord);
@@ -73,34 +77,48 @@ void World::render_in_z_order(const Camera& camera) const {
     for (const auto& item: viewed_items) {
         item->render(camera.get_view().GetTopLeft());
     }
+
+    for (const auto& player: viewed_players) {
+        if (player != players.at(player_name))
+            player->render_overlay(camera.get_view().GetTopLeft());
+    }
+
+    for (const auto& creature: viewed_creatures) {
+        creature->render_overlay(camera.get_view().GetTopLeft());
+    }
+
     renderer.Present();
 }
 
 std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
         const Camera& camera, const std::set<std::shared_ptr<Sprite>>& sprites) const {
-    std::vector<std::shared_ptr<Sprite>> viewed_sprites;
-
-    std::ranges::copy_if(sprites, std::back_inserter(viewed_sprites), [camera](auto& item) {
-        return item->intersects(camera.get_view(), camera.get_view().GetTopLeft());
-    });
-
-    return viewed_sprites;
+    return filter_sprites(camera, sprites);
 }
 
+std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
+        const Camera& camera, const std::map<std::string, std::shared_ptr<Sprite>>& players_sprites) const {
+    return filter_sprites(camera, players_sprites | std::views::values);
+}
+
+std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
+        const Camera& camera, const std::map<uint16_t, std::shared_ptr<Sprite>>& creatures_sprites) const {
+    return filter_sprites(camera, creatures_sprites | std::views::values);
+}
 
 void World::update_players(const std::vector<PlayerInfoDTO>& players_information) {
     for (const PlayerInfoDTO& player_info: players_information) {
         if (!players.contains(player_info.name)) {
             add_new_player(player_info);
-            audio_manager.play_event(SoundEvent::SPAWN);
+            play_event(SoundEvent::SPAWN, SDL2pp::Point(player_info.x, player_info.y) * TILE_SIZE);
         }
 
         SDL2pp::Point position(player_info.x, player_info.y);
         const auto& player_sprite = players.at(player_info.name);
         if (position * TILE_SIZE != player_sprite->get_target_position())
-            audio_manager.play_event(SoundEvent::FOOTSTEP);
+            play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(player_info.x, player_info.y) * TILE_SIZE);
 
         player_sprite->set_target_position(player_info.direction, position);
+        sprite_creator.update_label(*player_sprite, player_info);
     }
 }
 
@@ -110,15 +128,16 @@ void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_infor
     for (const CreatureInfoDTO& creature_info: creatures_information) {
         if (!creatures.contains(creature_info.sub_id)) {
             add_new_creature(creature_info);
-            audio_manager.play_event(SoundEvent::SPAWN);
+            play_event(SoundEvent::SPAWN, SDL2pp::Point(creature_info.x, creature_info.y) * TILE_SIZE);
         }
 
         SDL2pp::Point position(creature_info.x, creature_info.y);
         const auto& creature_sprite = creatures.at(creature_info.sub_id);
         if (position * TILE_SIZE != creature_sprite->get_target_position())
-            audio_manager.play_event(SoundEvent::FOOTSTEP);
+            play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(creature_info.x, creature_info.y) * TILE_SIZE);
 
         creature_sprite->set_target_position(creature_info.direction, position);
+        sprite_creator.update_label(*creature_sprite, creature_info);
     }
 }
 
@@ -130,9 +149,9 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
 
     for (auto it = creatures.begin(); it != creatures.end();) {
         if (!sub_ids.contains(it->first)) {
+            play_event(SoundEvent::DEATH, it->second.get()->get_position());
             map_items.erase(it->second);
             it = creatures.erase(it);
-            audio_manager.play_event(SoundEvent::DEATH);
         } else {
             it++;
         }
@@ -177,33 +196,38 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
             case ActionType::DESPAWN:
                 if (players.contains(action.despawn.player_despawned)) {
                     auto player = players.extract(action.despawn.player_despawned);
+                    play_event(SoundEvent::DESPAWN, player.mapped()->get_position());
                     map_items.erase(player.mapped());
-                    audio_manager.play_event(SoundEvent::DESPAWN);
                 }
                 break;
 
             case ActionType::HEAL:
-                audio_manager.play_event(SoundEvent::HEAL);
+                if (players.contains(action.heal.player_healed)) {
+                    const Sprite* sprite = players.at(action.heal.player_healed).get();
+                    play_event(SoundEvent::HEAL, sprite->get_position());
+                }
                 break;
 
             case ActionType::RESURRECTION:
                 if (players.contains(action.resurrection.player_resurrected)) {
                     Sprite* sprite = players.at(action.resurrection.player_resurrected).get();
                     sprite_creator.update_appearance(*sprite, action.resurrection.original_appearance);
-                    audio_manager.play_event(SoundEvent::RESURRECTION);
+                    play_event(SoundEvent::RESURRECTION, sprite->get_position());
                 }
                 break;
+
             case ActionType::DEATH:
                 if (players.contains(action.death.player_dead)) {
                     Sprite* sprite = players.at(action.death.player_dead).get();
                     sprite_creator.convert_to_ghost(*sprite);
-                    audio_manager.play_event(SoundEvent::DEATH);
+                    play_event(SoundEvent::DEATH, sprite->get_position());
                 }
                 break;
 
             case ActionType::ATTACK:
-                // TODO: Cambiar el SFX según el arma con la que se atacó
-                audio_manager.play_event(SoundEvent::SWORD_ATTACK);
+                if (players.contains(action.attack.attacker)) {
+                    handle_attack(action.attack);
+                }
                 break;
 
             default:
@@ -212,24 +236,41 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
     }
 }
 
+void World::handle_attack(const AttackDTO& attack) {
+    const Sprite* sprite = players.at(attack.attacker).get();
+
+    // TODO: Este mapa debería estar en otro lugar (o que el SoundEvent sea un atributo de un ítem en
+    //  ClientConfig)
+    static const std::map<uint8_t, SoundEvent> weapon_to_sound_event{
+            {0, SoundEvent::FISTS_ATTACK},  {1, SoundEvent::SWORD_ATTACK},      {2, SoundEvent::AXE_ATTACK},
+            {3, SoundEvent::HAMMER_ATTACK}, {4, SoundEvent::MAGIC_ARROW_SPELL}, {5, SoundEvent::HEAL_SPELL},
+            {6, SoundEvent::MISSILE_SPELL}, {7, SoundEvent::EXPLOSION_SPELL},   {8, SoundEvent::BOW_ATTACK},
+            {9, SoundEvent::BOW_ATTACK},
+    };
+
+    if (not weapon_to_sound_event.contains(attack.weapon))
+        return;
+
+    play_event(weapon_to_sound_event.at(attack.weapon), sprite->get_position());
+}
 
 void World::add_new_player(const PlayerInfoDTO& info) {
     Sprite player = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<Sprite>(player);
+    auto ptr = std::make_shared<Sprite>(std::move(player));
     players.insert({{info.name, ptr}});
     map_items.emplace(ptr);
 }
 
 void World::add_new_creature(const CreatureInfoDTO& info) {
     Sprite creature = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<Sprite>(creature);
+    auto ptr = std::make_shared<Sprite>(std::move(creature));
     creatures.insert({{info.sub_id, ptr}});
     map_items.emplace(ptr);
 }
 
 void World::add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
     Sprite drop = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<Sprite>(drop);
+    auto ptr = std::make_shared<Sprite>(std::move(drop));
     loot[place] = {ptr, info.is_item};
     map_loot.emplace(ptr);
 }
@@ -243,3 +284,21 @@ void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, u
 Sprite& World::get_client_player() { return *players.at(player_name).get(); }
 
 SDL2pp::Rect& World::get_world_size() { return world_view; }
+
+void World::play_event(const SoundEvent& event, const SDL2pp::Point& source) {
+    const SDL2pp::Point listener = get_client_player().get_position();
+
+    const int dx = source.x - listener.x;
+    const int dy = source.y - listener.y;
+    const double distance = std::sqrt(dx * dx + dy * dy);
+
+    // TODO: Este límite debería venir del ClientConfig
+    constexpr double MAX_DISTANCE = 12 * TILE_SIZE;
+    if (distance >= MAX_DISTANCE)
+        return;
+
+    // TODO: Como idea, se podría multiplicar también por un factor aleatorio para que el sonido
+    //  se escuche más o menos fuerte (entre un 10% más y un 10% menos, por ejemplo)
+
+    audio_manager.play_event(event, 1.0 - distance / MAX_DISTANCE);
+}

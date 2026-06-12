@@ -14,8 +14,8 @@
 #include "common/dto/snapshot/map/server_map_data.h"
 #include "creatures/creature.h"
 #include "player/player.h"
-#include "server/command/cmd_results/ally_execute/list_outcomes.h"
-#include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/command/cmd_results/ally_execute/list/outcomes/list_outcomes.h"
+#include "server/command/cmd_results/ally_execute/resurrect/resurrect_result.h"
 #include "server/command/cmd_results/clan/clan_action_result.h"
 #include "server/command/cmd_results/drop_item/drop_item_result.h"
 #include "server/command/cmd_results/pickup/pickup_result.h"
@@ -29,7 +29,6 @@
 #include "position.h"
 #include "world_update_status.h"
 
-
 class GameWorld {
 private:
     Grid grid;
@@ -37,6 +36,7 @@ private:
     std::unordered_map<std::string, Player> players;
 
     std::unordered_map<uint16_t, Creature> creatures;
+    uint16_t current_creature_id;
 
     std::map<std::pair<uint16_t, uint16_t>, Tile*> tiles_with_loot;
 
@@ -59,7 +59,7 @@ public:
 
     WorldUpdateStatus update();
 
-    CreatureUpdateStatus move_creature(Creature& creature, const Direction& direction);
+    void move_creature(Creature& creature, const Direction& direction);
 
     void move_player(const std::string& player_name, Direction direction);
 
@@ -115,15 +115,21 @@ private:
 
     AllyExecuteResult start_delayed_resurrection(Player& player, const Ally* priest) const;
 
+    CreatureUpdate manage_creature_attack(Creature& creature);
+
     Direction next_movement(const Creature& creature);
 
     PickUpResult pick_item_up(Player& player, Tile& tile, uint8_t item);
 
     PickUpResult pick_gold_up(Player& player, Tile& tile, uint16_t gold);
 
-    void init_creature(uint16_t id);
+    void remove_lonely_creatures();
 
     void remove_dead_creatures();
+
+    void spawn_random_creature();
+
+    uint16_t get_next_creature_id();
 
     void init_npc(const std::vector<AllyInfoDTO>& npcs);
 
@@ -134,6 +140,8 @@ private:
     void drop_and_add(Player& player, Tile& tile);
 
     void load_clans();
+
+    void exchange_position(const Position& old_position, const Position& new_position, Interactive* occupant);
 };
 
 

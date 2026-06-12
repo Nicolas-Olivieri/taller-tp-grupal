@@ -117,3 +117,12 @@ uint16_t Calculator::calculate_random_drop_gold(uint8_t max_healh) {
 uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& equipment, float buff_factor) {
     return calculate_damage(strength, equipment) * buff_factor;
 }
+
+uint8_t Calculator::calculate_creature_level(uint8_t base, float multiplier) {
+    return base * random_float(1, multiplier);
+}
+
+uint8_t Calculator::random_choice(const std::vector<uint8_t>& elems) {
+    uint8_t index = random_number(0, elems.size() - 1);
+    return elems[index];
+}

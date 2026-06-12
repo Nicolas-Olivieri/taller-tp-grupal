@@ -1,0 +1,9 @@
+[fonts]
+label_name_level = { path = "/augusta.ttf", size = 16 }
+label_clan = { path = "/augusta.ttf", size = 14 }
+ui_username = { path = "/augusta.ttf", size = 36 }
+ui_clan = { path = "/augusta.ttf", size = 24 }
+ui_menu_title = { path = "/augusta.ttf", size = 20 }
+ui_menu = { path = "/augusta.ttf", size = 18 }
+ui_chat = { path = "/augusta.ttf", size = 20 }
+ui_item_amount = { path = "/augusta.ttf", size = 14 }

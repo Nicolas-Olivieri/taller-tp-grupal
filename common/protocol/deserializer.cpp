@@ -158,8 +158,17 @@ CreatureInfoDTO Deserializer::recv_creature_info() {
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
+    CreatureStatsDTO stats = recv_creature_stats();
 
-    return CreatureInfoDTO(creature_id, variation_id, sub_id, direction, x, y);
+    return CreatureInfoDTO(creature_id, variation_id, sub_id, direction, x, y, stats);
+}
+
+CreatureStatsDTO Deserializer::recv_creature_stats() {
+    const uint16_t max_health = recv_uint16();
+    const uint16_t current_health = recv_uint16();
+    const uint8_t xp_level = recv_uint8();
+
+    return CreatureStatsDTO(max_health, current_health, xp_level);
 }
 
 LootInfoDTO Deserializer::recv_loot_info() {

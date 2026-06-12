@@ -17,10 +17,10 @@ enum class DropType { NOTHING = 0, GOLD = 1, USABLE = 2, EQUIPABLE = 3 };
 
 class Creature: public Killable, public Attacker {
 private:
-    const uint16_t sub_id;
-    std::unique_ptr<CreatureState> state;
-
+    CreatureState* state;
     Player* target;
+    bool is_alone;
+    int count_to_loneliness;
 
     uint8_t get_weapon_range() const;
 
@@ -28,18 +28,24 @@ private:
 
     bool is_in_range(const Position& other_position, uint8_t range) const;
 
+    static uint8_t random_level(uint8_t race, uint8_t variation);
+
+    static Equipment equip_items(uint8_t variation);
+
 public:
     // TODO: mover métodos que no son públicos a la sección private
 
-    Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation, const Position& position);
+    Creature(const uint8_t race, const uint8_t variation, const Position& position);
 
     std::vector<Loot> drop() override;
 
-    CreatureUpdateStatus update_state(const Position& position, const Direction& direction);
+    void update() override;
+
+    void update_state();
 
     InteractResult interact(Player&) override;
 
-    CreatureUpdateStatus attack_player();
+    CreatureUpdate attack_player();
 
     int attack() override;
 
@@ -59,8 +65,6 @@ public:
 
     bool is_target_alive() const;
 
-    void set_state(std::unique_ptr<CreatureState> state);
-
     bool can_reach_target();
 
     Position get_target_position() const;
@@ -70,6 +74,8 @@ public:
     const Stats& get_stats() const;
 
     const std::string& get_target_name() const;
+
+    bool is_lonely_creature() const;
 };
 
 #endif  // CREATURE_H
