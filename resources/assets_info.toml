@@ -379,7 +379,7 @@ id = 53
 name = "Pasto costa 4"
 width = 2
 height = 2
-unwalkable = [1, 0, 2, 1]
+unwalkable = [0, 1, 2, 1]
 
 [[tiles]]
 id = 54
@@ -468,7 +468,7 @@ id = 65
 name = "Arena costa 4"
 width = 2
 height = 2
-unwalkable = [1, 0, 2, 1]
+unwalkable = [0, 1, 2, 1]
 
 [[tiles]]
 id = 66
@@ -556,7 +556,7 @@ id = 77
 name = "Nieve costa 4"
 width = 2
 height = 2
-unwalkable = [1, 0, 2, 1]
+unwalkable = [0, 1, 2, 1]
 
 [[tiles]]
 id = 78

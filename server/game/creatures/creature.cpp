@@ -11,7 +11,7 @@
 
 #define EXTRA_TARGET_RANGE 4  // TODO: toml
 #define EXTRA_TARGET_RANGE_LIMIT 8
-#define MAX_ATTACK_COOLDOWNS_WITHOUT_ACT 20 // TODO: pensar otro nombre
+#define MAX_ATTACK_COOLDOWNS_WITHOUT_ACT 20  // TODO: pensar otro nombre
 
 Creature::Creature(const uint8_t race, const uint8_t variation, const Position& position):
         Killable(race, variation, random_level(race, variation), position, equip_items(variation)),
@@ -99,9 +99,7 @@ void Creature::update() {
     }
 }
 
-bool Creature::is_lonely_creature() const {
-    return is_alone;
-}
+bool Creature::is_lonely_creature() const { return is_alone; }
 
 void Creature::update_state() { this->state = this->state->next(*this); }
 

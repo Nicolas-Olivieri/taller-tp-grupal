@@ -174,8 +174,8 @@ std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(cons
 }
 
 void GameWorld::remove_lonely_creatures() {
-    for (auto it = creatures.begin() ; it != creatures.end() ; ) {
-        Creature& creature = it->second;
+    for (auto it = creatures.begin(); it != creatures.end();) {
+        const Creature& creature = it->second;
 
         if (creature.is_lonely_creature()) {
             grid.get_tile(creature.get_position()).occupy(nullptr);
