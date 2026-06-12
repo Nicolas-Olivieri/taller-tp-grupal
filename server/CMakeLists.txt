@@ -44,6 +44,7 @@ target_sources(taller_server
 
         game/game_world.cpp
         game/player/player.cpp
+        game/player/clan_membership.cpp
         game/stats/recoverable_stat.cpp
         game/stats/mana.cpp
         game/stats/health.cpp
@@ -159,6 +160,7 @@ target_sources(taller_server
 
         game/game_world.h
         game/player/player.h
+        game/player/clan_membership.h
         game/stats/recoverable_stat.h
         game/stats/mana.h
         game/stats/health.h
