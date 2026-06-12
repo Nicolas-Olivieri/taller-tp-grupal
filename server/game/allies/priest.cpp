@@ -55,7 +55,7 @@ AllyExecuteResult Priest::handle_heal(Player& player) const {
     }
 
     std::cout << "[Priest] El jugador está muerto" << std::endl;
-    return AllyExecuteResult(HealResult(HealStatus::PLAYER_IS_DEAD, type));
+    return AllyExecuteResult(HealResult(HealStatus::GHOST_FAIL, type));
 }
 
 

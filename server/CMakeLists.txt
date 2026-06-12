@@ -4,23 +4,24 @@ target_sources(taller_server
         main.cpp
         server.cpp
 
-        command/cmd_types/cmd_buy/buy_command.cpp
+        command/cmd_types/ally_execute/cmd_buy/buy_command.cpp
+        command/cmd_types/ally_execute/cmd_deposit_gold/deposit_gold_command.cpp
+        command/cmd_types/ally_execute/cmd_deposit_item/deposit_item_command.cpp
+        command/cmd_types/ally_execute/cmd_heal/heal_command.cpp
+        command/cmd_types/ally_execute/cmd_list_items/list_items_command.cpp
+        command/cmd_types/ally_execute/cmd_resurrect/resurrect_command.cpp
+        command/cmd_types/ally_execute/cmd_sell/sell_command.cpp
+        command/cmd_types/ally_execute/cmd_withdraw_gold/withdraw_gold_command.cpp
+        command/cmd_types/ally_execute/cmd_withdraw_item/withdraw_item_command.cpp
+
         command/cmd_types/cmd_chatmessage/chatmessage_command.cpp
-        command/cmd_types/cmd_deposit_gold/deposit_gold_command.cpp
-        command/cmd_types/cmd_deposit_item/deposit_item_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
         command/cmd_types/cmd_drop_item/drop_item_command.cpp
-        command/cmd_types/cmd_heal/heal_command.cpp
         command/cmd_types/cmd_interact/interact_command.cpp
-        command/cmd_types/cmd_list_items/list_items_command.cpp
         command/cmd_types/cmd_move/move_command.cpp
-        command/cmd_types/cmd_resurrect/resurrect_command.cpp
-        command/cmd_types/cmd_sell/sell_command.cpp
         command/cmd_types/cmd_spawn/spawn_command.cpp
         command/cmd_types/cmd_unequip_item/unequip_item_command.cpp
         command/cmd_types/cmd_use_item/use_item_command.cpp
-        command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.cpp
-        command/cmd_types/cmd_withdraw_item/withdraw_item_command.cpp
         command/cmd_types/cmd_pickup/pickup_command.cpp
         command/cmd_types/cmd_clan/cmd_found/clan_found_command.cpp
         command/cmd_types/cmd_clan/cmd_join/clan_join_command.cpp
@@ -32,7 +33,22 @@ target_sources(taller_server
         command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.cpp
         command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.cpp
 
+        command/cmd_results/ally_execute/buy/buy_result.cpp
+        command/cmd_results/ally_execute/deposit_gold/deposit_gold_result.cpp
+        command/cmd_results/ally_execute/deposit_item/deposit_item_result.cpp
+        command/cmd_results/ally_execute/heal/heal_result.cpp
+        command/cmd_results/ally_execute/list/list_bank/list_bank_result.cpp
+        command/cmd_results/ally_execute/list/list_items/list_items_result.cpp
+        command/cmd_results/ally_execute/list/outcomes/bank_vault/bank_vault_outcome.cpp
+        command/cmd_results/ally_execute/list/outcomes/player_unbounded/player_unbounded_outcome.cpp
+        command/cmd_results/ally_execute/list/outcomes/vendor_list/vendor_list_outcome.cpp
+        command/cmd_results/ally_execute/list/outcomes/list_outcomes.cpp
+        command/cmd_results/ally_execute/resurrect/resurrect_result.cpp
+        command/cmd_results/ally_execute/sell/sell_result.cpp
+        command/cmd_results/ally_execute/withdraw_gold/withdraw_gold_result.cpp
+        command/cmd_results/ally_execute/withdraw_item/withdraw_item_result.cpp
         command/cmd_results/ally_execute/ally_execute_result.cpp
+
         command/cmd_results/drop_item/drop_item_result.cpp
         command/cmd_results/interact/interact_result.cpp
         command/cmd_results/pickup/pickup_result.cpp
@@ -104,24 +120,25 @@ target_sources(taller_server
         # .h files
         server.h
 
-        command/cmd_types/cmd_buy/buy_command.h
+        command/cmd_types/ally_execute/cmd_buy/buy_command.h
+        command/cmd_types/ally_execute/cmd_deposit_gold/deposit_gold_command.h
+        command/cmd_types/ally_execute/cmd_deposit_item/deposit_item_command.h
+        command/cmd_types/ally_execute/cmd_heal/heal_command.h
+        command/cmd_types/ally_execute/cmd_list_items/list_items_command.h
+        command/cmd_types/ally_execute/cmd_resurrect/resurrect_command.h
+        command/cmd_types/ally_execute/cmd_sell/sell_command.h
+        command/cmd_types/ally_execute/cmd_withdraw_gold/withdraw_gold_command.h
+        command/cmd_types/ally_execute/cmd_withdraw_item/withdraw_item_command.h
+
         command/cmd_types/cmd_chatmessage/chatmessage_command.h
-        command/cmd_types/cmd_deposit_gold/deposit_gold_command.h
-        command/cmd_types/cmd_deposit_item/deposit_item_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
         command/cmd_types/cmd_drop_item/drop_item_command.h
-        command/cmd_types/cmd_heal/heal_command.h
         command/cmd_types/cmd_interact/interact_command.h
-        command/cmd_types/cmd_list_items/list_items_command.h
         command/cmd_types/cmd_move/move_command.h
-        command/cmd_types/cmd_sell/sell_command.h
         command/cmd_types/cmd_spawn/spawn_command.h
         command/cmd_types/cmd_unequip_item/unequip_item_command.h
         command/cmd_types/cmd_use_item/use_item_command.h
-        command/cmd_types/cmd_withdraw_gold/withdraw_gold_command.h
-        command/cmd_types/cmd_withdraw_item/withdraw_item_command.h
         command/cmd_types/cmd_pickup/pickup_command.h
-        command/cmd_types/cmd_resurrect/resurrect_command.h
         command/cmd_types/cmd_clan/cmd_found/clan_found_command.h
         command/cmd_types/cmd_clan/cmd_join/clan_join_command.h
         command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h
@@ -132,18 +149,22 @@ target_sources(taller_server
         command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.h
         command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h
 
-        command/cmd_results/ally_execute/buy_result.h
-        command/cmd_results/ally_execute/deposit_gold_result.h
-        command/cmd_results/ally_execute/deposit_item_result.h
-        command/cmd_results/ally_execute/heal_result.h
-        command/cmd_results/ally_execute/list_bank_result.h
-        command/cmd_results/ally_execute/list_items_result.h
-        command/cmd_results/ally_execute/list_outcomes.h
-        command/cmd_results/ally_execute/resurrect_result.h
-        command/cmd_results/ally_execute/sell_result.h
-        command/cmd_results/ally_execute/withdraw_gold_result.h
-        command/cmd_results/ally_execute/withdraw_item_result.h
+        command/cmd_results/ally_execute/buy/buy_result.h
+        command/cmd_results/ally_execute/deposit_gold/deposit_gold_result.h
+        command/cmd_results/ally_execute/deposit_item/deposit_item_result.h
+        command/cmd_results/ally_execute/heal/heal_result.h
+        command/cmd_results/ally_execute/list/list_bank/list_bank_result.h
+        command/cmd_results/ally_execute/list/list_items/list_items_result.h
+        command/cmd_results/ally_execute/list/outcomes/bank_vault/bank_vault_outcome.h
+        command/cmd_results/ally_execute/list/outcomes/player_unbounded/player_unbounded_outcome.h
+        command/cmd_results/ally_execute/list/outcomes/vendor_list/vendor_list_outcome.h
+        command/cmd_results/ally_execute/list/outcomes/list_outcomes.h
+        command/cmd_results/ally_execute/resurrect/resurrect_result.h
+        command/cmd_results/ally_execute/sell/sell_result.h
+        command/cmd_results/ally_execute/withdraw_gold/withdraw_gold_result.h
+        command/cmd_results/ally_execute/withdraw_item/withdraw_item_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
+
         command/cmd_results/drop_item/drop_item_result.h
         command/cmd_results/interact/attack_result.h
         command/cmd_results/interact/bind_result.h

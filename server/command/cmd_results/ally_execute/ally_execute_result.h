@@ -1,16 +1,16 @@
 #ifndef ALLY_EXECUTE_RESULT_H
 #define ALLY_EXECUTE_RESULT_H
 
-#include "buy_result.h"
-#include "deposit_gold_result.h"
-#include "deposit_item_result.h"
-#include "heal_result.h"
-#include "list_bank_result.h"
-#include "list_items_result.h"
-#include "resurrect_result.h"
-#include "sell_result.h"
-#include "withdraw_gold_result.h"
-#include "withdraw_item_result.h"
+#include "buy/buy_result.h"
+#include "deposit_gold/deposit_gold_result.h"
+#include "deposit_item/deposit_item_result.h"
+#include "heal/heal_result.h"
+#include "list/list_bank/list_bank_result.h"
+#include "list/list_items/list_items_result.h"
+#include "resurrect/resurrect_result.h"
+#include "sell/sell_result.h"
+#include "withdraw_gold/withdraw_gold_result.h"
+#include "withdraw_item/withdraw_item_result.h"
 
 
 // Resultado devuelto por ally.execute()
