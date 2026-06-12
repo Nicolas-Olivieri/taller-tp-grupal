@@ -320,3 +320,8 @@ void Serializer::serialize(const CheatExperienceSetEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.level);
 }
+
+void Serializer::serialize(const CheatGoldGainEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.amount);
+}

@@ -31,6 +31,7 @@ target_sources(taller_server
         command/cmd_types/cmd_clan/cmd_kick/clan_kick_command.cpp
         command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.cpp
         command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.cpp
+        command/cmd_types/cmd_cheat/cmd_gain_gold/gain_gold_command.cpp
 
         command/cmd_results/ally_execute/ally_execute_result.cpp
         command/cmd_results/drop_item/drop_item_result.cpp
@@ -131,6 +132,7 @@ target_sources(taller_server
         command/cmd_types/cmd_clan/cmd_kick/clan_kick_command.h
         command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.h
         command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h
+        command/cmd_types/cmd_cheat/cmd_gain_gold/gain_gold_command.h
 
         command/cmd_results/ally_execute/buy_result.h
         command/cmd_results/ally_execute/deposit_gold_result.h

@@ -20,6 +20,7 @@
 #include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
 #include "common/dto/events/chat/chatevent.h"
 #include "common/dto/events/cheat/cheat_experience_set_event.h"
+#include "common/dto/events/cheat/cheat_gold_gain_event.h"
 #include "common/dto/events/clan/clan_found_event.h"
 #include "common/dto/events/clan/clan_join_event.h"
 #include "common/dto/events/clan/clan_remove_player_event.h"
@@ -199,42 +200,42 @@ void ClientGame::handle_text_command(const std::string& text) {
 
     if (text == "/resucitar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::RESURRECT));
-    if (text == "/curar")
+    else if (text == "/curar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
-    if (text == "/listar")
+    else if (text == "/listar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::LIST_ITEMS));
-    if (text == "/tomar")
+    else if (text == "/tomar")
         handle_pick_up_command();
-    if (text.starts_with("/comprar "))
+    else if (text.starts_with("/comprar "))
         handle_buy_item_command(text);
-    if (text.starts_with("/vender "))
+    else if (text.starts_with("/vender "))
         handle_sell_item_command(text);
 
-    if (text.starts_with("/depositar oro "))
+    else if (text.starts_with("/depositar oro "))
         handle_deposit_gold_command(text);
     else if (text.starts_with("/depositar "))
         handle_deposit_item_command(text);
 
-    if (text.starts_with("/retirar oro "))
+    else if (text.starts_with("/retirar oro "))
         handle_withdraw_gold_command(text);
     else if (text.starts_with("/retirar "))
         handle_withdraw_item_command(text);
 
-    if (text == "/tirar")
+    else if (text == "/tirar")
         handle_drop_item_command();
 
-    if (text.starts_with("/fundar-clan "))
+    else if (text.starts_with("/fundar-clan "))
         handle_clan_foundation(text);
-    if (text.starts_with("/unirse "))
+    else if (text.starts_with("/unirse "))
         handle_clan_join(text);
-    if (text.starts_with("/clan-"))
+    else if (text.starts_with("/clan-"))
         handle_clan_operation(text);
-    if (text == "/revisar-clan")
+    else if (text == "/revisar-clan")
         connection.push_command(std::make_unique<EventDTO>(CommandType::CLAN_REVIEW));
-    if (text == "/dejar-clan")
+    else if (text == "/dejar-clan")
         connection.push_command(std::make_unique<EventDTO>(CommandType::CLAN_LEAVE));
 
-    if (text.starts_with("/cheat-"))
+    else if (text.starts_with("/cheat-"))
         handle_cheat(text);
 }
 
@@ -411,17 +412,17 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
         return;
 
     switch (key_pressed) {
-    case SDLK_c:
-        toggle_chat();
-        break;
-    case SDLK_e:
-        handle_pick_up_command();
-        break;
-    case SDLK_q:
-        handle_drop_item_command();
-        break;
-    default:
-        throw std::runtime_error("Esta tecla aún no tiene una funcionalidad asignada");
+        case SDLK_c:
+            toggle_chat();
+            break;
+        case SDLK_e:
+            handle_pick_up_command();
+            break;
+        case SDLK_q:
+            handle_drop_item_command();
+            break;
+        default:
+            throw std::runtime_error("Esta tecla aún no tiene una funcionalidad asignada");
     }
 }
 
@@ -646,6 +647,9 @@ void ClientGame::handle_cheat(const std::string& text) {
 
     if (cheat_type.starts_with("set-xp "))
         handle_xp_cheat(cheat_type);
+    else if (cheat_type.starts_with("gain-gold "))
+        handle_gold_cheat(cheat_type);
+
     // TODO agregar el resto de cheats
 }
 
@@ -666,4 +670,23 @@ void ClientGame::handle_xp_cheat(const std::string& text) {
         return;
 
     connection.push_command(std::make_unique<CheatExperienceSetEventDTO>(level));
+}
+
+void ClientGame::handle_gold_cheat(const std::string& text) {
+    const std::string prefix = "gain-gold ";
+
+    const std::string amount_text = extract_prefix(prefix, text);
+
+    std::regex only_numbers("^\\d+$");
+    if (!std::regex_match(amount_text, only_numbers))
+        return;
+
+    uint16_t gold_amount;
+    auto [_, error_code] = std::from_chars<uint16_t>(amount_text.data(),
+                                                     amount_text.data() + amount_text.size(), gold_amount);
+
+    if (error_code != std::errc())
+        return;
+
+    connection.push_command(std::make_unique<CheatGoldGainEventDTO>(gold_amount));
 }

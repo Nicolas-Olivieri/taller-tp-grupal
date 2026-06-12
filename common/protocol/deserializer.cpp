@@ -70,6 +70,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CLAN_LEAVE:
         case CommandType::CLAN_REVIEW:
         case CommandType::CHEAT_XP:
+        case CommandType::CHEAT_GOLD:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");

@@ -17,7 +17,8 @@ class KeyMapper {
             {SDLK_d, Direction::RIGHT},   {SDLK_a, Direction::LEFT}};
 
     inline static const std::unordered_set<int> command_keys = {
-        {SDLK_q, SDLK_e, /* SDLK_m ,*/ SDLK_c} // TODO: dejo la M comentada para cuando esté lo de meditar
+            {SDLK_q, SDLK_e,
+             /* SDLK_m ,*/ SDLK_c}  // TODO: dejo la M comentada para cuando esté lo de meditar
     };
 
 public:

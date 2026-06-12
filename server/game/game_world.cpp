@@ -665,3 +665,12 @@ void GameWorld::cheat_player_xp(const std::string& player_name, const uint8_t le
     Player& player = players.at(player_name);
     player.set_xp_level(level);
 }
+
+void GameWorld::cheat_player_gold(const std::string& player_name, const uint16_t gold_amount) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+    player.add_gold(gold_amount);
+}

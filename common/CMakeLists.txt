@@ -30,6 +30,7 @@ target_sources(taller_common
         dto/events/clan/clan_request_response_event.cpp
         dto/events/clan/clan_remove_player_event.cpp
         dto/events/cheat/cheat_experience_set_event.cpp
+        dto/events/cheat/cheat_gold_gain_event.cpp
 
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
@@ -108,6 +109,7 @@ target_sources(taller_common
         dto/events/clan/clan_request_response_event.h
         dto/events/clan/clan_remove_player_event.h
         dto/events/cheat/cheat_experience_set_event.h
+        dto/events/cheat/cheat_gold_gain_event.h
 
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h

@@ -110,6 +110,8 @@ private:
 
     void handle_xp_cheat(const std::string& text);
 
+    void handle_gold_cheat(const std::string& text);
+
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,
                FontManager& font_manager);

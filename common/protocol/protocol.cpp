@@ -118,6 +118,9 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::CHEAT_XP) {
         const uint8_t level = deserializer.recv_uint8();
         return RequestedCommandDTO(command, level);
+    } else if (command == CommandType::CHEAT_GOLD) {
+        const uint16_t amount = deserializer.recv_uint16();
+        return RequestedCommandDTO(command, amount);
     } else {
         throw std::invalid_argument("The received command type has no known way to be deserialized");
     }

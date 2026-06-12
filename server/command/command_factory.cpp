@@ -19,6 +19,7 @@
 #include "cmd_types/cmd_use_item/use_item_command.h"
 #include "cmd_types/cmd_withdraw_gold/withdraw_gold_command.h"
 #include "cmd_types/cmd_withdraw_item/withdraw_item_command.h"
+#include "server/command/cmd_types/cmd_cheat/cmd_gain_gold/gain_gold_command.h"
 #include "server/command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.h"
@@ -106,6 +107,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::CHEAT_XP:
             return std::make_unique<SetExperienceCommand>(player_name, dto.item_id);
+
+        case CommandType::CHEAT_GOLD:
+            return std::make_unique<GainGoldCommand>(player_name, dto.gold_amount);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

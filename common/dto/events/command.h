@@ -29,6 +29,7 @@ enum class CommandType : uint8_t {
     CLAN_LEAVE,
     CLAN_REVIEW,
     CHEAT_XP,
+    CHEAT_GOLD
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a
