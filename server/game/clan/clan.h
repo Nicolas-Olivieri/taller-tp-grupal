@@ -22,9 +22,6 @@ class Clan {
 
 
 public:
-    static constexpr uint8_t MAX_MEMBERS = 16;
-    static constexpr uint8_t MIN_LEVEL_REQUIRED_TO_FOUND_CLAN = 6;
-
     explicit Clan(const ClanData& data);
 
     /// Principales operaciones

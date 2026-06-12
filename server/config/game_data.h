@@ -372,4 +372,33 @@ struct toml::from<TradersData> {
     }
 };
 
+struct FairPlayData {
+    uint8_t max_newbie_level;
+    uint8_t fair_play_gap;
+};
+
+template <>
+struct toml::from<FairPlayData> {
+    static FairPlayData from_toml(const toml::value& raw) {
+        return FairPlayData{toml::find<uint8_t>(raw, "max_newbie_level"),
+                            toml::find<uint8_t>(raw, "fair_play_gap")};
+    }
+};
+
+struct ClanConstantsData {
+    uint8_t max_members_per_clan;
+    uint8_t min_level_required_to_found_clan;
+    float max_distance_to_consider_near_clan_mate;
+};
+
+
+template <>
+struct toml::from<ClanConstantsData> {
+    static ClanConstantsData from_toml(const toml::value& raw) {
+        return ClanConstantsData{toml::find<uint8_t>(raw, "max_members_per_clan"),
+                                 toml::find<uint8_t>(raw, "min_level_required_to_found_clan"),
+                                 toml::find<float>(raw, "max_distance_to_consider_near_clan_mate")};
+    }
+};
+
 #endif  // GAME_DATA_H

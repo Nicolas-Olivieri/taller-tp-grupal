@@ -4,6 +4,8 @@
 #include <format>
 #include <utility>
 
+#include "server/config/game_config.h"
+
 bool Clan::is_founder(const std::string& player_name) const { return player_name == founder; }
 
 bool Clan::is_member(const std::string& player_name) const { return members.contains(player_name); }
@@ -76,7 +78,7 @@ ClanActionResult Clan::accept(const std::string& player_name, const std::string&
     if (is_banned(player_to_accept))
         return ClanActionResult(ClanActionStatus::IS_BANNED_PLAYER);
 
-    if (MAX_MEMBERS == members.size() + 1)
+    if (GameConfig::get().get_clan_constats().max_members_per_clan == members.size() + 1)
         return ClanActionResult(ClanActionStatus::CLAN_IS_FULL);
 
     assert(has_pending_request(player_to_accept));

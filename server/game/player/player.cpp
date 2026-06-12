@@ -139,13 +139,15 @@ InteractResult Player::interact(Player& attacker) {
 
     const uint8_t own_level = stats.experience.get_level();
     const uint8_t attacker_level = attacker.stats.experience.get_level();
-    if (own_level <= MAX_NEWBIE_LEVEL)
+    const FairPlayData& fair_play_data = GameConfig::get().get_fair_play();
+
+    if (own_level <= fair_play_data.max_newbie_level)
         return InteractResult(AttackStatus::ATTACKED_PLAYER_IS_NEWBIE);
 
-    if (attacker_level <= MAX_NEWBIE_LEVEL)
+    if (attacker_level <= fair_play_data.max_newbie_level)
         return InteractResult(AttackStatus::ATTACKER_IS_NEWBIE);
 
-    if (std::abs(own_level - attacker_level) > FAIR_PLAY_GAP)
+    if (std::abs(own_level - attacker_level) > fair_play_data.fair_play_gap)
         return InteractResult(AttackStatus::FAIR_PLAY);
 
     // TODO Falta considerar
