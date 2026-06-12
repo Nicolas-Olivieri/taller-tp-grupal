@@ -29,7 +29,6 @@
 #include "common/dto/events/unequip_item_event.h"
 #include "common/dto/events/use_item_event.h"
 #include "common/util/rate_timer.h"
-#include "sprites/sprite.h"
 
 #include "camera.h"
 #include "key_mapper.h"
@@ -96,7 +95,7 @@ Camera ClientGame::initialize_world_and_camera() {
             break;
         }
     }
-    Sprite& user = world.get_client_player();
+    PlayerSprite& user = world.get_client_player();
     SDL2pp::Rect& world_size = world.get_world_size();
     return {game_viewport.GetW(), game_viewport.GetH(), world_size, user};
 }

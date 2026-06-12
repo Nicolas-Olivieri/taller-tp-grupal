@@ -1,21 +1,24 @@
 #include "sprite_creator.h"
 
 #include <map>
+#include <ranges>
 #include <utility>
 
 #include "common/dto/snapshot/map/asset_info.h"
 
-#include "sprite_layer.h"
-
-#define HEAD_OFFSET 21
-#define GHOST_HEAD_ID 0
-#define GHOST_BODY_ID 0
+#include "../sprites/sprite_layer.h"
+#include "client/SDL/sprites/effect_sprite.h"
+#include "client/SDL/sprites/enemy_sprite.h"
+#include "client/SDL/sprites/fixed_sprite.h"
+#include "client/SDL/sprites/player_sprite.h"
+#include "common/dto/snapshot/actions/action.h"
+#include "client/client_constants.h"
 
 SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
         texture_pool(TexturePool(renderer)), animation_pool(AnimationPool()), renderer(renderer) {}
 
 
-Sprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
+PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO &player_info) {
     const SDL2pp::Point position(player_info.x, player_info.y);
     const AppearanceDTO& appearance_data = player_info.appearance;
 
@@ -30,49 +33,45 @@ Sprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
     SDL2pp::Rect body_rect(body.offset, body.frame.GetSize());
     const SDL2pp::Point size = body_rect.Union(head_rect).GetSize();
 
-    Sprite sprite(std::move(body), position, player_info.direction, size);
-    sprite.add_layer(Layer::HEAD, std::move(head));
+    PlayerSprite sprite(std::move(head), std::move(body), position, size, player_info.direction);
 
     if (player_info.stats.current_health == 0)
         convert_to_ghost(sprite);
 
-    update_appearance(sprite, player_info.appearance, player_info.equipment);
-
     return sprite;
 }
 
-Sprite SpriteCreator::create_sprite(const CreatureInfoDTO& creature_info) {
+EnemySprite SpriteCreator::create_sprite(const CreatureInfoDTO &creature_info) {
     const SDL2pp::Point position(creature_info.x, creature_info.y);
     const auto category = static_cast<SpriteCategory>(creature_info.creature);
 
     SpriteLayer creature = create_sprite_layer(category, creature_info.variation);
     const SDL2pp::Point size = creature.frame.GetSize();
 
-    Sprite sprite(std::move(creature), position, creature_info.direction, size);
+    EnemySprite sprite(std::move(creature), position, creature_info.direction, size);
     return sprite;
 }
 
-Sprite SpriteCreator::create_sprite(const LootInfoDTO& loot_info) {
+FixedSprite SpriteCreator::create_sprite(const LootInfoDTO &loot_info) {
     const SDL2pp::Point position(loot_info.x, loot_info.y);
     SpriteLayer base = create_sprite_layer(SpriteCategory::LOOT,
                                            static_cast<uint8_t>(loot_info.is_item));  // false: 0, true: 1
     const SDL2pp::Point size = base.frame.GetSize();
 
-    Sprite loot(std::move(base), position, size);
+    FixedSprite loot(std::move(base), position, size);
     return loot;
 }
 
-Sprite SpriteCreator::create_sprite(const SpriteCategory category, const AssetInfoDTO& asset_info) {
+FixedSprite SpriteCreator::create_sprite(const SpriteCategory category, const AssetInfoDTO &asset_info) {
     const SDL2pp::Point position(asset_info.x, asset_info.y);
     SpriteLayer base = create_sprite_layer(category, asset_info.id);
     const SDL2pp::Point size = base.frame.GetSize();
 
-    Sprite asset(std::move(base), position, size);
+    FixedSprite asset(std::move(base), position, size);
     return asset;
 }
 
-
-void SpriteCreator::update_appearance(Sprite& player, const AppearanceDTO& appearance, const EquipmentInfoDTO& equipment) {
+void SpriteCreator::update_appearance(PlayerSprite& player, const AppearanceDTO& appearance, const EquipmentInfoDTO& equipment) {
     // En caso de ser fantasma, no se le aplica ningún update
     if (!player.layer_is_different(Layer::HEAD, GHOST_HEAD_ID)) {
         return;
@@ -84,12 +83,12 @@ void SpriteCreator::update_appearance(Sprite& player, const AppearanceDTO& appea
     update_layer(player, SpriteCategory::EQUIPMENT, Layer::WEAPON, equipment.weapon);
 }
 
-void SpriteCreator::update_appearance(Sprite& player, const AppearanceDTO& appearance) {
+void SpriteCreator::update_appearance(PlayerSprite& player, const AppearanceDTO& appearance) {
     update_layer(player, SpriteCategory::BODY, Layer::BODY, appearance.body);
     update_layer(player, SpriteCategory::HEAD, Layer::HEAD, appearance.head);
 }
 
-void SpriteCreator::convert_to_ghost(Sprite& player) {
+void SpriteCreator::convert_to_ghost(PlayerSprite& player) {
     const AppearanceDTO ghost_appearance = {GHOST_BODY_ID, GHOST_HEAD_ID};
     update_appearance(player, ghost_appearance);
 }
@@ -114,16 +113,16 @@ SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, co
     }
 }
 
-void SpriteCreator::update_layer(Sprite& player, const SpriteCategory category, const Layer layer, const uint8_t id) {
+void SpriteCreator::update_layer(PlayerSprite& player, const SpriteCategory category, const Layer layer, const uint8_t id) {
     if (!player.layer_is_different(layer, id)) {
         return;
     }
-    player.remove_layer(layer);
-
     const auto offset = get_layer_offset(layer);
 
     SpriteLayer new_layer = create_sprite_layer(category, id, offset);
-    new_layer.update_frame(0, player.get_current_direction());
+    new_layer.update_frame(0, player.get_last_direction()); // Apunte a dirección correcta
+
+    player.remove_layer(layer);
     player.add_layer(layer, std::move(new_layer));
 }
 

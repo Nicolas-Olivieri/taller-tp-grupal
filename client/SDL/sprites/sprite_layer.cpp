@@ -27,19 +27,17 @@ void SpriteLayer::render(const SDL2pp::Point& base_position) {
     renderer.Copy(texture, frame, SDL2pp::Rect(base_position + offset, frame.GetSize()));
 }
 
-void SpriteLayer::update_frame(const int iteration, const std::optional<Direction> action) {
-    // En caso de ser un item con una unica animación
-    if (std::holds_alternative<Animation>(animations)) {
-        const Animation& anim = std::get<Animation>(animations);
-        frame = anim.next_frame(iteration);
-    }
-
-    // En caso de ser un sprite con movimiento que tiene Direction
-    if (action.has_value() && action.value() != Direction::IDLE) {
+void SpriteLayer::update_frame(const int iteration, const Direction action) {
+    if (action != Direction::IDLE) {
         const auto& anim_map = std::get<std::map<Direction, Animation>>(animations);
-        frame = anim_map.at(action.value()).next_frame(iteration);
-        last_action = action.value();
+        frame = anim_map.at(action).next_frame(iteration);
+        last_action = action;
     }
+}
+
+void SpriteLayer::update_frame(const int iteration) {
+    const Animation& anim = std::get<Animation>(animations);
+    frame = anim.next_frame(iteration);
 }
 
 void SpriteLayer::set_base_frame() {
@@ -58,3 +56,9 @@ bool SpriteLayer::texture_is_different(const int other) const {
 }
 
 std::optional<Direction> SpriteLayer::get_last_action() const { return last_action; }
+
+SDL2pp::Rect SpriteLayer::get_frame_area() const { return frame; }
+
+int SpriteLayer::get_animation_frame_amount() const {
+    return std::get<Animation>(animations).get_frame_amount();
+}

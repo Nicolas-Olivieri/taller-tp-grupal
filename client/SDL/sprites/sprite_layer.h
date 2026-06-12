@@ -9,11 +9,9 @@
 #include "SDL2pp/Rect.hh"
 #include "SDL2pp/Texture.hh"
 
-#include "animation.h"
-
+#include "../sprite_creation/animation.h"
 
 class SpriteLayer {
-    friend class Sprite;
     friend class SpriteCreator;
 
 private:
@@ -35,15 +33,21 @@ public:
 
     void render(const SDL2pp::Point& base_position);
 
-    void update_frame(int iteration, std::optional<Direction> action = std::nullopt);
+    void update_frame(int iteration, Direction action);
+
+    void update_frame(int iteration);
 
     void set_base_frame();
 
     bool has_static_animation() const;
 
+    int get_animation_frame_amount() const;
+
     bool texture_is_different(int other) const;
 
     std::optional<Direction> get_last_action() const;
+
+    SDL2pp::Rect get_frame_area() const;
 };
 
 

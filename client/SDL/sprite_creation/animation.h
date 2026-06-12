@@ -19,6 +19,8 @@ public:
     SDL2pp::Rect next_frame(int iteration) const;
 
     SDL2pp::Rect get_first() const;
+
+    int get_frame_amount() const;
 };
 
 

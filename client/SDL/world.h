@@ -11,10 +11,13 @@
 #include "audio/audio_manager.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/map/client_map_data.h"
-#include "sprites/sprite_creator.h"
-#include "sprites/texture_pool.h"
+#include "sprite_creation/sprite_creator.h"
+#include "sprite_creation/texture_pool.h"
 
 #include "camera.h"
+#include "sprites/effect_sprite.h"
+#include "sprites/fixed_sprite.h"
+#include "sprites/moving_sprite.h"
 
 class World {
 private:
@@ -25,16 +28,16 @@ private:
 
     SDL2pp::Rect world_view;
     std::string player_name;
-    std::map<std::string, std::shared_ptr<Sprite>> players;
-    std::map<uint16_t, std::shared_ptr<Sprite>> creatures;
-    std::map<std::pair<uint16_t, uint16_t>, std::pair<std::shared_ptr<Sprite>, bool>> loot;
+    std::map<std::string, std::shared_ptr<PlayerSprite>> players;
+    std::map<uint16_t, std::shared_ptr<EnemySprite>> creatures;
+    std::map<std::pair<uint16_t, uint16_t>, std::pair<std::shared_ptr<FixedSprite>, bool>> loot;
 
-    std::set<std::shared_ptr<Sprite>> map_tiles;
-    std::set<std::shared_ptr<Sprite>> map_loot;
+    std::set<EffectSprite> effects;
+    std::set<std::shared_ptr<FixedSprite>> map_tiles;
+    std::set<std::shared_ptr<MovingSprite>> map_entities;
     std::set<std::shared_ptr<Sprite>> map_items;
 
     void init_assets(const ClientMapDataDTO& map_data);
-
 
     void add_new_player(const PlayerInfoDTO& info);
 
@@ -50,6 +53,11 @@ private:
 
     void erase_taken_loot(const std::vector<LootInfoDTO>& loot_information);
 
+    template <typename SpriteType>
+    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
+            const Camera& camera, const std::set<std::shared_ptr<SpriteType>>& sprites) const;
+
+
 public:
     World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
           AudioManager& audio_manager);
@@ -62,14 +70,11 @@ public:
 
     void handle_actions(const std::vector<ActionDTO>& actions);
 
-    void update_visuals(int iteration);
+    void update_visuals(int iteration) const;
 
     void render_in_z_order(const Camera& camera) const;
 
-    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
-            const Camera& camera, const std::set<std::shared_ptr<Sprite>>& sprites) const;
-
-    Sprite& get_client_player();
+    PlayerSprite &get_client_player();
 
     SDL2pp::Rect& get_world_size();
 };

@@ -17,7 +17,7 @@ Killable::Killable(const uint8_t archetype_id, const uint8_t race_id, const uint
         stats(archetype_id, race_id, current_xp_amount, level),
         equipment(equipment),
         position(position),
-        direction(Direction::IDLE) {}
+        direction(Direction::DOWN) {}
 
 Killable::Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position,
                    const Equipment& equipment):

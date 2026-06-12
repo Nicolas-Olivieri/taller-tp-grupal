@@ -1,7 +1,7 @@
 #include "camera.h"
 
 
-Camera::Camera(const int screen_width, const int screen_height, const SDL2pp::Rect world_size, Sprite& user):
+Camera::Camera(const int screen_width, const int screen_height, const SDL2pp::Rect world_size, PlayerSprite& user):
         view(SDL2pp::Rect(SDL2pp::Point(0, 0), SDL2pp::Point(screen_width, screen_height))),
         world_size(world_size),
         user(user) {}

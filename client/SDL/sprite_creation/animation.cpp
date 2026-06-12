@@ -14,3 +14,5 @@ SDL2pp::Rect Animation::next_frame(const int iteration) const {
 }
 
 SDL2pp::Rect Animation::get_first() const { return frames[0]; }
+
+int Animation::get_frame_amount() const { return frame_amount; }

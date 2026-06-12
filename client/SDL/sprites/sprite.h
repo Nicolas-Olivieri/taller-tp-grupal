@@ -1,59 +1,32 @@
 #ifndef SPRITE_H
 #define SPRITE_H
-#include <map>
-
-#include "../../../common/direction.h"
-#include "../../client_constants.h"
-
-#include "sprite_layer.h"
+#include "SDL2pp/SDL2pp.hh"
 
 class Sprite {
-private:
+protected:
     SDL2pp::Point position;
-    SDL2pp::Point target_position;
-
-    std::optional<Direction> direction;
     SDL2pp::Point size;
     SDL2pp::Point render_offset;
 
-    std::map<Layer, SpriteLayer> layers;
+    SDL2pp::Point to_sprite_point(const SDL2pp::Point& point);
 
 public:
-    Sprite(SpriteLayer&& base, SDL2pp::Point position, SDL2pp::Point size);
+    Sprite(SDL2pp::Point position, SDL2pp::Point size, SDL2pp::Point render_offset);
 
-    Sprite(SpriteLayer&& body, SDL2pp::Point position, Direction action, SDL2pp::Point size);
+    virtual ~Sprite() = default;
 
-    void add_layer(Layer layer_num, SpriteLayer&& layer);
-    void remove_layer(Layer layer_num);
-    void remove_all_layers();
+    virtual void update_frame(int iteration) = 0;
 
-    const SDL2pp::Point& get_target_position() const;
-    void set_target_position(Direction new_direction, const SDL2pp::Point& new_target);
+    virtual void render(const SDL2pp::Point& camera_offset) = 0;
 
-    void update_visual_position();
-    void update_frame(int iteration);
-
-    void render(const SDL2pp::Point& camera_offset);
+    virtual bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const = 0;
 
     SDL2pp::Point get_position() const;
+
     SDL2pp::Point get_size() const;
+
     SDL2pp::Point get_ground_position() const;
-    std::optional<Direction> get_current_direction() const;
-    std::map<Layer, SpriteLayer> get_all_layers() const;
-
-    bool is_idle() const;
-    bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const;
-    bool layer_is_different(Layer layer, int id) const;
-
-
-private:
-    int get_new_coordinate(const int& current_coordinate, const int& coordinate_diff);
-
-    std::optional<Direction> get_last_direction() const;
-
-    // Transforma las coorddenadas multiplicándolas por la cte TILE_SIZE
-    SDL2pp::Point to_sprite_point(const SDL2pp::Point& point);
 };
 
 
-#endif  // SPRITE_H
+#endif //SPRITE_H
