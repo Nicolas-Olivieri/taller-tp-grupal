@@ -123,6 +123,8 @@ private:
 
     PickUpResult pick_gold_up(Player& player, Tile& tile, uint16_t gold);
 
+    void remove_lonely_creatures();
+
     void remove_dead_creatures();
 
     void spawn_random_creature();

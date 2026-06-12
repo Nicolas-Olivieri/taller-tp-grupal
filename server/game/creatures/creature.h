@@ -19,6 +19,8 @@ class Creature: public Killable, public Attacker {
 private:
     CreatureState* state;
     Player* target;
+    bool is_alone;
+    int count_to_loneliness;
 
     uint8_t get_weapon_range() const;
 
@@ -36,6 +38,8 @@ public:
     Creature(const uint8_t race, const uint8_t variation, const Position& position);
 
     std::vector<Loot> drop() override;
+
+    void update() override;
 
     void update_state();
 
@@ -70,6 +74,8 @@ public:
     const Stats& get_stats() const;
 
     const std::string& get_target_name() const;
+
+    bool is_lonely_creature() const;
 };
 
 #endif  // CREATURE_H

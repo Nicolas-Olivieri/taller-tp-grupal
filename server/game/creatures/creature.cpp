@@ -11,13 +11,14 @@
 
 #define EXTRA_TARGET_RANGE 4  // TODO: toml
 #define EXTRA_TARGET_RANGE_LIMIT 8
+#define MAX_ATTACK_COOLDOWNS_WITHOUT_ACT 20 // TODO: pensar otro nombre
 
-// TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
-// ditintos niveles
 Creature::Creature(const uint8_t race, const uint8_t variation, const Position& position):
         Killable(race, variation, random_level(race, variation), position, equip_items(variation)),
         state(&IdleState::get()),
-        target(nullptr) {}
+        target(nullptr),
+        is_alone(false),
+        count_to_loneliness(required_attack_cooldown * MAX_ATTACK_COOLDOWNS_WITHOUT_ACT) {}
 
 uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
     GameConfig& config = GameConfig::get();
@@ -82,6 +83,24 @@ std::vector<Loot> Creature::drop() {
     }
 
     return drop;
+}
+
+void Creature::update() {
+    Killable::update();
+
+    if (current_attack_cooldown == 0 && target == nullptr) {
+        count_to_loneliness--;
+    } else {
+        count_to_loneliness = required_attack_cooldown * MAX_ATTACK_COOLDOWNS_WITHOUT_ACT;
+    }
+
+    if (count_to_loneliness == 0) {
+        is_alone = true;
+    }
+}
+
+bool Creature::is_lonely_creature() const {
+    return is_alone;
 }
 
 void Creature::update_state() { this->state = this->state->next(*this); }

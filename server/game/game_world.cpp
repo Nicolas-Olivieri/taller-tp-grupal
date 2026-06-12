@@ -55,6 +55,7 @@ WorldUpdateStatus GameWorld::update() {
         }
     }
 
+    remove_lonely_creatures();
     remove_dead_creatures();
 
     if (creatures.size() < MAX_CREATURE_AMOUNT)
@@ -169,6 +170,19 @@ std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(cons
         Position random_position(grid.spawn());
         auto [it, success] = players.emplace(player_name, Player(player_name, data, random_position));
         return it;
+    }
+}
+
+void GameWorld::remove_lonely_creatures() {
+    for (auto it = creatures.begin() ; it != creatures.end() ; ) {
+        Creature& creature = it->second;
+
+        if (creature.is_lonely_creature()) {
+            grid.get_tile(creature.get_position()).occupy(nullptr);
+            it = creatures.erase(it);
+        } else {
+            it++;
+        }
     }
 }
 
