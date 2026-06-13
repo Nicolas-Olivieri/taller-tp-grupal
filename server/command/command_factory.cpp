@@ -15,6 +15,7 @@
 #include "cmd_types/cmd_clan/cmd_found/clan_found_command.h"
 #include "cmd_types/cmd_drop_item/drop_item_command.h"
 #include "cmd_types/cmd_interact/interact_command.h"
+#include "cmd_types/cmd_meditate/meditate_command.h"
 #include "cmd_types/cmd_move/move_command.h"
 #include "cmd_types/cmd_pickup/pickup_command.h"
 #include "cmd_types/cmd_unequip_item/unequip_item_command.h"
@@ -106,6 +107,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::CHEAT_XP:
             return std::make_unique<SetExperienceCommand>(player_name, dto.item_id);
+
+        case CommandType::MEDITATE:
+            return std::make_unique<MeditateCommand>(player_name);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

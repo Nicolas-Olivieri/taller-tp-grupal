@@ -18,6 +18,7 @@ target_sources(taller_server
         command/cmd_types/cmd_despawn/despawn_command.cpp
         command/cmd_types/cmd_drop_item/drop_item_command.cpp
         command/cmd_types/cmd_interact/interact_command.cpp
+        command/cmd_types/cmd_meditate/meditate_command.cpp
         command/cmd_types/cmd_move/move_command.cpp
         command/cmd_types/cmd_spawn/spawn_command.cpp
         command/cmd_types/cmd_unequip_item/unequip_item_command.cpp
@@ -51,6 +52,7 @@ target_sources(taller_server
 
         command/cmd_results/drop_item/drop_item_result.cpp
         command/cmd_results/interact/interact_result.cpp
+        command/cmd_results/meditate/meditate_result.cpp
         command/cmd_results/pickup/pickup_result.cpp
         command/cmd_results/unequip_item/unequip_item_result.cpp
         command/cmd_results/use_item/use_item_result.cpp
@@ -136,6 +138,7 @@ target_sources(taller_server
         command/cmd_types/cmd_despawn/despawn_command.h
         command/cmd_types/cmd_drop_item/drop_item_command.h
         command/cmd_types/cmd_interact/interact_command.h
+        command/cmd_types/cmd_meditate/meditate_command.h
         command/cmd_types/cmd_move/move_command.h
         command/cmd_types/cmd_spawn/spawn_command.h
         command/cmd_types/cmd_unequip_item/unequip_item_command.h
@@ -171,6 +174,7 @@ target_sources(taller_server
         command/cmd_results/interact/attack_result.h
         command/cmd_results/interact/bind_result.h
         command/cmd_results/interact/interact_result.h
+        command/cmd_results/meditate/meditate_result.h
         command/cmd_results/pickup/pickup_result.h
         command/cmd_results/unequip_item/unequip_item_result.h
         command/cmd_results/use_item/use_item_result.h
