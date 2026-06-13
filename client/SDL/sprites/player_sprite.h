@@ -2,19 +2,21 @@
 #define PLAYER_SPRITE_H
 #include <map>
 
-#include "moving_sprite.h"
-#include "sprite_layer.h"
 #include "client/client_constants.h"
 
+#include "moving_sprite.h"
+#include "sprite_layer.h"
 
-class PlayerSprite : public MovingSprite {
+
+class PlayerSprite: public MovingSprite {
     friend class SpriteCreator;
 
 private:
     std::map<Layer, SpriteLayer> layers;
 
 public:
-    PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, SDL2pp::Point position, SDL2pp::Point size, Direction direction);
+    PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, SDL2pp::Point position, SDL2pp::Point size,
+                 Direction direction);
 
     virtual void update_frame(int iteration) override;
 
@@ -36,4 +38,4 @@ public:
 };
 
 
-#endif //PLAYER_SPRITE_H
+#endif  // PLAYER_SPRITE_H

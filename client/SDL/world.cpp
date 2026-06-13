@@ -41,11 +41,14 @@ void World::update_visuals(const int it) const {
     for (auto& tile: map_tiles) {
         tile->update_frame(it);
     }
-    for (auto& entity : map_entities) {
+    for (auto& entity: map_entities) {
         entity->update_visual_position();
     }
     for (auto& item: map_items) {
         item->update_frame(it);
+    }
+    for (auto& fx: effects) {
+        fx->update_frame(it);
     }
 }
 
@@ -56,25 +59,34 @@ bool World::cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_p
 void World::render_in_z_order(const Camera& camera) const {
     // Obtengo tiles e items (colliders, npcs, players, enemies) que se llegan a ver en la cámara
     auto viewed_tiles = filter_viewed_sprites(camera, map_tiles);
+    auto viewed_loot = filter_viewed_sprites(camera, map_loot);
     auto viewed_items = filter_viewed_sprites(camera, map_items);
+    auto viewed_effects = filter_viewed_sprites(camera, effects);
 
     // Ordeno los items por y
     std::ranges::stable_sort(viewed_items, cmp_by_y_coord);
 
-    // Renderizo primero los tiles y luego los items por encima
+    // Renderizo primero los tiles y luego los loot/items/fx por encima
     for (const auto& tile: viewed_tiles) {
         tile->render(camera.get_view().GetTopLeft());
+    }
+
+    for (const auto& loot_item: viewed_loot) {
+        loot_item->render(camera.get_view().GetTopLeft());
     }
 
     for (const auto& item: viewed_items) {
         item->render(camera.get_view().GetTopLeft());
     }
-    renderer.Present();
+
+    for (const auto& fx: viewed_effects) {
+        fx->render(camera.get_view().GetTopLeft());
+    }
 }
 
-template <typename SpriteType>
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
-        const Camera& camera, const std::set<std::shared_ptr<SpriteType>>& sprites) const {
+template <typename Container>
+std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(const Camera& camera,
+                                                                  const Container& sprites) const {
     std::vector<std::shared_ptr<Sprite>> viewed_sprites;
 
     std::ranges::copy_if(sprites, std::back_inserter(viewed_sprites), [camera](auto& item) {
@@ -162,12 +174,16 @@ void World::erase_taken_loot(const std::vector<LootInfoDTO>& loot_information) {
 
     for (auto it = loot.begin(); it != loot.end();) {
         if (!places.contains(it->first)) {
-            map_items.erase(it->second.first);
+            map_loot.erase(it->second.first);
             it = loot.erase(it);
         } else {
             it++;
         }
     }
+}
+
+void World::erase_finished_effects() {
+    std::erase_if(effects, [](const std::shared_ptr<EffectSprite>& fx) { return fx->has_finished(); });
 }
 
 void World::handle_actions(const std::vector<ActionDTO>& actions) {
@@ -196,17 +212,29 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 break;
             case ActionType::DEATH:
                 if (players.contains(action.death.player_dead)) {
-
                     PlayerSprite* sprite = players.at(action.death.player_dead).get();
                     sprite_creator.convert_to_ghost(*sprite);
+
+                    const EffectSprite fx = sprite_creator.create_sprite(action, sprite->get_position());
+                    auto ptr = std::make_shared<EffectSprite>(fx);
+                    effects.emplace(ptr);
+
                     audio_manager.play_event(SoundEvent::DEATH);
                 }
                 break;
 
-            case ActionType::ATTACK:
+            case ActionType::ATTACK: {
                 // TODO: Cambiar el SFX según el arma con la que se atacó
                 audio_manager.play_event(SoundEvent::SWORD_ATTACK);
+
+                if (!action.attack.missed) {
+                    const EffectSprite fx = sprite_creator.create_sprite(action);
+                    auto ptr = std::make_shared<EffectSprite>(fx);
+                    effects.emplace(ptr);
+                }
+
                 break;
+            }
 
             default:
                 break;
@@ -235,15 +263,15 @@ void World::add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint
     FixedSprite drop = sprite_creator.create_sprite(info);
     auto ptr = std::make_shared<FixedSprite>(drop);
     loot[place] = {ptr, info.is_item};
-    map_items.emplace(ptr);
+    map_loot.emplace(ptr);
 }
 
 void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
     auto& [sprite, is_item] = loot[place];
-    map_items.extract(sprite);
+    map_loot.extract(sprite);
     add_new_loot(info, place);
 }
 
-PlayerSprite &World::get_client_player() { return *players.at(player_name).get(); }
+PlayerSprite& World::get_client_player() { return *players.at(player_name).get(); }
 
 SDL2pp::Rect& World::get_world_size() { return world_view; }

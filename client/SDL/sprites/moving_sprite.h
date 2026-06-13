@@ -1,15 +1,16 @@
 #ifndef MOVING_SPRITE_H
 #define MOVING_SPRITE_H
-#include "sprite.h"
 #include "common/direction.h"
 
+#include "sprite.h"
 
-class MovingSprite : public Sprite {
+
+class MovingSprite: public Sprite {
 protected:
     SDL2pp::Point target_position;
     Direction direction;
 
-    int get_new_coordinate(const int &current_coordinate, const int &coordinate_diff);
+    int get_new_coordinate(const int& current_coordinate, const int& coordinate_diff);
 
     MovingSprite(SDL2pp::Point position, SDL2pp::Point size, Direction direction);
 
@@ -25,8 +26,7 @@ public:
     Direction get_direction() const;
 
     ~MovingSprite() override = default;
-
 };
 
 
-#endif //MOVING_SPRITE_H
+#endif  // MOVING_SPRITE_H

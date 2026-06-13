@@ -72,6 +72,7 @@ void ClientGame::run() {
         camera.update_position();
 
         render_ui_and_world();
+        renderer.Present();
 
         iteration = timer.calculate_next_iteration();
     }
@@ -380,6 +381,7 @@ void ClientGame::update_state_from_server() {
     world.update_players(snapshot.players_information);
     world.update_creatures(snapshot.creatures_information);
     world.update_loot(snapshot.loot_information);
+    world.erase_finished_effects();
     ui.update_player_state(snapshot.players_information);
     // TODO añadir el resto del manejo de sprites
 }

@@ -1,8 +1,11 @@
 #include "player_sprite.h"
 
-PlayerSprite::PlayerSprite(SpriteLayer &&head, SpriteLayer &&body, const SDL2pp::Point position, const SDL2pp::Point size, const Direction direction) :
-    MovingSprite(position, size, direction), 
-    layers({{Layer::HEAD, std::move(head)}, {Layer::BODY, std::move(body)}}) {}
+#include <utility>
+
+PlayerSprite::PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, const SDL2pp::Point position,
+                           const SDL2pp::Point size, const Direction direction):
+        MovingSprite(position, size, direction),
+        layers({{Layer::HEAD, std::move(head)}, {Layer::BODY, std::move(body)}}) {}
 
 // METODOS HEREDADOS ::::::::::::::::::
 
@@ -52,16 +55,13 @@ void PlayerSprite::add_layer(Layer layer_num, SpriteLayer&& layer) {
     layers.emplace(layer_num, layer);
 }
 
-void PlayerSprite::remove_layer(const Layer layer_num) {
-    layers.erase(layer_num);
-}
+void PlayerSprite::remove_layer(const Layer layer_num) { layers.erase(layer_num); }
 
-void PlayerSprite::remove_all_layers() {
-    layers.clear();
-}
+void PlayerSprite::remove_all_layers() { layers.clear(); }
 
 bool PlayerSprite::layer_is_different(const Layer layer, const int id) const {
-    return (!layers.contains(layer) && id != 0) || (layers.contains(layer) && layers.at(layer).texture_is_different(id));
+    return (!layers.contains(layer) && id != 0) ||
+           (layers.contains(layer) && layers.at(layer).texture_is_different(id));
 }
 
 Direction PlayerSprite::get_last_direction() const {

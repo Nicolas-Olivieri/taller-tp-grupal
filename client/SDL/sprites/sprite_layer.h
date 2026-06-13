@@ -5,11 +5,10 @@
 #include <variant>
 
 #include "../../../common/direction.h"
+#include "../sprite_creation/animation.h"
 #include "SDL2pp/Point.hh"
 #include "SDL2pp/Rect.hh"
 #include "SDL2pp/Texture.hh"
-
-#include "../sprite_creation/animation.h"
 
 class SpriteLayer {
     friend class SpriteCreator;

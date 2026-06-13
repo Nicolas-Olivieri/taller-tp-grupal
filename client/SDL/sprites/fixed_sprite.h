@@ -3,7 +3,7 @@
 #include "sprite.h"
 #include "sprite_layer.h"
 
-class FixedSprite : public Sprite {
+class FixedSprite: public Sprite {
 protected:
     SpriteLayer image;
 
@@ -18,4 +18,4 @@ public:
 };
 
 
-#endif //FIXED_SPRITE_H
+#endif  // FIXED_SPRITE_H

@@ -4,9 +4,13 @@ tiles = [0,98]
 colliders = [0,65]
 npcs = [0,2]
 loot = [0,1]
+vfx_attack = [0, 9]
+vfx_other = [0, 0]
+
 body = [0, 12]
 head = [0, 13]
 equipment = [0,17]
+
 goblin = [0, 4]
 skeleton = [0, 3]
 zombie = [0, 0]

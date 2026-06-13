@@ -18,7 +18,9 @@ enum class SpriteCategory : uint8_t {
     NPC,
 
     LOOT,
-    EQUIPMENT
+    EQUIPMENT,
+    ATTACK_VFX,
+    ACTION_VFX
 };
 
 #endif  // CONSTANTS_H

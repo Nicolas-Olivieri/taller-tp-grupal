@@ -3,7 +3,7 @@
 #include "fixed_sprite.h"
 
 
-class EffectSprite : public FixedSprite{
+class EffectSprite: public FixedSprite {
 private:
     int elapsed_frames;
     bool finished;
@@ -14,7 +14,9 @@ public:
     bool has_finished() const;
 
     virtual void update_frame(int iteration) override;
+
+    bool operator<(const EffectSprite& other) const;
 };
 
 
-#endif //EFFECT_SPRITE_H
+#endif  // EFFECT_SPRITE_H

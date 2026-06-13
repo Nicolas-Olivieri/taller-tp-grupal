@@ -4,7 +4,7 @@
 #include "sprite_layer.h"
 
 
-class EnemySprite : public MovingSprite {
+class EnemySprite: public MovingSprite {
 private:
     SpriteLayer body;
 
@@ -16,8 +16,7 @@ public:
     virtual void render(const SDL2pp::Point& camera_offset) override;
 
     virtual bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const override;
-
 };
 
 
-#endif //ENEMY_SPRITE_H
+#endif  // ENEMY_SPRITE_H

@@ -12,6 +12,7 @@ target_sources(taller_client
         SDL/audio/sound_pool.cpp
 
         SDL/sprites/sprite.cpp
+        SDL/sprites/effect_sprite.cpp
         SDL/sprites/sprite_layer.cpp
         SDL/sprites/moving_sprite.cpp
         SDL/sprites/fixed_sprite.cpp
@@ -53,6 +54,7 @@ target_sources(taller_client
         SDL/audio/sound_pool.h
 
         SDL/sprites/sprite.h
+        SDL/sprites/effect_sprite.h
         SDL/sprites/sprite_layer.h
         SDL/sprites/moving_sprite.h
         SDL/sprites/fixed_sprite.h

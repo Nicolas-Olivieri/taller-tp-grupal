@@ -1,7 +1,10 @@
 #include "enemy_sprite.h"
 
-EnemySprite::EnemySprite(SpriteLayer &&body, const SDL2pp::Point position, const Direction direction, const SDL2pp::Point size) :
-    MovingSprite(position, size, direction), body(std::move(body)) {}
+#include <utility>
+
+EnemySprite::EnemySprite(SpriteLayer&& body, const SDL2pp::Point position, const Direction direction,
+                         const SDL2pp::Point size):
+        MovingSprite(position, size, direction), body(std::move(body)) {}
 
 // METODOS HEREDADOS ::::::::::::::::::
 

@@ -1,13 +1,15 @@
 #include "moving_sprite.h"
 
+#include <utility>
+
 #include "client/client_constants.h"
 
 #define MIN_PIXELS_PER_STEP 3
 #define CHANGE_RATE 0.3
 
-MovingSprite::MovingSprite(const SDL2pp::Point position, const SDL2pp::Point size, const Direction direction) :
-    Sprite(position, size, SDL2pp::Point{(size.x - TILE_SIZE) / 2, size.y - TILE_SIZE}),
-    direction(direction) {}
+MovingSprite::MovingSprite(const SDL2pp::Point position, const SDL2pp::Point size, const Direction direction):
+        Sprite(position, size, SDL2pp::Point{(size.x - TILE_SIZE) / 2, size.y - TILE_SIZE}),
+        direction(direction) {}
 
 // METODOS PUBLICOS ::::::::::::::::::
 
@@ -29,17 +31,11 @@ void MovingSprite::update_visual_position() {
     position.y = get_new_coordinate(position.y, diff.y);
 }
 
-SDL2pp::Point MovingSprite::get_target_position() const {
-    return target_position;
-}
+SDL2pp::Point MovingSprite::get_target_position() const { return target_position; }
 
-Direction MovingSprite::get_direction() const {
-    return direction;
-}
+Direction MovingSprite::get_direction() const { return direction; }
 
-bool MovingSprite::is_idle() const {
-    return direction == Direction::IDLE;
-}
+bool MovingSprite::is_idle() const { return direction == Direction::IDLE; }
 
 
 // METODOS PRIVADOS ::::::::::::::::::

@@ -1,7 +1,7 @@
 #include "sprite_layer.h"
 
-SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const uint8_t id, const SDL2pp::Point& offset,
-                         Animation animation):
+SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const uint8_t id,
+                         const SDL2pp::Point& offset, Animation animation):
         offset(offset),
         last_action(std::nullopt),
         id(id),
@@ -12,8 +12,8 @@ SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, c
 }
 
 
-SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const uint8_t id, const SDL2pp::Point& offset,
-                         std::map<Direction, Animation>& animations):
+SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const uint8_t id,
+                         const SDL2pp::Point& offset, std::map<Direction, Animation>& animations):
         offset(offset),
         last_action(Direction::DOWN),
         id(id),
@@ -51,9 +51,7 @@ void SpriteLayer::set_base_frame() {
 
 bool SpriteLayer::has_static_animation() const { return std::holds_alternative<Animation>(animations); }
 
-bool SpriteLayer::texture_is_different(const int other) const {
-    return other != id;
-}
+bool SpriteLayer::texture_is_different(const int other) const { return other != id; }
 
 std::optional<Direction> SpriteLayer::get_last_action() const { return last_action; }
 
