@@ -212,6 +212,13 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 }
                 break;
 
+            case ActionType::MEDITATION:
+                if (players.contains(action.meditation.player_meditating)) {
+                    const Sprite* sprite = players.at(action.meditation.player_meditating).get();
+                    play_event(SoundEvent::MEDITATION, sprite->get_position());
+                }
+                break;
+
             case ActionType::RESURRECTION:
                 if (players.contains(action.resurrection.player_resurrected)) {
                     PlayerSprite* sprite = players.at(action.resurrection.player_resurrected).get();
