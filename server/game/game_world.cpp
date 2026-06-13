@@ -268,7 +268,9 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
         if (occupant != nullptr) {
             InteractResult result = occupant->interact(player);
 
-            if (result.attack.was_killed) {
+            if (result.attack.was_killed and not result.attack.player_attacked.empty()) {
+                assert(players.contains(result.attack.player_attacked));
+
                 Player& target = players.at(result.attack.player_attacked);
                 drop_and_add(target, target_tile);
             }
