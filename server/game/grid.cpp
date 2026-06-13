@@ -11,12 +11,12 @@ Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         width_(width),
         height_(height),
         directions({Direction::DOWN, Direction::RIGHT, Direction::LEFT, Direction::UP}) {
-    for (const auto& row: grid_data.walkable_tiles) {
+    for (const auto& row: grid_data.tiles_info) {
         std::vector<Tile> tile_row;
         tile_row.reserve(row.size());
 
         std::ranges::transform(row, std::back_inserter(tile_row),
-                               [](auto tile_value) { return Tile(tile_value); });
+                               [](auto tile_value) { return Tile(tile_value.walkable, tile_value.biome); });
 
         tiles_.emplace_back(std::move(tile_row));
     }

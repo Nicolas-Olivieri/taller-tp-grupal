@@ -55,6 +55,7 @@ target_sources(taller_common
         dto/snapshot/map/client_map_data.cpp
         dto/snapshot/map/grid_matrix.cpp
         dto/snapshot/map/server_map_data.cpp
+        dto/snapshot/map/tile_info.cpp
 
         dto/snapshot/snapshot_builder.cpp
 
@@ -134,6 +135,7 @@ target_sources(taller_common
         dto/snapshot/map/client_map_data.h
         dto/snapshot/map/grid_matrix.h
         dto/snapshot/map/server_map_data.h
+        dto/snapshot/map/tile_info.h
 
         dto/snapshot/snapshot_builder.h
 

@@ -17,7 +17,7 @@ private:
     QHash<uint8_t, AssetData>& colliders;
     QHash<uint8_t, AssetData>& npcs;
 
-    void load_assets(QDataStream& stream, const QHash<uint8_t, AssetData>& lookup_assets_hash) const;
+    void load_assets(QDataStream &stream, const QHash<uint8_t, AssetData> &lookup_assets_hash) const;
 
 public:
     MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,

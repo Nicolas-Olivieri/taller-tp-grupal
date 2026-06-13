@@ -17,7 +17,7 @@ MapSaver::MapSaver(MapData& data): data(data) {}
  * <offset inicio server uint16_t> <offset fin server uint16_t>
  * <width en tiles del mundo uint16_t> <height en tiles del mundo uint16_t>
  *
- * <matriz fila por fila indicando si cada tile es walkable o unwalkable uint8_t>
+ * <matriz fila por fila indicando si cada tile es walkable o unwalkable seguido del id de bioma uint16_t>
  * <cant npcs uint16_t> [<id uint8_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
  *
  * <cant tiles uint16_t> [<id uint8_t> <origen_x uint16_t> <origen_y uint16_t>] [] ...
@@ -81,7 +81,7 @@ void MapSaver::store_offset_and_dimensions_data(QDataStream& stream) const {
     constexpr uint16_t server_start =
             sizeof(header) + sizeof(uint16_t) * 2 + sizeof(world_width) + sizeof(world_height);
 
-    const uint16_t server_end = server_start + sizeof(uint8_t) * world_width * world_height +
+    const uint16_t server_end = server_start + sizeof(uint16_t) * world_width * world_height +
                                 sizeof(uint16_t) + data.asset_counter[ImageType::NPC] * npc_data_size;
 
     stream << header << server_start << server_end << world_width << world_height;
@@ -92,14 +92,21 @@ void MapSaver::store_server_data(QDataStream& stream) const {
 
     for (const auto& cell: grid_range) {
         uint8_t is_walkable;
-
         if (data.unwalkable_tiles.contains(cell) || !data.occupied_tiles.contains(cell)) {
             is_walkable = UNWALKABLE;
         } else {
             is_walkable = WALKABLE;
         }
 
-        stream << is_walkable;
+        uint8_t biome;
+        if (data.occupied_tiles.contains(cell)) {
+            const uint8_t data_id = data.occupied_tiles[cell][0];
+            biome = data.placements[data_id].asset.id;
+        } else {
+            biome = 0;
+        }
+
+        stream << is_walkable << biome;
     }
 
     store_asset_data(stream, ImageType::NPC);

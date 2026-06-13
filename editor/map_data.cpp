@@ -100,6 +100,9 @@ bool MapData::erase_asset(const int asset_id) {
     asset_counter[asset.type]--;
     for (const auto& cell: grid_range) {
         occupied_tiles[cell].removeLast();
+        if (occupied_tiles[cell].empty()) {
+            occupied_tiles.remove(cell);
+        }
 
         if (unwalkable_tiles.contains(cell) && unwalkable_tiles[cell].contains(asset_id)) {
             unwalkable_tiles[cell].removeLast();

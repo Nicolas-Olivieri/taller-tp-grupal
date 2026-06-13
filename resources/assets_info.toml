@@ -2,343 +2,343 @@
 # TILES :::::::::::::::::::::::::::::::::::
 # =========================================
 [[tiles]]
-id = 0
+id = 1
 name = "Agua"
 width = 4
 height = 4
 unwalkable = [0, 0, 4, 4]
 
 [[tiles]]
-id = 1
+id = 2
 name = "Pasto"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 2
+id = 3
 name = "Pasto camino izq."
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 3
+id = 4
 name = "Pasto camino horizontal"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 4
+id = 5
 name = "Pasto camino der."
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 5
+id = 6
 name = "Pasto camino arriba"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 6
+id = 7
 name = "Pasto camino vertical"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 7
+id = 8
 name = "Pasto camino abajo"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 8
+id = 9
 name = "Pasto camino cruz"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 9
+id = 10
 name = "Pasto camino esq. 1"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 10
+id = 11
 name = "Pasto camino esq. 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 11
+id = 12
 name = "Pasto camino esq. 3"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 12
+id = 13
 name = "Pasto camino esq. 4"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 13
+id = 14
 name = "Pasto camino T 1"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 14
+id = 15
 name = "Pasto camino T 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 15
+id = 16
 name = "Pasto camino T 3"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 16
+id = 17
 name = "Pasto camino T 4"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 17
+id = 18
 name = "Arena"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 18
+id = 19
 name = "Arena camino arriba"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 19
+id = 20
 name = "Arena camino esq. 1"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 20
+id = 21
 name = "Arena camino T 1"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 21
+id = 22
 name = "Arena camino esq. 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 22
+id = 23
 name = "Arena camino vertical"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 23
+id = 24
 name = "Arena camino T 3"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 24
+id = 25
 name = "Arena camino cruz"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 25
+id = 26
 name = "Arena camino T 4"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 26
+id = 27
 name = "Arena camino esq. 3"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 27
+id = 28
 name = "Arena camino T 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 28
+id = 29
 name = "Arena camino esq. 4"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 29
+id = 30
 name = "Arena camino izq."
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 30
+id = 31
 name = "Arena camino horizontal"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 31
+id = 32
 name = "Arena camino abajo"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 32
+id = 33
 name = "Arena camino der."
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 33
+id = 34
 name = "Arena ladrillo"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 34
+id = 35
 name = "Nieve"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 35
+id = 36
 name = "Nieve 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 36
+id = 37
 name = "Nieve 3"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 37
+id = 38
 name = "Nieve tierra"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 38
+id = 39
 name = "Mazmorra pared arriba"
 width = 4
 height = 4
 unwalkable = [0, 0, 4, 4]
 
 [[tiles]]
-id = 39
+id = 40
 name = "Mazmorra pared abajo"
 width = 4
 height = 4
 unwalkable = [0, 2, 4, 2]
 
 [[tiles]]
-id = 40
+id = 41
 name = "Mazmorra pared izq"
 width = 4
 height = 4
 unwalkable = [0, 0, 2, 4]
 
 [[tiles]]
-id = 41
+id = 42
 name = "Mazmorra pared der"
 width = 4
 height = 4
 unwalkable = [2, 0, 2, 4]
 
 [[tiles]]
-id = 42
+id = 43
 name = "Mazmorra pared esq. 4"
 width = 4
 height = 4
 unwalkable = [0, 0, 2, 4]
 
 [[tiles]]
-id = 43
+id = 44
 name = "Mazmorra pared esq. 3"
 width = 4
 height = 4
 unwalkable = [2, 0, 2, 4]
 
 [[tiles]]
-id = 44
+id = 45
 name = "Mazmorra pared esq. 2"
 width = 4
 height = 4
 unwalkable = [0, 2, 2, 2]
 
 [[tiles]]
-id = 45
+id = 46
 name = "Mazmorra pared esq. 1"
 width = 4
 height = 4
 unwalkable = [2, 2, 2, 2]
 
 [[tiles]]
-id = 46
+id = 47
 name = "Mazmorra L 1"
 width = 4
 height = 4
 unwalkable = [0, 0, 4, 4]
 
 [[tiles]]
-id = 47
+id = 48
 name = "Mazmorra L 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 4, 4]
 
 [[tiles]]
-id = 48
+id = 49
 name = "Mazmorra L 3"
 width = 4
 height = 4
@@ -346,7 +346,7 @@ unwalkable = [2, 0, 2, 2]
 inverse = true
 
 [[tiles]]
-id = 49
+id = 50
 name = "Mazmorra L 3"
 width = 4
 height = 4
@@ -354,70 +354,70 @@ unwalkable = [0, 0, 2, 2]
 inverse = true
 
 [[tiles]]
-id = 50
+id = 51
 name = "Mazmorra piso"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 51
+id = 52
 name = "Pasto costa 1"
 width = 2
 height = 2
 unwalkable = [0, 0, 1, 2]
 
 [[tiles]]
-id = 52
+id = 53
 name = "Pasto costa 2"
 width = 2
 height = 2
 unwalkable = [1, 0, 1, 2]
 
 [[tiles]]
-id = 53
+id = 54
 name = "Pasto costa 4"
 width = 2
 height = 2
 unwalkable = [0, 1, 2, 1]
 
 [[tiles]]
-id = 54
+id = 55
 name = "Pasto costa 3"
 width = 2
 height = 2
 unwalkable = [0, 0, 2, 1]
 
 [[tiles]]
-id = 55
+id = 56
 name = "Pasto costa esq 1"
 width = 2
 height = 2
 unwalkable = [1, 1, 1, 1]
 
 [[tiles]]
-id = 56
+id = 57
 name = "Pasto costa esq 3"
 width = 2
 height = 2
 unwalkable = [1, 0, 1, 1]
 
 [[tiles]]
-id = 57
+id = 58
 name = "Pasto costa esq 2"
 width = 2
 height = 2
 unwalkable = [0, 1, 1, 1]
 
 [[tiles]]
-id = 58
+id = 59
 name = "Pasto costa esq 4"
 width = 2
 height = 2
 unwalkable = [0, 0, 1, 1]
 
 [[tiles]]
-id = 59
+id = 60
 name = "Pasto costa L 1"
 width = 2
 height = 2
@@ -425,7 +425,7 @@ unwalkable = [1, 1, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 60
+id = 61
 name = "Pasto costa L 3"
 width = 2
 height = 2
@@ -433,7 +433,7 @@ unwalkable = [1, 0, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 61
+id = 62
 name = "Pasto costa L 2"
 width = 2
 height = 2
@@ -441,7 +441,7 @@ unwalkable = [0, 1, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 62
+id = 63
 name = "Pasto costa L 4"
 width = 2
 height = 2
@@ -450,63 +450,63 @@ inverse = true
 
 
 [[tiles]]
-id = 63
+id = 64
 name = "Arena costa 1"
 width = 2
 height = 2
 unwalkable = [0, 0, 1, 2]
 
 [[tiles]]
-id = 64
+id = 65
 name = "Arena costa 2"
 width = 2
 height = 2
 unwalkable = [1, 0, 1, 2]
 
 [[tiles]]
-id = 65
+id = 66
 name = "Arena costa 4"
 width = 2
 height = 2
 unwalkable = [0, 1, 2, 1]
 
 [[tiles]]
-id = 66
+id = 67
 name = "Arena costa 3"
 width = 2
 height = 2
 unwalkable = [0, 0, 2, 1]
 
 [[tiles]]
-id = 67
+id = 68
 name = "Arena costa esq 1"
 width = 2
 height = 2
 unwalkable = [1, 1, 1, 1]
 
 [[tiles]]
-id = 68
+id = 69
 name = "Arena costa esq 3"
 width = 2
 height = 2
 unwalkable = [1, 0, 1, 1]
 
 [[tiles]]
-id = 69
+id = 70
 name = "Arena costa esq 2"
 width = 2
 height = 2
 unwalkable = [0, 1, 1, 1]
 
 [[tiles]]
-id = 70
+id = 71
 name = "Arena costa esq 4"
 width = 2
 height = 2
 unwalkable = [0, 0, 1, 1]
 
 [[tiles]]
-id = 71
+id = 72
 name = "Arena costa L 1"
 width = 2
 height = 2
@@ -514,7 +514,7 @@ unwalkable = [1, 1, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 72
+id = 73
 name = "Arena costa L 3"
 width = 2
 height = 2
@@ -522,7 +522,7 @@ unwalkable = [1, 0, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 73
+id = 74
 name = "Arena costa L 2"
 width = 2
 height = 2
@@ -530,7 +530,7 @@ unwalkable = [0, 1, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 74
+id = 75
 name = "Arena costa L 4"
 width = 2
 height = 2
@@ -538,63 +538,63 @@ unwalkable = [0, 0, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 75
+id = 76
 name = "Nieve costa 1"
 width = 2
 height = 2
 unwalkable = [0, 0, 1, 2]
 
 [[tiles]]
-id = 76
+id = 77
 name = "Nieve costa 2"
 width = 2
 height = 2
 unwalkable = [1, 0, 1, 2]
 
 [[tiles]]
-id = 77
+id = 78
 name = "Nieve costa 4"
 width = 2
 height = 2
 unwalkable = [0, 1, 2, 1]
 
 [[tiles]]
-id = 78
+id = 79
 name = "Nieve costa 3"
 width = 2
 height = 2
 unwalkable = [0, 0, 2, 1]
 
 [[tiles]]
-id = 79
+id = 80
 name = "Nieve costa esq 1"
 width = 2
 height = 2
 unwalkable = [1, 1, 1, 1]
 
 [[tiles]]
-id = 80
+id = 81
 name = "Nieve costa esq 3"
 width = 2
 height = 2
 unwalkable = [1, 0, 1, 1]
 
 [[tiles]]
-id = 81
+id = 82
 name = "Nieve costa esq 2"
 width = 2
 height = 2
 unwalkable = [0, 1, 1, 1]
 
 [[tiles]]
-id = 82
+id = 83
 name = "Nieve costa esq 4"
 width = 2
 height = 2
 unwalkable = [0, 0, 1, 1]
 
 [[tiles]]
-id = 83
+id = 84
 name = "Nieve costa L 1"
 width = 2
 height = 2
@@ -602,7 +602,7 @@ unwalkable = [1, 1, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 84
+id = 85
 name = "Nieve costa L 3"
 width = 2
 height = 2
@@ -610,7 +610,7 @@ unwalkable = [1, 0, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 85
+id = 86
 name = "Nieve costa L 2"
 width = 2
 height = 2
@@ -618,7 +618,7 @@ unwalkable = [0, 1, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 86
+id = 87
 name = "Nieve costa L 4"
 width = 2
 height = 2
@@ -626,84 +626,84 @@ unwalkable = [0, 0, 1, 1]
 inverse = true
 
 [[tiles]]
-id = 87
+id = 88
 name = "Arena limite 1"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 88
+id = 89
 name = "Arena limite 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 89
+id = 90
 name = "Arena limite 3"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 90
+id = 91
 name = "Arena limite 4"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 91
+id = 92
 name = "Arena limite esq 1"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 92
+id = 93
 name = "Arena limite esq 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 93
+id = 94
 name = "Arena limite esq 3"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 94
+id = 95
 name = "Arena limite esq 4"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 95
+id = 96
 name = "Arena limite L 1"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 96
+id = 97
 name = "Arena limite L 2"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 97
+id = 98
 name = "Arena limite L 3"
 width = 4
 height = 4
 unwalkable = [0, 0, 0, 0]
 
 [[tiles]]
-id = 98
+id = 99
 name = "Arena limite L 4"
 width = 4
 height = 4
