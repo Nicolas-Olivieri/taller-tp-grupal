@@ -1,7 +1,7 @@
 #ifndef SPRITE_CREATOR_H
 #define SPRITE_CREATOR_H
 
-#include <string>
+#include <memory>
 
 #include "../sprites/sprite_layer.h"
 #include "client/SDL/sprites/effect_sprite.h"
@@ -24,6 +24,7 @@ private:
     TexturePool texture_pool;
     AnimationPool animation_pool;
     SDL2pp::Renderer& renderer;
+    FontManager& font_manager;
 
     SpriteLayer create_sprite_layer(SpriteCategory category, uint8_t id,
                                     const SDL2pp::Point& offset = SDL2pp::Point(0, 0));
@@ -33,7 +34,7 @@ private:
     SDL2pp::Point get_layer_offset(Layer layer);
 
 public:
-    explicit SpriteCreator(SDL2pp::Renderer& renderer);
+    explicit SpriteCreator(SDL2pp::Renderer& renderer, FontManager& font_manager);
 
     // Sobrecarga para tomar distintos DTOs
 
@@ -53,6 +54,15 @@ public:
     void update_appearance(PlayerSprite& player, const AppearanceDTO& appearance);
 
     void convert_to_ghost(PlayerSprite& player);
+
+    template <typename InfoDTO>
+    void update_label(MovingSprite& sprite, const InfoDTO& info) const {
+        if (not sprite.has_label()) {
+            sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, info));
+        } else {
+            sprite.get_label().update(info);
+        }
+    }
 };
 
 

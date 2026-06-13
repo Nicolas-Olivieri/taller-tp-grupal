@@ -1,20 +1,24 @@
 #include "sprite_creator.h"
 
 #include <map>
+#include <memory>
 #include <ranges>
 #include <utility>
 
-#include "../sprites/sprite_layer.h"
 #include "client/SDL/sprites/effect_sprite.h"
 #include "client/SDL/sprites/enemy_sprite.h"
 #include "client/SDL/sprites/fixed_sprite.h"
 #include "client/SDL/sprites/player_sprite.h"
+#include "client/SDL/sprites/sprite_label.h"
 #include "client/client_constants.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/map/asset_info.h"
 
-SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer):
-        texture_pool(TexturePool(renderer)), animation_pool(AnimationPool()), renderer(renderer) {}
+SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer, FontManager& font_manager):
+        texture_pool(TexturePool(renderer)),
+        animation_pool(AnimationPool()),
+        renderer(renderer),
+        font_manager(font_manager) {}
 
 
 PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
@@ -33,6 +37,7 @@ PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
     const SDL2pp::Point size = body_rect.Union(head_rect).GetSize();
 
     PlayerSprite sprite(std::move(head), std::move(body), position, size, player_info.direction);
+    sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, player_info));
 
     if (player_info.stats.current_health == 0)
         convert_to_ghost(sprite);
@@ -48,6 +53,8 @@ EnemySprite SpriteCreator::create_sprite(const CreatureInfoDTO& creature_info) {
     const SDL2pp::Point size = creature.frame.GetSize();
 
     EnemySprite sprite(std::move(creature), position, creature_info.direction, size);
+    sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, creature_info));
+
     return sprite;
 }
 

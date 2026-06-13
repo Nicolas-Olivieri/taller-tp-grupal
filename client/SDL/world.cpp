@@ -7,6 +7,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "fonts/font_manager.h"
+
 #include "camera.h"
 
 World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
@@ -24,17 +26,17 @@ World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::
 void World::init_assets(const ClientMapDataDTO& map_data) {
     for (const auto& tile_data: map_data.tiles) {
         FixedSprite tile = sprite_creator.create_sprite(SpriteCategory::TILE, tile_data);
-        map_tiles.emplace(std::make_shared<FixedSprite>(tile));
+        map_tiles.emplace(std::make_shared<FixedSprite>(std::move(tile)));
     }
 
     for (const auto& collider_data: map_data.colliders) {
         FixedSprite collider = sprite_creator.create_sprite(SpriteCategory::COLLIDER, collider_data);
-        map_items.emplace(std::make_shared<FixedSprite>(collider));
+        map_items.emplace(std::make_shared<FixedSprite>(std::move(collider)));
     }
 
     for (const auto& npc_data: map_data.npcs) {
         FixedSprite npc = sprite_creator.create_sprite(SpriteCategory::NPC, npc_data);
-        map_items.emplace(std::make_shared<FixedSprite>(npc));
+        map_items.emplace(std::make_shared<FixedSprite>(std::move(npc)));
     }
 }
 
@@ -63,9 +65,9 @@ void World::render_in_z_order(const Camera& camera) const {
     auto viewed_tiles = filter_viewed_sprites(camera, map_tiles);
     auto viewed_loot = filter_viewed_sprites(camera, map_loot);
     auto viewed_items = filter_viewed_sprites(camera, map_items);
-    auto viewed_players = filter_viewed_sprites(camera, players);
-    auto viewed_creatures = filter_viewed_sprites(camera, creatures);
     auto viewed_effects = filter_viewed_sprites(camera, effects);
+    auto viewed_players = filter_viewed_sprites(camera, players | std::views::values);
+    auto viewed_creatures = filter_viewed_sprites(camera, creatures | std::views::values);
 
     // Ordeno los items por y
     std::ranges::stable_sort(viewed_items, cmp_by_y_coord);
@@ -95,21 +97,6 @@ void World::render_in_z_order(const Camera& camera) const {
     for (const auto& fx: viewed_effects) {
         fx->render(camera.get_view().GetTopLeft());
     }
-}
-
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
-        const Camera& camera, const std::set<std::shared_ptr<Sprite>>& sprites) const {
-    return filter_sprites(camera, sprites);
-}
-
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
-        const Camera& camera, const std::map<std::string, std::shared_ptr<Sprite>>& players_sprites) const {
-    return filter_sprites(camera, players_sprites | std::views::values);
-}
-
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
-        const Camera& camera, const std::map<uint16_t, std::shared_ptr<Sprite>>& creatures_sprites) const {
-    return filter_sprites(camera, creatures_sprites | std::views::values);
 }
 
 void World::update_players(const std::vector<PlayerInfoDTO>& players_information) {
@@ -238,8 +225,8 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                     PlayerSprite* sprite = players.at(action.death.player_dead).get();
                     sprite_creator.convert_to_ghost(*sprite);
 
-                    const EffectSprite fx = sprite_creator.create_sprite(action, sprite->get_position());
-                    auto ptr = std::make_shared<EffectSprite>(fx);
+                    EffectSprite fx = sprite_creator.create_sprite(action, sprite->get_position());
+                    auto ptr = std::make_shared<EffectSprite>(std::move(fx));
                     effects.emplace(ptr);
 
                     play_event(SoundEvent::DEATH, sprite->get_position());
@@ -252,8 +239,8 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 }
 
                 if (!action.attack.missed) {
-                    const EffectSprite fx = sprite_creator.create_sprite(action);
-                    auto ptr = std::make_shared<EffectSprite>(fx);
+                    EffectSprite fx = sprite_creator.create_sprite(action);
+                    auto ptr = std::make_shared<EffectSprite>(std::move(fx));
                     effects.emplace(ptr);
                 }
 
@@ -286,7 +273,7 @@ void World::handle_attack(const AttackDTO& attack) {
 
 void World::add_new_player(const PlayerInfoDTO& info) {
     PlayerSprite player = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<PlayerSprite>(player);
+    auto ptr = std::make_shared<PlayerSprite>(std::move(player));
     players.insert({{info.name, ptr}});
     map_items.emplace(ptr);
     map_entities.emplace(ptr);
@@ -294,7 +281,7 @@ void World::add_new_player(const PlayerInfoDTO& info) {
 
 void World::add_new_creature(const CreatureInfoDTO& info) {
     EnemySprite creature = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<EnemySprite>(creature);
+    auto ptr = std::make_shared<EnemySprite>(std::move(creature));
     creatures.insert({{info.sub_id, ptr}});
     map_items.emplace(ptr);
     map_entities.emplace(ptr);
@@ -302,7 +289,7 @@ void World::add_new_creature(const CreatureInfoDTO& info) {
 
 void World::add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
     FixedSprite drop = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<FixedSprite>(drop);
+    auto ptr = std::make_shared<FixedSprite>(std::move(drop));
     loot[place] = {ptr, info.is_item};
     map_loot.emplace(ptr);
 }

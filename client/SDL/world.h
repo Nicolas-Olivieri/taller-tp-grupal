@@ -34,7 +34,7 @@ private:
     std::map<uint16_t, std::shared_ptr<EnemySprite>> creatures;
     std::map<std::pair<uint16_t, uint16_t>, std::pair<std::shared_ptr<FixedSprite>, bool>> loot;
 
-    std::multiset<std::shared_ptr<EffectSprite>> effects;
+    std::set<std::shared_ptr<EffectSprite>> effects;
     std::set<std::shared_ptr<FixedSprite>> map_tiles;
     std::set<std::shared_ptr<MovingSprite>> map_entities;
     std::set<std::shared_ptr<FixedSprite>> map_loot;
@@ -61,9 +61,11 @@ private:
     void play_event(const SoundEvent& event, const SDL2pp::Point& source);
 
     template <typename Range>
-    std::vector<std::shared_ptr<Sprite>> filter_sprites(const Camera& camera, Range&& sprites) const {
-        std::vector<std::shared_ptr<Sprite>> viewed_sprites;
-        auto is_visible = [&camera](const std::shared_ptr<Sprite>& item) {
+    auto filter_viewed_sprites(const Camera& camera, Range&& sprites) const {
+        using SpritePtr = std::ranges::range_value_t<Range>;
+        std::vector<SpritePtr> viewed_sprites;
+
+        auto is_visible = [&camera](const auto& item) {
             return item->intersects(camera.get_view(), camera.get_view().GetTopLeft());
         };
 
@@ -90,18 +92,6 @@ public:
     void render_in_z_order(const Camera& camera) const;
 
     PlayerSprite& get_client_player();
-
-    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
-            const Camera& camera, const std::set<std::shared_ptr<Sprite>>& sprites) const;
-
-    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
-            const Camera& camera,
-            const std::map<std::string, std::shared_ptr<Sprite>>& players_sprites) const;
-
-    std::vector<std::shared_ptr<Sprite>> filter_viewed_sprites(
-            const Camera& camera, const std::map<uint16_t, std::shared_ptr<Sprite>>& creatures_sprites) const;
-
-    Sprite& get_client_player();
 
     SDL2pp::Rect& get_world_size();
 };

@@ -1,5 +1,6 @@
 #include "moving_sprite.h"
 
+#include <memory>
 #include <utility>
 
 #include "client/client_constants.h"
@@ -37,6 +38,18 @@ Direction MovingSprite::get_direction() const { return direction; }
 
 bool MovingSprite::is_idle() const { return direction == Direction::IDLE; }
 
+bool MovingSprite::has_label() const { return label != nullptr; }
+
+SpriteLabel& MovingSprite::get_label() const { return *label.get(); }
+
+void MovingSprite::set_label(std::unique_ptr<SpriteLabel> new_label) { label = std::move(new_label); }
+
+void MovingSprite::render_overlay(const SDL2pp::Point& camera_offset) const {
+    if (not label)
+        return;
+
+    label->render(position - camera_offset - render_offset, size);
+}
 
 // METODOS PRIVADOS ::::::::::::::::::
 

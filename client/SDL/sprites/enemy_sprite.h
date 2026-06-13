@@ -16,6 +16,13 @@ public:
     virtual void render(const SDL2pp::Point& camera_offset) override;
 
     virtual bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const override;
+
+
+    EnemySprite(EnemySprite&&) = default;
+    EnemySprite& operator=(EnemySprite&&) = default;
+
+    EnemySprite(const EnemySprite&) = delete;
+    EnemySprite& operator=(const EnemySprite&) = delete;
 };
 
 

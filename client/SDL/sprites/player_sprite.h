@@ -35,6 +35,12 @@ public:
     Direction get_last_direction() const;
 
     ~PlayerSprite() override = default;
+
+    PlayerSprite(PlayerSprite&&) = default;
+    PlayerSprite& operator=(PlayerSprite&&) = default;
+
+    PlayerSprite(const PlayerSprite&) = delete;
+    PlayerSprite& operator=(const PlayerSprite&) = delete;
 };
 
 
