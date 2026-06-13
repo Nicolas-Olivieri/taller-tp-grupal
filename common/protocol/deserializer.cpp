@@ -70,6 +70,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CLAN_LEAVE:
         case CommandType::CLAN_REVIEW:
         case CommandType::CHEAT_XP:
+        case CommandType::MEDITATE:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -203,6 +204,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_despawn());
         case ActionType::HEAL:
             return ActionDTO(recv_heal());
+        case ActionType::MEDITATION:
+            return ActionDTO(recv_meditation());
         case ActionType::MESSAGE:
             return ActionDTO(recv_chat_message());
         case ActionType::RESURRECTION:
@@ -231,6 +234,7 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::ATTACK:
         case ActionType::DESPAWN:
         case ActionType::HEAL:
+        case ActionType::MEDITATION:
         case ActionType::MESSAGE:
         case ActionType::RESURRECTION:
         case ActionType::DEATH:
@@ -371,6 +375,12 @@ AttackDTO Deserializer::recv_attack() {
     const uint8_t missed = recv_uint8();
 
     return AttackDTO(attacker, weapon, x, y, missed);
+}
+
+MeditationDTO Deserializer::recv_meditation() {
+    const std::string player_meditating = recv_string();
+
+    return MeditationDTO(player_meditating);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {

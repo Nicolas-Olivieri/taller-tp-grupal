@@ -33,6 +33,7 @@
 #include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
+#include "common/dto/snapshot/actions/action_types/act_meditation/meditation.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/creature_stats.h"
 #include "common/dto/snapshot/info/inventory_info.h"
@@ -136,6 +137,8 @@ public:
     void serialize(const EquipmentInfoDTO& equipment);
 
     void serialize(const AttackDTO& attack);
+
+    void serialize(const MeditationDTO& meditation);
 
     void serialize(const ResurrectionDTO& resurrection);
 
