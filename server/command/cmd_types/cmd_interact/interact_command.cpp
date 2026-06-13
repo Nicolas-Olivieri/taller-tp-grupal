@@ -10,7 +10,6 @@ InteractCommand::InteractCommand(const std::string& player_name, const int x, co
 
 void InteractCommand::execute(GameWorld& world) {
     result = world.interact(player_name, position);
-    // TODO aca podriamos conseguir el clan name y eso
 
     if (result.type == InteractionType::ATTACK) {
         for (const auto& [name, player]: world.get_players()) {
