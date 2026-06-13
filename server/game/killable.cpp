@@ -17,7 +17,7 @@ Killable::Killable(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_am
         stats(archetype_id, race_id, current_xp_amount, level),
         equipment(equipment),
         position(position),
-        direction(Direction::IDLE),
+        direction(Direction::DOWN),
         clan() {
     if (clan_ptr != nullptr)
         clan = ClanMembership(clan_ptr, is_clan_founder);

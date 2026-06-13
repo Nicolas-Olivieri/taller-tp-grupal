@@ -7,6 +7,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "fonts/font_manager.h"
+
 #include "camera.h"
 
 World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
@@ -23,35 +25,39 @@ World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::
 
 void World::init_assets(const ClientMapDataDTO& map_data) {
     for (const auto& tile_data: map_data.tiles) {
-        Sprite tile = sprite_creator.create_sprite(SpriteCategory::TILE, tile_data);
-        map_tiles.emplace(std::make_shared<Sprite>(std::move(tile)));
+        FixedSprite tile = sprite_creator.create_sprite(SpriteCategory::TILE, tile_data);
+        map_tiles.emplace(std::make_shared<FixedSprite>(std::move(tile)));
     }
 
     for (const auto& collider_data: map_data.colliders) {
-        Sprite collider = sprite_creator.create_sprite(SpriteCategory::COLLIDER, collider_data);
-        map_items.emplace(std::make_shared<Sprite>(std::move(collider)));
+        FixedSprite collider = sprite_creator.create_sprite(SpriteCategory::COLLIDER, collider_data);
+        map_items.emplace(std::make_shared<FixedSprite>(std::move(collider)));
     }
 
     for (const auto& npc_data: map_data.npcs) {
-        Sprite npc = sprite_creator.create_sprite(SpriteCategory::NPC, npc_data);
-        map_items.emplace(std::make_shared<Sprite>(std::move(npc)));
+        FixedSprite npc = sprite_creator.create_sprite(SpriteCategory::NPC, npc_data);
+        map_items.emplace(std::make_shared<FixedSprite>(std::move(npc)));
     }
 }
 
 
-void World::update_visuals(const int it) {
+void World::update_visuals(const int it) const {
     for (auto& tile: map_tiles) {
         tile->update_frame(it);
     }
-
+    for (auto& entity: map_entities) {
+        entity->update_visual_position();
+    }
     for (auto& item: map_items) {
-        item->update_visual_position();
         item->update_frame(it);
+    }
+    for (auto& fx: effects) {
+        fx->update_frame(it);
     }
 }
 
 bool World::cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_ptr<Sprite>& b) {
-    return a->get_ground_position().y < b->get_ground_position().y;
+    return a->get_ground_position().y <= b->get_ground_position().y;
 }
 
 void World::render_in_z_order(const Camera& camera) const {
@@ -59,13 +65,14 @@ void World::render_in_z_order(const Camera& camera) const {
     auto viewed_tiles = filter_viewed_sprites(camera, map_tiles);
     auto viewed_loot = filter_viewed_sprites(camera, map_loot);
     auto viewed_items = filter_viewed_sprites(camera, map_items);
-    auto viewed_players = filter_viewed_sprites(camera, players);
-    auto viewed_creatures = filter_viewed_sprites(camera, creatures);
+    auto viewed_effects = filter_viewed_sprites(camera, effects);
+    auto viewed_players = filter_viewed_sprites(camera, players | std::views::values);
+    auto viewed_creatures = filter_viewed_sprites(camera, creatures | std::views::values);
 
     // Ordeno los items por y
     std::ranges::stable_sort(viewed_items, cmp_by_y_coord);
 
-    // Renderizo primero los tiles y luego los items por encima
+    // Renderizo primero los tiles y luego los loot/items/fx por encima
     for (const auto& tile: viewed_tiles) {
         tile->render(camera.get_view().GetTopLeft());
     }
@@ -87,22 +94,9 @@ void World::render_in_z_order(const Camera& camera) const {
         creature->render_overlay(camera.get_view().GetTopLeft());
     }
 
-    renderer.Present();
-}
-
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
-        const Camera& camera, const std::set<std::shared_ptr<Sprite>>& sprites) const {
-    return filter_sprites(camera, sprites);
-}
-
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
-        const Camera& camera, const std::map<std::string, std::shared_ptr<Sprite>>& players_sprites) const {
-    return filter_sprites(camera, players_sprites | std::views::values);
-}
-
-std::vector<std::shared_ptr<Sprite>> World::filter_viewed_sprites(
-        const Camera& camera, const std::map<uint16_t, std::shared_ptr<Sprite>>& creatures_sprites) const {
-    return filter_sprites(camera, creatures_sprites | std::views::values);
+    for (const auto& fx: viewed_effects) {
+        fx->render(camera.get_view().GetTopLeft());
+    }
 }
 
 void World::update_players(const std::vector<PlayerInfoDTO>& players_information) {
@@ -118,7 +112,10 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
             play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(player_info.x, player_info.y) * TILE_SIZE);
 
         player_sprite->set_target_position(player_info.direction, position);
+
         sprite_creator.update_label(*player_sprite, player_info);
+
+        sprite_creator.update_appearance(*player_sprite, player_info.appearance, player_info.equipment);
     }
 }
 
@@ -137,6 +134,7 @@ void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_infor
             play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(creature_info.x, creature_info.y) * TILE_SIZE);
 
         creature_sprite->set_target_position(creature_info.direction, position);
+
         sprite_creator.update_label(*creature_sprite, creature_info);
     }
 }
@@ -151,6 +149,7 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
         if (!sub_ids.contains(it->first)) {
             play_event(SoundEvent::DEATH, it->second.get()->get_position());
             map_items.erase(it->second);
+            map_entities.erase(it->second);
             it = creatures.erase(it);
         } else {
             it++;
@@ -189,6 +188,10 @@ void World::erase_taken_loot(const std::vector<LootInfoDTO>& loot_information) {
     }
 }
 
+void World::erase_finished_effects() {
+    std::erase_if(effects, [](const std::shared_ptr<EffectSprite>& fx) { return fx->has_finished(); });
+}
+
 void World::handle_actions(const std::vector<ActionDTO>& actions) {
     // TODO agregar todos los tipos que vayamos agregando
     for (auto& action: actions) {
@@ -198,6 +201,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                     auto player = players.extract(action.despawn.player_despawned);
                     play_event(SoundEvent::DESPAWN, player.mapped()->get_position());
                     map_items.erase(player.mapped());
+                    map_entities.erase(player.mapped());
                 }
                 break;
 
@@ -210,7 +214,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 
             case ActionType::RESURRECTION:
                 if (players.contains(action.resurrection.player_resurrected)) {
-                    Sprite* sprite = players.at(action.resurrection.player_resurrected).get();
+                    PlayerSprite* sprite = players.at(action.resurrection.player_resurrected).get();
                     sprite_creator.update_appearance(*sprite, action.resurrection.original_appearance);
                     play_event(SoundEvent::RESURRECTION, sprite->get_position());
                 }
@@ -218,8 +222,13 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 
             case ActionType::DEATH:
                 if (players.contains(action.death.player_dead)) {
-                    Sprite* sprite = players.at(action.death.player_dead).get();
+                    PlayerSprite* sprite = players.at(action.death.player_dead).get();
                     sprite_creator.convert_to_ghost(*sprite);
+
+                    EffectSprite fx = sprite_creator.create_sprite(action, sprite->get_position());
+                    auto ptr = std::make_shared<EffectSprite>(std::move(fx));
+                    effects.emplace(ptr);
+
                     play_event(SoundEvent::DEATH, sprite->get_position());
                 }
                 break;
@@ -228,7 +237,15 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 if (players.contains(action.attack.attacker)) {
                     handle_attack(action.attack);
                 }
+
+                if (!action.attack.missed) {
+                    EffectSprite fx = sprite_creator.create_sprite(action);
+                    auto ptr = std::make_shared<EffectSprite>(std::move(fx));
+                    effects.emplace(ptr);
+                }
+
                 break;
+
 
             default:
                 break;
@@ -255,22 +272,24 @@ void World::handle_attack(const AttackDTO& attack) {
 }
 
 void World::add_new_player(const PlayerInfoDTO& info) {
-    Sprite player = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<Sprite>(std::move(player));
+    PlayerSprite player = sprite_creator.create_sprite(info);
+    auto ptr = std::make_shared<PlayerSprite>(std::move(player));
     players.insert({{info.name, ptr}});
     map_items.emplace(ptr);
+    map_entities.emplace(ptr);
 }
 
 void World::add_new_creature(const CreatureInfoDTO& info) {
-    Sprite creature = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<Sprite>(std::move(creature));
+    EnemySprite creature = sprite_creator.create_sprite(info);
+    auto ptr = std::make_shared<EnemySprite>(std::move(creature));
     creatures.insert({{info.sub_id, ptr}});
     map_items.emplace(ptr);
+    map_entities.emplace(ptr);
 }
 
 void World::add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
-    Sprite drop = sprite_creator.create_sprite(info);
-    auto ptr = std::make_shared<Sprite>(std::move(drop));
+    FixedSprite drop = sprite_creator.create_sprite(info);
+    auto ptr = std::make_shared<FixedSprite>(std::move(drop));
     loot[place] = {ptr, info.is_item};
     map_loot.emplace(ptr);
 }
@@ -281,7 +300,7 @@ void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, u
     add_new_loot(info, place);
 }
 
-Sprite& World::get_client_player() { return *players.at(player_name).get(); }
+PlayerSprite& World::get_client_player() { return *players.at(player_name).get(); }
 
 SDL2pp::Rect& World::get_world_size() { return world_view; }
 

@@ -13,13 +13,19 @@ target_sources(taller_client
 
         SDL/fonts/font_manager.cpp
 
-        SDL/sprites/animation.cpp
-        SDL/sprites/animation_pool.cpp
         SDL/sprites/sprite.cpp
+        SDL/sprites/effect_sprite.cpp
         SDL/sprites/sprite_layer.cpp
+        SDL/sprites/moving_sprite.cpp
+        SDL/sprites/fixed_sprite.cpp
+        SDL/sprites/enemy_sprite.cpp
+        SDL/sprites/player_sprite.cpp
         SDL/sprites/sprite_label.cpp
-        SDL/sprites/sprite_creator.cpp
-        SDL/sprites/texture_pool.cpp
+
+        SDL/sprite_creation/animation.cpp
+        SDL/sprite_creation/animation_pool.cpp
+        SDL/sprite_creation/sprite_creator.cpp
+        SDL/sprite_creation/texture_pool.cpp
 
         qt/login_window.cpp
         qt/creator_window.cpp
@@ -53,13 +59,20 @@ target_sources(taller_client
 
         SDL/fonts/font_manager.h
 
-        SDL/sprites/animation.h
-        SDL/sprites/animation_pool.h
+
         SDL/sprites/sprite.h
+        SDL/sprites/effect_sprite.h
         SDL/sprites/sprite_label.h
         SDL/sprites/sprite_layer.h
-        SDL/sprites/sprite_creator.h
-        SDL/sprites/texture_pool.h
+        SDL/sprites/moving_sprite.h
+        SDL/sprites/fixed_sprite.h
+        SDL/sprites/enemy_sprite.h
+        SDL/sprites/player_sprite.h
+
+        SDL/sprite_creation/animation.h
+        SDL/sprite_creation/animation_pool.h
+        SDL/sprite_creation/sprite_creator.h
+        SDL/sprite_creation/texture_pool.h
 
         qt/login_window.h
         qt/ui/login_window.ui
