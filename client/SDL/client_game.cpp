@@ -231,6 +231,9 @@ void ClientGame::handle_text_command(const std::string& text) {
 
     if (text.starts_with("/cheat-"))
         handle_cheat(text);
+
+    if (text.starts_with("/meditar"))
+        handle_meditate();
 }
 
 void ClientGame::handle_buy_item_command(const std::string& text) {
@@ -516,6 +519,10 @@ void ClientGame::handle_mouse_wheel(const SDL_Event& event) {
 
     if (event.wheel.y < 0)
         ui.chat_scroll_down();
+}
+
+void ClientGame::handle_meditate() const {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::MEDITATE));
 }
 
 void ClientGame::handle_clan_foundation(const std::string& text) {

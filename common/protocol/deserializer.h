@@ -58,6 +58,8 @@ private:
 
     AttackDTO recv_attack();
 
+    MeditationDTO recv_meditation();
+
     ResurrectionDTO recv_resurrection();
 
     DeathDTO recv_death();

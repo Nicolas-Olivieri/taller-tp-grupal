@@ -18,6 +18,8 @@ size_t ActionDTO::message_size() const {
             return base + heal.message_size();
         case ActionType::MESSAGE:
             return base + chat_message.message_size();
+        case ActionType::MEDITATION:
+            return base + meditation.message_size();
         case ActionType::RESURRECTION:
             return base + resurrection.message_size();
         case ActionType::DEATH:
@@ -81,6 +83,17 @@ ActionDTO::ActionDTO(const ChatMessageDTO& message):
         list(MessageType::SYSTEM, {}, ""),
         items(),
         bank(),
+        clan_msg("", "", "") {}
+
+ActionDTO::ActionDTO(const MeditationDTO& meditation):
+        action(ActionType::MEDITATION),
+        despawn(""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
+        meditation(meditation),
+        resurrection("", {}),
+        death(""),
+        list(MessageType::SYSTEM, {}, ""),
+        items(),
         clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const ResurrectionDTO& resurrection):

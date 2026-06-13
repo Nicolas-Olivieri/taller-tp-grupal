@@ -455,6 +455,23 @@ DropItemResult GameWorld::drop_item(const std::string& player_name, const uint8_
     }
 }
 
+MeditateResult GameWorld::meditate(const std::string& player_name) {
+    if (not players.contains(player_name))
+        return MeditateResult();
+
+    Player& player = players.at(player_name);
+
+    // TODO: Estos casos se podrían manejar como excepciones
+    if (not player.is_alive())
+        return MeditateResult(MeditateStatus::GHOST_FAIL);
+
+    if (player.get_stats().archetype().meditation_factor == 0.0f)
+        return MeditateResult(MeditateStatus::ARCHETYPE_FAIL);
+
+    player.meditate();
+    return MeditateResult(MeditateStatus::SUCCESS);
+}
+
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {
     if (not players.contains(player_name)) {

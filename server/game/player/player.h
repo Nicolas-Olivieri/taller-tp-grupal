@@ -143,6 +143,8 @@ public:
 
     void set_near_clan_mates(const uint8_t near_clan_mates_amount);
 
+    void meditate();
+
 private:
     void complete_delayed_resurrection();
 };

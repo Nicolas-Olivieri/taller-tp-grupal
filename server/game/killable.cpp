@@ -69,6 +69,7 @@ InteractResult Killable::interact(Player& attacker) {
         return InteractResult(AttackStatus::TARGET_DODGED);
 
     const uint16_t damage_applied = receive_damage(damage);
+    is_meditating = false;
 
     // TODO notificar el caso particular?
     if (damage_applied == 0)
@@ -103,6 +104,10 @@ void Killable::update() {
     }
 
     stats.health.update();
+    if (stats.health.get_current() == 0) {
+        stats.mana.loose(stats.mana.get_current());
+        return;
+    }
 
     if (is_meditating) {
         stats.mana.meditate();

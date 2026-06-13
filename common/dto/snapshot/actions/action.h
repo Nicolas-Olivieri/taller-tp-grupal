@@ -1,6 +1,7 @@
 #ifndef ACTIONDTO_H
 #define ACTIONDTO_H
 
+#include "action_types/act_meditation/meditation.h"
 #include "common/dto/message.h"
 #include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
 #include "common/dto/snapshot/actions/action_types/act_clan_msg/clan_message.h"
@@ -17,6 +18,7 @@ enum class ActionType : uint8_t {
     ATTACK,
     DESPAWN,
     HEAL,
+    MEDITATION,
     MESSAGE,
     RESURRECTION,
     DEATH,
@@ -33,6 +35,7 @@ struct ActionDTO: public ProtocolMessageDTO {
     DespawnDTO despawn;
     HealDTO heal;
     ChatMessageDTO chat_message;
+    MeditationDTO meditation;
     ResurrectionDTO resurrection;
     DeathDTO death;
     ChatListDTO list;
@@ -51,6 +54,8 @@ struct ActionDTO: public ProtocolMessageDTO {
     explicit ActionDTO(const HealDTO& heal);
 
     explicit ActionDTO(const ChatMessageDTO& message);
+
+    explicit ActionDTO(const MeditationDTO& meditation);
 
     explicit ActionDTO(const ResurrectionDTO& resurrection);
 

@@ -116,6 +116,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::HEAL:
             serialize(action.heal);
             break;
+        case ActionType::MEDITATION:
+            serialize(action.meditation);
+            break;
         case ActionType::MESSAGE:
             serialize(action.chat_message);
             break;
@@ -228,6 +231,8 @@ void Serializer::serialize(const AttackDTO& attack) {
     serialize(attack.y);
     serialize(attack.missed);
 }
+
+void Serializer::serialize(const MeditationDTO& meditation) { serialize(meditation.player_meditating); }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {
     serialize(resurrection.player_resurrected);
