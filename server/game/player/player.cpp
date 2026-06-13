@@ -50,6 +50,7 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         target_resurrection_position(0, 0) {}
 
 int Player::attack() {
+    is_meditating = false;
     if (bound_ally != nullptr) {
         unbind_ally();
     }
@@ -152,6 +153,7 @@ InteractResult Player::interact(Player& attacker) {
 }
 
 void Player::update_position(const Position& new_position, const Direction& new_direction) {
+    is_meditating = false;
     if (bound_ally != nullptr) {
         unbind_ally();
     }
@@ -329,3 +331,5 @@ void Player::set_xp_level(const uint8_t new_level) {
 void Player::set_near_clan_mates(const uint8_t near_clan_mates_amount) {
     clan.set_near_clan_mates(near_clan_mates_amount);
 }
+
+void Player::meditate() { is_meditating = true; }

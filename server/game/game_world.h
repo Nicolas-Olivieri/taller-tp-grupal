@@ -18,6 +18,7 @@
 #include "server/command/cmd_results/ally_execute/resurrect/resurrect_result.h"
 #include "server/command/cmd_results/clan/clan_action_result.h"
 #include "server/command/cmd_results/drop_item/drop_item_result.h"
+#include "server/command/cmd_results/meditate/meditate_result.h"
 #include "server/command/cmd_results/pickup/pickup_result.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
@@ -97,6 +98,8 @@ public:
     UnequipItemResult unequip_item(const std::string& player_name, uint8_t item_id);
 
     DropItemResult drop_item(const std::string& player_name, uint8_t item_id);
+
+    MeditateResult meditate(const std::string& player_name);
 
     FoundClanResult found_clan(const std::string& player_name, const std::string& clan_name);
 
