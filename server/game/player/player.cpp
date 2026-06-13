@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <cstring>
 #include <random>
 
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
@@ -13,7 +12,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
                  persisted_data.xp_level, Position(persisted_data.position_x, persisted_data.position_y),
                  Equipment{persisted_data.helmet_id, persisted_data.armor_id, persisted_data.shield_id,
-                           persisted_data.weapon_id}),
+                           persisted_data.weapon_id},
+                 reinterpret_cast<const char*>(persisted_data.clan), persisted_data.is_founder),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
@@ -24,13 +24,9 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         just_resurrected(false),
         is_resurrecting(false),
         resurrection_timer(0),
-        target_resurrection_position(0, 0),
-        _is_founder(persisted_data.is_founder) {
+        target_resurrection_position(0, 0) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
-
-    const char* clan_ptr = reinterpret_cast<const char*>(persisted_data.clan);
-    clan_name = std::string(clan_ptr, strnlen(clan_ptr, CLAN_NAME));
 }
 
 // Constructor para jugador que se conecta por primera vez
@@ -39,7 +35,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
                  persisted_data.xp_level, starting_position,
                  Equipment{persisted_data.helmet_id, persisted_data.armor_id, persisted_data.shield_id,
-                           persisted_data.weapon_id}),
+                           persisted_data.weapon_id},
+                 nullptr, false),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
@@ -50,9 +47,7 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         just_resurrected(false),
         is_resurrecting(false),
         resurrection_timer(0),
-        target_resurrection_position(0, 0),
-        _is_founder(false),
-        clan_name("") {}
+        target_resurrection_position(0, 0) {}
 
 int Player::attack() {
     if (bound_ally != nullptr) {
@@ -64,7 +59,7 @@ int Player::attack() {
     WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
     stats.mana.loose(data.mana_cost);
 
-    return Calculator::calculate_damage(stats.strength, equipment);
+    return Calculator::calculate_damage(stats.strength, equipment, clan.get_clan_buff_factor());
 }
 
 const Stats& Player::get_stats() const { return stats; }
@@ -110,14 +105,6 @@ void Player::update() {
             complete_delayed_resurrection();
         }
     }
-
-    stats.health.update();
-
-    if (is_meditating) {
-        stats.mana.meditate();
-    } else {
-        stats.mana.update();
-    }
 }
 
 bool Player::can_reach(const Position& other_position) const {
@@ -136,12 +123,26 @@ InteractResult Player::interact(Player& attacker) {
     if (not is_alive())
         return InteractResult(AttackStatus::DEAD_TARGET);
 
+    // Suprimo el linter porque marca como si hubiera una función llamada separada del paréntesis
+    // ej: get_clan_name ().empty()
+    if ((not get_clan_name().empty()) and (get_clan_name() == attacker.get_clan_name())) {  // NOLINT
+        return InteractResult(AttackStatus::IS_CLANMATE);
+    }
+
+    const uint8_t own_level = stats.experience.get_level();
+    const uint8_t attacker_level = attacker.stats.experience.get_level();
+    const FairPlayData& fair_play_data = GameConfig::get().get_fair_play();
+
+    if (own_level <= fair_play_data.max_newbie_level)
+        return InteractResult(AttackStatus::ATTACKED_PLAYER_IS_NEWBIE);
+
+    if (attacker_level <= fair_play_data.max_newbie_level)
+        return InteractResult(AttackStatus::ATTACKER_IS_NEWBIE);
+
+    if (std::abs(own_level - attacker_level) > fair_play_data.fair_play_gap)
+        return InteractResult(AttackStatus::FAIR_PLAY);
+
     // TODO Falta considerar
-    //  - Fair game
-    //  - Daño de los compis del clan?
-    //      (en update del GameWorld -> por cada jugador recorremos las n casillas más cercanas y desde
-    //      ahí player expone un método que le agrega boost y lo usa en su attack)
-    //  - fuego amigo (entre compis no nos pegamos)
     //  - zona segura?
 
     InteractResult result = Killable::interact(attacker);
@@ -310,26 +311,21 @@ void Player::complete_delayed_resurrection() {
     std::cout << "[Player] " << player_name << " ha resucitado junto al sacerdote." << std::endl;
 }
 
-std::string Player::get_clan_name() const { return clan_name; }
+std::string Player::get_clan_name() const { return clan.get_clan_name(); }
 
-void Player::join_clan(const std::string& _clan_name) {
-    clan_name = _clan_name;
-    _is_founder = false;
-}
+void Player::join_clan(const std::string& clan_name) { clan.join(clan_name); }
 
-void Player::found_clan(const std::string& _clan_name) {
-    clan_name = _clan_name;
-    _is_founder = true;
-}
+void Player::found_clan(const std::string& clan_name) { clan.found(clan_name); }
 
-void Player::leave_clan() {
-    clan_name.clear();
-    _is_founder = false;
-}
+void Player::leave_clan() { clan.leave(); }
 
-bool Player::is_clan_founder() const { return _is_founder; }
+bool Player::is_clan_founder() const { return clan.is_founder(); }
 
 void Player::set_xp_level(const uint8_t new_level) {
     stats.experience.set_level(new_level);
     stats.upgrade();
+}
+
+void Player::set_near_clan_mates(const uint8_t near_clan_mates_amount) {
+    clan.set_near_clan_mates(near_clan_mates_amount);
 }

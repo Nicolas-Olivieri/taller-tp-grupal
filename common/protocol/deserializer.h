@@ -26,6 +26,8 @@ private:
 
     CreatureInfoDTO recv_creature_info();
 
+    CreatureStatsDTO recv_creature_stats();
+
     LootInfoDTO recv_loot_info();
 
     AllyInfoDTO recv_ally_info();
@@ -65,6 +67,8 @@ private:
     ListBankDTO recv_list_bank();
 
     ListItemsDTO recv_list_items();
+
+    ClanMessageDTO recv_clan_message();
 
     AssetInfoDTO recv_asset_info();
 

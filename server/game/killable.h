@@ -5,6 +5,7 @@
 
 #include "server/game/items/equipment.h"
 #include "server/game/loot.h"
+#include "server/game/player/clan_membership.h"
 #include "server/game/stats/stats.h"
 
 #include "attacker.h"
@@ -31,8 +32,10 @@ protected:
     Position position;
     Direction direction;
 
+    ClanMembership clan;
+
     Killable(uint8_t archetype_id, uint8_t race_id, uint32_t current_xp_amount, uint8_t level,
-             Position position, const Equipment& equipment);
+             Position position, const Equipment& equipment, const char* clan_ptr, bool is_clan_founder);
 
     Killable(uint8_t race_id, uint8_t variation_id, uint8_t level, Position position,
              const Equipment& equipment);
@@ -54,7 +57,7 @@ public:
 
     virtual void update();
 
-    uint16_t receive_damage(Attacker& attacker);
+    uint16_t receive_damage(uint16_t damage);
 
     virtual ~Killable() = default;
 };

@@ -14,6 +14,8 @@ private:
     CooldownsData cooldowns;
     TradersData traders;
     DropProbabilitiesData drop_probabilities;
+    FairPlayData fair_play_levels;
+    ClanConstantsData clan_constants_data;
 
     GameConfig();
 
@@ -65,6 +67,10 @@ public:
     const WeaponData& get_weapon(uint8_t id) const;
 
     const DropProbabilitiesData& get_drop_probabilities() const;
+
+    const FairPlayData& get_fair_play() const;
+
+    const ClanConstantsData& get_clan_constats() const;
 
     uint16_t get_item_price(uint8_t item_id) const;
 

@@ -16,6 +16,8 @@
 #include "server/persistance/playerdata.h"
 #include "server/util/calculator.h"
 
+#include "clan_membership.h"
+
 
 class Player: public Killable, public Attacker {
 private:
@@ -34,9 +36,6 @@ private:
     bool is_resurrecting;
     int resurrection_timer;
     Position target_resurrection_position;
-
-    bool _is_founder;
-    std::string clan_name;
 
     void drop_excess_gold(std::vector<Loot>& drops);
 
@@ -132,15 +131,17 @@ public:
 
     std::string get_clan_name() const;
 
-    void join_clan(const std::string& _clan_name);
+    void join_clan(const std::string& clan_name);
 
-    void found_clan(const std::string& _clan_name);
+    void found_clan(const std::string& clan_name);
 
     void leave_clan();
 
     bool is_clan_founder() const;
 
     void set_xp_level(const uint8_t new_level);
+
+    void set_near_clan_mates(const uint8_t near_clan_mates_amount);
 
 private:
     void complete_delayed_resurrection();

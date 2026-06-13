@@ -19,7 +19,7 @@ void ClanFoundCommand::build_snapshot(SnapshotBuilder& builder) {
 
         case FoundClanResult::NOT_ENOUGH_LEVEL:
             error_msg = std::format("Debes tener nivel {} como minimo para fundar tu propio clan",
-                                    Clan::MIN_LEVEL_REQUIRED_TO_FOUND_CLAN);
+                                    GameConfig::get().get_clan_constats().min_level_required_to_found_clan);
             break;
         case FoundClanResult::ALREADY_IN_CLAN:
             error_msg = "Ya perteneces a un clan. Debes abandonarlo para poder fundar otro";

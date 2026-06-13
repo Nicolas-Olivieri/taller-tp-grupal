@@ -23,7 +23,23 @@ struct MusicConfig {
 };
 
 
-enum class SoundEvent { DEATH, DESPAWN, FOOTSTEP, HEAL, RESURRECTION, SPAWN, SWORD_ATTACK };
+enum class SoundEvent {
+    DEATH,
+    DESPAWN,
+    FOOTSTEP,
+    HEAL,
+    RESURRECTION,
+    SPAWN,
+    FISTS_ATTACK,
+    SWORD_ATTACK,
+    AXE_ATTACK,
+    HAMMER_ATTACK,
+    MAGIC_ARROW_SPELL,
+    HEAL_SPELL,
+    MISSILE_SPELL,
+    EXPLOSION_SPELL,
+    BOW_ATTACK,
+};
 
 struct SFXConfig {
     std::map<SoundEvent, SoundConfig> configs;
@@ -71,7 +87,15 @@ struct toml::from<SFXConfig> {
                 {"heal", SoundEvent::HEAL},
                 {"resurrection", SoundEvent::RESURRECTION},
                 {"spawn", SoundEvent::SPAWN},
+                {"fists_attack", SoundEvent::FISTS_ATTACK},
                 {"sword_attack", SoundEvent::SWORD_ATTACK},
+                {"axe_attack", SoundEvent::AXE_ATTACK},
+                {"hammer_attack", SoundEvent::HAMMER_ATTACK},
+                {"magic_arrow_spell", SoundEvent::MAGIC_ARROW_SPELL},
+                {"heal_spell", SoundEvent::HEAL_SPELL},
+                {"missile_spell", SoundEvent::MISSILE_SPELL},
+                {"explosion_spell", SoundEvent::EXPLOSION_SPELL},
+                {"bow_attack", SoundEvent::BOW_ATTACK},
                 // TODO: Agregar más sonidos...
         });
 

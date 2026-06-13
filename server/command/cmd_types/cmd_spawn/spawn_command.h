@@ -11,6 +11,7 @@ class SpawnCommand: public Command {
 private:
     std::string player_name;
     PlayerData data;
+    std::string clan_name;
 
 public:
     SpawnCommand(const std::string& player_name, const PlayerData& data);

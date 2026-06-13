@@ -11,6 +11,8 @@ target_sources(taller_client
         SDL/audio/audio_manager.cpp
         SDL/audio/sound_pool.cpp
 
+        SDL/fonts/font_manager.cpp
+
         SDL/sprites/sprite.cpp
         SDL/sprites/effect_sprite.cpp
         SDL/sprites/sprite_layer.cpp
@@ -18,6 +20,7 @@ target_sources(taller_client
         SDL/sprites/fixed_sprite.cpp
         SDL/sprites/enemy_sprite.cpp
         SDL/sprites/player_sprite.cpp
+        SDL/sprites/sprite_label.cpp
 
         SDL/sprite_creation/animation.cpp
         SDL/sprite_creation/animation_pool.cpp
@@ -45,6 +48,7 @@ target_sources(taller_client
 
         TOML/animation_parser.h
         TOML/audio_parser.h
+        TOML/font_parser.h
 
         SDL/client_game.h
         SDL/camera.h
@@ -53,8 +57,12 @@ target_sources(taller_client
         SDL/audio/audio_manager.h
         SDL/audio/sound_pool.h
 
+        SDL/fonts/font_manager.h
+
+
         SDL/sprites/sprite.h
         SDL/sprites/effect_sprite.h
+        SDL/sprites/sprite_label.h
         SDL/sprites/sprite_layer.h
         SDL/sprites/moving_sprite.h
         SDL/sprites/fixed_sprite.h

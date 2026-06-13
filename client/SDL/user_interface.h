@@ -9,10 +9,9 @@
 #include <utility>
 #include <vector>
 
-#include <SDL2pp/Font.hh>
-
 #include "SDL2pp/Renderer.hh"
 #include "SDL2pp/Texture.hh"
+#include "client/SDL/fonts/font_manager.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 
@@ -30,12 +29,8 @@ struct InventorySlotData {
 class UserInterface {
 private:
     SDL2pp::Renderer& renderer;
-    SDL2pp::Font user_font;
-    SDL2pp::Font clan_font;
-    SDL2pp::Font menu_title_font;
-    SDL2pp::Font menu_font;
-    SDL2pp::Font chat_font;
-    SDL2pp::Font item_amount_font;
+    FontManager& font_manager;
+
     // TODO convertirlo en un sprite
     SDL2pp::Texture ui_texture;
     std::string& player_name;
@@ -99,7 +94,7 @@ private:
 
     void add_twinkling_bar(std::string& display_text);
 
-    void render_text(const std::string& text, const SDL2pp::Rect& box_limit, SDL2pp::Font& font);
+    void render_text(const std::string& text, const SDL2pp::Rect& box_limit, const FontType& font_type) const;
 
     void render_bar_value(const SDL2pp::Rect& box, const BarValue& value);
 
@@ -119,6 +114,8 @@ private:
 
     void handle_list_items(const ActionDTO& action);
 
+    void handle_clan_message(const ActionDTO& action);
+
     SDL_Color assign_message_color(const MessageType& type);
 
     bool is_receiver_or_sender(const MessageType& type);
@@ -130,7 +127,7 @@ private:
     SDL2pp::Texture& get_item_texture(uint8_t item_id);
 
 public:
-    UserInterface(SDL2pp::Renderer& renderer, std::string& player_name);
+    UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager);
 
     void render();
 

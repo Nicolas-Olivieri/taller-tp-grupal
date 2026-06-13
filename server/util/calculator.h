@@ -30,7 +30,9 @@ public:
 
     static uint16_t calculate_damage(const uint8_t strength, const Equipment& equipment);
 
-    static uint16_t calculate_defense(const Equipment& equipment);
+    static uint16_t calculate_damage(const uint8_t strength, const Equipment& equipment, float buff_factor);
+
+    static uint16_t calculate_defense(const Equipment& equipment, const float& buff_factor);
 
     static bool can_dodge(const int agility);
 
@@ -45,6 +47,10 @@ public:
     static uint8_t random_number(const uint8_t min, const uint8_t max);
 
     static int random_from_weighted_probabilities(const std::vector<float>& probabilities);
+
+    static uint8_t calculate_creature_level(uint8_t base, float multiplier);
+
+    static uint8_t random_choice(const std::vector<uint8_t>& elems);
 
 private:
     static float random_float(const float min, const float max);

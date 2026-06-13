@@ -2,12 +2,14 @@
 #define CLIENT_CONFIG_H
 
 #include <cstdint>
-#include <map>
-#include <optional>
 #include <string>
+#include <unordered_map>
 
-#include "toml11/types.hpp"
+#include <toml11/types.hpp>
 
+struct CreatureDisplayData {
+    std::string name;
+};
 
 struct ItemDisplayData {
     // TODO: Agregar el resto de atributos de un ítem para el cliente
@@ -18,7 +20,8 @@ struct ItemDisplayData {
 
 class ClientConfig {
 private:
-    std::map<uint8_t, ItemDisplayData> items_data;
+    std::unordered_map<uint8_t, CreatureDisplayData> creatures_data;
+    std::unordered_map<uint8_t, ItemDisplayData> items_data;
 
 public:
     static ClientConfig& get();
@@ -26,6 +29,10 @@ public:
     ClientConfig(const ClientConfig&) = delete;
 
     ClientConfig& operator=(const ClientConfig&) = delete;
+
+    const CreatureDisplayData& get_creature_data(uint8_t creature) const;
+
+    std::string get_creature_name(uint8_t creature) const;
 
     const ItemDisplayData& get_item_data(uint8_t item_id) const;
 
@@ -42,7 +49,11 @@ private:
 
     void parseItemsTable(const toml::value& items_table);
 
-    ItemDisplayData buildItemDisplayData(const toml::value& item_toml);
+    ItemDisplayData buildItemDisplayData(const toml::value& item_toml) const;
+
+    void parseCreaturesTable(const toml::basic_value<toml::type_config>& creatures_table);
+
+    CreatureDisplayData buildCreatureDisplayData(const toml::value& creature_toml) const;
 };
 
 

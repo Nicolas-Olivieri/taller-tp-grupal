@@ -41,10 +41,12 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_list/chat_list.cpp
         dto/snapshot/actions/action_types/act_list_bank/list_bank.cpp
         dto/snapshot/actions/action_types/act_list_items/list_items.cpp
+        dto/snapshot/actions/action_types/act_clan_msg/clan_message.cpp
 
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/info/creatureinfo.cpp
+        dto/snapshot/info/creature_stats.cpp
         dto/snapshot/info/equipment_info.cpp
         dto/snapshot/info/inventory_info.cpp
         dto/snapshot/info/lootinfo.cpp
@@ -118,10 +120,12 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_list/chat_list.h
         dto/snapshot/actions/action_types/act_list_bank/list_bank.h
         dto/snapshot/actions/action_types/act_list_items/list_items.h
+        dto/snapshot/actions/action_types/act_clan_msg/clan_message.h
 
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/info/creatureinfo.h
+        dto/snapshot/info/creature_stats.h
         dto/snapshot/info/equipment_info.h
         dto/snapshot/info/inventory_info.h
         dto/snapshot/info/lootinfo.h

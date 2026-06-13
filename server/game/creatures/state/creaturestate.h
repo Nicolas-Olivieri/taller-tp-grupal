@@ -10,12 +10,14 @@
 
 class Creature;
 
+/*
+Las implementaciones de CreatureState van a seguir el patrón Flyweight:
+Aprovechando que no deberían tener un estado, solo existiría una única instancia de ellas en memoria, la cual
+todas las creatures usan.
+*/
 class CreatureState {
 public:
-    virtual CreatureUpdateStatus act(Creature& creature, const Position& position,
-                                     const Direction& direction) = 0;
-
-    virtual void next(Creature& creature) = 0;
+    virtual CreatureState* next(Creature& creature) = 0;
 
     virtual ~CreatureState() = default;
 };
