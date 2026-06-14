@@ -16,7 +16,7 @@ private:
     QHash<int, Placement> placements;
     QHash<QPoint, QVector<int>> occupied_tiles;
     QHash<QPoint, QVector<int>> unwalkable_tiles;
-    QSet<QPoint> safe_zone;
+    QSet<QPoint> safe_zone_tiles;
 
     QHash<ImageType, uint16_t> asset_counter;
 

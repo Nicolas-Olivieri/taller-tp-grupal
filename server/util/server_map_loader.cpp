@@ -25,7 +25,7 @@ ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
 
 ServerMapDataDTO ServerMapLoader::get_server_data() {
     // Leo los 4 bytes de offset (inicio y fin de bytes del servidor)
-    parse_int<uint32_t>();
+    parse_int<uint64_t>();
 
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
@@ -59,8 +59,8 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
 }
 
 ClientMapDataDTO ServerMapLoader::get_client_data() {
-    const auto server_start = parse_int<uint16_t>();
-    const auto server_end = parse_int<uint16_t>();
+    const auto server_start = parse_int<uint32_t>();
+    const auto server_end = parse_int<uint32_t>();
 
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
@@ -99,6 +99,8 @@ intType ServerMapLoader::parse_int() {
 
     if (sizeof(intType) == 2) {
         return ntohs(data);
+    }else if (sizeof(intType) == 4) {
+        return ntohl(data);
     }
 
     return data;

@@ -6,10 +6,6 @@
 
 #include "grid_range.h"
 
-#define WALKABLE 1
-#define UNWALKABLE 0
-#define SAFE_ZONE 0
-#define HEADER 0xFAF4
 
 MapSaver::MapSaver(MapData& data): data(data) {}
 
@@ -79,10 +75,10 @@ void MapSaver::store_offset_and_dimensions_data(QDataStream& stream) const {
     constexpr uint16_t header = HEADER;
     constexpr size_t npc_data_size = sizeof(uint8_t) + sizeof(uint16_t) * 2;
 
-    constexpr uint16_t server_start =
-            sizeof(header) + sizeof(uint16_t) * 2 + sizeof(world_width) + sizeof(world_height);
+    constexpr uint32_t server_start =
+            sizeof(header) + sizeof(uint32_t) * 2 + sizeof(world_width) + sizeof(world_height);
 
-    const uint16_t server_end = server_start + sizeof(uint16_t) * world_width * world_height +
+    const uint32_t server_end = server_start + sizeof(uint16_t) * world_width * world_height +
                                 sizeof(uint16_t) + data.asset_counter[ImageType::NPC] * npc_data_size;
 
     stream << header << server_start << server_end << world_width << world_height;
@@ -94,15 +90,15 @@ void MapSaver::store_server_data(QDataStream& stream) const {
     for (const auto& cell: grid_range) {
         uint8_t is_walkable;
         if (data.unwalkable_tiles.contains(cell) || !data.occupied_tiles.contains(cell)) {
-            is_walkable = UNWALKABLE;
+            is_walkable = UNWALKABLE_TILE;
         } else {
-            is_walkable = WALKABLE;
+            is_walkable = WALKABLE_TILE;
         }
 
         uint8_t biome;
         if (data.occupied_tiles.contains(cell)) {
             const uint8_t data_id = data.occupied_tiles[cell][0];
-            biome = data.safe_zone.contains(cell) ? SAFE_ZONE : data.placements[data_id].asset.id;
+            biome = data.safe_zone_tiles.contains(cell) ? SAFE_ZONE_ID : data.placements[data_id].asset.id;
         } else {
             biome = 0;
         }

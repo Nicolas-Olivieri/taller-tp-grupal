@@ -141,17 +141,21 @@ QSet<QPair<int, QPoint>> MapData::add_safe_tiles(const QPoint origin_position, c
     QSet<QPair<int, QPoint>> valid_new_tiles;
 
     for (const auto& cell: grid_range) {
-        if (!safe_zone.contains(cell)) {
+        if (!occupied_tiles.contains(cell)) {
+            continue; // No hay una tile dibujada en donde se quiere colocar una zona segura
+        }
+
+        if (!safe_zone_tiles.contains(cell)) {
             valid_new_tiles.insert(QPair(tile_id, cell));
             tile_id++;
         }
-        safe_zone.insert(cell);
+        safe_zone_tiles.insert(cell);
     }
     return valid_new_tiles;
 }
 
 void MapData::erase_safe_tile(const QPoint position) {
-    safe_zone.remove(position);
+    safe_zone_tiles.remove(position);
 }
 
 
@@ -160,7 +164,8 @@ void MapData::clear_all() {
     asset_counter[ImageType::COLLIDER] = 0;
     asset_counter[ImageType::NPC] = 0;
 
-    occupied_tiles.clear();
     placements.clear();
+    occupied_tiles.clear();
     unwalkable_tiles.clear();
+    safe_zone_tiles.clear();
 }

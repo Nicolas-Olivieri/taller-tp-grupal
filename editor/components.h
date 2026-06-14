@@ -2,10 +2,7 @@
 #define COMPONENTS_H
 
 #include <QPixmap>
-
-enum class EditorMode { DRAW, ERASE, DRAG, SAFE_ZONE };
-
-enum class ImageType { TILE, COLLIDER, NPC };
+#include "editor_constants.h"
 
 struct AssetData {
     uint8_t id;

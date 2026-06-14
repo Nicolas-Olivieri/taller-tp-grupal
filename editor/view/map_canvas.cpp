@@ -6,12 +6,9 @@
 #include <QPainter>
 #include <QtMath>
 
+#include "editor_constants.h"
 #include "grid_range.h"
 #include "ui_mapcanvas.h"
-
-#define TILE_SIZE 32
-#define SAFE_ZONE_BRUSH_W 4
-#define SAFE_ZONE_BRUSH_H 4
 
 
 MapCanvas::MapCanvas(MapData& map_data, QWidget* parent):
@@ -255,19 +252,20 @@ void MapCanvas::erase_unwalkable_tiles(const int tile_id) const {
     }
 }
 
-void MapCanvas::set_safe_tiles(const QPointF &clicked_pos) {
+void MapCanvas::set_safe_tiles(const QPointF &clicked_pos, const int width, const int height) const {
+
     const QPoint clicked_cell = coordinates_to_grid(clicked_pos);
-    QSet<QPair<int, QPoint>> added_tiles = map_data.add_safe_tiles(clicked_cell, SAFE_ZONE_BRUSH_W, SAFE_ZONE_BRUSH_H);
+    QSet<QPair<int, QPoint>> added_tiles = map_data.add_safe_tiles(clicked_cell, width, height);
 
     const QBrush greenBrush(QColor(95, 170, 50, 100));
     const QPen noPen(Qt::NoPen);
-    for (const auto& cell : added_tiles) {
+    for (const auto&[id, cell] : added_tiles) {
         auto* mark = new QGraphicsRectItem(0, 0, TILE_SIZE, TILE_SIZE);
         mark->setZValue(98.0);
-        mark->setData(0, cell.first);
+        mark->setData(0, id);
         mark->setBrush(greenBrush);
         mark->setPen(noPen);
-        mark->setPos(cell.second * TILE_SIZE);
+        mark->setPos(cell * TILE_SIZE);
 
         safe_tiles->addToGroup(mark);
     }

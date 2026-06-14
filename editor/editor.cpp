@@ -7,11 +7,11 @@
 #include <vector>
 
 #include "toml/asset_parser.h"
+#include "editor_constants.h"
 
 #include "toml.hpp"
 #include "ui_editor.h"
 
-#define TILE_SIZE 32
 
 Editor::Editor(QWidget* parent):
         QMainWindow(parent),

@@ -32,7 +32,7 @@ private:
     void set_unwalkable_tiles(const QPoint& clicked_cell, int tile_id) const;
     void erase_unwalkable_tiles(int tile_id) const;
 
-    void set_safe_tiles(const QPointF& clicked_pos);
+    void set_safe_tiles(const QPointF &clicked_pos, int width = SAFE_ZONE_BRUSH_W, int height = SAFE_ZONE_BRUSH_H) const;
 
     QPoint coordinates_to_grid(QPointF coordinates) const;
 
