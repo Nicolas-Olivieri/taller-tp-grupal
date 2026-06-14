@@ -8,6 +8,9 @@
 #include "allies/banker.h"
 #include "allies/merchant.h"
 #include "allies/priest.h"
+#include "server/command/cmd_results/ally_execute/list/outcomes/bank_vault/bank_vault_outcome.h"
+#include "server/command/cmd_results/ally_execute/list/outcomes/player_unbounded/player_unbounded_outcome.h"
+#include "server/command/cmd_results/ally_execute/list/outcomes/vendor_list/vendor_list_outcome.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
 #include "server/game/clan/clan.h"
@@ -85,6 +88,10 @@ WorldUpdateStatus GameWorld::update() {
             move_creature(creature, direction);
 
         creature.update_state();
+    }
+
+    for (auto& [_, clan]: clans) {
+        clan.set_buffed_players(players);
     }
 
     return WorldUpdateStatus(creatures_status, resurrected_players);
@@ -265,7 +272,9 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
         if (occupant != nullptr) {
             InteractResult result = occupant->interact(player);
 
-            if (result.attack.was_killed) {
+            if (result.attack.was_killed and not result.attack.player_attacked.empty()) {
+                assert(players.contains(result.attack.player_attacked));
+
                 Player& target = players.at(result.attack.player_attacked);
                 drop_and_add(target, target_tile);
             }
@@ -450,6 +459,23 @@ DropItemResult GameWorld::drop_item(const std::string& player_name, const uint8_
     }
 }
 
+MeditateResult GameWorld::meditate(const std::string& player_name) {
+    if (not players.contains(player_name))
+        return MeditateResult();
+
+    Player& player = players.at(player_name);
+
+    // TODO: Estos casos se podrían manejar como excepciones
+    if (not player.is_alive())
+        return MeditateResult(MeditateStatus::GHOST_FAIL);
+
+    if (player.get_stats().archetype().meditation_factor == 0.0f)
+        return MeditateResult(MeditateStatus::ARCHETYPE_FAIL);
+
+    player.meditate();
+    return MeditateResult(MeditateStatus::SUCCESS);
+}
+
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
                                                  const AllyActionPayload& payload) {
     if (not players.contains(player_name)) {
@@ -569,7 +595,7 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
         return FoundClanResult::ALREADY_IN_CLAN;
 
     const uint8_t current_level = player.get_stats().experience.get_level();
-    if (current_level < Clan::MIN_LEVEL_REQUIRED_TO_FOUND_CLAN)
+    if (current_level < GameConfig::get().get_clan_constats().min_level_required_to_found_clan)
         return FoundClanResult::NOT_ENOUGH_LEVEL;
 
     if (clan_name.size() > CLAN_NAME)

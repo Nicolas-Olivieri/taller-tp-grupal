@@ -116,6 +116,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::HEAL:
             serialize(action.heal);
             break;
+        case ActionType::MEDITATION:
+            serialize(action.meditation);
+            break;
         case ActionType::MESSAGE:
             serialize(action.chat_message);
             break;
@@ -133,6 +136,9 @@ void Serializer::serialize(const ActionDTO& action) {
             break;
         case ActionType::LIST_BANK:
             serialize(action.bank);
+            break;
+        case ActionType::CLAN_MESSAGE:
+            serialize(action.clan_msg);
             break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
@@ -221,7 +227,12 @@ void Serializer::serialize(const EquipmentInfoDTO& equipment) {
 void Serializer::serialize(const AttackDTO& attack) {
     serialize(attack.attacker);
     serialize(attack.weapon);
+    serialize(attack.x);
+    serialize(attack.y);
+    serialize(attack.missed);
 }
+
+void Serializer::serialize(const MeditationDTO& meditation) { serialize(meditation.player_meditating); }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {
     serialize(resurrection.player_resurrected);
@@ -329,4 +340,10 @@ void Serializer::serialize(const CheatGoldGainEventDTO& event) {
 void Serializer::serialize(const CheatGetItemEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.item);
+}
+
+void Serializer::serialize(const ClanMessageDTO& clan_msg) {
+    serialize(clan_msg.receiver_clan);
+    serialize(clan_msg.content);
+    serialize(clan_msg.sender);
 }

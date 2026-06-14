@@ -254,6 +254,9 @@ void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
             case ActionType::LIST_BANK:
                 handle_list_bank(action);
                 break;
+            case ActionType::CLAN_MESSAGE:
+                handle_clan_message(action);
+                break;
             default:
                 break;
         }
@@ -444,4 +447,19 @@ std::optional<uint8_t> UserInterface::get_item_in_equipment_slot(const int slot_
     }
 
     return std::nullopt;
+}
+
+void UserInterface::handle_clan_message(const ActionDTO& action) {
+    assert(action.action == ActionType::CLAN_MESSAGE);
+    if (clan_name.empty())
+        return;
+
+    const ClanMessageDTO dto = action.clan_msg;
+
+    if (clan_name != dto.receiver_clan || player_name == dto.sender)
+        return;
+
+    SDL_Color color = assign_message_color(MessageType::CLAN);
+
+    enqueue_message(dto.content, color);
 }

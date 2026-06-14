@@ -8,7 +8,7 @@
 
 #include <toml.hpp>
 
-#include "client/SDL/sprites/animation.h"
+#include "../SDL/sprite_creation/animation.h"
 #include "common/direction.h"
 #include "common/util/toml_helper.h"
 

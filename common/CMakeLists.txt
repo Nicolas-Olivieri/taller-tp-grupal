@@ -37,12 +37,14 @@ target_sources(taller_common
         dto/snapshot/actions/action.cpp
         dto/snapshot/actions/action_types/act_attack/attack.cpp
         dto/snapshot/actions/action_types/act_heal/heal.cpp
+        dto/snapshot/actions/action_types/act_meditation/meditation.cpp
         dto/snapshot/actions/action_types/act_message/chatmessage.cpp
         dto/snapshot/actions/action_types/act_resurrection/resurrection.cpp
         dto/snapshot/actions/action_types/act_death/death.cpp
         dto/snapshot/actions/action_types/act_list/chat_list.cpp
         dto/snapshot/actions/action_types/act_list_bank/list_bank.cpp
         dto/snapshot/actions/action_types/act_list_items/list_items.cpp
+        dto/snapshot/actions/action_types/act_clan_msg/clan_message.cpp
 
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/playerinfo.cpp
@@ -117,12 +119,14 @@ target_sources(taller_common
         dto/snapshot/actions/action.h
         dto/snapshot/actions/action_types/act_attack/attack.h
         dto/snapshot/actions/action_types/act_heal/heal.h
+        dto/snapshot/actions/action_types/act_meditation/meditation.h
         dto/snapshot/actions/action_types/act_message/chatmessage.h
         dto/snapshot/actions/action_types/act_resurrection/resurrection.h
         dto/snapshot/actions/action_types/act_death/death.h
         dto/snapshot/actions/action_types/act_list/chat_list.h
         dto/snapshot/actions/action_types/act_list_bank/list_bank.h
         dto/snapshot/actions/action_types/act_list_items/list_items.h
+        dto/snapshot/actions/action_types/act_clan_msg/clan_message.h
 
         dto/snapshot/info/appearance.h
         dto/snapshot/info/playerinfo.h

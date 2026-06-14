@@ -58,6 +58,8 @@ private:
 
     AttackDTO recv_attack();
 
+    MeditationDTO recv_meditation();
+
     ResurrectionDTO recv_resurrection();
 
     DeathDTO recv_death();
@@ -67,6 +69,8 @@ private:
     ListBankDTO recv_list_bank();
 
     ListItemsDTO recv_list_items();
+
+    ClanMessageDTO recv_clan_message();
 
     AssetInfoDTO recv_asset_info();
 

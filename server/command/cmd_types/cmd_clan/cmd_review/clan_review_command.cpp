@@ -42,7 +42,8 @@ void ClanReviewCommand::build_review(SnapshotBuilder& builder) {
 
     lines.push_back("Revision del clan:");
 
-    lines.push_back(std::format("* Miembros: ({} / {})", result.clan_members.size() + 1, Clan::MAX_MEMBERS));
+    lines.push_back(std::format("* Miembros: ({} / {})", result.clan_members.size() + 1,
+                                GameConfig::get().get_clan_constats().max_members_per_clan));
     lines.push_back(std::format("{} - Fundador", player_name));
     std::copy(result.clan_members.begin(), result.clan_members.end(), std::back_inserter(lines));
 

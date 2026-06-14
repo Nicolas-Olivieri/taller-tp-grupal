@@ -31,7 +31,6 @@
 #include "common/dto/events/unequip_item_event.h"
 #include "common/dto/events/use_item_event.h"
 #include "common/util/rate_timer.h"
-#include "sprites/sprite.h"
 
 #include "camera.h"
 #include "key_mapper.h"
@@ -76,6 +75,7 @@ void ClientGame::run() {
         camera.update_position();
 
         render_ui_and_world();
+        renderer.Present();
 
         iteration = timer.calculate_next_iteration();
     }
@@ -99,7 +99,7 @@ Camera ClientGame::initialize_world_and_camera() {
             break;
         }
     }
-    Sprite& user = world.get_client_player();
+    PlayerSprite& user = world.get_client_player();
     SDL2pp::Rect& world_size = world.get_world_size();
     return {game_viewport.GetW(), game_viewport.GetH(), world_size, user};
 }
@@ -238,6 +238,9 @@ void ClientGame::handle_text_command(const std::string& text) {
 
     else if (text.starts_with("/cheat-"))
         handle_cheat(text);
+
+    if (text.starts_with("/meditar"))
+        handle_meditate();
 }
 
 void ClientGame::handle_pick_up_command() {
@@ -393,6 +396,7 @@ void ClientGame::update_state_from_server() {
     world.update_players(snapshot.players_information);
     world.update_creatures(snapshot.creatures_information);
     world.update_loot(snapshot.loot_information);
+    world.erase_finished_effects();
     ui.update_player_state(snapshot.players_information);
     // TODO añadir el resto del manejo de sprites
 }
@@ -543,6 +547,10 @@ void ClientGame::handle_mouse_wheel(const SDL_Event& event) {
 
     if (event.wheel.y < 0)
         ui.chat_scroll_down();
+}
+
+void ClientGame::handle_meditate() const {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::MEDITATE));
 }
 
 void ClientGame::handle_clan_foundation(const std::string& text) {

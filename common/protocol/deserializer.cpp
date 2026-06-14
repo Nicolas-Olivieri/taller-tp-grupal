@@ -74,6 +74,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHEAT_DEATH:
         case CommandType::CHEAT_INFINITE_RECOVERABLES:
         case CommandType::CHEAT_ITEM:
+        case CommandType::MEDITATE:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -207,6 +208,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_despawn());
         case ActionType::HEAL:
             return ActionDTO(recv_heal());
+        case ActionType::MEDITATION:
+            return ActionDTO(recv_meditation());
         case ActionType::MESSAGE:
             return ActionDTO(recv_chat_message());
         case ActionType::RESURRECTION:
@@ -219,6 +222,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_list_items());
         case ActionType::LIST_BANK:
             return ActionDTO(recv_list_bank());
+        case ActionType::CLAN_MESSAGE:
+            return ActionDTO(recv_clan_message());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -233,12 +238,14 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::ATTACK:
         case ActionType::DESPAWN:
         case ActionType::HEAL:
+        case ActionType::MEDITATION:
         case ActionType::MESSAGE:
         case ActionType::RESURRECTION:
         case ActionType::DEATH:
         case ActionType::MESSAGE_LIST:
         case ActionType::LIST_ITEMS:
         case ActionType::LIST_BANK:
+        case ActionType::CLAN_MESSAGE:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -367,8 +374,17 @@ EquipmentInfoDTO Deserializer::recv_equipment_info() {
 AttackDTO Deserializer::recv_attack() {
     const std::string attacker = recv_string();
     const uint8_t weapon = recv_uint8();
+    const uint16_t x = recv_uint16();
+    const uint16_t y = recv_uint16();
+    const uint8_t missed = recv_uint8();
 
-    return AttackDTO(attacker, weapon);
+    return AttackDTO(attacker, weapon, x, y, missed);
+}
+
+MeditationDTO Deserializer::recv_meditation() {
+    const std::string player_meditating = recv_string();
+
+    return MeditationDTO(player_meditating);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {
@@ -452,4 +468,11 @@ AssetInfoDTO Deserializer::recv_asset_info() {
     const uint16_t y = recv_uint16();
 
     return AssetInfoDTO(id, x, y);
+}
+ClanMessageDTO Deserializer::recv_clan_message() {
+    const std::string receiver_clan = recv_string();
+    const std::string content = recv_string();
+    const std::string sender = recv_string();
+
+    return ClanMessageDTO(receiver_clan, content, sender);
 }

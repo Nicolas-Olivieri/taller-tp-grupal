@@ -4,10 +4,12 @@
 #include <cstdint>
 #include <deque>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
 #include "server/command/cmd_results/clan/clan_action_result.h"
+#include "server/game/player/player.h"
 #include "server/persistance/clan_data.h"
 
 #include "clan_action_payload.h"
@@ -22,9 +24,6 @@ class Clan {
 
 
 public:
-    static constexpr uint8_t MAX_MEMBERS = 16;
-    static constexpr uint8_t MIN_LEVEL_REQUIRED_TO_FOUND_CLAN = 6;
-
     explicit Clan(const ClanData& data);
 
     /// Principales operaciones
@@ -36,6 +35,8 @@ public:
     void recv_join_request(const std::string& player_name);
 
     void remove(const std::string& player_name);
+
+    void set_buffed_players(std::unordered_map<std::string, Player>& world_players);
 
 private:
     ClanActionResult accept(const std::string& player_name, const std::string& player_to_accept);

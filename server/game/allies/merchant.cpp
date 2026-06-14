@@ -47,6 +47,9 @@ AllyExecuteResult Merchant::execute(Player& player, const AllyActionPayload& pay
 
 
 AllyExecuteResult Merchant::handle_sell_item(Player& player, const uint8_t item_id) const {
+    if (not player.is_alive())
+        return AllyExecuteResult(SellResult(SellStatus::GHOST_FAIL, type));
+
     try {
         const uint16_t price = GameConfig::get().get_item_price(item_id);
         player.drop_item(item_id);

@@ -17,9 +17,12 @@
 #include "server/persistance/playerdata.h"
 #include "server/util/calculator.h"
 
+#include "clan_membership.h"
+
 struct MaxLevelExceeded: std::runtime_error {
     MaxLevelExceeded(): std::runtime_error("Player cannot keep leveling up.") {}
 };
+
 
 class Player: public Killable, public Attacker {
 private:
@@ -132,9 +135,9 @@ public:
 
     std::string get_clan_name() const;
 
-    void join_clan(const std::string& _clan_name);
+    void join_clan(const std::string& clan_name);
 
-    void found_clan(const std::string& _clan_name);
+    void found_clan(const std::string& clan_name);
 
     void leave_clan();
 
@@ -147,6 +150,10 @@ public:
     void toggle_infinite_recoverables();
 
     bool is_infinite_recoverables_cheat_active() const;
+
+    void set_near_clan_mates(const uint8_t near_clan_mates_amount);
+
+    void meditate();
 
 private:
     void complete_delayed_resurrection();
