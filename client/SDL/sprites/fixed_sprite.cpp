@@ -15,8 +15,8 @@ void FixedSprite::render(const SDL2pp::Point& camera_offset) {
 bool FixedSprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const {
     const SDL2pp::Rect camera_view(area.GetTopLeft() - offset, area.GetSize());
 
-    if (image.get_frame_area().Intersects(camera_view)) {
-        return true;
-    }
-    return false;
+    const SDL2pp::Point render_position = position - offset - render_offset;
+    const SDL2pp::Rect sprite_box(render_position, size);
+
+    return sprite_box.Intersects(camera_view);
 }
