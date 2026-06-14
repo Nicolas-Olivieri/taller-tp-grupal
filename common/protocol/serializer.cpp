@@ -325,3 +325,8 @@ void Serializer::serialize(const CheatGoldGainEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.amount);
 }
+
+void Serializer::serialize(const CheatGetItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item);
+}

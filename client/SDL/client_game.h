@@ -116,6 +116,8 @@ private:
 
     void handle_infinite_recoverables_cheat();
 
+    void handle_get_item_cheat(const std::string& text);
+
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,
                FontManager& font_manager);

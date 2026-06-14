@@ -20,6 +20,7 @@
 #include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
 #include "common/dto/events/chat/chatevent.h"
 #include "common/dto/events/cheat/cheat_experience_set_event.h"
+#include "common/dto/events/cheat/cheat_get_item_event.h"
 #include "common/dto/events/cheat/cheat_gold_gain_event.h"
 #include "common/dto/events/clan/clan_found_event.h"
 #include "common/dto/events/clan/clan_join_event.h"
@@ -653,6 +654,8 @@ void ClientGame::handle_cheat(const std::string& text) {
         handle_kill_self_cheat();
     else if (cheat_type == "infinite-recoverables")
         handle_infinite_recoverables_cheat();
+    else if (cheat_type.starts_with("get-item "))
+        handle_get_item_cheat(cheat_type);
 
     // TODO agregar el resto de cheats
 }
@@ -701,4 +704,16 @@ void ClientGame::handle_kill_self_cheat() {
 
 void ClientGame::handle_infinite_recoverables_cheat() {
     connection.push_command(std::make_unique<EventDTO>(CommandType::CHEAT_INFINITE_RECOVERABLES));
+}
+
+void ClientGame::handle_get_item_cheat(const std::string& text) {
+    const std::string prefix = "get-item ";
+
+    const std::string item_text = extract_prefix(prefix, text);
+
+    std::optional<uint8_t> item_id = ClientConfig::get().get_item_id(item_text);
+    if (!item_id.has_value())
+        return;
+
+    connection.push_command(std::make_unique<CheatGetItemEventDTO>(item_id.value()));
 }

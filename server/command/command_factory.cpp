@@ -4,7 +4,19 @@
 
 #include "cmd_types/cmd_buy/buy_command.h"
 #include "cmd_types/cmd_chatmessage/chatmessage_command.h"
+#include "cmd_types/cmd_cheat/cmd_die/die_command.h"
+#include "cmd_types/cmd_cheat/cmd_gain_gold/gain_gold_command.h"
+#include "cmd_types/cmd_cheat/cmd_get_item/get_item.h"
+#include "cmd_types/cmd_cheat/cmd_infinite_recoverables/infinite_recoverables_command.h"
+#include "cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h"
+#include "cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
+#include "cmd_types/cmd_clan/cmd_ban/clan_ban_command.h"
 #include "cmd_types/cmd_clan/cmd_found/clan_found_command.h"
+#include "cmd_types/cmd_clan/cmd_join/clan_join_command.h"
+#include "cmd_types/cmd_clan/cmd_kick/clan_kick_command.h"
+#include "cmd_types/cmd_clan/cmd_leave/clan_leave_command.h"
+#include "cmd_types/cmd_clan/cmd_reject/clan_reject_command.h"
+#include "cmd_types/cmd_clan/cmd_review/clan_review_command.h"
 #include "cmd_types/cmd_deposit_gold/deposit_gold_command.h"
 #include "cmd_types/cmd_deposit_item/deposit_item_command.h"
 #include "cmd_types/cmd_drop_item/drop_item_command.h"
@@ -19,17 +31,6 @@
 #include "cmd_types/cmd_use_item/use_item_command.h"
 #include "cmd_types/cmd_withdraw_gold/withdraw_gold_command.h"
 #include "cmd_types/cmd_withdraw_item/withdraw_item_command.h"
-#include "server/command/cmd_types/cmd_cheat/cmd_die/die_command.h"
-#include "server/command/cmd_types/cmd_cheat/cmd_gain_gold/gain_gold_command.h"
-#include "server/command/cmd_types/cmd_cheat/cmd_infinite_recoverables/infinite_recoverables_command.h"
-#include "server/command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h"
-#include "server/command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
-#include "server/command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.h"
-#include "server/command/cmd_types/cmd_clan/cmd_join/clan_join_command.h"
-#include "server/command/cmd_types/cmd_clan/cmd_kick/clan_kick_command.h"
-#include "server/command/cmd_types/cmd_clan/cmd_leave/clan_leave_command.h"
-#include "server/command/cmd_types/cmd_clan/cmd_reject/clan_reject_command.h"
-#include "server/command/cmd_types/cmd_clan/cmd_review/clan_review_command.h"
 
 
 CommandFactory::CommandFactory(const std::string& player_name): player_name(player_name) {}
@@ -118,6 +119,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::CHEAT_INFINITE_RECOVERABLES:
             return std::make_unique<InfiniteRecoberableStatsCommand>(player_name);
+
+        case CommandType::CHEAT_ITEM:
+            return std::make_unique<GetItemCommand>(player_name, dto.item_id);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

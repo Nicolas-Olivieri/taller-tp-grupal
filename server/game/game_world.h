@@ -112,6 +112,8 @@ public:
 
     void cheat_infinite_recoverables(const std::string& player_name);
 
+    void cheat_get_item(const std::string& player_name, uint8_t item);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

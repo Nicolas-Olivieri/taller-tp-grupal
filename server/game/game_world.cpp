@@ -703,3 +703,19 @@ void GameWorld::cheat_infinite_recoverables(const std::string& player_name) {
     player.toggle_infinite_recoverables();
     player.heal();
 }
+
+void GameWorld::cheat_get_item(const std::string& player_name, uint8_t item) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    if (not player.is_alive())
+        return;
+
+    try {
+        player.acquire_item(item);
+    } catch (const InventoryFull& err) {
+    } catch (const SlotFull& err) {}
+}
