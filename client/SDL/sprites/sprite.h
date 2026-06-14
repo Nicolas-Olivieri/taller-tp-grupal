@@ -27,6 +27,8 @@ public:
 
     SDL2pp::Point get_ground_position() const;
 
+    void set_visual_position(const SDL2pp::Point& new_visual_position);
+
     Sprite(Sprite&&) = default;
     Sprite& operator=(Sprite&&) = default;
 
