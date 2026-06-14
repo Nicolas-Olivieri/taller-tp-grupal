@@ -9,8 +9,8 @@ EffectSprite::EffectSprite(SpriteLayer&& image, const SDL2pp::Point& position, c
     render_offset = SDL2pp::Point((size.x - TILE_SIZE) / 2, (size.y - TILE_SIZE) / 2);
 }
 
-void EffectSprite::update_frame(const int iteration) {
-    FixedSprite::update_frame(iteration);
+void EffectSprite::update_frame(const int /* iteration*/) {
+    FixedSprite::update_frame(elapsed_frames);
     elapsed_frames++;
 }
 
