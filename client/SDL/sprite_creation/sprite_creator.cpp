@@ -119,6 +119,14 @@ void SpriteCreator::update_appearance(PlayerSprite& player, const AppearanceDTO&
 void SpriteCreator::convert_to_ghost(PlayerSprite& player) {
     const AppearanceDTO ghost_appearance = {GHOST_BODY_ID, GHOST_HEAD_ID};
     update_appearance(player, ghost_appearance);
+
+    // 0 equivale a no tener item equipado
+    if (player.layer_is_different(Layer::HELMET, 0))
+        player.remove_layer(Layer::HELMET);
+    if (player.layer_is_different(Layer::SHIELD, 0))
+        player.remove_layer(Layer::SHIELD);
+    if (player.layer_is_different(Layer::WEAPON, 0))
+        player.remove_layer(Layer::WEAPON);
 }
 
 
