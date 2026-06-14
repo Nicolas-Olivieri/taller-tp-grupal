@@ -407,4 +407,22 @@ struct toml::from<ClanConstantsData> {
     }
 };
 
+struct WorldConstantsData {
+    uint8_t ticks_per_second;
+    uint16_t tick_between_saves;
+    uint16_t max_creatures_amount;
+};
+
+template <>
+struct toml::from<WorldConstantsData> {
+    static WorldConstantsData from_toml(const toml::value& raw) {
+        return WorldConstantsData{
+                toml::find<uint8_t>(raw, "ticks_per_second"),
+                toml::find<uint16_t>(raw, "tick_between_saves"),
+                toml::find<uint16_t>(raw, "max_creatures_amount"),
+        };
+    }
+};
+
+
 #endif  // GAME_DATA_H

@@ -1,0 +1,4 @@
+[world]
+ticks_per_second = 30 # máximo es 255
+tick_between_saves = 300
+max_creatures_amount = 10

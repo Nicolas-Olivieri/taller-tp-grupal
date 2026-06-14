@@ -9,9 +9,6 @@
 
 #include "world_update_status.h"
 
-#define FPS 30
-#define SAVE_FRAME (FPS * 10)
-
 
 GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcaster& broadcaster,
                    PlayerRepository& player_repository):
@@ -24,7 +21,7 @@ GameLoop::GameLoop(Queue<std::unique_ptr<Command>>& command_queue, EventBroadcas
 void GameLoop::run() {
     game_world.init();
 
-    RateTimer timer(FPS);
+    RateTimer timer(GameConfig::get().get_world_constants().ticks_per_second);
     int current_iteration = 0;
     int last_iteration = -1;
 
@@ -42,7 +39,7 @@ void GameLoop::run() {
         current_iteration = timer.calculate_next_iteration();
 
         // TODO: engrapadísimo también
-        if (current_iteration % SAVE_FRAME == 0)
+        if (current_iteration % GameConfig::get().get_world_constants().tick_between_saves == 0)
             player_repository.save_progress(game_world.get_players());
     }
 }

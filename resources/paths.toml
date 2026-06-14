@@ -21,3 +21,6 @@ path = "/server/fair_play.toml"
 
 [server.clans]
 path = "/server/clans.toml"
+
+[server.world]
+path = "/server/world.toml"

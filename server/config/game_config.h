@@ -16,6 +16,7 @@ private:
     DropProbabilitiesData drop_probabilities;
     FairPlayData fair_play_levels;
     ClanConstantsData clan_constants_data;
+    WorldConstantsData world_constants_data;
 
     GameConfig();
 
@@ -70,7 +71,9 @@ public:
 
     const FairPlayData& get_fair_play() const;
 
-    const ClanConstantsData& get_clan_constats() const;
+    const ClanConstantsData& get_clan_constants() const;
+
+    const WorldConstantsData& get_world_constants() const;
 
     uint16_t get_item_price(uint8_t item_id) const;
 
