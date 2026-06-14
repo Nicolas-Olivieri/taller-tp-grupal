@@ -191,9 +191,7 @@ InteractResult Player::heal_intearction(Player& healer) {
         return InteractResult(RecoverStatus::COMPLETE);
 
     healer.attack();
-
     const EquipableItemData& equipable_data = GameConfig::get().get_equipable(healer.equipment.weapon);
-    const WeaponData& weapon_data = GameConfig::get().get_weapon(healer.equipment.weapon);
 
     uint16_t amount = Calculator::random_number(equipable_data.min, equipable_data.max);
 
