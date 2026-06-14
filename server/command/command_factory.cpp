@@ -12,7 +12,19 @@
 #include "cmd_types/ally_execute/cmd_withdraw_gold/withdraw_gold_command.h"
 #include "cmd_types/ally_execute/cmd_withdraw_item/withdraw_item_command.h"
 #include "cmd_types/cmd_chatmessage/chatmessage_command.h"
+#include "cmd_types/cmd_cheat/cmd_die/die_command.h"
+#include "cmd_types/cmd_cheat/cmd_gain_gold/gain_gold_command.h"
+#include "cmd_types/cmd_cheat/cmd_get_item/get_item.h"
+#include "cmd_types/cmd_cheat/cmd_infinite_recoverables/infinite_recoverables_command.h"
+#include "cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h"
+#include "cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
+#include "cmd_types/cmd_clan/cmd_ban/clan_ban_command.h"
 #include "cmd_types/cmd_clan/cmd_found/clan_found_command.h"
+#include "cmd_types/cmd_clan/cmd_join/clan_join_command.h"
+#include "cmd_types/cmd_clan/cmd_kick/clan_kick_command.h"
+#include "cmd_types/cmd_clan/cmd_leave/clan_leave_command.h"
+#include "cmd_types/cmd_clan/cmd_reject/clan_reject_command.h"
+#include "cmd_types/cmd_clan/cmd_review/clan_review_command.h"
 #include "cmd_types/cmd_drop_item/drop_item_command.h"
 #include "cmd_types/cmd_interact/interact_command.h"
 #include "cmd_types/cmd_meditate/meditate_command.h"
@@ -107,6 +119,18 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::CHEAT_XP:
             return std::make_unique<SetExperienceCommand>(player_name, dto.item_id);
+
+        case CommandType::CHEAT_GOLD:
+            return std::make_unique<GainGoldCommand>(player_name, dto.gold_amount);
+
+        case CommandType::CHEAT_DEATH:
+            return std::make_unique<DieCommand>(player_name);
+
+        case CommandType::CHEAT_INFINITE_RECOVERABLES:
+            return std::make_unique<InfiniteRecoberableStatsCommand>(player_name);
+
+        case CommandType::CHEAT_ITEM:
+            return std::make_unique<GetItemCommand>(player_name, dto.item_id);
 
         case CommandType::MEDITATE:
             return std::make_unique<MeditateCommand>(player_name);

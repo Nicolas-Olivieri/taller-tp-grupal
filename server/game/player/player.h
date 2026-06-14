@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -17,6 +18,10 @@
 #include "server/util/calculator.h"
 
 #include "clan_membership.h"
+
+struct MaxLevelExceeded: std::runtime_error {
+    MaxLevelExceeded(): std::runtime_error("Player cannot keep leveling up.") {}
+};
 
 
 class Player: public Killable, public Attacker {
@@ -37,11 +42,10 @@ private:
     int resurrection_timer;
     Position target_resurrection_position;
 
-    void drop_excess_gold(std::vector<Loot>& drops);
+    bool _is_founder;
+    std::string clan_name;
 
-    void drop_inventory(std::vector<Loot>& drops);
-
-    void drop_equipment(std::vector<Loot>& drops);
+    bool has_infinite_recoverables_cheat_activated;
 
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
@@ -141,12 +145,26 @@ public:
 
     void set_xp_level(const uint8_t new_level);
 
+    void die();
+
+    void toggle_infinite_recoverables();
+
+    bool is_infinite_recoverables_cheat_active() const;
+
     void set_near_clan_mates(const uint8_t near_clan_mates_amount);
 
     void meditate();
 
 private:
     void complete_delayed_resurrection();
+
+    void upgrade();
+
+    void drop_excess_gold(std::vector<Loot>& drops);
+
+    void drop_inventory(std::vector<Loot>& drops);
+
+    void drop_equipment(std::vector<Loot>& drops);
 };
 
 

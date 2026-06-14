@@ -332,6 +332,16 @@ void Serializer::serialize(const CheatExperienceSetEventDTO& event) {
     serialize(event.level);
 }
 
+void Serializer::serialize(const CheatGoldGainEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.amount);
+}
+
+void Serializer::serialize(const CheatGetItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item);
+}
+
 void Serializer::serialize(const ClanMessageDTO& clan_msg) {
     serialize(clan_msg.receiver_clan);
     serialize(clan_msg.content);

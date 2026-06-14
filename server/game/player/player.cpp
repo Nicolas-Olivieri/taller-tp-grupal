@@ -24,7 +24,9 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         just_resurrected(false),
         is_resurrecting(false),
         resurrection_timer(0),
-        target_resurrection_position(0, 0) {
+        target_resurrection_position(0, 0),
+        _is_founder(persisted_data.is_founder),
+        has_infinite_recoverables_cheat_activated(false) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
 }
@@ -47,7 +49,10 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         just_resurrected(false),
         is_resurrecting(false),
         resurrection_timer(0),
-        target_resurrection_position(0, 0) {}
+        target_resurrection_position(0, 0),
+        _is_founder(false),
+        clan_name(""),
+        has_infinite_recoverables_cheat_activated(false) {}
 
 int Player::attack() {
     is_meditating = false;
@@ -58,7 +63,8 @@ int Player::attack() {
     current_attack_cooldown = required_attack_cooldown;
 
     WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
-    stats.mana.loose(data.mana_cost);
+    if (!has_infinite_recoverables_cheat_activated)
+        stats.mana.loose(data.mana_cost);
 
     return Calculator::calculate_damage(stats.strength, equipment, clan.get_clan_buff_factor());
 }
@@ -77,7 +83,7 @@ uint16_t Player::get_excess_gold() const { return gold_manager.get_excess_gold()
 
 void Player::earn_xp(uint32_t amount) {
     if (stats.experience.earn_xp(amount))
-        stats.upgrade();
+        upgrade();
 }
 
 bool Player::can_attack() const {
@@ -91,10 +97,7 @@ bool Player::can_attack() const {
 
     WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
 
-    std::cout << "[Player] costo de mana: " << data.mana_cost << "\n";
-    std::cout << "[Player] mana actual: " << stats.mana.get_current() << "\n";
-
-    return data.mana_cost <= stats.mana.get_current();
+    return has_infinite_recoverables_cheat_activated || data.mana_cost <= stats.mana.get_current();
 }
 
 void Player::update() {
@@ -148,6 +151,10 @@ InteractResult Player::interact(Player& attacker) {
 
     InteractResult result = Killable::interact(attacker);
     result.attack.player_attacked = player_name;
+
+    if (has_infinite_recoverables_cheat_activated) {
+        stats.health.recover(result.attack.damage_dealt);
+    }
 
     return result;
 }
@@ -325,7 +332,22 @@ bool Player::is_clan_founder() const { return clan.is_founder(); }
 
 void Player::set_xp_level(const uint8_t new_level) {
     stats.experience.set_level(new_level);
+    upgrade();
+}
+
+void Player::upgrade() {
     stats.upgrade();
+    gold_manager.update_max(stats.experience.get_level());
+}
+
+void Player::die() { stats.health.set_current(0); }
+
+void Player::toggle_infinite_recoverables() {
+    has_infinite_recoverables_cheat_activated = !has_infinite_recoverables_cheat_activated;
+}
+
+bool Player::is_infinite_recoverables_cheat_active() const {
+    return has_infinite_recoverables_cheat_activated;
 }
 
 void Player::set_near_clan_mates(const uint8_t near_clan_mates_amount) {

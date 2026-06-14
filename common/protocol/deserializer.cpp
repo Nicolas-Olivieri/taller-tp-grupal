@@ -70,6 +70,10 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CLAN_LEAVE:
         case CommandType::CLAN_REVIEW:
         case CommandType::CHEAT_XP:
+        case CommandType::CHEAT_GOLD:
+        case CommandType::CHEAT_DEATH:
+        case CommandType::CHEAT_INFINITE_RECOVERABLES:
+        case CommandType::CHEAT_ITEM:
         case CommandType::MEDITATE:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción

@@ -38,7 +38,7 @@ private:
 
     bool is_chat_active;
     std::string chat_text;
-    const SDL2pp::Rect chat_icon = {5, 190, 45, 30};
+    const SDL2pp::Rect chat_icon = {10, 190, 736, 30};
 
     // TODO: acá meter las cosas del chat
 
@@ -81,6 +81,8 @@ private:
 
     void handle_withdraw_item_command(const std::string& text);
 
+    void handle_pick_up_command();
+
     void handle_drop_item_command();
 
     void handle_clan_foundation(const std::string& text);
@@ -109,6 +111,14 @@ private:
     void handle_cheat(const std::string& text);
 
     void handle_xp_cheat(const std::string& text);
+
+    void handle_gold_cheat(const std::string& text);
+
+    void handle_kill_self_cheat();
+
+    void handle_infinite_recoverables_cheat();
+
+    void handle_get_item_cheat(const std::string& text);
 
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,

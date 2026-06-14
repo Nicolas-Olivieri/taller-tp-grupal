@@ -109,6 +109,14 @@ public:
 
     void cheat_player_xp(const std::string& player_name, const uint8_t level);
 
+    void cheat_player_gold(const std::string& player_name, const uint16_t gold_amount);
+
+    void cheat_kill_player(const std::string& player_name);
+
+    void cheat_infinite_recoverables(const std::string& player_name);
+
+    void cheat_get_item(const std::string& player_name, uint8_t item);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

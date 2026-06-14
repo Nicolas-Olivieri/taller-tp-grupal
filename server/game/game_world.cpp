@@ -109,10 +109,14 @@ CreatureUpdate GameWorld::manage_creature_attack(Creature& creature) {
 
     if (creature.is_targeting_someone() && creature.can_attack()) {
         CreatureUpdate creature_update = creature.attack_player();
-
         Player& target = players.at(creature.get_target_name());
-        if (!target.is_alive())
+
+        if (target.is_infinite_recoverables_cheat_active()) {
+            target.heal();
+            return CreatureUpdate(CreatureStatus::WAITING);
+        } else if (!target.is_alive()) {
             drop_player_items(target);
+        }
 
         return creature_update;
     }
@@ -370,7 +374,7 @@ PickUpResult GameWorld::pick_up(const std::string& player_name) {
     PickUpResult result = loot.type == LootType::ITEM ? pick_item_up(player, tile, loot.item) :
                                                         pick_gold_up(player, tile, loot.gold);
 
-    if (result.status == PickUpStatus::SUCCESS && tile.get_loot().empty())
+    if (result.status != PickUpStatus::NOT_ENOUGH_SPACE && tile.get_loot().empty())
         tiles_with_loot.extract({position.get_x(), position.get_y()});
 
     return result;
@@ -392,15 +396,13 @@ PickUpResult GameWorld::pick_gold_up(Player& player, Tile& tile, uint16_t gold) 
     player.add_gold(gold);
     uint16_t current_gold = player.get_safe_gold() + player.get_excess_gold();
 
+    if (current_gold == previous_gold)
+        return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
+
     tile.get_loot().pop();
 
-    if (current_gold - previous_gold == gold) {
-        return PickUpResult(PickUpStatus::SUCCESS);
-    } else if (current_gold - previous_gold == 0) {
-        return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
-    }
-
-    return PickUpResult(PickUpStatus::GOLD_OVERFLOW);
+    return current_gold - previous_gold == gold ? PickUpResult(PickUpStatus::SUCCESS) :
+                                                  PickUpResult(PickUpStatus::GOLD_OVERFLOW);
 }
 
 UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t item_id) {
@@ -692,4 +694,54 @@ void GameWorld::cheat_player_xp(const std::string& player_name, const uint8_t le
 
     Player& player = players.at(player_name);
     player.set_xp_level(level);
+}
+
+void GameWorld::cheat_player_gold(const std::string& player_name, const uint16_t gold_amount) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+    player.add_gold(gold_amount);
+}
+
+void GameWorld::cheat_kill_player(const std::string& player_name) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    if (!player.is_alive())
+        return;
+
+    player.die();
+    drop_and_add(player, grid.get_tile(player.get_position()));
+}
+
+void GameWorld::cheat_infinite_recoverables(const std::string& player_name) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    player.toggle_infinite_recoverables();
+    player.heal();
+}
+
+void GameWorld::cheat_get_item(const std::string& player_name, uint8_t item) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    if (not player.is_alive())
+        return;
+
+    try {
+        player.acquire_item(item);
+    } catch (const InventoryFull& err) {
+    } catch (const SlotFull& err) {}
 }
