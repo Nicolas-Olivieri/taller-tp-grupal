@@ -4,6 +4,8 @@
 #include <cassert>
 #include <random>
 
+#include "server/game/items/item_mapper.h"
+
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
 // modelo
 
@@ -120,9 +122,24 @@ bool Player::can_reach(const Position& other_position) const {
            std::abs(position.get_y() - other_position.get_y()) <= range;
 }
 
-InteractResult Player::interact(Player& attacker) {
-    if (position == attacker.get_position())
+InteractResult Player::interact(Player& other) {
+    TypeEffect effect = ItemMapper::get_type_effect(other.equipment.weapon);
+    switch (effect) {
+        case TypeEffect::HEALTH:
+            return heal_intearction(other);
+        case TypeEffect::DAMAGE:
+            return attack_interaction(other);
+        case TypeEffect::MANA:
+        default:
+            throw std::invalid_argument(
+                    "This weapon has a type effect that is not valid for an interaction with another player");
+    }
+}
+
+InteractResult Player::attack_interaction(Player& attacker) {
+    if (position == attacker.get_position()) {
         return InteractResult();
+    }
 
     if (not is_alive())
         return InteractResult(AttackStatus::DEAD_TARGET);
@@ -151,10 +168,37 @@ InteractResult Player::interact(Player& attacker) {
 
     InteractResult result = Killable::interact(attacker);
     result.attack.player_attacked = player_name;
+    result.attack.attacked_clan_name = clan_name;
 
     if (has_infinite_recoverables_cheat_activated) {
         stats.health.recover(result.attack.damage_dealt);
     }
+
+    return result;
+}
+
+InteractResult Player::heal_intearction(Player& healer) {
+    if (not is_alive())
+        return InteractResult(RecoverStatus::DEAD_TARGET);
+
+    if (not healer.can_reach(position))
+        return InteractResult(RecoverStatus::OUT_OF_RANGE);
+
+    if (not healer.can_attack())
+        return InteractResult(RecoverStatus::CANNOT_HEAL);
+
+    if (stats.health.get_current() == stats.health.get_max())
+        return InteractResult(RecoverStatus::COMPLETE);
+
+    healer.attack();
+
+    const EquipableItemData& equipable_data = GameConfig::get().get_equipable(healer.equipment.weapon);
+    const WeaponData& weapon_data = GameConfig::get().get_weapon(healer.equipment.weapon);
+
+    uint16_t amount = Calculator::random_number(equipable_data.min, equipable_data.max);
+
+    stats.health.recover(amount);
+    InteractResult result(healer.equipment.weapon, amount, player_name);
 
     return result;
 }

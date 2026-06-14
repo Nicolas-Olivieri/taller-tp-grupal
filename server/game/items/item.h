@@ -8,7 +8,7 @@
 
 struct Equipment;
 
-enum class UsableTypeEffect : uint8_t { HEALTH = 0, MANA = 1 };
+enum class TypeEffect : uint8_t { HEALTH = 0, MANA = 1, DAMAGE = 2 };
 
 struct Weapon {
     uint8_t item;

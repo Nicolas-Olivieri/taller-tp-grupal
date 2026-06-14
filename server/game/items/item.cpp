@@ -16,14 +16,14 @@ uint8_t Use::operator()(const Helmet& helmet) { return change_item(equipment.hel
 uint8_t Use::operator()(const Armor& armor) { return change_item(equipment.armor, armor.item); }
 
 uint8_t Use::operator()(const Usable& usable) {
-    UsableTypeEffect type = ItemMapper::get_usable_type_effect(usable.item);
+    TypeEffect type = ItemMapper::get_type_effect(usable.item);
     uint16_t amount = ItemMapper::get_usable_effect_amount(usable.item);
 
     switch (type) {
-        case UsableTypeEffect::HEALTH:
+        case TypeEffect::HEALTH:
             stats.health.recover(amount);
             break;
-        case UsableTypeEffect::MANA:
+        case TypeEffect::MANA:
             stats.mana.recover(amount);
             break;
         default:

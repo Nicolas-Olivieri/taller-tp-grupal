@@ -24,6 +24,7 @@ struct AttackResult {
     int damage_dealt;
     bool was_killed;
     std::string player_attacked;
+    std::string attacked_clan_name;
 };
 
 #endif  // ATTACK_RESULT_H

@@ -67,7 +67,7 @@ public:
 
     std::vector<Loot> drop() override;
 
-    InteractResult interact(Player& attacker) override;
+    InteractResult interact(Player& other) override;
 
     void update_position(const Position& new_position, const Direction& new_direction) override;
 
@@ -165,6 +165,10 @@ private:
     void drop_inventory(std::vector<Loot>& drops);
 
     void drop_equipment(std::vector<Loot>& drops);
+
+    InteractResult attack_interaction(Player& attacker);
+
+    InteractResult heal_intearction(Player& healer);
 };
 
 

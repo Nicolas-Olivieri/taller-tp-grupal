@@ -6,22 +6,9 @@
 #include <vector>
 
 InteractCommand::InteractCommand(const std::string& player_name, const int x, const int y):
-        player_name(player_name), position(x, y), result(), attacked_clan_name("") {}
+        player_name(player_name), position(x, y), result() {}
 
-void InteractCommand::execute(GameWorld& world) {
-    result = world.interact(player_name, position);
-
-    if (result.type == InteractionType::ATTACK) {
-        for (const auto& [name, player]: world.get_players()) {
-            if (name == player_name)
-                continue;
-            if (player.get_position() == position) {
-                result.attack.player_attacked = name;
-                attacked_clan_name = player.get_clan_name();
-            }
-        }
-    }
-}
+void InteractCommand::execute(GameWorld& world) { result = world.interact(player_name, position); }
 
 
 void InteractCommand::build_snapshot(SnapshotBuilder& builder) {
@@ -31,6 +18,9 @@ void InteractCommand::build_snapshot(SnapshotBuilder& builder) {
             break;
         case InteractionType::BIND:
             handle_bind(builder);
+            break;
+        case InteractionType::RECOVER:
+            handle_recover(builder);
             break;
         case InteractionType::MUST_NOT_NOTIFY:
             break;
@@ -94,7 +84,7 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
         lines_to_attacked.push_back(
                 std::format("{} te quito {} de vida", player_name, result.attack.damage_dealt));
 
-        builder.add_action(ActionDTO(ClanMessageDTO(attacked_clan_name,
+        builder.add_action(ActionDTO(ClanMessageDTO(result.attack.attacked_clan_name,
                                                     std::format("{} le quito {} de vida a {}", player_name,
                                                                 result.attack.damage_dealt, player_attacked),
                                                     player_attacked)));
@@ -104,8 +94,8 @@ void InteractCommand::handle_hit(SnapshotBuilder& builder) {
             lines_to_attacked.push_back(std::format("{} te mato", player_name, result.attack.damage_dealt));
 
             builder.add_action(ActionDTO(ClanMessageDTO(
-                    attacked_clan_name, std::format("{} mató a {}", player_name, player_attacked),
-                    player_attacked)));
+                    result.attack.attacked_clan_name,
+                    std::format("{} mató a {}", player_name, player_attacked), player_attacked)));
 
 
             builder.add_action(ActionDTO(DeathDTO(player_attacked)));
@@ -161,4 +151,42 @@ void InteractCommand::handle_bind(SnapshotBuilder& builder) {
     }
 
     builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, player_name, msg)));
+}
+
+void InteractCommand::handle_recover(SnapshotBuilder& builder) {
+    assert(result.type == InteractionType::RECOVER);
+
+    RecoverStatus status = result.recover.status;
+
+    static std::map<RecoverStatus, std::string> recover_status_to_message(
+            {{RecoverStatus::OUT_OF_RANGE, "El objetivo esta fuera de alcance"},
+             {RecoverStatus::DEAD_TARGET, "El objetivo ya esta muerto"},
+             {RecoverStatus::CANNOT_HEAL, "No es posible curar en este momento"},
+             {RecoverStatus::CANNOT_HEAL_CREATURE, "No puedes curar a una criatura"},
+             {RecoverStatus::COMPLETE, "No falta vida para curar"}});
+
+    if (recover_status_to_message.contains(status)) {
+        const std::string message = recover_status_to_message.at(status);
+        builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name, message)));
+        return;
+    }
+
+    builder.add_action(
+            ActionDTO(AttackDTO(result.recover.player_recovered, result.recover.weapon, position.get_x(),
+                                position.get_y(), static_cast<uint8_t>(status))));
+
+    // TODO: lógica de clanes para curaciones? (porfa no)
+    if (player_name == result.recover.player_recovered) {
+        builder.add_action(ActionDTO(
+                ChatMessageDTO(MessageType::SYSTEM, player_name,
+                               std::format("Te curaste {} puntos de vida", result.recover.recover_amount))));
+    } else {
+        builder.add_action(ActionDTO(
+                ChatMessageDTO(MessageType::SYSTEM, player_name,
+                               std::format("Le curaste {} puntos de vida a {}", result.recover.recover_amount,
+                                           result.recover.player_recovered))));
+        builder.add_action(ActionDTO(ChatMessageDTO(
+                MessageType::SYSTEM, result.recover.player_recovered,
+                std::format("{} te curó {} puntos de vida", player_name, result.recover.recover_amount))));
+    }
 }

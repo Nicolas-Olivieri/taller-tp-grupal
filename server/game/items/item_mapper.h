@@ -11,7 +11,7 @@ class ItemMapper {
 public:
     static Item parse_item(uint8_t item);
 
-    static UsableTypeEffect get_usable_type_effect(uint8_t item_id);
+    static TypeEffect get_type_effect(uint8_t item_id);
 
     static uint16_t get_usable_effect_amount(uint8_t item_id);
 
@@ -25,6 +25,10 @@ private:
     static bool is_helmet(uint8_t item_id);
 
     static bool is_usable(uint8_t item_id);
+
+    static TypeEffect parse_type_effect(uint8_t type);
+
+    static uint8_t get_item_effect_type(uint8_t item_id);
 };
 
 

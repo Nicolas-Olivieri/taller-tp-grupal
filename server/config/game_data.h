@@ -135,6 +135,7 @@ struct toml::from<UsableItemData> {
 struct WeaponData {
     uint8_t range;
     uint8_t mana_cost;
+    uint8_t type_effect;
 };
 
 template <>
@@ -143,6 +144,7 @@ struct toml::from<WeaponData> {
         return WeaponData{
                 toml::find<uint8_t>(raw, "range"),
                 toml::find<uint8_t>(raw, "mana_cost"),
+                toml::find<uint8_t>(raw, "type"),
         };
     }
 };

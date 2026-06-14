@@ -1,3 +1,5 @@
+# type = 0: Health, type = 1: Maná, type = 2: Daño
+
 [weapons.bare_hand]
 id = 0
 price = 0
@@ -5,6 +7,7 @@ min_value = 1
 max_value = 3
 range = 1
 mana_cost = 0
+type = 2
 
 [weapons.sword]
 id = 1
@@ -13,6 +16,7 @@ min_value = 2
 max_value = 5
 range = 1
 mana_cost = 0
+type = 2
 
 [weapons.axe]
 id = 2
@@ -21,6 +25,7 @@ min_value = 4
 max_value = 5
 range = 1
 mana_cost = 0
+type = 2
 
 [weapons.hammer]
 id = 3
@@ -29,6 +34,7 @@ min_value = 1
 max_value = 9
 range = 1
 mana_cost = 0
+type = 2
 
 [weapons.ash_stick]
 id = 4
@@ -37,15 +43,16 @@ min_value = 2
 max_value = 4
 range = 4
 mana_cost = 5
+type = 2
 
-# TODO: la solución puede ser agregarles un campo para ver si son de curación o un effect como las pociones y que uno sea daño y el otro aprovecha el HEALTH 
-# [weapons.elven_flute]
-# id = 5
-# price = 500
-# min_value = 150
-# max_value = 300
-# range = 0            # "sobre el jugador que restaura la vida"
-# mana_cost = 100
+[weapons.elven_flute]
+id = 5
+price = 500
+min_value = 100
+max_value = 255
+range = 5
+mana_cost = 100
+type = 0
 
 [weapons.knotty_staff]
 id = 6
@@ -54,6 +61,7 @@ min_value = 4
 max_value = 8
 range = 5
 mana_cost = 15
+type = 2
 
 [weapons.socketed_staff]
 id = 7
@@ -62,6 +70,7 @@ min_value = 8
 max_value = 20
 range = 6
 mana_cost = 30
+type = 2
 
 [weapons.simple_bow]
 id = 8
@@ -70,6 +79,7 @@ min_value = 1
 max_value  = 4
 range = 5
 mana_cost = 0
+type = 2
 
 [weapons.compound_bow]
 id = 9
@@ -78,6 +88,7 @@ min_value = 4
 max_value  = 16
 range = 7
 mana_cost = 0
+type = 2
 
 
 
