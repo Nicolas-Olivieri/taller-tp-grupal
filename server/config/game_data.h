@@ -419,10 +419,26 @@ struct toml::from<WorldConstantsData> {
         return WorldConstantsData{
                 toml::find<uint8_t>(raw, "ticks_per_second"),
                 toml::find<uint16_t>(raw, "tick_between_saves"),
-                toml::find<uint16_t>(raw, "max_creatures_amount"),
+                toml::find<uint16_t>(raw, "max_creatures_amount")
         };
     }
 };
 
+struct CreatureBehaviorConstantsData {
+    uint8_t extra_target_range;
+    uint8_t extra_target_range_limit;
+    uint8_t attack_cooldowns_to_become_lonely;
+};
+
+template <>
+struct toml::from<CreatureBehaviorConstantsData> {
+    static CreatureBehaviorConstantsData from_toml(const toml::value& raw) {
+        return CreatureBehaviorConstantsData{
+                toml::find<uint8_t>(raw, "extra_target_range"),
+                toml::find<uint8_t>(raw, "extra_target_range_limit"),
+                toml::find<uint8_t>(raw, "attack_cooldowns_to_become_lonely")
+        };
+    }
+};
 
 #endif  // GAME_DATA_H

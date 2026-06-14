@@ -10,16 +10,12 @@
 #include "server/util/calculator.h"
 #include "state/idlestate.h"
 
-#define EXTRA_TARGET_RANGE 4  // TODO: toml
-#define EXTRA_TARGET_RANGE_LIMIT 8
-#define MAX_ATTACK_COOLDOWNS_WITHOUT_ACT 20  // TODO: pensar otro nombre
-
 Creature::Creature(const uint8_t race, const uint8_t variation, const Position& position):
         Killable(race, variation, random_level(race, variation), position, equip_items(variation)),
         state(&IdleState::get()),
         target(nullptr),
         is_alone(false),
-        count_to_loneliness(required_attack_cooldown * MAX_ATTACK_COOLDOWNS_WITHOUT_ACT) {}
+        count_to_loneliness(required_attack_cooldown * GameConfig::get().get_creature_behavior_constants().attack_cooldowns_to_become_lonely) {}
 
 uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
     GameConfig& config = GameConfig::get();
@@ -90,7 +86,7 @@ void Creature::update() {
     if (current_attack_cooldown == 0 && target == nullptr) {
         count_to_loneliness--;
     } else {
-        count_to_loneliness = required_attack_cooldown * MAX_ATTACK_COOLDOWNS_WITHOUT_ACT;
+        count_to_loneliness = required_attack_cooldown * GameConfig::get().get_creature_behavior_constants().attack_cooldowns_to_become_lonely;
     }
 
     if (count_to_loneliness == 0) {
@@ -149,7 +145,8 @@ bool Creature::can_reach(const Position& other_position) const {
 }
 
 bool Creature::can_target(const Position& other_position) const {
-    uint8_t range = std::min(EXTRA_TARGET_RANGE_LIMIT, get_weapon_range() + EXTRA_TARGET_RANGE);
+    const auto& behavior_constants =  GameConfig::get().get_creature_behavior_constants();
+    uint8_t range = std::min(static_cast<int>(behavior_constants.extra_target_range_limit), get_weapon_range() + behavior_constants.extra_target_range);
     return is_in_range(other_position, range);
 }
 

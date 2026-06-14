@@ -24,3 +24,6 @@ path = "/server/clans.toml"
 
 [server.world]
 path = "/server/world.toml"
+
+[server.creature_behavior]
+path = "/server/creature_behavior.toml"

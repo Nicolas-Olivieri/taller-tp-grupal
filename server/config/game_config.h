@@ -17,6 +17,7 @@ private:
     FairPlayData fair_play_levels;
     ClanConstantsData clan_constants_data;
     WorldConstantsData world_constants_data;
+    CreatureBehaviorConstantsData creature_constants_data;
 
     GameConfig();
 
@@ -74,6 +75,8 @@ public:
     const ClanConstantsData& get_clan_constants() const;
 
     const WorldConstantsData& get_world_constants() const;
+
+    const CreatureBehaviorConstantsData& get_creature_behavior_constants() const;
 
     uint16_t get_item_price(uint8_t item_id) const;
 
