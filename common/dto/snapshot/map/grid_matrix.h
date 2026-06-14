@@ -2,8 +2,9 @@
 #define GRID_MATRIX_H
 #include <vector>
 
-#include "tile_info.h"
 #include "common/dto/message.h"
+
+#include "tile_info.h"
 
 struct GridMatrixDTO: public ProtocolMessageDTO {
     std::vector<std::vector<TileInfoDTO>> tiles_info;

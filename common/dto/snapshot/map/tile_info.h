@@ -3,7 +3,7 @@
 #include "common/dto/message.h"
 
 
-struct TileInfoDTO : public ProtocolMessageDTO {
+struct TileInfoDTO: public ProtocolMessageDTO {
     bool walkable;
     uint8_t biome;
 
@@ -11,8 +11,8 @@ struct TileInfoDTO : public ProtocolMessageDTO {
 
     size_t message_size() const override;
 
-    void accept(Serializer &serializer) const override;
+    void accept(Serializer& serializer) const override;
 };
 
 
-#endif //TILE_INFO_H
+#endif  // TILE_INFO_H

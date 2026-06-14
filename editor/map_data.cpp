@@ -54,11 +54,11 @@ int MapData::add_collider(const QPoint position, const AssetData& collider_data)
     const GridRange grid_range(position, collider_data.tile_width, collider_data.tile_height);
     const QRect unwalkable_area = collider_data.unwalkable_area.translated(position);
 
-    // Chequea que toda el area del collider tenga un tile por debajo y que su zona no caminable no colisione con la
-    // de otro collider (las zonas caminables puede superponerse)
+    // Chequea que toda el area del collider tenga un tile por debajo y que su zona no caminable no colisione
+    // con la de otro collider (las zonas caminables puede superponerse)
     if (std::any_of(grid_range.begin(), grid_range.end(), [this, unwalkable_area](const QPoint& cell) {
             return !occupied_tiles.contains(cell) ||
-                    (unwalkable_area.contains(cell) && occupied_tiles[cell].length() == 2);
+                   (unwalkable_area.contains(cell) && occupied_tiles[cell].length() == 2);
         })) {
         return -1;
     }
@@ -102,7 +102,7 @@ bool MapData::erase_tile(const Placement& placement) {
     const GridRange grid_range(placement.origin, asset.tile_width, asset.tile_height);
 
     if (std::any_of(grid_range.begin(), grid_range.end(),
-                        [this](const QPoint& cell) { return occupied_tiles[cell].length() == 2; })) {
+                    [this](const QPoint& cell) { return occupied_tiles[cell].length() == 2; })) {
         return false;
     }
 
@@ -136,13 +136,14 @@ bool MapData::erase_collider(const Placement& placement) {
 
 // ZONA SEGURA::::::::::::::::
 
-QSet<QPair<int, QPoint>> MapData::add_safe_tiles(const QPoint origin_position, const int width, const int height) {
+QSet<QPair<int, QPoint>> MapData::add_safe_tiles(const QPoint origin_position, const int width,
+                                                 const int height) {
     const GridRange grid_range(origin_position, width, height);
     QSet<QPair<int, QPoint>> valid_new_tiles;
 
     for (const auto& cell: grid_range) {
         if (!occupied_tiles.contains(cell)) {
-            continue; // No hay una tile dibujada en donde se quiere colocar una zona segura
+            continue;  // No hay una tile dibujada en donde se quiere colocar una zona segura
         }
 
         if (!safe_zone_tiles.contains(cell)) {
@@ -154,9 +155,7 @@ QSet<QPair<int, QPoint>> MapData::add_safe_tiles(const QPoint origin_position, c
     return valid_new_tiles;
 }
 
-void MapData::erase_safe_tile(const QPoint position) {
-    safe_zone_tiles.remove(position);
-}
+void MapData::erase_safe_tile(const QPoint position) { safe_zone_tiles.remove(position); }
 
 
 void MapData::clear_all() {

@@ -99,7 +99,7 @@ intType ServerMapLoader::parse_int() {
 
     if (sizeof(intType) == 2) {
         return ntohs(data);
-    }else if (sizeof(intType) == 4) {
+    } else if (sizeof(intType) == 4) {
         return ntohl(data);
     }
 

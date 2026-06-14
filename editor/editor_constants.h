@@ -15,4 +15,4 @@ enum class ImageType { TILE, COLLIDER, NPC };
 #define SAFE_ZONE_BRUSH_H 4
 
 
-#endif //EDITOR_CONSTANTS_H
+#endif  // EDITOR_CONSTANTS_H

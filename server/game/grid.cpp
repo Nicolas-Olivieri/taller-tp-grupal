@@ -15,8 +15,9 @@ Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         std::vector<Tile> tile_row;
         tile_row.reserve(row.size());
 
-        std::ranges::transform(row, std::back_inserter(tile_row),
-                               [](const auto& tile_value) { return Tile(tile_value.walkable, tile_value.biome); });
+        std::ranges::transform(row, std::back_inserter(tile_row), [](const auto& tile_value) {
+            return Tile(tile_value.walkable, tile_value.biome);
+        });
 
         tiles_.emplace_back(std::move(tile_row));
     }

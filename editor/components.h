@@ -2,6 +2,7 @@
 #define COMPONENTS_H
 
 #include <QPixmap>
+
 #include "editor_constants.h"
 
 struct AssetData {

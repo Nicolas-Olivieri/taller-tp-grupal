@@ -1,10 +1,12 @@
 #include "tile.h"
 
 
-Tile::Tile(const bool is_walkable, const uint8_t biome): is_walkable_(is_walkable), biome(biome), occupant_(nullptr) {}
+Tile::Tile(const bool is_walkable, const uint8_t biome):
+        is_walkable_(is_walkable), biome(biome), occupant_(nullptr) {}
 
 
-Tile::Tile(Interactive* occupant): is_walkable_(true), occupant_(occupant), loot_(std::stack<Loot>()) {}
+Tile::Tile(Interactive* occupant):
+        is_walkable_(true), biome(0), occupant_(occupant), loot_(std::stack<Loot>()) {}
 
 
 bool Tile::is_walkable() const { return is_walkable_; }
