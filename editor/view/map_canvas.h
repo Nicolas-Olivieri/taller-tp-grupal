@@ -15,7 +15,7 @@ class MapCanvas: public QGraphicsView {
 
     Q_OBJECT
 public:
-    explicit MapCanvas(MapData& map_data, QGraphicsView* parent = nullptr);
+    explicit MapCanvas(MapData& map_data, QWidget* parent = nullptr);
 
     void set_mode(EditorMode new_mode);
 
@@ -29,9 +29,10 @@ private:
 
     void erase_asset(QPointF clicked_pos) const;
 
-
     void set_unwalkable_tiles(const QPoint& clicked_cell, int tile_id) const;
     void erase_unwalkable_tiles(int tile_id) const;
+
+    void set_safe_tiles(const QPointF& clicked_pos);
 
     QPoint coordinates_to_grid(QPointF coordinates) const;
 
@@ -39,6 +40,7 @@ private:
 public slots:
     void set_selected_asset(const AssetData& data);
     void set_visibility_unwalkables() const;
+    void set_visibility_safes() const;
 
 protected:
     void drawBackground(QPainter* painter, const QRectF& rect) override;
@@ -55,7 +57,9 @@ private:
     EditorMode mode;
     AssetData drawing_asset;
     QGraphicsPixmapItem* asset_preview;
+    QGraphicsRectItem* safe_preview;
     QGraphicsItemGroup* unwalkable_tiles;
+    QGraphicsItemGroup* safe_tiles;
 };
 
 #endif  // MAP_CANVAS_H

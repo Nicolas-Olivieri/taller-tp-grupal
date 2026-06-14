@@ -8,6 +8,7 @@
 
 #define WALKABLE 1
 #define UNWALKABLE 0
+#define SAFE_ZONE 0
 #define HEADER 0xFAF4
 
 MapSaver::MapSaver(MapData& data): data(data) {}
@@ -101,7 +102,7 @@ void MapSaver::store_server_data(QDataStream& stream) const {
         uint8_t biome;
         if (data.occupied_tiles.contains(cell)) {
             const uint8_t data_id = data.occupied_tiles[cell][0];
-            biome = data.placements[data_id].asset.id;
+            biome = data.safe_zone.contains(cell) ? SAFE_ZONE : data.placements[data_id].asset.id;
         } else {
             biome = 0;
         }

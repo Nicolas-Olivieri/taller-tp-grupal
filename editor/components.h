@@ -3,7 +3,7 @@
 
 #include <QPixmap>
 
-enum class EditorMode { DRAW, ERASE, DRAG };
+enum class EditorMode { DRAW, ERASE, DRAG, SAFE_ZONE };
 
 enum class ImageType { TILE, COLLIDER, NPC };
 

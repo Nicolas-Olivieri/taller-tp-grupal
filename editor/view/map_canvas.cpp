@@ -1,5 +1,6 @@
 #include "map_canvas.h"
 
+#include <iostream>
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
 #include <QPainter>
@@ -9,8 +10,11 @@
 #include "ui_mapcanvas.h"
 
 #define TILE_SIZE 32
+#define SAFE_ZONE_BRUSH_W 4
+#define SAFE_ZONE_BRUSH_H 4
 
-MapCanvas::MapCanvas(MapData& map_data, QGraphicsView* parent):
+
+MapCanvas::MapCanvas(MapData& map_data, QWidget* parent):
         QGraphicsView(parent),
         ui(new Ui::MapCanvas),
         scene(new QGraphicsScene(this)),
@@ -34,10 +38,24 @@ MapCanvas::MapCanvas(MapData& map_data, QGraphicsView* parent):
     asset_preview->setZValue(99.0);
     scene->addItem(asset_preview);
 
+    // Setea preview de zona segura
+    safe_preview = new QGraphicsRectItem(0,0,SAFE_ZONE_BRUSH_W*TILE_SIZE,SAFE_ZONE_BRUSH_H*TILE_SIZE);
+    safe_preview->setBrush(QBrush(QColor(95, 170, 50)));
+    safe_preview->setPen(Qt::NoPen);
+    safe_preview->setOpacity(0.5);
+    safe_preview->setZValue(99.0);
+    safe_preview->hide();
+    scene->addItem(safe_preview);
+
     // Setea capa de no caminable
     unwalkable_tiles = scene->createItemGroup({});
     unwalkable_tiles->setZValue(98.0);
     unwalkable_tiles->setVisible(false);
+
+    // Setea capa de zona segura
+    safe_tiles = scene->createItemGroup({});
+    safe_tiles->setZValue(99.0);
+    safe_tiles->setVisible(false);
 }
 
 
@@ -78,21 +96,29 @@ void MapCanvas::mouseMoveEvent(QMouseEvent* event) {
         asset_preview->show();
         const QPointF scene_pos = mapToScene(event->pos());
         asset_preview->setPos(coordinates_to_grid(scene_pos) * TILE_SIZE);
+
+    } else if (mode == EditorMode::SAFE_ZONE) {
+        safe_preview->show();
+        const QPointF scene_pos = mapToScene(event->pos());
+        safe_preview->setPos(coordinates_to_grid(scene_pos) * TILE_SIZE);
     }
 }
 
 void MapCanvas::mousePressEvent(QMouseEvent* event) {
-    if (mode == EditorMode::DRAG) {
-        QGraphicsView::mousePressEvent(event);
-        return;
-    }
-
     const QPointF scene_pos = mapToScene(event->pos());
-
-    if (mode == EditorMode::DRAW) {
-        place_asset(scene_pos);
-    } else if (mode == EditorMode::ERASE) {
-        erase_asset(scene_pos);
+    switch (mode) {
+        case EditorMode::DRAG:
+            QGraphicsView::mousePressEvent(event);
+            return;
+        case EditorMode::DRAW:
+            place_asset(scene_pos);
+            break;
+        case EditorMode::ERASE:
+            erase_asset(scene_pos);
+            break;
+        case EditorMode::SAFE_ZONE:
+            set_safe_tiles(scene_pos);
+            break;
     }
 }
 
@@ -105,8 +131,14 @@ void MapCanvas::set_mode(const EditorMode new_mode) {
     if (mode != EditorMode::DRAW) {
         asset_preview->hide();
     }
+    if (mode != EditorMode::SAFE_ZONE) {
+        safe_preview->hide();
+    }
     if (mode == EditorMode::DRAG) {
         this->setDragMode(ScrollHandDrag);
+    }
+    if (mode == EditorMode::SAFE_ZONE) {
+
     }
 }
 
@@ -126,6 +158,11 @@ void MapCanvas::set_visibility_unwalkables() const {
     QGraphicsItemGroup group(unwalkable_tiles);
 }
 
+void MapCanvas::set_visibility_safes() const {
+    const bool curr_state = safe_tiles->isVisible();
+    safe_tiles->setVisible(!curr_state);
+    QGraphicsItemGroup group(safe_tiles);
+}
 
 // MÉTODOS DE ASSETS ::::::::::::::::::::::::::::
 
@@ -149,19 +186,25 @@ void MapCanvas::add_asset_to_scene(const QPoint clicked_cell, const int asset_id
 }
 
 void MapCanvas::erase_asset(const QPointF clicked_pos) const {
+    // Valido que no sea un punto de colisión
     const QList<QGraphicsItem*> cell_assets = scene->items(clicked_pos);
     if (cell_assets.empty() || !cell_assets.first()->data(0).isValid() ||
         cell_assets.first()->group() == unwalkable_tiles) {
         return;
     }
 
+    // En caso de ser visible la zona segura, se borra ese componente, sino se borra el collider o tile
     QGraphicsItem* clicked_asset = cell_assets.first();
-    const bool erased = map_data.erase_asset(clicked_asset->data(0).toInt());
-    if (!erased) {
-        return;
-    }
+    if (clicked_asset->group() == safe_tiles && safe_tiles->isVisible()) {
+        map_data.erase_safe_tile(coordinates_to_grid(clicked_pos));
 
-    erase_unwalkable_tiles(clicked_asset->data(0).toInt());
+    }else {
+        const bool erased = map_data.erase_asset(clicked_asset->data(0).toInt());
+        if (!erased) {
+            return;
+        }
+        erase_unwalkable_tiles(clicked_asset->data(0).toInt());
+    }
 
     scene->removeItem(clicked_asset);
     delete clicked_asset;
@@ -171,7 +214,8 @@ void MapCanvas::clear_all() {
     QList<QGraphicsItem*> assets = scene->items();
     for (const auto asset: assets) {
         // Evito eliminar los elementos necesarios para el funcionamiento del editor
-        if (asset != asset_preview && asset != unwalkable_tiles) {
+        if (asset != asset_preview && asset != unwalkable_tiles &&
+            asset != safe_preview && asset != safe_tiles) {
             scene->removeItem(asset);
         }
     }
@@ -208,6 +252,24 @@ void MapCanvas::erase_unwalkable_tiles(const int tile_id) const {
             unwalkable_tiles->removeFromGroup(mark);
             delete mark;
         }
+    }
+}
+
+void MapCanvas::set_safe_tiles(const QPointF &clicked_pos) {
+    const QPoint clicked_cell = coordinates_to_grid(clicked_pos);
+    QSet<QPair<int, QPoint>> added_tiles = map_data.add_safe_tiles(clicked_cell, SAFE_ZONE_BRUSH_W, SAFE_ZONE_BRUSH_H);
+
+    const QBrush greenBrush(QColor(95, 170, 50, 100));
+    const QPen noPen(Qt::NoPen);
+    for (const auto& cell : added_tiles) {
+        auto* mark = new QGraphicsRectItem(0, 0, TILE_SIZE, TILE_SIZE);
+        mark->setZValue(98.0);
+        mark->setData(0, cell.first);
+        mark->setBrush(greenBrush);
+        mark->setPen(noPen);
+        mark->setPos(cell.second * TILE_SIZE);
+
+        safe_tiles->addToGroup(mark);
     }
 }
 

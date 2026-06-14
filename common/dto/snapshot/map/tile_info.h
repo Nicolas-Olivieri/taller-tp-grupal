@@ -7,7 +7,7 @@ struct TileInfoDTO : public ProtocolMessageDTO {
     bool walkable;
     uint8_t biome;
 
-    TileInfoDTO(uint8_t biome, bool walkable);
+    TileInfoDTO(bool walkable, uint8_t biome);
 
     size_t message_size() const override;
 

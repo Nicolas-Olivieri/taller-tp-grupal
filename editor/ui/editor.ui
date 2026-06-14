@@ -44,7 +44,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Mover</string>
+            <string>Mover (M)</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -72,7 +72,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Dibujar</string>
+            <string>Dibujar (D)</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -97,7 +97,32 @@
             </size>
            </property>
            <property name="text">
-            <string>Borrar</string>
+            <string>Borrar (B)</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="safeZoneBtn">
+           <property name="minimumSize">
+            <size>
+             <width>192</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>192</width>
+             <height>64</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Setear zona segura (S)</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -167,6 +192,22 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="helpBtn">
+        <property name="maximumSize">
+         <size>
+          <width>96</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Ayuda</string>
+        </property>
+        <property name="icon">
+         <iconset theme="dialog-question"/>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -192,7 +233,7 @@
             <string>Mostrar celdas no caminables</string>
            </property>
            <property name="icon">
-            <iconset theme="QIcon::ThemeIcon::DocumentProperties"/>
+            <iconset theme="edit-delete"/>
            </property>
            <property name="checked">
             <bool>false</bool>
@@ -202,6 +243,16 @@
            </property>
            <property name="tristate">
             <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbox_safes">
+           <property name="text">
+            <string>Mostrar zonas seguras</string>
+           </property>
+           <property name="icon">
+            <iconset theme="go-home"/>
            </property>
           </widget>
          </item>
