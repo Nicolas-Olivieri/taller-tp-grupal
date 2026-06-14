@@ -179,6 +179,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/ally_execute_result.h
 
         command/cmd_results/drop_item/drop_item_result.h
+        command/cmd_results/interact/recover_result.h
         command/cmd_results/interact/attack_result.h
         command/cmd_results/interact/bind_result.h
         command/cmd_results/interact/interact_result.h

@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "server/config/game_config.h"
+#include "server/game/items/item_mapper.h"
 #include "server/game/player/player.h"
 #include "server/util/calculator.h"
 #include "state/idlestate.h"
@@ -72,11 +73,9 @@ std::vector<Loot> Creature::drop() {
         case DropType::EQUIPABLE: {
             uint8_t item =
                     Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
-            // TODO: NI BIEN SE IMPLEMENTE EL BÁCULO DE CURACIÓN SACAR ESTE HARDCODEO
-            if (item == 0 or item == 5)  // TODO: CORREGIME
-                item++;                  // TODO: CORREGIME
-            drop.push_back(Loot(item));  // TODO: CORREGIME
-            // TODO: CORREGIRRRR
+
+            if (item != NO_ITEM)
+                drop.push_back(Loot(item));
         } break;
         default:
             throw std::invalid_argument("There is no known way to drop something of this type");
@@ -104,6 +103,8 @@ bool Creature::is_lonely_creature() const { return is_alone; }
 void Creature::update_state() { this->state = this->state->next(*this); }
 
 InteractResult Creature::interact(Player& attacker) {
+    if (ItemMapper::get_type_effect(attacker.get_equipment().weapon) != TypeEffect::DAMAGE)
+        return InteractResult(RecoverStatus::CANNOT_HEAL_CREATURE);
     target = &attacker;
     return Killable::interact(attacker);
 }

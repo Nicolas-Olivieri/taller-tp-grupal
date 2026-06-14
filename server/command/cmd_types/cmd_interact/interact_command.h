@@ -12,7 +12,6 @@ private:
     Position position;
 
     InteractResult result;
-    std::string attacked_clan_name;
 
 public:
     explicit InteractCommand(const std::string& player_name, int x, int y);
@@ -29,6 +28,8 @@ private:
     void handle_dodge(SnapshotBuilder& builder);
 
     void handle_bind(SnapshotBuilder& builder);
+
+    void handle_recover(SnapshotBuilder& builder);
 };
 
 

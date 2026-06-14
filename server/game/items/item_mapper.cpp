@@ -53,18 +53,33 @@ bool ItemMapper::is_usable(uint8_t item_id) {
     return config.usables_contains(item_id);
 }
 
-UsableTypeEffect ItemMapper::get_usable_type_effect(uint8_t item_id) {
-    assert(is_usable(item_id));
+TypeEffect ItemMapper::get_type_effect(uint8_t item_id) {
+    uint8_t effect_type = get_item_effect_type(item_id);
+    return parse_type_effect(effect_type);
+}
 
-    const UsableItemData& data = GameConfig::get().get_usable(item_id);
-    uint8_t type = data.type_effect;
+uint8_t ItemMapper::get_item_effect_type(uint8_t item_id) {
+    GameConfig& config = GameConfig::get();
 
-    switch (static_cast<UsableTypeEffect>(type)) {
-        case UsableTypeEffect::HEALTH:
-        case UsableTypeEffect::MANA:
-            return static_cast<UsableTypeEffect>(type);
+    if (is_usable(item_id)) {
+        const UsableItemData& data = config.get_usable(item_id);
+        return data.type_effect;
+    } else if (is_weapon(item_id)) {
+        const WeaponData& data = config.get_weapon(item_id);
+        return data.type_effect;
+    }
+
+    throw std::invalid_argument("This type of item has no special effect");
+}
+
+TypeEffect ItemMapper::parse_type_effect(uint8_t type) {
+    switch (static_cast<TypeEffect>(type)) {
+        case TypeEffect::HEALTH:
+        case TypeEffect::MANA:
+        case TypeEffect::DAMAGE:
+            return static_cast<TypeEffect>(type);
         default:
-            throw std::invalid_argument("This type of usable item effect does not exist");
+            throw std::invalid_argument("This type item effect does not exist");
     }
 }
 
