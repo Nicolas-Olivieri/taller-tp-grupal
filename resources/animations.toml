@@ -60,15 +60,15 @@
 # =========================================
 
 [[items.tiles]]
-id_range = [0, 50]
+id_range = [1, 51]
 data = [1, 1, 0, 0, 128, 128]
 
 [[items.tiles]]
-id_range = [51, 86]
+id_range = [52, 87]
 data = [10, 5, 0, 0, 64, 64]
 
 [[items.tiles]]
-id_range = [87, 98]
+id_range = [88, 99]
 data = [1, 1, 0, 0, 128, 128]
 
 

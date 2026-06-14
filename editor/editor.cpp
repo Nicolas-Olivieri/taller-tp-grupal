@@ -1,17 +1,17 @@
 #include "editor.h"
 
-#include <QCheckBox>
+#include <QShortcut>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <string>
 #include <vector>
 
 #include "toml/asset_parser.h"
+#include "editor_constants.h"
 
 #include "toml.hpp"
 #include "ui_editor.h"
 
-#define TILE_SIZE 32
 
 Editor::Editor(QWidget* parent):
         QMainWindow(parent),
@@ -20,8 +20,8 @@ Editor::Editor(QWidget* parent):
         colliders(populate_hash("colliders", ImageType::COLLIDER)),
         npcs(populate_hash("npcs", ImageType::NPC)),
         map_data(MapData()),
-        map_canvas(MapCanvas(this->map_data)),
-        asset_selector(this->tiles, this->colliders, this->npcs),
+        map_canvas(MapCanvas(this->map_data, this)),
+        asset_selector(this->tiles, this->colliders, this->npcs, this),
         loader(this->map_data, this->map_canvas, tiles, colliders, npcs),
         saver(MapSaver(this->map_data)) {
 
@@ -34,13 +34,36 @@ Editor::Editor(QWidget* parent):
                            {EditorMode::DRAG, ui->dragBtn}});
 
     // Conexión botones
+    const auto *draw_sc = new QShortcut(QKeySequence("d"), this);
+    connect(ui->drawBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::DRAW); });
+    connect(draw_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::DRAW); });
+
+    const auto *drag_sc = new QShortcut(QKeySequence("m"), this);
+    connect(ui->dragBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::DRAG); });
+    connect(drag_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::DRAG); });
+
+    const auto *erase_sc = new QShortcut(QKeySequence("b"), this);
+    connect(ui->eraseBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::ERASE); });
+    connect(erase_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::ERASE); });
+
+    const auto *safe_sc = new QShortcut(QKeySequence("s"), this);
+    connect(ui->safeZoneBtn, &QPushButton::clicked, this, [this] {
+        if (!ui->cbox_safes->isChecked()) {
+            ui->cbox_safes->click();
+        }
+        set_mode(EditorMode::SAFE_ZONE);
+    });
+    connect(safe_sc, &QShortcut::activated, this, [this] {
+        if (!ui->cbox_safes->isChecked()) {
+            ui->cbox_safes->click();
+        }
+        set_mode(EditorMode::SAFE_ZONE);
+    });
+
     connect(ui->saveBtn, &QPushButton::clicked, this, &Editor::prompt_file_saving);
     connect(ui->loadBtn, &QPushButton::clicked, this, &Editor::prompt_file_opening);
     connect(ui->cbox_unwalkables, &QCheckBox::clicked, &map_canvas, &MapCanvas::set_visibility_unwalkables);
-
-    for (const auto& [mode, btn]: action_buttons.asKeyValueRange()) {
-        connect(btn, &QPushButton::clicked, this, [this, mode] { set_mode(mode); });
-    }
+    connect(ui->cbox_safes, &QCheckBox::clicked, &map_canvas, &MapCanvas::set_visibility_safes);
 
     // Conxiones Selector <-> Mapa (canvas)
     connect(&asset_selector, &AssetSelector::clickedImage, &map_canvas, &MapCanvas::set_selected_asset);

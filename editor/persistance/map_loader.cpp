@@ -2,8 +2,7 @@
 
 #include <QFile>
 #include <QGraphicsItem>
-
-#define HEADER 0xFAF4
+#include "editor_constants.h"
 
 MapLoader::MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
                      QHash<uint8_t, AssetData>& colliders, QHash<uint8_t, AssetData>& npcs):
@@ -23,15 +22,21 @@ bool MapLoader::load(const QString& filename) const {
         return false;
     }
 
-    // Skipeo hasta la información que sirve al cliente, que es la que sirve al editor
-    uint16_t server_start, server_end;
+    uint32_t server_start, server_end;
     stream >> server_start >> server_end;
-    file.seek(server_end);
+
+    uint16_t width, height;
+    stream >> width >> height;
 
     // Cargo todos los items
+    file.seek(server_end);
     load_assets(stream, tiles);
     load_assets(stream, colliders);
     load_assets(stream, npcs);
+
+    // Cargados los items, cargo las zonas seguras (dependen de si hay tiles colocadas, se debe hacer al final)
+    file.seek(server_start);
+    load_safe_zone(stream, width, height);
 
     file.close();
     return true;
@@ -54,5 +59,19 @@ void MapLoader::load_assets(QDataStream& stream, const QHash<uint8_t, AssetData>
         const int placement_id = data.add_asset(origin, asset);
         canvas.set_selected_asset(asset);
         canvas.add_asset_to_scene(origin, placement_id);
+    }
+}
+
+void MapLoader::load_safe_zone(QDataStream& stream, const int width, const int height) const {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            uint8_t walkability;
+            uint8_t biome;
+            stream >> walkability >> biome;
+
+            if (biome == SAFE_ZONE_ID) {
+                canvas.set_safe_tiles(QPoint(x*TILE_SIZE, y*TILE_SIZE), 1, 1);
+            }
+        }
     }
 }

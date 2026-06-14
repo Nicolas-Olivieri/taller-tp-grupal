@@ -25,17 +25,19 @@ ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
 
 ServerMapDataDTO ServerMapLoader::get_server_data() {
     // Leo los 4 bytes de offset (inicio y fin de bytes del servidor)
-    parse_int<uint32_t>();
+    parse_int<uint64_t>();
 
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
 
-    std::vector<std::vector<bool>> grid_values;
+    std::vector<std::vector<TileInfoDTO>> grid_values;
     for (int y = 0; y < height; y++) {
-        std::vector<bool> row;
+        std::vector<TileInfoDTO> row;
         for (int x = 0; x < width; x++) {
-            const bool value = parse_int<uint8_t>();
-            row.push_back(value);
+            const bool walkability = parse_int<uint8_t>();
+            const auto biome = parse_int<uint8_t>();
+
+            row.push_back(TileInfoDTO(walkability, biome));
         }
         grid_values.push_back(row);
     }
@@ -57,8 +59,8 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
 }
 
 ClientMapDataDTO ServerMapLoader::get_client_data() {
-    const auto server_start = parse_int<uint16_t>();
-    const auto server_end = parse_int<uint16_t>();
+    const auto server_start = parse_int<uint32_t>();
+    const auto server_end = parse_int<uint32_t>();
 
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
@@ -97,6 +99,8 @@ intType ServerMapLoader::parse_int() {
 
     if (sizeof(intType) == 2) {
         return ntohs(data);
+    }else if (sizeof(intType) == 4) {
+        return ntohl(data);
     }
 
     return data;
