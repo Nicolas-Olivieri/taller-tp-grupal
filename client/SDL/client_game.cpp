@@ -651,6 +651,8 @@ void ClientGame::handle_cheat(const std::string& text) {
         handle_gold_cheat(cheat_type);
     else if (cheat_type == "kill-self")
         handle_kill_self_cheat();
+    else if (cheat_type == "infinite-recoverables")
+        handle_infinite_recoverables_cheat();
 
     // TODO agregar el resto de cheats
 }
@@ -695,4 +697,8 @@ void ClientGame::handle_gold_cheat(const std::string& text) {
 
 void ClientGame::handle_kill_self_cheat() {
     connection.push_command(std::make_unique<EventDTO>(CommandType::CHEAT_DEATH));
+}
+
+void ClientGame::handle_infinite_recoverables_cheat() {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::CHEAT_INFINITE_RECOVERABLES));
 }

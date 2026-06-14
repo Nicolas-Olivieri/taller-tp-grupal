@@ -114,6 +114,8 @@ private:
 
     void handle_kill_self_cheat();
 
+    void handle_infinite_recoverables_cheat();
+
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,
                FontManager& font_manager);

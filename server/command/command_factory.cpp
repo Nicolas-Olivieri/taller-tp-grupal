@@ -21,6 +21,7 @@
 #include "cmd_types/cmd_withdraw_item/withdraw_item_command.h"
 #include "server/command/cmd_types/cmd_cheat/cmd_die/die_command.h"
 #include "server/command/cmd_types/cmd_cheat/cmd_gain_gold/gain_gold_command.h"
+#include "server/command/cmd_types/cmd_cheat/cmd_infinite_recoverables/infinite_recoverables_command.h"
 #include "server/command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.h"
@@ -114,6 +115,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::CHEAT_DEATH:
             return std::make_unique<DieCommand>(player_name);
+
+        case CommandType::CHEAT_INFINITE_RECOVERABLES:
+            return std::make_unique<InfiniteRecoberableStatsCommand>(player_name);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

@@ -110,6 +110,8 @@ public:
 
     void cheat_kill_player(const std::string& player_name);
 
+    void cheat_infinite_recoverables(const std::string& player_name);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

@@ -102,10 +102,14 @@ CreatureUpdate GameWorld::manage_creature_attack(Creature& creature) {
 
     if (creature.is_targeting_someone() && creature.can_attack()) {
         CreatureUpdate creature_update = creature.attack_player();
-
         Player& target = players.at(creature.get_target_name());
-        if (!target.is_alive())
+
+        if (target.is_infinite_recoverables_cheat_active()) {
+            target.heal();
+            return CreatureUpdate(CreatureStatus::WAITING);
+        } else if (!target.is_alive()) {
             drop_player_items(target);
+        }
 
         return creature_update;
     }
@@ -687,4 +691,15 @@ void GameWorld::cheat_kill_player(const std::string& player_name) {
 
     player.die();
     drop_and_add(player, grid.get_tile(player.get_position()));
+}
+
+void GameWorld::cheat_infinite_recoverables(const std::string& player_name) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    player.toggle_infinite_recoverables();
+    player.heal();
 }

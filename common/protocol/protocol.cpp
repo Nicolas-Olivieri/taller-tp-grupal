@@ -77,6 +77,7 @@ RequestedCommandDTO Protocol::recv_command() {
 
     CommandType command = deserializer.recv_command_type();
 
+    // TODO: esto necesita un refactor
     if (command == CommandType::INTERACT) {
         const int x = deserializer.recv_uint16();
         const int y = deserializer.recv_uint16();
@@ -94,7 +95,7 @@ RequestedCommandDTO Protocol::recv_command() {
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS or command == CommandType::CLAN_REVIEW or
                command == CommandType::CLAN_LEAVE or command == CommandType::PICKUP or
-               command == CommandType::CHEAT_DEATH) {
+               command == CommandType::CHEAT_DEATH or command == CommandType::CHEAT_INFINITE_RECOVERABLES) {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
                command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or

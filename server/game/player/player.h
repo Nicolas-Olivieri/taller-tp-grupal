@@ -42,6 +42,8 @@ private:
     bool _is_founder;
     std::string clan_name;
 
+    bool has_infinite_recoverables_cheat_activated;
+
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
 
@@ -141,6 +143,10 @@ public:
     void set_xp_level(const uint8_t new_level);
 
     void die();
+
+    void toggle_infinite_recoverables();
+
+    bool is_infinite_recoverables_cheat_active() const;
 
 private:
     void complete_delayed_resurrection();
