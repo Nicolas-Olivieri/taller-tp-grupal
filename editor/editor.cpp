@@ -1,14 +1,14 @@
 #include "editor.h"
 
-#include <QShortcut>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QShortcut>
 #include <string>
 #include <vector>
 
 #include "toml/asset_parser.h"
-#include "editor_constants.h"
 
+#include "editor_constants.h"
 #include "toml.hpp"
 #include "ui_editor.h"
 
@@ -34,19 +34,19 @@ Editor::Editor(QWidget* parent):
                            {EditorMode::DRAG, ui->dragBtn}});
 
     // Conexión botones
-    const auto *draw_sc = new QShortcut(QKeySequence("d"), this);
+    const auto* draw_sc = new QShortcut(QKeySequence("d"), this);
     connect(ui->drawBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::DRAW); });
     connect(draw_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::DRAW); });
 
-    const auto *drag_sc = new QShortcut(QKeySequence("m"), this);
+    const auto* drag_sc = new QShortcut(QKeySequence("m"), this);
     connect(ui->dragBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::DRAG); });
     connect(drag_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::DRAG); });
 
-    const auto *erase_sc = new QShortcut(QKeySequence("b"), this);
+    const auto* erase_sc = new QShortcut(QKeySequence("b"), this);
     connect(ui->eraseBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::ERASE); });
     connect(erase_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::ERASE); });
 
-    const auto *safe_sc = new QShortcut(QKeySequence("s"), this);
+    const auto* safe_sc = new QShortcut(QKeySequence("s"), this);
     connect(ui->safeZoneBtn, &QPushButton::clicked, this, [this] {
         if (!ui->cbox_safes->isChecked()) {
             ui->cbox_safes->click();

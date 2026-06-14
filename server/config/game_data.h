@@ -416,11 +416,9 @@ struct WorldConstantsData {
 template <>
 struct toml::from<WorldConstantsData> {
     static WorldConstantsData from_toml(const toml::value& raw) {
-        return WorldConstantsData{
-                toml::find<uint8_t>(raw, "ticks_per_second"),
-                toml::find<uint16_t>(raw, "tick_between_saves"),
-                toml::find<uint16_t>(raw, "max_creatures_amount")
-        };
+        return WorldConstantsData{toml::find<uint8_t>(raw, "ticks_per_second"),
+                                  toml::find<uint16_t>(raw, "tick_between_saves"),
+                                  toml::find<uint16_t>(raw, "max_creatures_amount")};
     }
 };
 
@@ -433,11 +431,9 @@ struct CreatureBehaviorConstantsData {
 template <>
 struct toml::from<CreatureBehaviorConstantsData> {
     static CreatureBehaviorConstantsData from_toml(const toml::value& raw) {
-        return CreatureBehaviorConstantsData{
-                toml::find<uint8_t>(raw, "extra_target_range"),
-                toml::find<uint8_t>(raw, "extra_target_range_limit"),
-                toml::find<uint8_t>(raw, "attack_cooldowns_to_become_lonely")
-        };
+        return CreatureBehaviorConstantsData{toml::find<uint8_t>(raw, "extra_target_range"),
+                                             toml::find<uint8_t>(raw, "extra_target_range_limit"),
+                                             toml::find<uint8_t>(raw, "attack_cooldowns_to_become_lonely")};
     }
 };
 

@@ -1,8 +1,9 @@
 #ifndef MAP_DATA_H
 #define MAP_DATA_H
+#include <QSet>
+
 #include <qhash.h>
 #include <qpoint.h>
-#include <QSet>
 
 #include "components.h"
 
@@ -24,9 +25,9 @@ private:
 
     int add_collider(QPoint position, const AssetData& collider_data);
 
-    bool erase_tile(const Placement &placement);
+    bool erase_tile(const Placement& placement);
 
-    bool erase_collider(const Placement &placement);
+    bool erase_collider(const Placement& placement);
 
 public:
     MapData();

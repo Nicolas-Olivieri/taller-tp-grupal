@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QGraphicsItem>
+
 #include "editor_constants.h"
 
 MapLoader::MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
@@ -34,7 +35,8 @@ bool MapLoader::load(const QString& filename) const {
     load_assets(stream, colliders);
     load_assets(stream, npcs);
 
-    // Cargados los items, cargo las zonas seguras (dependen de si hay tiles colocadas, se debe hacer al final)
+    // Cargados los items, cargo las zonas seguras (dependen de si hay tiles colocadas, se debe hacer al
+    // final)
     file.seek(server_start);
     load_safe_zone(stream, width, height);
 
@@ -70,7 +72,7 @@ void MapLoader::load_safe_zone(QDataStream& stream, const int width, const int h
             stream >> walkability >> biome;
 
             if (biome == SAFE_ZONE_ID) {
-                canvas.set_safe_tiles(QPoint(x*TILE_SIZE, y*TILE_SIZE), 1, 1);
+                canvas.set_safe_tiles(QPoint(x * TILE_SIZE, y * TILE_SIZE), 1, 1);
             }
         }
     }

@@ -15,7 +15,8 @@ GameConfig::GameConfig() {
     fair_play_levels = retrieve_config_data<FairPlayData>(paths_data, "fair_play", "fair_play");
     clan_constants_data = retrieve_config_data<ClanConstantsData>(paths_data, "clans", "clans");
     world_constants_data = retrieve_config_data<WorldConstantsData>(paths_data, "world", "world");
-    creature_constants_data = retrieve_config_data<CreatureBehaviorConstantsData>(paths_data, "creature_behavior", "creature_behavior");
+    creature_constants_data = retrieve_config_data<CreatureBehaviorConstantsData>(
+            paths_data, "creature_behavior", "creature_behavior");
 }
 
 GameConfig& GameConfig::get() {

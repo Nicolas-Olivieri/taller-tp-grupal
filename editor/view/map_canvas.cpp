@@ -1,10 +1,10 @@
 #include "map_canvas.h"
 
-#include <iostream>
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
+#include <iostream>
 
 #include "editor_constants.h"
 #include "grid_range.h"
@@ -36,7 +36,7 @@ MapCanvas::MapCanvas(MapData& map_data, QWidget* parent):
     scene->addItem(asset_preview);
 
     // Setea preview de zona segura
-    safe_preview = new QGraphicsRectItem(0,0,SAFE_ZONE_BRUSH_W*TILE_SIZE,SAFE_ZONE_BRUSH_H*TILE_SIZE);
+    safe_preview = new QGraphicsRectItem(0, 0, SAFE_ZONE_BRUSH_W * TILE_SIZE, SAFE_ZONE_BRUSH_H * TILE_SIZE);
     safe_preview->setBrush(QBrush(QColor(95, 170, 50)));
     safe_preview->setPen(Qt::NoPen);
     safe_preview->setOpacity(0.5);
@@ -134,9 +134,7 @@ void MapCanvas::set_mode(const EditorMode new_mode) {
     if (mode == EditorMode::DRAG) {
         this->setDragMode(ScrollHandDrag);
     }
-    if (mode == EditorMode::SAFE_ZONE) {
-
-    }
+    if (mode == EditorMode::SAFE_ZONE) {}
 }
 
 void MapCanvas::set_selected_asset(const AssetData& data) {
@@ -195,7 +193,7 @@ void MapCanvas::erase_asset(const QPointF clicked_pos) const {
     if (clicked_asset->group() == safe_tiles && safe_tiles->isVisible()) {
         map_data.erase_safe_tile(coordinates_to_grid(clicked_pos));
 
-    }else {
+    } else {
         const bool erased = map_data.erase_asset(clicked_asset->data(0).toInt());
         if (!erased) {
             return;
@@ -211,8 +209,8 @@ void MapCanvas::clear_all() {
     QList<QGraphicsItem*> assets = scene->items();
     for (const auto asset: assets) {
         // Evito eliminar los elementos necesarios para el funcionamiento del editor
-        if (asset != asset_preview && asset != unwalkable_tiles &&
-            asset != safe_preview && asset != safe_tiles) {
+        if (asset != asset_preview && asset != unwalkable_tiles && asset != safe_preview &&
+            asset != safe_tiles) {
             scene->removeItem(asset);
         }
     }
@@ -252,14 +250,14 @@ void MapCanvas::erase_unwalkable_tiles(const int tile_id) const {
     }
 }
 
-void MapCanvas::set_safe_tiles(const QPointF &clicked_pos, const int width, const int height) const {
+void MapCanvas::set_safe_tiles(const QPointF& clicked_pos, const int width, const int height) const {
 
     const QPoint clicked_cell = coordinates_to_grid(clicked_pos);
     QSet<QPair<int, QPoint>> added_tiles = map_data.add_safe_tiles(clicked_cell, width, height);
 
     const QBrush greenBrush(QColor(95, 170, 50, 100));
     const QPen noPen(Qt::NoPen);
-    for (const auto&[id, cell] : added_tiles) {
+    for (const auto& [id, cell]: added_tiles) {
         auto* mark = new QGraphicsRectItem(0, 0, TILE_SIZE, TILE_SIZE);
         mark->setZValue(98.0);
         mark->setData(0, id);

@@ -3,7 +3,6 @@
 #include "server/util/calculator.h"
 
 
-
 Mana::Mana(uint8_t recovery_factor, float factor_class, float factor_race, float factor_class_meditation,
            uint8_t intelligence, uint8_t level):
         RecoverableStat(recovery_factor, factor_class, factor_race,
