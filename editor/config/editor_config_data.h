@@ -1,0 +1,6 @@
+#ifndef EDITOR_CONFIG_DATA_H
+#define EDITOR_CONFIG_DATA_H
+
+
+
+#endif  // EDITOR_CONFIG_DATA_H

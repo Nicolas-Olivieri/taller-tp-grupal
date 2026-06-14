@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "toml/asset_parser.h"
+#include "config/editor_config.h"
 
 #include "editor_constants.h"
 #include "toml.hpp"
@@ -71,8 +71,7 @@ Editor::Editor(QWidget* parent):
 
 
 QHash<uint8_t, AssetData> Editor::populate_hash(const std::string& category_name, const ImageType type) {
-    const auto data = toml::parse(CONFIG_PATH "/assets_info.toml");
-    auto assets = toml::find<std::vector<AssetData>>(data, category_name);
+    auto assets = EditorConfig::get().get_assets_data(category_name);
 
     QHash<uint8_t, AssetData> hash;
     for (auto& tile: assets) {
