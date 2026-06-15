@@ -30,12 +30,18 @@ struct SpriteData {
     int head_offset;
 };
 
+struct MovementData {
+    uint8_t min_pixels_per_step;
+    float change_rate;
+};
+
 class ClientConfig {
 private:
     std::unordered_map<uint8_t, CreatureDisplayData> creatures_data;
     std::unordered_map<uint8_t, ItemDisplayData> items_data;
     RenderData render_data;
     SpriteData sprite_data;
+    MovementData movement_data;
 
 public:
     static ClientConfig& get();
@@ -69,6 +75,8 @@ public:
     uint16_t get_screen_h() const;
 
     uint16_t get_tile_size() const;
+
+    const MovementData& get_movement_data() const;
 
 private:
     ClientConfig();

@@ -1,6 +1,5 @@
 #include "client_config.h"
 
-#include <iostream>
 #include <string>
 
 #include <toml.hpp>
@@ -122,6 +121,12 @@ void ClientConfig::parse_constants(const toml::value& constants_table) {
             continue;
         }
 
+        if (key == "movement") {
+            movement_data = {toml::find<uint8_t>(value, "min_pixels_per_step"),
+                             toml::find<float>(value, "change_rate")};
+            continue;
+        }
+
         throw std::runtime_error(
                 std::format("ClientConfig encontró un tipo de constante desconocido: {}", key));
     }
@@ -167,3 +172,5 @@ uint16_t ClientConfig::get_screen_w() const { return render_data.screen_w; }
 uint16_t ClientConfig::get_screen_h() const { return render_data.screen_h; }
 
 uint16_t ClientConfig::get_tile_size() const { return render_data.tile_size; }
+
+const MovementData& ClientConfig::get_movement_data() const { return movement_data; }

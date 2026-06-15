@@ -8,3 +8,8 @@ tile_size = 32
 ghost_head_id = 0
 ghost_body_id = 0
 head_offset = 21
+
+[constants.movement]
+min_pixels_per_step = 3
+change_rate = 0.30
+# ratio de movimiento -> si change_rate == 0.30 entonces se avanzará 30% del recorrido pendiente hasta su posición destino
