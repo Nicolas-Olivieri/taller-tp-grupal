@@ -15,20 +15,23 @@
 UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager):
         renderer(renderer),
         font_manager(font_manager),
-        ui_texture(renderer, DATA_PATH "/interfaz_principal.bmp"),
+        ui_texture(renderer, DATA_PATH "/ui/interfaz_principal.bmp"),
         player_name(player_name),
         clan_name(""),
+        founder_texture(renderer, DATA_PATH "/ui/corona_fundador.bmp"),
+        is_founder(false),
         current_inventory(),
         current_equipment(),
-        health_texture(renderer, DATA_PATH "/barra_vida.bmp"),
-        mana_texture(renderer, DATA_PATH "/barra_mana.bmp"),
-        xp_texture(renderer, DATA_PATH "/barra_experiencia.bmp") {}
+        health_texture(renderer, DATA_PATH "/ui/barra_vida.bmp"),
+        mana_texture(renderer, DATA_PATH "/ui/barra_mana.bmp"),
+        xp_texture(renderer, DATA_PATH "/ui/barra_experiencia.bmp") {}
 
 void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
 
 void UserInterface::render_fields() {
     render_text(player_name, username_rect, FontType::UI_USERNAME);
     render_text(clan_name, clan_rect, FontType::UI_CLAN);
+    render_clan_founder();
 
     render_text("Inventario", inventory_rect, FontType::UI_MENU_TITLE);
     render_inventory();
@@ -60,6 +63,11 @@ void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box
                                  box_limit.y + (box_limit.h - text_h) / 2, text_w, text_h};
 
     renderer.Copy(text_texture, SDL2pp::NullOpt, centered_box);
+}
+
+void UserInterface::render_clan_founder() {
+    if (is_founder)
+        renderer.Copy(founder_texture, SDL2pp::NullOpt, founder_rect);
 }
 
 void UserInterface::render_bar_value(const SDL2pp::Rect& box, const BarValue& value) {
@@ -219,7 +227,8 @@ void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& player
         field_values.push_back(std::pair(safe_gold_rect, std::to_string(player_info.safe_gold)));
         field_values.push_back(std::pair(excess_gold_rect, std::to_string(player_info.excess_gold)));
 
-        clan_name = player_info.clan_name;
+        clan_name = player_info.clan.name;
+        is_founder = player_info.clan.is_founder;
 
         current_inventory.clear();
 

@@ -4,7 +4,7 @@
 #include "client/config/client_config.h"
 #include "common/dto/snapshot/info/creatureinfo.h"
 
-#define LABEL_HEALTH_BAR "/barra_vida.bmp"
+#define LABEL_HEALTH_BAR "/ui/barra_vida.bmp"
 
 
 SpriteLabel::SpriteLabel(SDL2pp::Renderer& renderer, FontManager& font_manager,
@@ -13,7 +13,8 @@ SpriteLabel::SpriteLabel(SDL2pp::Renderer& renderer, FontManager& font_manager,
         font_manager(font_manager),
         name(player_info.name),
         xp_level(player_info.stats.xp_level),
-        clan(player_info.clan_name),
+        clan(player_info.clan.name),
+        is_founder(player_info.clan.is_founder),
         health_texture(renderer, DATA_PATH LABEL_HEALTH_BAR),
         current_health(player_info.stats.current_health),
         max_health(player_info.stats.max_health) {
@@ -28,6 +29,7 @@ SpriteLabel::SpriteLabel(SDL2pp::Renderer& renderer, FontManager& font_manager,
         font_manager(font_manager),
         name(ClientConfig::get().get_creature_name(creature_info.creature)),
         xp_level(creature_info.stats.xp_level),
+        is_founder(false),
         health_texture(renderer, DATA_PATH LABEL_HEALTH_BAR),
         current_health(creature_info.stats.current_health),
         max_health(creature_info.stats.max_health) {
@@ -45,8 +47,9 @@ void SpriteLabel::update(const PlayerInfoDTO& player_info) {
         refresh_name_level_texture();
     }
 
-    if (clan != player_info.clan_name) {
-        clan = player_info.clan_name;
+    if (clan != player_info.clan.name) {
+        clan = player_info.clan.name;
+        is_founder = player_info.clan.is_founder;
         refresh_clan_texture();
     }
 }
@@ -99,8 +102,9 @@ void SpriteLabel::refresh_clan_texture() {
     }
 
     const std::string text = "<" + clan + ">";
+    const auto color = is_founder ? yellow : white;
     clan_texture = std::make_unique<SDL2pp::Texture>(
-            renderer, font_manager.get_font(FontType::LABEL_CLAN).RenderUTF8_Solid(text, yellow));
+            renderer, font_manager.get_font(FontType::LABEL_CLAN).RenderUTF8_Solid(text, color));
 }
 
 
