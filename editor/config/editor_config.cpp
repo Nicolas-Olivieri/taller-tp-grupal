@@ -30,8 +30,8 @@ void EditorConfig::load_constants() {
                                       toml::find<uint8_t>(constants_data, "safe_zone_brush_w"),
                                       toml::find<uint8_t>(constants_data, "safe_zone_brush_h")};
 
-    const uint16_t tile_size = toml::find<uint16_t>(constants_data, "file_header");
-    const uint16_t file_header = toml::find<uint16_t>(constants_data, "tile_size");
+    const uint16_t tile_size = toml::find<uint16_t>(constants_data, "tile_size");
+    const uint16_t file_header = toml::find<uint16_t>(constants_data, "file_header");
 
 
     constants = {safe_zone_data, file_header, tile_size};
@@ -49,6 +49,11 @@ std::vector<AssetData> EditorConfig::get_assets_data(const std::string& category
 
 void EditorConfig::load_shortcuts() {
     const auto shortcuts_data = toml::parse(CONFIG_PATH EDITOR_SHORTCUTS_PATH);
+
+    shortcuts = {toml::find<std::string>(shortcuts_data, "draw_key"),
+                 toml::find<std::string>(shortcuts_data, "drag_key"),
+                 toml::find<std::string>(shortcuts_data, "erase_key"),
+                 toml::find<std::string>(shortcuts_data, "safe_zone_key")};
 }
 
 uint16_t EditorConfig::get_tile_size() const { return constants.tile_size; }

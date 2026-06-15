@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include "config/editor_config.h"
+
 #include "grid_range.h"
 
 
@@ -72,7 +74,7 @@ void MapSaver::get_origin_and_matrix_size() {
 void MapSaver::store_offset_and_dimensions_data(QDataStream& stream) const {
     const uint16_t world_width = matrix_size.width();
     const uint16_t world_height = matrix_size.height();
-    constexpr uint16_t header = HEADER;
+    const uint16_t header = EditorConfig::get().get_file_header();
     constexpr size_t npc_data_size = sizeof(uint8_t) + sizeof(uint16_t) * 2;
 
     constexpr uint32_t server_start =
@@ -98,7 +100,8 @@ void MapSaver::store_server_data(QDataStream& stream) const {
         uint8_t biome;
         if (data.occupied_tiles.contains(cell)) {
             const uint8_t data_id = data.occupied_tiles[cell][0];
-            biome = data.safe_zone_tiles.contains(cell) ? SAFE_ZONE_ID : data.placements[data_id].asset.id;
+            const auto safe_zone_id = EditorConfig::get().get_safe_zone_data().id;
+            biome = data.safe_zone_tiles.contains(cell) ? safe_zone_id : data.placements[data_id].asset.id;
         } else {
             biome = 0;
         }
