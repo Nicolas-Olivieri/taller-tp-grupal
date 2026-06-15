@@ -1,0 +1,10 @@
+# Constantes
+# De zona segura
+safe_zone_id = 0
+safe_zone_brush_w = 4
+safe_zone_brush_h = 4
+
+# Demás constantes
+tile_size = 32
+file_header = 0xFAF4
+teleport_id = 3

@@ -31,7 +31,7 @@ const std::string& ClanMembership::get_clan_name() const { return clan_name; }
 bool ClanMembership::is_founder() const { return _is_founder; }
 
 void ClanMembership::set_near_clan_mates(uint8_t amount) {
-    assert(amount <= GameConfig::get().get_clan_constats().max_members_per_clan - 1);
+    assert(amount <= GameConfig::get().get_clan_constants().max_members_per_clan - 1);
     near_clan_mates = amount;
 }
 
@@ -44,9 +44,9 @@ float ClanMembership::get_clan_buff_factor() const {
 
     const float near_mates_percentage =
             static_cast<float>(near_clan_mates) /
-            static_cast<float>(GameConfig::get().get_clan_constats().max_members_per_clan - 1);
+            static_cast<float>(GameConfig::get().get_clan_constants().max_members_per_clan - 1);
 
     return min_buff_factor +
            near_mates_percentage *
-                   (GameConfig::get().get_clan_constats().max_attack_buff_factor - min_buff_factor);
+                   (GameConfig::get().get_clan_constants().max_attack_buff_factor - min_buff_factor);
 }
