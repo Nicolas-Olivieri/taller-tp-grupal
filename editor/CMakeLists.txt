@@ -16,7 +16,6 @@ target_sources(taller_editor
         ui/assetselector.ui
 
         config/editor_config.cpp
-        config/editor_config_data.cpp
 
     PUBLIC
         components.h
@@ -34,5 +33,4 @@ target_sources(taller_editor
         config/asset_parser.h
 
         config/editor_config.h
-        config/editor_config_data.h
 )

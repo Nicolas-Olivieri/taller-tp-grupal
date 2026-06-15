@@ -9,7 +9,6 @@
 #include "config/editor_config.h"
 
 #include "editor_constants.h"
-#include "toml.hpp"
 #include "ui_editor.h"
 
 
