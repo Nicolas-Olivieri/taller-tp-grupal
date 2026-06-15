@@ -421,6 +421,9 @@ UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t 
 
     } catch (const ItemNotOwned&) {
         return UseItemResult(UseItemStatus::FAILED);
+
+    } catch (const ArchetypeNotMagic&) {
+        return UseItemResult(UseItemStatus::ARCHETYPE_FAIL);
     }
 }
 

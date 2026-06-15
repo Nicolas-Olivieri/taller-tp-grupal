@@ -15,6 +15,8 @@ public:
 
     static uint16_t get_usable_effect_amount(uint8_t item_id);
 
+    static bool is_magic(uint8_t item_id);
+
 private:
     static bool is_weapon(uint8_t item_id);
 
