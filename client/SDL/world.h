@@ -42,8 +42,6 @@ private:
 
     void init_assets(const ClientMapDataDTO& map_data);
 
-    void add_new_player(const PlayerInfoDTO& info);
-
     static bool cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_ptr<Sprite>& b);
 
     void add_new_creature(const CreatureInfoDTO& info);
@@ -94,6 +92,8 @@ public:
     PlayerSprite& get_client_player();
 
     SDL2pp::Rect& get_world_size();
+
+    void add_new_player(const PlayerInfoDTO& info);
 };
 
 

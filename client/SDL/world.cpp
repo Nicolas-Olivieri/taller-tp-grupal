@@ -316,7 +316,10 @@ void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, u
     add_new_loot(info, place);
 }
 
-PlayerSprite& World::get_client_player() { return *players.at(player_name).get(); }
+PlayerSprite& World::get_client_player() {
+    assert(players.contains(player_name));
+    return *(players.at(player_name).get());
+}
 
 SDL2pp::Rect& World::get_world_size() { return world_view; }
 
