@@ -7,7 +7,7 @@ loot = [0, 1]
 vfx_attack = [0, 9]
 vfx_other = [0, 1]
 
-body = [0, 12]
+body = [0, 9]
 head = [0, 13]
 equipment = [0, 17]
 
