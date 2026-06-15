@@ -13,6 +13,6 @@ enum class ImageType { TILE, COLLIDER, NPC };
 #define TILE_SIZE 32
 #define SAFE_ZONE_BRUSH_W 4
 #define SAFE_ZONE_BRUSH_H 4
-
+#define TELEPORT_NPC 3
 
 #endif  // EDITOR_CONSTANTS_H

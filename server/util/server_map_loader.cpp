@@ -6,9 +6,11 @@
 
 #include <netinet/in.h>
 
+#include "common/dto/snapshot/map/teleport_info.h"
+
 #define MAGIC_NUMBER 0xFAF4
 
-ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
+ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/teleport.bin") {
     // La acción inmediata a crearse es leerlo (para cliente o servidor), por lo que no se mantiene mucho
     // tiempo abierto
     map.open(map_path, std::ios::binary);
@@ -24,9 +26,11 @@ ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
 }
 
 ServerMapDataDTO ServerMapLoader::get_server_data() {
-    // Leo los 4 bytes de offset (inicio y fin de bytes del servidor)
+    // Leo los 5 bytes de offset (inicio y fin de bytes del servidor)
+    parse_int<uint8_t>();
     parse_int<uint64_t>();
 
+    // Parseo la grilla
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
 
@@ -43,6 +47,7 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
     }
     GridMatrixDTO grid(grid_values);
 
+    // Parseo los NPCs
     const auto npc_amount = parse_int<uint16_t>();
     std::vector<AllyInfoDTO> npcs;
     for (int i = 0; i < npc_amount; i++) {
@@ -53,9 +58,21 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
         npcs.emplace_back(static_cast<AllyType>(id), x, y);
     }
 
+    // Parseo los teletransportadores
+    const auto teleport_amount = parse_int<uint16_t>();
+    std::vector<TeleportInfoDTO> teleports;
+    for (int i = 0; i < teleport_amount; i++) {
+        auto port_a_x = parse_int<uint16_t>();
+        auto port_a_y = parse_int<uint16_t>();
+        auto port_b_x = parse_int<uint16_t>();
+        auto port_b_y = parse_int<uint16_t>();
+
+        teleports.emplace_back(port_a_x, port_a_y, port_b_x, port_b_y);
+    }
+
     map.close();
 
-    return {width, height, grid, npcs};
+    return {width, height, grid, npcs, teleports};
 }
 
 ClientMapDataDTO ServerMapLoader::get_client_data() {

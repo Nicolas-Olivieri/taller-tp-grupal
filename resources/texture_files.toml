@@ -2,7 +2,7 @@
 [file_ids]
 tiles = [1,99]
 colliders = [0,65]
-npcs = [0,2]
+npcs = [0,3]
 loot = [0,1]
 vfx_attack = [0, 9]
 vfx_other = [0, 0]

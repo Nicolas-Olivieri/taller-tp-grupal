@@ -10,11 +10,20 @@ MapData::MapData(): tile_id(0) {}
 // AÑADIR ASSET::::::::::::::::
 
 int MapData::add_asset(const QPoint position, const AssetData& asset_data) {
-    if (asset_data.type == ImageType::TILE) {
-        return add_tile(position, asset_data);
-    }
-    if (asset_data.type == ImageType::COLLIDER || asset_data.type == ImageType::NPC) {
-        return add_collider(position, asset_data);
+
+    switch (asset_data.type) {
+        case ImageType::TILE:
+            return add_tile(position, asset_data);
+
+        case ImageType::COLLIDER:
+            return add_collider(position, asset_data);
+
+        case ImageType::NPC:
+            const int id = add_collider(position, asset_data);
+            if (asset_data.id == TELEPORT_NPC) {
+                add_teleport(id);
+            }
+            return id;
     }
     return -1;
 }
@@ -79,6 +88,19 @@ int MapData::add_collider(const QPoint position, const AssetData& collider_data)
     return new_tile.id;
 }
 
+void MapData::add_teleport(const int id) {
+    if (curr_teleport_pair.empty()) {
+        curr_teleport_pair.append(id);
+        return;
+    }
+
+    curr_teleport_pair.append(id);
+    int point_a = curr_teleport_pair[0];
+    int point_b = curr_teleport_pair[1];
+    teleport_pairs.insert({{point_a, point_b}, {point_b, point_a}});
+    curr_teleport_pair.clear();
+}
+
 
 // BORRAR ASSET::::::::::::::::
 
@@ -90,8 +112,14 @@ bool MapData::erase_asset(const int asset_id) {
             return erase_tile(placement_data);
 
         case ImageType::COLLIDER:
-        case ImageType::NPC:
             return erase_collider(placement_data);
+
+        case ImageType::NPC:
+            erase_collider(placement_data);
+            if (placement_data.asset.id == TELEPORT_NPC) {
+                erase_teleport(placement_data.id);
+            }
+            return true;
     }
 
     return false;
@@ -133,6 +161,16 @@ bool MapData::erase_collider(const Placement& placement) {
     return true;
 }
 
+void MapData::erase_teleport(const int point_a) {
+    if (curr_teleport_pair.contains(point_a)) {
+        curr_teleport_pair.clear();
+        return;
+    }
+
+    const int point_b = teleport_pairs[point_a];
+    teleport_pairs.remove(point_a);
+    teleport_pairs.remove(point_b);
+}
 
 // ZONA SEGURA::::::::::::::::
 
@@ -167,4 +205,7 @@ void MapData::clear_all() {
     occupied_tiles.clear();
     unwalkable_tiles.clear();
     safe_zone_tiles.clear();
+
+    curr_teleport_pair.clear();
+    teleport_pairs.clear();
 }
