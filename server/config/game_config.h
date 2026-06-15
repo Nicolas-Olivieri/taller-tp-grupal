@@ -16,6 +16,7 @@ private:
     DropProbabilitiesData drop_probabilities;
     FairPlayData fair_play_levels;
     ClanConstantsData clan_constants_data;
+    BiomesData biomes_data;
 
     GameConfig();
 
@@ -72,7 +73,11 @@ public:
 
     const ClanConstantsData& get_clan_constats() const;
 
+    const BiomeData& get_biome_from_floor(uint8_t id) const;
+
     uint16_t get_item_price(uint8_t item_id) const;
+
+    bool has_biome_associated(uint8_t id) const;
 
     bool usables_contains(uint8_t id) const;
 

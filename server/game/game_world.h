@@ -153,6 +153,9 @@ private:
     void load_clans();
 
     void exchange_position(const Position& old_position, const Position& new_position, Interactive* occupant);
+
+    static std::vector<uint8_t> filter_compatible_creatures(const std::vector<uint8_t>& creatures_ids,
+                                                            uint8_t variation_id);
 };
 
 

@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include <toml.hpp>
 
@@ -192,6 +193,23 @@ struct toml::from<TraderSetData> {
         }
 
         return data;
+    }
+};
+
+struct BiomeData {
+    std::vector<uint8_t> floor_ids;
+    std::vector<uint8_t> creatures;
+    std::vector<uint8_t> variations;
+};
+
+template <>
+struct toml::from<BiomeData> {
+    static BiomeData from_toml(const toml::value& raw) {
+        return BiomeData{
+                toml::find<std::vector<uint8_t>>(raw, "floor_ids"),
+                toml::find<std::vector<uint8_t>>(raw, "creatures"),
+                toml::find<std::vector<uint8_t>>(raw, "variations"),
+        };
     }
 };
 
@@ -404,6 +422,33 @@ struct toml::from<ClanConstantsData> {
                 toml::find<float>(raw, "max_distance_to_consider_near_clan_mate"),
                 toml::find<float>(raw, "max_attack_buff_factor"),
         };
+    }
+};
+
+struct BiomesData {
+    std::unordered_map<uint8_t, uint8_t> floor_to_biome;
+    std::unordered_map<uint8_t, BiomeData> biomes;
+};
+
+template <>
+struct toml::from<BiomesData> {
+    static BiomesData from_toml(const toml::value& raw) {
+        BiomesData data;
+        const auto& biomes_table = raw.as_table();
+
+        if (!biomes_table.contains("biomes"))
+            throw std::runtime_error("No se encontró un TOML con la información de biomas");
+
+        for (const auto& [category, value]: biomes_table.at("biomes").as_table()) {
+            uint8_t id = toml::find<uint8_t>(value, "id");
+            auto biome = toml::get<BiomeData>(value);
+
+            data.biomes[id] = biome;
+            for (const auto& floor_id: data.biomes[id].floor_ids)
+                data.floor_to_biome[floor_id] = id;
+        }
+
+        return data;
     }
 };
 

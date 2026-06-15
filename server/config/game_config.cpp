@@ -14,6 +14,8 @@ GameConfig::GameConfig() {
     drop_probabilities = retrieve_config_data<DropProbabilitiesData>(paths_data, "drops", "probabilities");
     fair_play_levels = retrieve_config_data<FairPlayData>(paths_data, "fair_play", "fair_play");
     clan_constants_data = retrieve_config_data<ClanConstantsData>(paths_data, "clans", "clans");
+    biomes_data = retrieve_config_data<BiomesData>(paths_data, "biomes");
+
 }
 
 GameConfig& GameConfig::get() {
@@ -78,3 +80,13 @@ int GameConfig::get_merchant_max_id() const { return traders.merchants.items.siz
 const FairPlayData& GameConfig::get_fair_play() const { return fair_play_levels; }
 
 const ClanConstantsData& GameConfig::get_clan_constats() const { return clan_constants_data; }
+
+const BiomeData& GameConfig::get_biome_from_floor(uint8_t id) const {
+    assert(biomes_data.floor_to_biome.contains(id));
+    uint8_t biome_id = biomes_data.floor_to_biome.at(id);
+
+    assert(biomes_data.biomes.contains(biome_id));
+    return biomes_data.biomes.at(biome_id);
+}
+
+bool GameConfig::has_biome_associated(uint8_t id) const { return biomes_data.floor_to_biome.contains(id); }

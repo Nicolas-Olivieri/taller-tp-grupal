@@ -5,9 +5,9 @@
 
 struct TileInfoDTO {
     bool walkable;
-    uint8_t biome;
+    uint8_t floor;
 
-    TileInfoDTO(bool walkable, uint8_t biome);
+    TileInfoDTO(bool walkable, uint8_t floor);
 };
 
 

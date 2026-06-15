@@ -7,16 +7,18 @@
 #include "interactive.h"
 #include "loot.h"
 
+#define SAFE_ZONE_FLOOR 0  // TODO: toml
 
 class Tile {
 private:
     bool is_walkable_;
-    uint8_t biome;
     Interactive* occupant_;
     std::stack<Loot> loot_;
 
 public:
-    explicit Tile(bool is_walkable, uint8_t biome);
+    const uint8_t floor;
+
+    explicit Tile(bool is_walkable, uint8_t floor);
 
     explicit Tile(Interactive* occupant);
 

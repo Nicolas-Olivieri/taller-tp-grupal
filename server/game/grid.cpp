@@ -20,7 +20,7 @@ Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         tile_row.reserve(row.size());
 
         std::ranges::transform(row, std::back_inserter(tile_row), [](const auto& tile_value) {
-            return Tile(tile_value.walkable, tile_value.biome);
+            return Tile(tile_value.walkable, tile_value.floor);
         });
 
         tiles_.emplace_back(std::move(tile_row));
