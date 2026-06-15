@@ -95,6 +95,7 @@ Camera ClientGame::initialize_world_and_camera() {
         });
 
         if (it != info.end()) {
+            world.add_new_player(*it);
             world.update_players(info);
             break;
         }
