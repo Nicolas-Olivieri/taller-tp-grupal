@@ -81,7 +81,7 @@ void MapSaver::store_offset_and_dimensions_data(QDataStream& stream) const {
 
     const uint64_t server_end = server_start + sizeof(uint16_t) * world_width * world_height +
                                 sizeof(uint16_t) + data.asset_counter[ImageType::NPC] * npc_data_size +
-                                sizeof(uint16_t) + (data.teleport_pairs.size()/2) * teleport_data_size;
+                                sizeof(uint16_t) + (data.teleport_pairs.size() / 2) * teleport_data_size;
 
     stream << header << server_start << static_cast<qint64>(server_end) << world_width << world_height;
 }
@@ -139,7 +139,7 @@ void MapSaver::store_teleport_data(QDataStream& stream) const {
     stream << teleport_amount;
 
     QSet<int> already_checked;
-    for (const auto& [point_a, point_b] : data.teleport_pairs.asKeyValueRange()) {
+    for (const auto& [point_a, point_b]: data.teleport_pairs.asKeyValueRange()) {
         if (already_checked.contains(point_a)) {
             continue;
         }

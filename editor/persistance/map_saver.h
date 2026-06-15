@@ -19,7 +19,7 @@ private:
 
     void store_asset_data(QDataStream& stream, ImageType type) const;
 
-    void store_teleport_data(QDataStream &stream) const;
+    void store_teleport_data(QDataStream& stream) const;
 
 public:
     explicit MapSaver(MapData& data);

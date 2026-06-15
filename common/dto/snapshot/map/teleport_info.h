@@ -3,7 +3,7 @@
 #include "common/dto/message.h"
 
 
-struct TeleportInfoDTO : public ProtocolMessageDTO {
+struct TeleportInfoDTO: public ProtocolMessageDTO {
     uint16_t port_a_x;
     uint16_t port_a_y;
     uint16_t port_b_x;
@@ -14,8 +14,7 @@ struct TeleportInfoDTO : public ProtocolMessageDTO {
     size_t message_size() const override;
 
     void accept(Serializer& serializer) const override;
-
 };
 
 
-#endif //TELEPORT_INFO_DTO_H
+#endif  // TELEPORT_INFO_DTO_H

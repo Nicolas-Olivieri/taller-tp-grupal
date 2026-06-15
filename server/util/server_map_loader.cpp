@@ -10,7 +10,7 @@
 
 #define MAGIC_NUMBER 0xFAF4
 
-ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/teleport.bin") {
+ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
     // La acción inmediata a crearse es leerlo (para cliente o servidor), por lo que no se mantiene mucho
     // tiempo abierto
     map.open(map_path, std::ios::binary);
