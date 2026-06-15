@@ -215,6 +215,13 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
             case ActionType::MEDITATION:
                 if (players.contains(action.meditation.player_meditating)) {
                     const Sprite* sprite = players.at(action.meditation.player_meditating).get();
+
+                    EffectSprite fx = sprite_creator.create_sprite(action, sprite->get_position());
+                    auto ptr = std::make_shared<EffectSprite>(std::move(fx));
+                    ptr.get()->set_visual_position(sprite->get_position() -
+                                                   SDL2pp::Point(0, sprite->get_size().GetY() / 2));
+                    effects.emplace(ptr);
+
                     play_event(SoundEvent::MEDITATION, sprite->get_position());
                 }
                 break;
