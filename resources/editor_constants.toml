@@ -7,4 +7,4 @@ safe_zone_brush_h = 4
 # Demás constantes
 tile_size = 32
 file_header = 0xFAF4
-
+teleport_id = 3

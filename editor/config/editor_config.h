@@ -18,6 +18,7 @@ struct EditorConstantsData {
     SafeZoneData safe_zone;
     uint16_t file_header;
     uint16_t tile_size;
+    uint8_t teleport_id;
 };
 
 struct ShortcutsKeys {
@@ -53,6 +54,8 @@ public:
     const SafeZoneData& get_safe_zone_data() const;
 
     const ShortcutsKeys& get_shortcuts_keys() const;
+
+    uint8_t get_teleport_id() const;
 };
 
 

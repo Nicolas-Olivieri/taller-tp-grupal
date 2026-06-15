@@ -32,9 +32,10 @@ void EditorConfig::load_constants() {
 
     const uint16_t tile_size = toml::find<uint16_t>(constants_data, "tile_size");
     const uint16_t file_header = toml::find<uint16_t>(constants_data, "file_header");
+    const uint8_t teleport_id = toml::find<uint8_t>(constants_data, "teleport_id");
 
 
-    constants = {safe_zone_data, file_header, tile_size};
+    constants = {safe_zone_data, file_header, tile_size, teleport_id};
 }
 
 EditorConfig& EditorConfig::get() {
@@ -63,3 +64,5 @@ uint16_t EditorConfig::get_file_header() const { return constants.file_header; }
 const SafeZoneData& EditorConfig::get_safe_zone_data() const { return constants.safe_zone; }
 
 const ShortcutsKeys& EditorConfig::get_shortcuts_keys() const { return shortcuts; }
+
+uint8_t EditorConfig::get_teleport_id() const { return constants.teleport_id; }
