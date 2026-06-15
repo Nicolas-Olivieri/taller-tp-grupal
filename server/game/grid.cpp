@@ -3,7 +3,11 @@
 #include <algorithm>
 #include <utility>
 
+#include "server/util/calculator.h"
+
 #define IDLE_WEIGHT 4  // TODO: toml
+#define NEAR_MIN_FACTOR 6
+#define NEAR_MAX_FACTOR 14  // TODO: toml
 
 Grid::Grid(): width_(0), height_(0) {}
 
@@ -47,6 +51,36 @@ Position Grid::spawn() const {
     } while (!is_tile_available(x, y));
 
     return Position(x, y);
+}
+
+Position Grid::spawn_near(const std::vector<Position>& positions) const {
+    std::vector<Position> near_positions;
+
+    for (const auto& position: positions) {
+        add_near_positions(near_positions, position.get_x(), position.get_y());
+    }
+
+    if (near_positions.empty())
+        throw std::runtime_error("There are no positions near any player to spawn a creature");
+
+    return Calculator::random_choice(near_positions);
+}
+
+void Grid::add_near_positions(std::vector<Position>& near_positions, uint16_t pos_x, uint16_t pos_y) const {
+    for (uint16_t y = std::max(0, pos_y - NEAR_MAX_FACTOR); y < std::min(height_, pos_y + NEAR_MAX_FACTOR);
+         y++) {
+        for (uint16_t x = std::max(0, pos_x - NEAR_MAX_FACTOR); x < std::min(width_, pos_x + NEAR_MAX_FACTOR);
+             x++) {
+            uint16_t distance_x = std::abs(x - pos_x);
+            uint16_t distance_y = std::abs(y - pos_y);
+
+            uint16_t current_distance = std::max(distance_x, distance_y);
+
+            if (current_distance >= NEAR_MIN_FACTOR && is_tile_available(x, y)) {
+                near_positions.push_back(Position(x, y));
+            }
+        }
+    }
 }
 
 bool Grid::is_tile_available(int x, int y) const {

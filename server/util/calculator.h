@@ -50,7 +50,11 @@ public:
 
     static uint8_t calculate_creature_level(uint8_t base, float multiplier);
 
-    static uint8_t random_choice(const std::vector<uint8_t>& elems);
+    template <typename T>
+    static T random_choice(const std::vector<T>& elems) {
+        int index = random_number(0, elems.size() - 1);
+        return elems[index];
+    }
 
 private:
     static float random_float(const float min, const float max);

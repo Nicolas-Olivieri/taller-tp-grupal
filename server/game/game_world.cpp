@@ -218,16 +218,28 @@ void GameWorld::remove_dead_creatures() {
 
 void GameWorld::spawn_random_creature() {
     // TODO: cambiar este método para considerar biomas
-    uint8_t variation_id = Calculator::random_number(0, 2);
-    const VariationData& variation = GameConfig::get().get_variation(variation_id);
+    std::vector<Position> players_positions;
+    players_positions.reserve(players.size());
 
-    uint8_t creature_id = Calculator::random_choice(variation.compatible_races);
+    for (const auto& [name, player]: players) {
+        if (player.is_alive())  // TODO: capaz no hace falta filtrar que estén vivos
+            players_positions.push_back(player.get_position());
+    }
 
-    Position spawn_position = grid.spawn();
-    uint16_t id = get_next_creature_id();
+    try {
+        Position spawn_position = grid.spawn_near(players_positions);
+        /* Tile& tile = grid.get_tile(spawn_position); */
 
-    creatures.emplace(id, Creature(creature_id, variation_id, spawn_position));
-    grid.get_tile(spawn_position).occupy(&creatures.at(id));
+        uint8_t variation_id = Calculator::random_number(0, 2);
+        const VariationData& variation = GameConfig::get().get_variation(variation_id);
+
+        uint8_t creature_id = Calculator::random_choice(variation.compatible_races);
+
+        uint16_t id = get_next_creature_id();
+
+        creatures.emplace(id, Creature(creature_id, variation_id, spawn_position));
+        grid.get_tile(spawn_position).occupy(&creatures.at(id));
+    } catch (const std::runtime_error& error) {}
 }
 
 uint16_t GameWorld::get_next_creature_id() {
