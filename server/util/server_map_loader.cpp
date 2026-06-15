@@ -6,6 +6,7 @@
 
 #include <netinet/in.h>
 
+
 #include "common/dto/snapshot/map/teleport_info.h"
 
 #define MAGIC_NUMBER 0xFAF4
@@ -76,8 +77,8 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
 }
 
 ClientMapDataDTO ServerMapLoader::get_client_data() {
-    const auto server_start = parse_int<uint32_t>();
-    const auto server_end = parse_int<uint32_t>();
+    const auto server_start = parse_int<uint8_t>();
+    const auto server_end = parse_int<uint64_t>();
 
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
@@ -116,8 +117,12 @@ intType ServerMapLoader::parse_int() {
 
     if (sizeof(intType) == 2) {
         return ntohs(data);
-    } else if (sizeof(intType) == 4) {
+    }
+    if (sizeof(intType) == 4) {
         return ntohl(data);
+    }
+    if (sizeof(intType) == 8) {
+        return be64toh(data);
     }
 
     return data;
