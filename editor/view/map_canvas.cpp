@@ -143,7 +143,6 @@ void MapCanvas::set_mode(const EditorMode new_mode) {
     if (mode == EditorMode::DRAG) {
         this->setDragMode(ScrollHandDrag);
     }
-    if (mode == EditorMode::SAFE_ZONE) {}
 }
 
 void MapCanvas::set_selected_asset(const AssetData& data) {
