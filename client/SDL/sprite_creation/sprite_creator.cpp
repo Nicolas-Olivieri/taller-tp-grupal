@@ -86,6 +86,11 @@ EffectSprite SpriteCreator::create_sprite(const ActionDTO& action_info, SDL2pp::
             EffectSprite effect(std::move(fx), position, fx.frame.GetSize());
             return effect;
         }
+
+        case ActionType::MEDITATION:
+            SpriteLayer fx = create_sprite_layer(SpriteCategory::ACTION_VFX,
+                                                 static_cast<uint8_t>(EffectType::MEDITATION));
+            return EffectSprite(std::move(fx), position, fx.frame.GetSize());
     }
 }
 
