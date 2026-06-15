@@ -225,7 +225,7 @@ void GameWorld::spawn_random_creature() {
 
     for (const auto& [name, player]: players) {
         // TODO: capaz no hace falta filtrar que estén vivos
-        if (player.is_alive())   {
+        if (player.is_alive()) {
             Position position = player.get_position();
             if (grid.get_tile(position).floor != SAFE_ZONE_FLOOR)
                 players_positions.push_back(std::move(position));
@@ -235,9 +235,9 @@ void GameWorld::spawn_random_creature() {
     try {
         Position spawn_position = grid.spawn_near(players_positions);
         Tile& tile = grid.get_tile(spawn_position);
-std::cout << "[DEBUG SPAWN] Evaluando coordenada X: " << spawn_position.get_x() 
-          << " Y: " << spawn_position.get_y() 
-          << " -> Encontré Floor: " << static_cast<int>(tile.floor) << std::endl;
+        std::cout << "[DEBUG SPAWN] Evaluando coordenada X: " << spawn_position.get_x()
+                  << " Y: " << spawn_position.get_y()
+                  << " -> Encontré Floor: " << static_cast<int>(tile.floor) << std::endl;
         GameConfig& config = GameConfig::get();
 
         if (!config.has_biome_associated(tile.floor))
@@ -249,13 +249,16 @@ std::cout << "[DEBUG SPAWN] Evaluando coordenada X: " << spawn_position.get_x()
 
         uint8_t variation_id = Calculator::random_choice(biome.variations);
 
-        std::cout << "floor: " << static_cast<int>(tile.floor) << " variation: " << static_cast<int>(variation_id) << std::endl;
-        std::vector<uint8_t> compatible_creatures = filter_compatible_creatures(biome.creatures, variation_id);
+        std::cout << "floor: " << static_cast<int>(tile.floor)
+                  << " variation: " << static_cast<int>(variation_id) << std::endl;
+        std::vector<uint8_t> compatible_creatures =
+                filter_compatible_creatures(biome.creatures, variation_id);
         if (compatible_creatures.empty())
             return;
 
         uint8_t creature_id = Calculator::random_choice(compatible_creatures);
-        std::cout << "criatura: " << static_cast<int>(creature_id) << " variation: " << static_cast<int>(variation_id) << std::endl;
+        std::cout << "criatura: " << static_cast<int>(creature_id)
+                  << " variation: " << static_cast<int>(variation_id) << std::endl;
         uint16_t id = get_next_creature_id();
 
         std::cout << "x: " << spawn_position.get_x() << " y: " << spawn_position.get_y() << std::endl;
@@ -279,7 +282,7 @@ std::vector<uint8_t> GameWorld::filter_compatible_creatures(const std::vector<ui
                      return variation_compatible_races.contains(creature);
                  });
 
-    for (const auto& creature : compatibles) {
+    for (const auto& creature: compatibles) {
         std::cout << "criaturas compatibles: " << static_cast<int>(creature) << std::endl;
     }
 

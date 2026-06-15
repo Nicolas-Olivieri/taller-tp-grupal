@@ -15,7 +15,6 @@ GameConfig::GameConfig() {
     fair_play_levels = retrieve_config_data<FairPlayData>(paths_data, "fair_play", "fair_play");
     clan_constants_data = retrieve_config_data<ClanConstantsData>(paths_data, "clans", "clans");
     biomes_data = retrieve_config_data<BiomesData>(paths_data, "biomes");
-
 }
 
 GameConfig& GameConfig::get() {

@@ -7,7 +7,6 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 #include <toml.hpp>
 
@@ -444,8 +443,7 @@ struct toml::from<BiomesData> {
             auto biome = toml::get<BiomeData>(value);
 
             data.biomes[id] = biome;
-            for (const auto& floor_id: data.biomes[id].floor_ids)
-                data.floor_to_biome[floor_id] = id;
+            for (const auto& floor_id: data.biomes[id].floor_ids) data.floor_to_biome[floor_id] = id;
         }
 
         return data;
