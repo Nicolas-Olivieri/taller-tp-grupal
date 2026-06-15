@@ -1,0 +1,10 @@
+[constants.render]
+fps = 30
+screen_width = 1024
+screen_height = 726
+tile_size = 32
+
+[constants.sprites]
+ghost_head_id = 0
+ghost_body_id = 0
+head_offset = 21

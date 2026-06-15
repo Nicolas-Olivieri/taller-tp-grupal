@@ -1,5 +1,6 @@
 #include "client_config.h"
 
+#include <iostream>
 #include <string>
 
 #include <toml.hpp>
@@ -8,11 +9,13 @@
 
 #define CLIENT_ITEMS_PATH "/client/items.toml"
 #define CLIENT_CREATURES_PATH "/client/creatures.toml"
+#define CLIENT_CONSTANTS_PATH "/client/game_constants.toml"
 
 
 ClientConfig::ClientConfig() {
-    loadFromFile(std::string(CONFIG_PATH) + std::string(CLIENT_ITEMS_PATH));
-    loadFromFile(std::string(CONFIG_PATH) + std::string(CLIENT_CREATURES_PATH));
+    loadFromFile(CONFIG_PATH CLIENT_ITEMS_PATH);
+    loadFromFile(CONFIG_PATH CLIENT_CREATURES_PATH);
+    loadFromFile(CONFIG_PATH CLIENT_CONSTANTS_PATH);
 }
 
 
@@ -93,8 +96,36 @@ void ClientConfig::loadFromFile(const std::string& filepath) {
     if (root.contains("creatures")) {
         parseCreaturesTable(toml::find(root, "creatures"));
     }
+    if (root.contains("constants")) {
+        parse_constants(toml::find(root, "constants"));
+    }
 }
 
+void ClientConfig::parse_constants(const toml::value& constants_table) {
+    for (const auto& [key, value]: constants_table.as_table()) {
+        if (key == "render") {
+            render_data = {
+                    toml::find<uint8_t>(value, "fps"),
+                    toml::find<uint16_t>(value, "screen_width"),
+                    toml::find<uint16_t>(value, "screen_height"),
+                    toml::find<uint16_t>(value, "tile_size"),
+            };
+            break;
+        }
+
+        if (key == "sprites") {
+            sprite_data = {
+                    toml::find<uint8_t>(value, "ghost_head_id"),
+                    toml::find<uint8_t>(value, "ghost_body_id"),
+                    toml::find<int>(value, "head_offset"),
+            };
+            break;
+        }
+
+        throw std::runtime_error(
+                std::format("ClientConfig encontró un tipo de constante desconocido: {}", key));
+    }
+}
 
 void ClientConfig::parseItemsTable(const toml::value& items_table) {
     for (const auto& [key, value]: items_table.as_table()) {

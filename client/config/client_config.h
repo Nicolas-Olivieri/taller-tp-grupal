@@ -17,11 +17,25 @@ struct ItemDisplayData {
     std::string icon_path;
 };
 
+struct RenderData {
+    uint8_t fps;
+    uint16_t screen_w;
+    uint16_t screen_h;
+    uint16_t tile_size;
+};
+
+struct SpriteData {
+    uint8_t ghost_head_id;
+    uint8_t ghost_body_id;
+    int head_offset;
+};
 
 class ClientConfig {
 private:
     std::unordered_map<uint8_t, CreatureDisplayData> creatures_data;
     std::unordered_map<uint8_t, ItemDisplayData> items_data;
+    RenderData render_data;
+    SpriteData sprite_data;
 
 public:
     static ClientConfig& get();
@@ -54,6 +68,8 @@ private:
     void parseCreaturesTable(const toml::basic_value<toml::type_config>& creatures_table);
 
     CreatureDisplayData buildCreatureDisplayData(const toml::value& creature_toml) const;
+
+    void parse_constants(const toml::value& constants_table);
 };
 
 
