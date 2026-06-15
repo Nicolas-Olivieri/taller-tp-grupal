@@ -56,6 +56,20 @@ public:
 
     std::string get_item_icon_path(uint8_t item_id);
 
+    uint8_t get_ghost_head_id() const;
+
+    uint8_t get_ghost_body_id() const;
+
+    int get_head_offset() const;
+
+    uint8_t get_fps() const;
+
+    uint16_t get_screen_w() const;
+
+    uint16_t get_screen_h() const;
+
+    uint16_t get_tile_size() const;
+
 private:
     ClientConfig();
 

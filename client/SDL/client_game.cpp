@@ -57,7 +57,7 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, 
 
 void ClientGame::run() {
 
-    RateTimer timer(FPS);
+    RateTimer timer(ClientConfig::get().get_fps());
     int iteration = 0;
 
     while (keep_running) {
@@ -515,12 +515,13 @@ void ClientGame::toggle_chat() {
 }
 
 void ClientGame::handle_game_click(const SDL_Event& event) {
+    const uint16_t tile_size = ClientConfig::get().get_tile_size();
     int game_click_x = event.button.x - game_viewport.x;
     int game_click_y = event.button.y - game_viewport.y;
 
     if (event.button.button == SDL_BUTTON_LEFT) {
-        const uint16_t target_x = (camera.get_view().GetX() + game_click_x) / TILE_SIZE;
-        const uint16_t target_y = (camera.get_view().GetY() + game_click_y) / TILE_SIZE;
+        const uint16_t target_x = (camera.get_view().GetX() + game_click_x) / tile_size;
+        const uint16_t target_y = (camera.get_view().GetY() + game_click_y) / tile_size;
         connection.push_command(std::make_unique<InteractEventDTO>(target_x, target_y));
     }
 }

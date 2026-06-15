@@ -110,7 +110,7 @@ void ClientConfig::parse_constants(const toml::value& constants_table) {
                     toml::find<uint16_t>(value, "screen_height"),
                     toml::find<uint16_t>(value, "tile_size"),
             };
-            break;
+            continue;
         }
 
         if (key == "sprites") {
@@ -119,7 +119,7 @@ void ClientConfig::parse_constants(const toml::value& constants_table) {
                     toml::find<uint8_t>(value, "ghost_body_id"),
                     toml::find<int>(value, "head_offset"),
             };
-            break;
+            continue;
         }
 
         throw std::runtime_error(
@@ -153,3 +153,17 @@ void ClientConfig::parseCreaturesTable(const toml::basic_value<toml::type_config
 CreatureDisplayData ClientConfig::buildCreatureDisplayData(const toml::value& creature_toml) const {
     return CreatureDisplayData(toml::find<std::string>(creature_toml, "name"));
 }
+
+uint8_t ClientConfig::get_ghost_head_id() const { return sprite_data.ghost_head_id; }
+
+uint8_t ClientConfig::get_ghost_body_id() const { return sprite_data.ghost_body_id; }
+
+int ClientConfig::get_head_offset() const { return sprite_data.head_offset; }
+
+uint8_t ClientConfig::get_fps() const { return render_data.fps; }
+
+uint16_t ClientConfig::get_screen_w() const { return render_data.screen_w; }
+
+uint16_t ClientConfig::get_screen_h() const { return render_data.screen_h; }
+
+uint16_t ClientConfig::get_tile_size() const { return render_data.tile_size; }
