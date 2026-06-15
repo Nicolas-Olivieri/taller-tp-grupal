@@ -44,6 +44,8 @@ private:
 
     AppearanceDTO recv_appearance();
 
+    ClanInfoDTO recv_clan();
+
     DespawnDTO recv_despawn();
 
     HealDTO recv_heal();

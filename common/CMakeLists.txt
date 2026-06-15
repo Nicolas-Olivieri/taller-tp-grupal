@@ -47,6 +47,7 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_clan_msg/clan_message.cpp
 
         dto/snapshot/info/appearance.cpp
+        dto/snapshot/info/clan_info.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/info/creatureinfo.cpp
         dto/snapshot/info/creature_stats.cpp
@@ -130,6 +131,7 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_clan_msg/clan_message.h
 
         dto/snapshot/info/appearance.h
+        dto/snapshot/info/clan_info.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/info/creatureinfo.h
         dto/snapshot/info/creature_stats.h

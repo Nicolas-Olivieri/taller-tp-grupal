@@ -120,6 +120,8 @@ public:
 
     void serialize(const AppearanceDTO& appearance);
 
+    void serialize(const ClanInfoDTO& clan);
+
     void serialize(const DespawnDTO& despawn);
 
     void serialize(const HealDTO& heal);

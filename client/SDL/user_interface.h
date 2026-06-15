@@ -56,6 +56,10 @@ private:
     SDL2pp::Rect clan_rect = {770, 100, 240, 20};
     std::string clan_name;
 
+    SDL2pp::Rect founder_rect = {880, 135, 18, 12};
+    SDL2pp::Texture founder_texture;
+    bool is_founder;
+
     SDL2pp::Rect inventory_rect = {770, 157, 240, 35};
 
     std::vector<InventorySlotData> current_inventory;
@@ -95,6 +99,8 @@ private:
     void add_twinkling_bar(std::string& display_text);
 
     void render_text(const std::string& text, const SDL2pp::Rect& box_limit, const FontType& font_type) const;
+
+    void render_clan_founder();
 
     void render_bar_value(const SDL2pp::Rect& box, const BarValue& value);
 

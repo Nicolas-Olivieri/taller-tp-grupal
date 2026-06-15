@@ -67,7 +67,7 @@ void Serializer::serialize(const SnapshotDTO& snapshot) {
 
 void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(info.name);
-    serialize(info.clan_name);
+    serialize(info.clan);
     serialize(static_cast<uint8_t>(info.direction));
     serialize(info.x);
     serialize(info.y);
@@ -150,6 +150,11 @@ void Serializer::serialize(const AppearanceDTO& appearance) {
     serialize(appearance.head);
 }
 
+void Serializer::serialize(const ClanInfoDTO& clan) {
+    serialize(clan.name);
+    serialize(clan.is_founder);
+}
+
 void Serializer::serialize(const std::string& value) {
     uint16_t size = static_cast<uint16_t>(value.size());
     serialize(size);
@@ -160,13 +165,13 @@ void Serializer::serialize(const std::string& value) {
 void Serializer::serialize(uint8_t value) { this->buffer[this->offset++] = value; }
 
 void Serializer::serialize(uint16_t value) {
-    uint16_t netvalue = ntohs(value);
+    uint16_t netvalue = htons(value);
 
     copy_to_buffer(&netvalue, sizeof(netvalue));
 }
 
 void Serializer::serialize(uint32_t value) {
-    uint32_t netvalue = ntohl(value);
+    uint32_t netvalue = htonl(value);
 
     copy_to_buffer(&netvalue, sizeof(netvalue));
 }
