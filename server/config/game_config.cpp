@@ -81,11 +81,15 @@ const FairPlayData& GameConfig::get_fair_play() const { return fair_play_levels;
 const ClanConstantsData& GameConfig::get_clan_constats() const { return clan_constants_data; }
 
 const BiomeData& GameConfig::get_biome_from_floor(uint8_t id) const {
-    assert(biomes_data.floor_to_biome.contains(id));
-    uint8_t biome_id = biomes_data.floor_to_biome.at(id);
+    uint8_t biome_id = get_biome_id(id);
 
     assert(biomes_data.biomes.contains(biome_id));
     return biomes_data.biomes.at(biome_id);
 }
 
 bool GameConfig::has_biome_associated(uint8_t id) const { return biomes_data.floor_to_biome.contains(id); }
+
+uint8_t GameConfig::get_biome_id(uint8_t floor_id) const {
+    assert(biomes_data.floor_to_biome.contains(floor_id));
+    return biomes_data.floor_to_biome.at(floor_id);
+}

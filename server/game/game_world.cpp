@@ -72,22 +72,26 @@ WorldUpdateStatus GameWorld::update() {
     for (auto& [id, creature]: creatures) {
         creature.update();
 
-        Direction direction = next_movement(creature);
-
         if (!creature.is_targeting_someone()) {
             for (auto& [name, player]: players) {
-                if (player.is_alive() && creature.can_target(player.get_position())) {
+                const Position& position = player.get_position();
+                if (player.is_alive() && creature.can_target(position) && !is_safe_zone(position)) {
                     creature.target_player(player);
                     break;
                 }
             }
+        } else if (is_safe_zone(creature.get_target_position())) {
+            creature.stop_targeting();
         }
 
         CreatureUpdate creature_update = manage_creature_attack(creature);
         creatures_status.push_back(creature_update);
 
-        if (creature_update.status == CreatureStatus::MOVING)
+        Direction direction = next_movement(creature);
+
+        if (creature_update.status == CreatureStatus::MOVING) {
             move_creature(creature, direction);
+        }
 
         creature.update_state();
     }
@@ -133,6 +137,8 @@ void GameWorld::move_creature(Creature& creature, const Direction& direction) {
         return;
 
     Position target = current.move(direction);
+    if (is_safe_zone(target))
+        return;
 
     if (grid.is_tile_available(target.get_x(), target.get_y())) {
         exchange_position(current, target, &creature);
@@ -235,9 +241,6 @@ void GameWorld::spawn_random_creature() {
     try {
         Position spawn_position = grid.spawn_near(players_positions);
         Tile& tile = grid.get_tile(spawn_position);
-        std::cout << "[DEBUG SPAWN] Evaluando coordenada X: " << spawn_position.get_x()
-                  << " Y: " << spawn_position.get_y()
-                  << " -> Encontré Floor: " << static_cast<int>(tile.floor) << std::endl;
         GameConfig& config = GameConfig::get();
 
         if (!config.has_biome_associated(tile.floor))
@@ -249,19 +252,13 @@ void GameWorld::spawn_random_creature() {
 
         uint8_t variation_id = Calculator::random_choice(biome.variations);
 
-        std::cout << "floor: " << static_cast<int>(tile.floor)
-                  << " variation: " << static_cast<int>(variation_id) << std::endl;
         std::vector<uint8_t> compatible_creatures =
                 filter_compatible_creatures(biome.creatures, variation_id);
         if (compatible_creatures.empty())
             return;
 
         uint8_t creature_id = Calculator::random_choice(compatible_creatures);
-        std::cout << "criatura: " << static_cast<int>(creature_id)
-                  << " variation: " << static_cast<int>(variation_id) << std::endl;
         uint16_t id = get_next_creature_id();
-
-        std::cout << "x: " << spawn_position.get_x() << " y: " << spawn_position.get_y() << std::endl;
 
         creatures.emplace(id, Creature(creature_id, variation_id, spawn_position));
         tile.occupy(&creatures.at(id));
@@ -281,10 +278,6 @@ std::vector<uint8_t> GameWorld::filter_compatible_creatures(const std::vector<ui
                  [&variation_compatible_races](const auto& creature) {
                      return variation_compatible_races.contains(creature);
                  });
-
-    for (const auto& creature: compatibles) {
-        std::cout << "criaturas compatibles: " << static_cast<int>(creature) << std::endl;
-    }
 
     return compatibles;
 }
@@ -803,4 +796,14 @@ void GameWorld::cheat_get_item(const std::string& player_name, uint8_t item) {
         player.acquire_item(item);
     } catch (const InventoryFull& err) {
     } catch (const SlotFull& err) {}
+}
+
+bool GameWorld::is_safe_zone(const Position& position) {
+    GameConfig& config = GameConfig::get();
+    uint8_t floor = grid.get_tile(position).floor;
+
+    if (!config.has_biome_associated(floor))
+        return false;
+
+    return config.get_biome_id(floor) == SAFE_ZONE_FLOOR;
 }

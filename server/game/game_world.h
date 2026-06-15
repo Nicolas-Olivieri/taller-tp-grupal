@@ -156,6 +156,8 @@ private:
 
     static std::vector<uint8_t> filter_compatible_creatures(const std::vector<uint8_t>& creatures_ids,
                                                             uint8_t variation_id);
+
+    bool is_safe_zone(const Position& position);
 };
 
 

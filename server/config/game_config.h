@@ -75,6 +75,8 @@ public:
 
     const BiomeData& get_biome_from_floor(uint8_t id) const;
 
+    uint8_t get_biome_id(uint8_t floor_id) const;
+
     uint16_t get_item_price(uint8_t item_id) const;
 
     bool has_biome_associated(uint8_t id) const;
