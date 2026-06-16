@@ -158,6 +158,10 @@ private:
                                                             uint8_t variation_id);
 
     bool is_safe_zone(const Position& position);
+
+    void manage_player_attacked(InteractResult& result, Tile& target_tile, Player& attacker);
+
+    static void undo_attack(const AttackResult& attack, Player& target, Player& attacker);
 };
 
 

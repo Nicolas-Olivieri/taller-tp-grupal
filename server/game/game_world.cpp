@@ -323,13 +323,7 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
 
         if (occupant != nullptr) {
             InteractResult result = occupant->interact(player);
-
-            if (result.attack.was_killed and not result.attack.player_attacked.empty()) {
-                assert(players.contains(result.attack.player_attacked));
-
-                Player& target = players.at(result.attack.player_attacked);
-                drop_and_add(target, target_tile);
-            }
+            manage_player_attacked(result, target_tile, player);
 
             return result;
         }
@@ -338,6 +332,31 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
         // Golpeó el borde del mapa
     }
     return InteractResult();
+}
+
+void GameWorld::manage_player_attacked(InteractResult& result, Tile& target_tile, Player& attacker) {
+    if (result.attack.player_attacked.empty() ||
+        (result.attack.damage_dealt <= 0 && result.attack.status != AttackStatus::TARGET_DODGED))
+        return;
+
+    assert(players.contains(result.attack.player_attacked));
+    Player& target = players.at(result.attack.player_attacked);
+
+    if (is_safe_zone(target.get_position())) {
+        undo_attack(result.attack, target, attacker);
+        result.attack.status = AttackStatus::TARGET_IN_SAFE_ZONE;
+    } else if (is_safe_zone(attacker.get_position())) {
+        undo_attack(result.attack, target, attacker);
+        result.attack.status = AttackStatus::SELF_IN_SAFE_ZONE;
+    } else if (result.attack.was_killed) {
+        drop_and_add(target, target_tile);
+    }
+}
+
+void GameWorld::undo_attack(const AttackResult& attack, Player& target, Player& attacker) {
+    target.health_recover(attack.damage_dealt);
+    attacker.mana_recover(GameConfig::get().get_weapon(attack.weapon).mana_cost);
+    attacker.undo_xp_gain();
 }
 
 void GameWorld::add_tile_if_lootable(Tile& tile, const Position& position) {

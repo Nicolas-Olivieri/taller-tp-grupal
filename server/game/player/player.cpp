@@ -84,8 +84,15 @@ uint16_t Player::get_safe_gold() const { return gold_manager.get_safe_gold(); }
 uint16_t Player::get_excess_gold() const { return gold_manager.get_excess_gold(); }
 
 void Player::earn_xp(uint32_t amount) {
+    last_experience_amount_earned = amount;
     if (stats.experience.earn_xp(amount))
         upgrade();
+}
+
+void Player::undo_xp_gain() {
+    if (stats.experience.loose_xp(last_experience_amount_earned))
+        upgrade();
+    last_experience_amount_earned = 0;
 }
 
 bool Player::can_attack() const {
@@ -276,6 +283,10 @@ void Player::heal() {
     stats.health.recover_all();
     stats.mana.recover_all();
 }
+
+void Player::health_recover(uint16_t amount) { stats.health.recover(amount); }
+
+void Player::mana_recover(uint16_t amount) { stats.mana.recover(amount); }
 
 void Player::spend_gold(const uint16_t amount) { gold_manager.spend(amount); }
 

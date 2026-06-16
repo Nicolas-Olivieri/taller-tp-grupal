@@ -8,6 +8,7 @@ class Experience {
 private:
     uint32_t current_amount;
     uint8_t level;
+    uint32_t limit;
 
 public:
     Experience(uint32_t current_amount, uint8_t level);
@@ -17,6 +18,8 @@ public:
     uint32_t get_current_amount() const;
 
     bool earn_xp(uint32_t amount);
+
+    bool loose_xp(uint32_t amount);
 
     void set_level(uint8_t new_level);
 };
