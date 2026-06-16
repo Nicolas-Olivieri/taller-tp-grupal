@@ -157,3 +157,70 @@ id = 19
 price = 110
 type = 1
 effect = 130
+
+
+
+# Items secretos
+
+[weapons.black_sword]
+id = 20
+price = 5000
+min_value = 10
+max_value = 16
+range = 2
+mana_cost = 0
+type = 2
+
+[weapons.white_staff]
+id = 21
+price = 5000
+min_value = 14
+max_value = 26
+range = 7
+mana_cost = 80
+type = 2
+
+[weapons.hero_bow]
+id = 22
+price = 5000
+min_value = 7
+max_value  = 21
+range = 6
+mana_cost = 0
+type = 2
+
+[armors.dark]
+id = 23
+price = 4000
+min_value = 18
+max_value = 35
+
+[armors.royal]
+id = 24
+price = 4000
+min_value = 10
+max_value = 40
+
+[helmets.knight]
+id = 25
+price = 4000
+min_value = 10
+max_value = 22
+
+[helmets.crown]
+id = 26
+price = 4000
+min_value = 10
+max_value = 22
+
+[shields.reinforced]
+id = 27
+price = 4000
+min_value = 6
+max_value = 12
+
+[shields.boquita]
+id = 28
+price = 20000
+min_value = 2
+max_value = 22

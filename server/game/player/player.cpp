@@ -28,7 +28,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         resurrection_timer(0),
         target_resurrection_position(0, 0),
         _is_founder(persisted_data.is_founder),
-        has_infinite_recoverables_cheat_activated(false) {
+        has_infinite_recoverables_cheat_activated(false),
+        last_experience_amount_earned(0) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
 }
@@ -54,7 +55,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         target_resurrection_position(0, 0),
         _is_founder(false),
         clan_name(""),
-        has_infinite_recoverables_cheat_activated(false) {}
+        has_infinite_recoverables_cheat_activated(false),
+        last_experience_amount_earned(0) {}
 
 int Player::attack() {
     is_meditating = false;

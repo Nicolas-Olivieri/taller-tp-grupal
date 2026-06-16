@@ -74,6 +74,8 @@ private:
 
     AssetInfoDTO recv_asset_info();
 
+    LootType recv_loot_type();
+
 public:
     explicit Deserializer(Socket& socket);  // NOLINT
 

@@ -280,10 +280,6 @@ struct toml::from<CreatureStatsData> {
 };
 
 struct ItemsData {
-    uint8_t min_equipable_id;
-    uint8_t max_equipable_id;
-    uint8_t min_usable_id;
-    uint8_t max_usable_id;
     std::unordered_map<uint8_t, uint16_t> prices;
     std::unordered_map<uint8_t, EquipableItemData> equipables;
     std::unordered_map<uint8_t, UsableItemData> usables;
@@ -297,17 +293,12 @@ template <>
 struct toml::from<ItemsData> {
     static ItemsData from_toml(const toml::value& raw) {
         ItemsData data;
-        data.min_equipable_id = UINT8_MAX;
-        data.max_equipable_id = 0;
-        data.min_usable_id = UINT8_MAX;
-        data.max_usable_id = 0;
 
         const auto& items_table = raw.as_table();
 
         if (items_table.contains("weapons")) {
             for (const auto& [name, value]: items_table.at("weapons").as_table()) {
                 uint8_t id = toml::find<uint8_t>(value, "id");
-                update_min_max_id(data.min_equipable_id, data.max_equipable_id, id);
 
                 WeaponData weapon = toml::get<WeaponData>(value);
                 EquipableItemData equipable = toml::get<EquipableItemData>(value);
@@ -325,7 +316,6 @@ struct toml::from<ItemsData> {
         if (items_table.contains("usables")) {
             for (const auto& [name, value]: items_table.at("usables").as_table()) {
                 uint8_t id = toml::find<uint8_t>(value, "id");
-                update_min_max_id(data.min_usable_id, data.max_usable_id, id);
 
                 UsableItemData usable = toml::get<UsableItemData>(value);
 

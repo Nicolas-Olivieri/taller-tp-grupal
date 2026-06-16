@@ -32,7 +32,7 @@ private:
     std::string player_name;
     std::map<std::string, std::shared_ptr<PlayerSprite>> players;
     std::map<uint16_t, std::shared_ptr<EnemySprite>> creatures;
-    std::map<std::pair<uint16_t, uint16_t>, std::pair<std::shared_ptr<FixedSprite>, bool>> loot;
+    std::map<std::pair<uint16_t, uint16_t>, std::pair<std::shared_ptr<FixedSprite>, LootType>> loot;
 
     std::set<std::shared_ptr<EffectSprite>> effects;
     std::set<std::shared_ptr<FixedSprite>> map_tiles;

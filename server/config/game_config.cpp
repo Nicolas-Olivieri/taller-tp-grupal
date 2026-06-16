@@ -58,13 +58,27 @@ bool GameConfig::armors_contains(uint8_t id) const { return items.armors.contain
 
 bool GameConfig::shields_contains(uint8_t id) const { return items.shields.contains(id); }
 
-uint8_t GameConfig::get_min_usable_id() const { return items.min_usable_id; }
+std::vector<uint8_t> GameConfig::get_usables_ids() const {
+    std::vector<uint8_t> usables_ids;
+    usables_ids.reserve(items.usables.size());
 
-uint8_t GameConfig::get_max_usable_id() const { return items.max_usable_id; }
+    for (const auto& [id, value]: items.usables) {
+        usables_ids.push_back(id);
+    }
 
-uint8_t GameConfig::get_min_equipable_id() const { return items.min_equipable_id; }
+    return usables_ids;
+}
 
-uint8_t GameConfig::get_max_equipable_id() const { return items.max_equipable_id; }
+std::vector<uint8_t> GameConfig::get_equipables_ids() const {
+    std::vector<uint8_t> equipables_ids;
+    equipables_ids.reserve(items.equipables.size());
+
+    for (const auto& [id, value]: items.equipables) {
+        equipables_ids.push_back(id);
+    }
+
+    return equipables_ids;
+}
 
 const std::vector<uint8_t>& GameConfig::get_priest_items(int id) const { return traders.priests.items[id]; }
 

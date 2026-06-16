@@ -91,13 +91,9 @@ public:
 
     bool shields_contains(uint8_t id) const;
 
-    uint8_t get_min_usable_id() const;
+    std::vector<uint8_t> get_usables_ids() const;
 
-    uint8_t get_max_usable_id() const;
-
-    uint8_t get_min_equipable_id() const;
-
-    uint8_t get_max_equipable_id() const;
+    std::vector<uint8_t> get_equipables_ids() const;
 
     const std::vector<uint8_t>& get_priest_items(int id) const;
 

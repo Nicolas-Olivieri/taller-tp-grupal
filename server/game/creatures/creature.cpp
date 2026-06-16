@@ -67,12 +67,10 @@ std::vector<Loot> Creature::drop() {
             drop.push_back(Loot(Calculator::calculate_random_drop_gold(stats.health.get_max())));
             break;
         case DropType::USABLE:
-            drop.push_back(
-                    Loot(Calculator::random_number(config.get_min_usable_id(), config.get_max_usable_id())));
+            drop.push_back(Loot(Calculator::random_choice(config.get_usables_ids())));
             break;
         case DropType::EQUIPABLE: {
-            uint8_t item =
-                    Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
+            uint8_t item = Calculator::random_choice(config.get_equipables_ids());
 
             if (item != NO_ITEM)
                 drop.push_back(Loot(item));

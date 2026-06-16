@@ -54,5 +54,5 @@ CreatureInfoDTO SnapshotBuilder::convert_to_info(uint16_t sub_id, const Creature
 }
 
 LootInfoDTO SnapshotBuilder::convert_to_info(const std::pair<uint16_t, uint16_t>& position, Tile& tile) {
-    return LootInfoDTO(tile.get_loot().top().type == LootType::ITEM, position.first, position.second);
+    return LootInfoDTO(tile.get_loot().top().type, position.first, position.second);
 }

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-enum class LootType : uint8_t { ITEM, GOLD };
+#include "common/loot_type.h"
 
 struct Loot {
     LootType type;
