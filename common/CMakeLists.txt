@@ -51,6 +51,7 @@ target_sources(taller_common
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/info/creatureinfo.cpp
         dto/snapshot/info/creature_stats.cpp
+        dto/snapshot/info/equipable_item_info.cpp
         dto/snapshot/info/equipment_info.cpp
         dto/snapshot/info/inventory_info.cpp
         dto/snapshot/info/lootinfo.cpp
@@ -136,6 +137,7 @@ target_sources(taller_common
         dto/snapshot/info/playerinfo.h
         dto/snapshot/info/creatureinfo.h
         dto/snapshot/info/creature_stats.h
+        dto/snapshot/info/equipable_item_info.h
         dto/snapshot/info/equipment_info.h
         dto/snapshot/info/inventory_info.h
         dto/snapshot/info/lootinfo.h

@@ -38,6 +38,7 @@
 #include "common/dto/snapshot/actions/action_types/act_meditation/meditation.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
 #include "common/dto/snapshot/info/creature_stats.h"
+#include "common/dto/snapshot/info/equipable_item_info.h"
 #include "common/dto/snapshot/info/inventory_info.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/map/client_map_data.h"
@@ -137,6 +138,8 @@ public:
     void serialize(const PlayerStatsDTO& stats);
 
     void serialize(const InventoryInfoDTO& inventory);
+
+    void serialize(const EquipableItemInfoDTO& item);
 
     void serialize(const EquipmentInfoDTO& equipment);
 

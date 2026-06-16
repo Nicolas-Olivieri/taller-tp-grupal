@@ -56,6 +56,8 @@ private:
 
     InventoryInfoDTO recv_inventory_info();
 
+    EquipableItemInfoDTO recv_equipable_item_info();
+
     EquipmentInfoDTO recv_equipment_info();
 
     AttackDTO recv_attack();
