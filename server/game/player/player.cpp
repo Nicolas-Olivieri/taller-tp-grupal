@@ -309,7 +309,7 @@ void Player::withdraw_gold_from_bank(const uint16_t amount) {
 
 const Equipment& Player::get_equipment() const { return this->equipment; }
 
-const std::unordered_map<uint8_t, uint8_t>& Player::get_inventory_items() const {
+const std::map<uint8_t, uint8_t, std::greater<>> &Player::get_inventory_items() const {
     return inventory.get_items();
 }
 

@@ -2,9 +2,9 @@
 #define INVENTORY_H
 
 #include <cstdint>
+#include <map>
 #include <span>
 #include <stdexcept>
-#include <unordered_map>
 
 #include "server/game/items/equipment.h"
 #include "server/game/stats/stats.h"
@@ -30,7 +30,7 @@ struct ItemEquipped: public std::runtime_error {
 
 class Inventory {
     // Mapa de item_id a cantidad en posesión de ese item
-    std::unordered_map<uint8_t, uint8_t> items_amounts;
+    std::map<uint8_t, uint8_t, std::greater<>> items_amounts;
     uint8_t max_item_amount;
     // TODO agregar maximo de items
 
@@ -47,7 +47,7 @@ public:
 
     void drop_item(const Equipment& equipment, uint8_t item);
 
-    const std::unordered_map<uint8_t, uint8_t>& get_items() const;
+    const std::map<uint8_t, uint8_t, std::greater<>> &get_items() const;
 
     void clear();
 

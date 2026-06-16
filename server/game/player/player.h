@@ -119,7 +119,7 @@ public:
 
     const Equipment& get_equipment() const;
 
-    const std::unordered_map<uint8_t, uint8_t>& get_inventory_items() const;
+    const std::map<uint8_t, uint8_t, std::greater<>> &get_inventory_items() const;
 
     const std::map<uint8_t, uint8_t>& get_bank_items() const;
 

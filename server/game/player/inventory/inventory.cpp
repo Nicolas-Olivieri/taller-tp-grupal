@@ -84,6 +84,6 @@ void Inventory::add_amount_safely(uint8_t item) {
     items_amounts[item]++;
 }
 
-const std::unordered_map<uint8_t, uint8_t>& Inventory::get_items() const { return this->items_amounts; }
+const std::map<uint8_t, uint8_t, std::greater<>> &Inventory::get_items() const { return this->items_amounts; }
 
 void Inventory::clear() { items_amounts.clear(); }

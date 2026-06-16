@@ -3,7 +3,7 @@
 #include "common/protocol/serializer.h"
 
 
-InventoryInfoDTO::InventoryInfoDTO(const std::unordered_map<uint8_t, uint8_t>& items): items(items) {}
+InventoryInfoDTO::InventoryInfoDTO(const std::map<uint8_t, uint8_t, std::greater<>>& items): items(items) {}
 
 
 size_t InventoryInfoDTO::message_size() const {

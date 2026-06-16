@@ -66,8 +66,8 @@ private:
     }
 
     // Generaliza la forma de serializar mapas con claves K y valores V
-    template <typename K, typename V>
-    void serialize(const std::map<K, V>& container) {
+    template <typename K, typename V, typename CMP>
+    void serialize(const std::map<K, V, CMP>& container) {
         serialize(static_cast<uint16_t>(container.size()));
         for (const auto& [key, value]: container) {
             serialize(key);
