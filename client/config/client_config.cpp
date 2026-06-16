@@ -11,12 +11,14 @@
 #define CLIENT_CREATURES_PATH "/client/creatures.toml"
 #define CLIENT_CONSTANTS_PATH "/client/game_constants.toml"
 #define CLIENT_UI_DATA_PATH "/client/user_interface.toml"
+#define CLIENT_SOUND_DATA_PATH "/client/sound_data.toml"
 
 ClientConfig::ClientConfig() {
     load_from_file(CONFIG_PATH CLIENT_ITEMS_PATH);
     load_from_file(CONFIG_PATH CLIENT_CREATURES_PATH);
     load_from_file(CONFIG_PATH CLIENT_CONSTANTS_PATH);
     load_from_file(CONFIG_PATH CLIENT_UI_DATA_PATH);
+    load_from_file(CONFIG_PATH CLIENT_SOUND_DATA_PATH);
 }
 
 
@@ -102,6 +104,9 @@ void ClientConfig::load_from_file(const std::string& filepath) {
     }
     if (root.contains("ui")) {
         parse_ui(toml::find(root, "ui"));
+    }
+    if (root.contains("sound")) {
+        parse_sound_data(toml::find(root, "sound"));
     }
 }
 
@@ -226,3 +231,16 @@ std::vector<SDL2pp::Rect> ClientConfig::parse_rect_vector(const toml::value& con
 }
 
 const UserInterfaceData& ClientConfig::get_ui_data() const { return ui_data; }
+
+void ClientConfig::parse_sound_data(const toml::value& sound_table) {
+    for (const auto& [key, value]: sound_table.as_table()) {
+        if (key == "distance") {
+            sound_data.max_sound_distance = toml::find<uint8_t>(value, "max_sound_distance");
+            continue;
+        }
+
+        throw std::runtime_error(std::format("ClientConfig encontró un dato de sonido desconocido: {}", key));
+    }
+}
+
+const SoundData& ClientConfig::get_sound_data() const { return sound_data; }

@@ -20,6 +20,7 @@ private:
     SpriteData sprite_data;
     MovementData movement_data;
     UserInterfaceData ui_data;
+    SoundData sound_data;
 
 public:
     static ClientConfig& get();
@@ -58,6 +59,8 @@ public:
 
     const UserInterfaceData& get_ui_data() const;
 
+    const SoundData& get_sound_data() const;
+
 private:
     ClientConfig();
 
@@ -79,6 +82,8 @@ private:
 
     std::vector<SDL2pp::Rect> parse_rect_vector(const toml::value& config, const std::string& section,
                                                 const std::string& key);
+
+    void parse_sound_data(const toml::value& sound_table);
 };
 
 

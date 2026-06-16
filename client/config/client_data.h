@@ -53,4 +53,9 @@ struct UserInterfaceData {
     SDL2pp::Rect xp_level;
 };
 
+struct SoundData {
+    uint8_t max_sound_distance;
+    // TODO agregar el mapeo de id_weapon a sonido?
+};
+
 #endif  // CLIENT_DATA_H

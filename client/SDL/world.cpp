@@ -330,7 +330,9 @@ PlayerSprite& World::get_client_player() {
 SDL2pp::Rect& World::get_world_size() { return world_view; }
 
 void World::play_event(const SoundEvent& event, const SDL2pp::Point& source) {
-    const auto tile_size = ClientConfig::get().get_tile_size();
+    const auto& config = ClientConfig::get();
+    const uint16_t tile_size = config.get_tile_size();
+    const uint8_t max_distance = config.get_sound_data().max_sound_distance;
 
     const SDL2pp::Point listener = get_client_player().get_position();
 
@@ -338,13 +340,12 @@ void World::play_event(const SoundEvent& event, const SDL2pp::Point& source) {
     const int dy = source.y - listener.y;
     const double distance = std::sqrt(dx * dx + dy * dy);
 
-    // TODO: Este límite debería venir del ClientConfig
-    const double MAX_DISTANCE = 12 * tile_size;
-    if (distance >= MAX_DISTANCE)
+    const double limit = max_distance * tile_size;
+    if (distance >= limit)
         return;
 
     // TODO: Como idea, se podría multiplicar también por un factor aleatorio para que el sonido
     //  se escuche más o menos fuerte (entre un 10% más y un 10% menos, por ejemplo)
 
-    audio_manager.play_event(event, 1.0 - distance / MAX_DISTANCE);
+    audio_manager.play_event(event, 1.0 - distance / limit);
 }

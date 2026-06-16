@@ -1,0 +1,4 @@
+[sound.distance]
+# Cantidad máxima de tiles a las que se puede seguir escuchando un sonido
+# Por defecto, debería cubrir toda la pantalla y un poco de las afueras de la misma
+max_sound_distance = 12
