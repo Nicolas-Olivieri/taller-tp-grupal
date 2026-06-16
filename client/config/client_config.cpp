@@ -15,12 +15,12 @@
 #define CLIENT_CHAT_DATA_PATH "/client/chat.toml"
 
 ClientConfig::ClientConfig() {
-    load_from_file(CONFIG_PATH CLIENT_ITEMS_PATH);
-    load_from_file(CONFIG_PATH CLIENT_CREATURES_PATH);
-    load_from_file(CONFIG_PATH CLIENT_CONSTANTS_PATH);
-    load_from_file(CONFIG_PATH CLIENT_UI_DATA_PATH);
-    load_from_file(CONFIG_PATH CLIENT_SOUND_DATA_PATH);
-    load_from_file(CONFIG_PATH CLIENT_CHAT_DATA_PATH);
+    load_items_data(toml::parse(CONFIG_PATH CLIENT_ITEMS_PATH));
+    load_creatures_data(toml::parse(CONFIG_PATH CLIENT_CREATURES_PATH));
+    load_constants_data(toml::parse(CONFIG_PATH CLIENT_CONSTANTS_PATH));
+    load_ui_data(toml::parse(CONFIG_PATH CLIENT_UI_DATA_PATH));
+    load_sound_data(toml::parse(CONFIG_PATH CLIENT_SOUND_DATA_PATH));
+    load_chat_data(toml::parse(CONFIG_PATH CLIENT_CHAT_DATA_PATH));
 }
 
 
@@ -92,30 +92,82 @@ std::string ClientConfig::get_item_icon_path(const uint8_t item_id) {
     return items_data.at(item_id).icon_path;
 }
 
+ItemDisplayData ClientConfig::build_item_display_data(const toml::value& item_toml) const {
+    // TODO: Cargar el resto de atributos de un ítem para el cliente
+    return ItemDisplayData(toml::find<std::string>(item_toml, "name"),
+                           toml::find<std::string>(item_toml, "icon_path"));
+}
 
-void ClientConfig::load_from_file(const std::string& filepath) {
-    auto root = toml::parse(filepath);
-    if (root.contains("items")) {
-        parse_items_table(toml::find(root, "items"));
-    }
-    if (root.contains("creatures")) {
-        parse_creatures_table(toml::find(root, "creatures"));
-    }
-    if (root.contains("constants")) {
-        parse_constants(toml::find(root, "constants"));
-    }
-    if (root.contains("ui")) {
-        parse_ui(toml::find(root, "ui"));
-    }
-    if (root.contains("sound")) {
-        parse_sound_data(toml::find(root, "sound"));
-    }
-    if (root.contains("chat")) {
-        parse_chat_data(toml::find(root, "chat"));
+CreatureDisplayData ClientConfig::build_creature_display_data(const toml::value& creature_toml) const {
+    return CreatureDisplayData(toml::find<std::string>(creature_toml, "name"));
+}
+
+uint8_t ClientConfig::get_ghost_head_id() const { return sprite_data.ghost_head_id; }
+
+uint8_t ClientConfig::get_ghost_body_id() const { return sprite_data.ghost_body_id; }
+
+int ClientConfig::get_head_offset() const { return sprite_data.head_offset; }
+
+uint8_t ClientConfig::get_fps() const { return render_data.fps; }
+
+uint16_t ClientConfig::get_screen_w() const { return render_data.screen_w; }
+
+uint16_t ClientConfig::get_screen_h() const { return render_data.screen_h; }
+
+uint16_t ClientConfig::get_tile_size() const { return render_data.tile_size; }
+
+const MovementData& ClientConfig::get_movement_data() const { return movement_data; }
+
+SDL2pp::Rect ClientConfig::parse_rect(const toml::value& config, const std::string& section,
+                                      const std::string& key) {
+    auto values = toml::find<std::vector<int>>(config, section, key);
+
+    return SDL2pp::Rect(values[0], values[1], values[2], values[3]);
+}
+
+std::vector<SDL2pp::Rect> ClientConfig::parse_rect_vector(const toml::value& config,
+                                                          const std::string& section,
+                                                          const std::string& key) {
+    auto rects = toml::find<std::vector<std::vector<int>>>(config, section, key);
+
+    std::vector<SDL2pp::Rect> result;
+    result.reserve(rects.size());
+
+    std::transform(rects.begin(), rects.end(), std::back_inserter(result), [](const std::vector<int>& rect) {
+        return SDL2pp::Rect(rect[0], rect[1], rect[2], rect[3]);
+    });
+
+    return result;
+}
+
+const UserInterfaceData& ClientConfig::get_ui_data() const { return ui_data; }
+
+const SoundData& ClientConfig::get_sound_data() const { return sound_data; }
+
+
+const ChatData& ClientConfig::get_chat_data() const { return chat_data; }
+
+void ClientConfig::load_items_data(toml::basic_value<toml::type_config> root) {
+    const auto items_table = toml::find(root, "items");
+
+    for (const auto& [key, value]: items_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+        items_data[id] = build_item_display_data(value);
     }
 }
 
-void ClientConfig::parse_constants(const toml::value& constants_table) {
+void ClientConfig::load_creatures_data(toml::basic_value<toml::type_config> root) {
+    const auto creatures_table = toml::find(root, "creatures");
+
+    for (const auto& [key, value]: creatures_table.as_table()) {
+        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
+        creatures_data[id] = build_creature_display_data(value);
+    }
+}
+
+void ClientConfig::load_constants_data(toml::basic_value<toml::type_config> root) {
+    const auto constants_table = toml::find(root, "constants");
+
     for (const auto& [key, value]: constants_table.as_table()) {
         if (key == "render") {
             render_data = {
@@ -147,50 +199,9 @@ void ClientConfig::parse_constants(const toml::value& constants_table) {
     }
 }
 
-void ClientConfig::parse_items_table(const toml::value& items_table) {
-    for (const auto& [key, value]: items_table.as_table()) {
-        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
-        items_data[id] = build_item_display_data(value);
-    }
-}
+void ClientConfig::load_ui_data(toml::basic_value<toml::type_config> root) {
+    const auto ui_table = toml::find(root, "ui");
 
-
-ItemDisplayData ClientConfig::build_item_display_data(const toml::value& item_toml) const {
-    // TODO: Cargar el resto de atributos de un ítem para el cliente
-    return ItemDisplayData(toml::find<std::string>(item_toml, "name"),
-                           toml::find<std::string>(item_toml, "icon_path"));
-}
-
-
-void ClientConfig::parse_creatures_table(const toml::basic_value<toml::type_config>& creatures_table) {
-    for (const auto& [key, value]: creatures_table.as_table()) {
-        uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
-        creatures_data[id] = build_creature_display_data(value);
-    }
-}
-
-
-CreatureDisplayData ClientConfig::build_creature_display_data(const toml::value& creature_toml) const {
-    return CreatureDisplayData(toml::find<std::string>(creature_toml, "name"));
-}
-
-uint8_t ClientConfig::get_ghost_head_id() const { return sprite_data.ghost_head_id; }
-
-uint8_t ClientConfig::get_ghost_body_id() const { return sprite_data.ghost_body_id; }
-
-int ClientConfig::get_head_offset() const { return sprite_data.head_offset; }
-
-uint8_t ClientConfig::get_fps() const { return render_data.fps; }
-
-uint16_t ClientConfig::get_screen_w() const { return render_data.screen_w; }
-
-uint16_t ClientConfig::get_screen_h() const { return render_data.screen_h; }
-
-uint16_t ClientConfig::get_tile_size() const { return render_data.tile_size; }
-
-const MovementData& ClientConfig::get_movement_data() const { return movement_data; }
-
-void ClientConfig::parse_ui(const toml::value& ui_table) {
     ui_data.history_messages = parse_rect(ui_table, "chat", "history_messages");
     ui_data.input_box = parse_rect(ui_table, "chat", "input_box");
 
@@ -213,31 +224,9 @@ void ClientConfig::parse_ui(const toml::value& ui_table) {
     ui_data.xp_level = parse_rect(ui_table, "stats", "xp_level");
 }
 
-SDL2pp::Rect ClientConfig::parse_rect(const toml::value& config, const std::string& section,
-                                      const std::string& key) {
-    auto values = toml::find<std::vector<int>>(config, section, key);
+void ClientConfig::load_sound_data(toml::basic_value<toml::type_config> root) {
+    const auto sound_table = toml::find(root, "sound");
 
-    return SDL2pp::Rect(values[0], values[1], values[2], values[3]);
-}
-
-std::vector<SDL2pp::Rect> ClientConfig::parse_rect_vector(const toml::value& config,
-                                                          const std::string& section,
-                                                          const std::string& key) {
-    auto rects = toml::find<std::vector<std::vector<int>>>(config, section, key);
-
-    std::vector<SDL2pp::Rect> result;
-    result.reserve(rects.size());
-
-    std::transform(rects.begin(), rects.end(), std::back_inserter(result), [](const std::vector<int>& rect) {
-        return SDL2pp::Rect(rect[0], rect[1], rect[2], rect[3]);
-    });
-
-    return result;
-}
-
-const UserInterfaceData& ClientConfig::get_ui_data() const { return ui_data; }
-
-void ClientConfig::parse_sound_data(const toml::value& sound_table) {
     for (const auto& [key, value]: sound_table.as_table()) {
         if (key == "distance") {
             sound_data.max_sound_distance = toml::find<uint8_t>(value, "max_sound_distance");
@@ -248,9 +237,8 @@ void ClientConfig::parse_sound_data(const toml::value& sound_table) {
     }
 }
 
-const SoundData& ClientConfig::get_sound_data() const { return sound_data; }
-
-void ClientConfig::parse_chat_data(const toml::value& chat_table) {
+void ClientConfig::load_chat_data(toml::basic_value<toml::type_config> root) {
+    const auto chat_table = toml::find(root, "chat");
 
     for (const auto& [key, value]: chat_table.as_table()) {
         if (key == "data") {
@@ -262,5 +250,3 @@ void ClientConfig::parse_chat_data(const toml::value& chat_table) {
         throw std::runtime_error(std::format("ClientConfig encontró un dato del chat desconocido: {}", key));
     }
 }
-
-const ChatData& ClientConfig::get_chat_data() const { return chat_data; }

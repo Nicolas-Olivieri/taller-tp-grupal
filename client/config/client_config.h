@@ -67,28 +67,26 @@ public:
 private:
     ClientConfig();
 
-    void load_from_file(const std::string& filepath);
+    void load_items_data(toml::basic_value<toml::type_config> root);
 
-    void parse_items_table(const toml::value& items_table);
+    void load_creatures_data(toml::basic_value<toml::type_config> root);
+
+    void load_constants_data(toml::basic_value<toml::type_config> root);
+
+    void load_ui_data(toml::basic_value<toml::type_config> root);
+
+    void load_chat_data(toml::basic_value<toml::type_config> root);
+
+    void load_sound_data(toml::basic_value<toml::type_config> root);
 
     ItemDisplayData build_item_display_data(const toml::value& item_toml) const;
 
-    void parse_creatures_table(const toml::basic_value<toml::type_config>& creatures_table);
-
     CreatureDisplayData build_creature_display_data(const toml::value& creature_toml) const;
-
-    void parse_constants(const toml::value& constants_table);
-
-    void parse_ui(const toml::value& ui_table);
 
     SDL2pp::Rect parse_rect(const toml::value& config, const std::string& section, const std::string& key);
 
     std::vector<SDL2pp::Rect> parse_rect_vector(const toml::value& config, const std::string& section,
                                                 const std::string& key);
-
-    void parse_sound_data(const toml::value& sound_table);
-
-    void parse_chat_data(const toml::value& chat_table);
 };
 
 
