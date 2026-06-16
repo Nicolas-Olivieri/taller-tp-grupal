@@ -117,6 +117,8 @@ public:
 
     void cheat_get_item(const std::string& player_name, uint8_t item);
 
+    void cheat_kill_all_creatures();
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

@@ -79,6 +79,8 @@ private:
 
     void handle_get_item_cheat(const std::string& text);
 
+    void handle_kill_creatures_cheat();
+
     /// Auxiliares
 
     std::string extract_prefix(const std::string& prefix, const std::string& text) const;

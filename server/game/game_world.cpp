@@ -765,3 +765,7 @@ void GameWorld::cheat_get_item(const std::string& player_name, uint8_t item) {
     } catch (const InventoryFull& err) {
     } catch (const SlotFull& err) {}
 }
+
+void GameWorld::cheat_kill_all_creatures() {
+    for (auto& [_, creature]: creatures) creature.die();
+}

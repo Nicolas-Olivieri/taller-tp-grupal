@@ -33,6 +33,7 @@ enum class CommandType : uint8_t {
     CHEAT_DEATH,
     CHEAT_INFINITE_RECOVERABLES,
     CHEAT_ITEM,
+    CHEAT_KILL_CREATURES,
     MEDITATE,
 };
 

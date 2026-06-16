@@ -341,6 +341,8 @@ void CommandHandler::handle_cheat(const std::string& text) {
         handle_infinite_recoverables_cheat();
     else if (cheat_type.starts_with("get-item "))
         handle_get_item_cheat(cheat_type);
+    else if (cheat_type == "kill-creatures")
+        handle_kill_creatures_cheat();
 
     // TODO agregar el resto de cheats
 }
@@ -401,6 +403,10 @@ void CommandHandler::handle_get_item_cheat(const std::string& text) {
         return;
 
     connection.push_command(std::make_unique<CheatGetItemEventDTO>(item_id.value()));
+}
+
+void CommandHandler::handle_kill_creatures_cheat() {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::CHEAT_KILL_CREATURES));
 }
 
 /// Auxiliares

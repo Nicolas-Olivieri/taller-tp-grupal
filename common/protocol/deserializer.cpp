@@ -74,6 +74,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHEAT_DEATH:
         case CommandType::CHEAT_INFINITE_RECOVERABLES:
         case CommandType::CHEAT_ITEM:
+        case CommandType::CHEAT_KILL_CREATURES:
         case CommandType::MEDITATE:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción

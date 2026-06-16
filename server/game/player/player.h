@@ -145,8 +145,6 @@ public:
 
     void set_xp_level(const uint8_t new_level);
 
-    void die();
-
     void toggle_infinite_recoverables();
 
     bool is_infinite_recoverables_cheat_active() const;
