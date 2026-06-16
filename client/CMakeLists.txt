@@ -92,4 +92,5 @@ target_sources(taller_client
         SDL/user_interface.h
 
         config/client_config.h
+        config/client_data.h
     )

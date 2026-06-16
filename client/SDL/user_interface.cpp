@@ -24,7 +24,31 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         current_equipment(),
         health_texture(renderer, DATA_PATH "/ui/barra_vida.bmp"),
         mana_texture(renderer, DATA_PATH "/ui/barra_mana.bmp"),
-        xp_texture(renderer, DATA_PATH "/ui/barra_experiencia.bmp") {}
+        xp_texture(renderer, DATA_PATH "/ui/barra_experiencia.bmp") {
+    const auto& config = ClientConfig::get().get_ui_data();
+
+    history_messages = config.history_messages;
+    input_box = config.input_box;
+
+    username_rect = config.username;
+    clan_rect = config.clan;
+    founder_rect = config.founder;
+
+    inventory_rect = config.inventory_title;
+    inventory_slots = config.inventory_slots;
+
+    equipment_slots = config.equipment_slots;
+
+    stats_rect = config.stats_title;
+
+    health_rect = config.health;
+    mana_rect = config.mana;
+    xp_rect = config.xp;
+
+    safe_gold_rect = config.safe_gold;
+    excess_gold_rect = config.excess_gold;
+    xp_level_rect = config.xp_level;
+}
 
 void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
 

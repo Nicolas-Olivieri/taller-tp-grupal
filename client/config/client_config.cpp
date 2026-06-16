@@ -1,5 +1,6 @@
 #include "client_config.h"
 
+#include <algorithm>
 #include <string>
 
 #include <toml.hpp>
@@ -9,12 +10,13 @@
 #define CLIENT_ITEMS_PATH "/client/items.toml"
 #define CLIENT_CREATURES_PATH "/client/creatures.toml"
 #define CLIENT_CONSTANTS_PATH "/client/game_constants.toml"
-
+#define CLIENT_UI_DATA_PATH "/client/user_interface.toml"
 
 ClientConfig::ClientConfig() {
     loadFromFile(CONFIG_PATH CLIENT_ITEMS_PATH);
     loadFromFile(CONFIG_PATH CLIENT_CREATURES_PATH);
     loadFromFile(CONFIG_PATH CLIENT_CONSTANTS_PATH);
+    loadFromFile(CONFIG_PATH CLIENT_UI_DATA_PATH);
 }
 
 
@@ -98,6 +100,9 @@ void ClientConfig::loadFromFile(const std::string& filepath) {
     if (root.contains("constants")) {
         parse_constants(toml::find(root, "constants"));
     }
+    if (root.contains("ui")) {
+        parse_ui(toml::find(root, "ui"));
+    }
 }
 
 void ClientConfig::parse_constants(const toml::value& constants_table) {
@@ -174,3 +179,50 @@ uint16_t ClientConfig::get_screen_h() const { return render_data.screen_h; }
 uint16_t ClientConfig::get_tile_size() const { return render_data.tile_size; }
 
 const MovementData& ClientConfig::get_movement_data() const { return movement_data; }
+
+void ClientConfig::parse_ui(const toml::value& ui_table) {
+    ui_data.history_messages = parse_rect(ui_table, "chat", "history_messages");
+    ui_data.input_box = parse_rect(ui_table, "chat", "input_box");
+
+    ui_data.username = parse_rect(ui_table, "player", "username");
+    ui_data.clan = parse_rect(ui_table, "player", "clan");
+    ui_data.founder = parse_rect(ui_table, "player", "founder_icon");
+
+    ui_data.inventory_title = parse_rect(ui_table, "inventory", "title");
+    ui_data.inventory_slots = parse_rect_vector(ui_table, "inventory", "slots");
+
+    ui_data.equipment_slots = parse_rect_vector(ui_table, "equipment", "slots");
+
+    ui_data.stats_title = parse_rect(ui_table, "stats", "title");
+    ui_data.health = parse_rect(ui_table, "stats", "health_bar");
+    ui_data.mana = parse_rect(ui_table, "stats", "mana_bar");
+    ui_data.xp = parse_rect(ui_table, "stats", "xp_bar");
+
+    ui_data.safe_gold = parse_rect(ui_table, "stats", "safe_gold");
+    ui_data.excess_gold = parse_rect(ui_table, "stats", "excess_gold");
+    ui_data.xp_level = parse_rect(ui_table, "stats", "xp_level");
+}
+
+SDL2pp::Rect ClientConfig::parse_rect(const toml::value& config, const std::string& section,
+                                      const std::string& key) {
+    auto values = toml::find<std::vector<int>>(config, section, key);
+
+    return SDL2pp::Rect(values[0], values[1], values[2], values[3]);
+}
+
+std::vector<SDL2pp::Rect> ClientConfig::parse_rect_vector(const toml::value& config,
+                                                          const std::string& section,
+                                                          const std::string& key) {
+    auto rects = toml::find<std::vector<std::vector<int>>>(config, section, key);
+
+    std::vector<SDL2pp::Rect> result;
+    result.reserve(rects.size());
+
+    std::transform(rects.begin(), rects.end(), std::back_inserter(result), [](const std::vector<int>& rect) {
+        return SDL2pp::Rect(rect[0], rect[1], rect[2], rect[3]);
+    });
+
+    return result;
+}
+
+const UserInterfaceData& ClientConfig::get_ui_data() const { return ui_data; }

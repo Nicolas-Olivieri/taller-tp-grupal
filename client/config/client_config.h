@@ -4,36 +4,13 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
-#include <toml11/types.hpp>
+#include <toml.hpp>
 
-struct CreatureDisplayData {
-    std::string name;
-};
+#include "SDL2pp/Rect.hh"
 
-struct ItemDisplayData {
-    // TODO: Agregar el resto de atributos de un ítem para el cliente
-    std::string name;
-    std::string icon_path;
-};
-
-struct RenderData {
-    uint8_t fps;
-    uint16_t screen_w;
-    uint16_t screen_h;
-    uint16_t tile_size;
-};
-
-struct SpriteData {
-    uint8_t ghost_head_id;
-    uint8_t ghost_body_id;
-    int head_offset;
-};
-
-struct MovementData {
-    uint8_t min_pixels_per_step;
-    float change_rate;
-};
+#include "client_data.h"
 
 class ClientConfig {
 private:
@@ -42,6 +19,7 @@ private:
     RenderData render_data;
     SpriteData sprite_data;
     MovementData movement_data;
+    UserInterfaceData ui_data;
 
 public:
     static ClientConfig& get();
@@ -78,6 +56,8 @@ public:
 
     const MovementData& get_movement_data() const;
 
+    const UserInterfaceData& get_ui_data() const;
+
 private:
     ClientConfig();
 
@@ -92,6 +72,13 @@ private:
     CreatureDisplayData buildCreatureDisplayData(const toml::value& creature_toml) const;
 
     void parse_constants(const toml::value& constants_table);
+
+    void parse_ui(const toml::value& ui_table);
+
+    SDL2pp::Rect parse_rect(const toml::value& config, const std::string& section, const std::string& key);
+
+    std::vector<SDL2pp::Rect> parse_rect_vector(const toml::value& config, const std::string& section,
+                                                const std::string& key);
 };
 
 
