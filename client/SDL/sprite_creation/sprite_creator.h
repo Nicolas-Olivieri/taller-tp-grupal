@@ -3,11 +3,11 @@
 
 #include <memory>
 
-#include "../sprites/sprite_layer.h"
-#include "client/SDL/sprites/effect_sprite.h"
-#include "client/SDL/sprites/enemy_sprite.h"
-#include "client/SDL/sprites/fixed_sprite.h"
-#include "client/SDL/sprites/player_sprite.h"
+#include "../sprites/base/sprite_layer.h"
+#include "client/SDL/sprites/fixed/effect_sprite.h"
+#include "client/SDL/sprites/moving/enemy_sprite.h"
+#include "client/SDL/sprites/fixed/fixed_sprite.h"
+#include "client/SDL/sprites/moving/player_sprite.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/info/appearance.h"
 #include "common/dto/snapshot/info/creatureinfo.h"

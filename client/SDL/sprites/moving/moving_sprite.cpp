@@ -9,7 +9,7 @@
 #define CHANGE_RATE 0.3
 
 MovingSprite::MovingSprite(const SDL2pp::Point position, const SDL2pp::Point size, const Direction direction):
-        Sprite(position, size, SDL2pp::Point{(size.x - TILE_SIZE) / 2, size.y - TILE_SIZE}),
+        WorldSprite(position, size, SDL2pp::Point{(size.x - TILE_SIZE) / 2, size.y - TILE_SIZE}),
         direction(direction) {}
 
 // METODOS PUBLICOS ::::::::::::::::::

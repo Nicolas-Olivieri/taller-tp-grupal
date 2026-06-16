@@ -4,8 +4,8 @@
 #include <map>
 #include <variant>
 
-#include "../../../common/direction.h"
-#include "../sprite_creation/animation.h"
+#include "common/direction.h"
+#include "client/SDL/sprite_creation/animation.h"
 #include "SDL2pp/Point.hh"
 #include "SDL2pp/Rect.hh"
 #include "SDL2pp/Texture.hh"
@@ -32,6 +32,8 @@ public:
 
     void render(const SDL2pp::Point& base_position);
 
+    void render(const SDL2pp::Rect &source, const SDL2pp::Rect &dest);
+
     void update_frame(int iteration, Direction action);
 
     void update_frame(int iteration);
@@ -42,7 +44,7 @@ public:
 
     int get_animation_frame_amount() const;
 
-    bool texture_is_different(int other) const;
+    bool is_current_texture(int other) const;
 
     std::optional<Direction> get_last_action() const;
 

@@ -3,7 +3,7 @@
 #include <utility>
 
 FixedSprite::FixedSprite(SpriteLayer&& image, const SDL2pp::Point& position, const SDL2pp::Point& size):
-        Sprite(position, size, SDL2pp::Point(0, 0)), image(std::move(image)) {}
+        WorldSprite(position, size, SDL2pp::Point(0, 0)), image(std::move(image)) {}
 
 void FixedSprite::update_frame(const int iteration) { image.update_frame(iteration); }
 

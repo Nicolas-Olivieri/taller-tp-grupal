@@ -63,7 +63,7 @@ void PlayerSprite::remove_all_layers() { layers.clear(); }
 
 bool PlayerSprite::layer_is_different(const Layer layer, const int id) const {
     return (!layers.contains(layer) && id != 0) ||
-           (layers.contains(layer) && layers.at(layer).texture_is_different(id));
+           (layers.contains(layer) && !layers.at(layer).is_current_texture(id));
 }
 
 Direction PlayerSprite::get_last_direction() const {

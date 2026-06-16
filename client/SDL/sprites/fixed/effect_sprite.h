@@ -15,7 +15,6 @@ public:
 
     virtual void update_frame(int iteration) override;
 
-    bool operator<(const EffectSprite& other) const;
 };
 
 

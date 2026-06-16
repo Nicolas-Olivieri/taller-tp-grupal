@@ -5,7 +5,7 @@
 #include "client/client_constants.h"
 
 #include "moving_sprite.h"
-#include "sprite_layer.h"
+#include "../base/sprite_layer.h"
 
 
 class PlayerSprite: public MovingSprite {

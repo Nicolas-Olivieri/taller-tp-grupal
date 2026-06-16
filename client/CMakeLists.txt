@@ -13,14 +13,15 @@ target_sources(taller_client
 
         SDL/fonts/font_manager.cpp
 
-        SDL/sprites/sprite.cpp
-        SDL/sprites/effect_sprite.cpp
-        SDL/sprites/sprite_layer.cpp
-        SDL/sprites/moving_sprite.cpp
-        SDL/sprites/fixed_sprite.cpp
-        SDL/sprites/enemy_sprite.cpp
-        SDL/sprites/player_sprite.cpp
-        SDL/sprites/sprite_label.cpp
+        SDL/sprites/base/sprite.cpp
+        SDL/sprites/base/sprite_layer.cpp
+        SDL/sprites/base/sprite_label.cpp
+        SDL/sprites/base/world_sprite.cpp
+        SDL/sprites/fixed/effect_sprite.cpp
+        SDL/sprites/fixed/fixed_sprite.cpp
+        SDL/sprites/moving/moving_sprite.cpp
+        SDL/sprites/moving/enemy_sprite.cpp
+        SDL/sprites/moving/player_sprite.cpp
 
         SDL/sprite_creation/animation.cpp
         SDL/sprite_creation/animation_pool.cpp
@@ -60,14 +61,15 @@ target_sources(taller_client
         SDL/fonts/font_manager.h
 
 
-        SDL/sprites/sprite.h
-        SDL/sprites/effect_sprite.h
-        SDL/sprites/sprite_label.h
-        SDL/sprites/sprite_layer.h
-        SDL/sprites/moving_sprite.h
-        SDL/sprites/fixed_sprite.h
-        SDL/sprites/enemy_sprite.h
-        SDL/sprites/player_sprite.h
+        SDL/sprites/base/sprite.h
+        SDL/sprites/base/sprite_label.h
+        SDL/sprites/base/sprite_layer.h
+        SDL/sprites/base/world_sprite.h
+        SDL/sprites/fixed/effect_sprite.h
+        SDL/sprites/fixed/fixed_sprite.h
+        SDL/sprites/moving/moving_sprite.h
+        SDL/sprites/moving/enemy_sprite.h
+        SDL/sprites/moving/player_sprite.h
 
         SDL/sprite_creation/animation.h
         SDL/sprite_creation/animation_pool.h
