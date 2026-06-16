@@ -41,6 +41,8 @@ target_sources(taller_client
 
         config/client_config.cpp
 
+        util/command_handler.cpp
+
     PUBLIC
         # .h files
         client.h
@@ -93,4 +95,6 @@ target_sources(taller_client
 
         config/client_config.h
         config/client_data.h
+
+        util/command_handler.h
     )
