@@ -1,7 +1,7 @@
 #ifndef CLIENT_DATA_H
 #define CLIENT_DATA_H
-
 #include <string>
+#include <vector>
 
 struct CreatureDisplayData {
     std::string name;

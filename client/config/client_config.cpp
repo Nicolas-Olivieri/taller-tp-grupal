@@ -13,10 +13,10 @@
 #define CLIENT_UI_DATA_PATH "/client/user_interface.toml"
 
 ClientConfig::ClientConfig() {
-    loadFromFile(CONFIG_PATH CLIENT_ITEMS_PATH);
-    loadFromFile(CONFIG_PATH CLIENT_CREATURES_PATH);
-    loadFromFile(CONFIG_PATH CLIENT_CONSTANTS_PATH);
-    loadFromFile(CONFIG_PATH CLIENT_UI_DATA_PATH);
+    load_from_file(CONFIG_PATH CLIENT_ITEMS_PATH);
+    load_from_file(CONFIG_PATH CLIENT_CREATURES_PATH);
+    load_from_file(CONFIG_PATH CLIENT_CONSTANTS_PATH);
+    load_from_file(CONFIG_PATH CLIENT_UI_DATA_PATH);
 }
 
 
@@ -89,13 +89,13 @@ std::string ClientConfig::get_item_icon_path(const uint8_t item_id) {
 }
 
 
-void ClientConfig::loadFromFile(const std::string& filepath) {
+void ClientConfig::load_from_file(const std::string& filepath) {
     auto root = toml::parse(filepath);
     if (root.contains("items")) {
-        parseItemsTable(toml::find(root, "items"));
+        parse_items_table(toml::find(root, "items"));
     }
     if (root.contains("creatures")) {
-        parseCreaturesTable(toml::find(root, "creatures"));
+        parse_creatures_table(toml::find(root, "creatures"));
     }
     if (root.contains("constants")) {
         parse_constants(toml::find(root, "constants"));
@@ -137,30 +137,30 @@ void ClientConfig::parse_constants(const toml::value& constants_table) {
     }
 }
 
-void ClientConfig::parseItemsTable(const toml::value& items_table) {
+void ClientConfig::parse_items_table(const toml::value& items_table) {
     for (const auto& [key, value]: items_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
-        items_data[id] = buildItemDisplayData(value);
+        items_data[id] = build_item_display_data(value);
     }
 }
 
 
-ItemDisplayData ClientConfig::buildItemDisplayData(const toml::value& item_toml) const {
+ItemDisplayData ClientConfig::build_item_display_data(const toml::value& item_toml) const {
     // TODO: Cargar el resto de atributos de un ítem para el cliente
     return ItemDisplayData(toml::find<std::string>(item_toml, "name"),
                            toml::find<std::string>(item_toml, "icon_path"));
 }
 
 
-void ClientConfig::parseCreaturesTable(const toml::basic_value<toml::type_config>& creatures_table) {
+void ClientConfig::parse_creatures_table(const toml::basic_value<toml::type_config>& creatures_table) {
     for (const auto& [key, value]: creatures_table.as_table()) {
         uint8_t id = static_cast<uint8_t>(toml::find<int>(value, "id"));
-        creatures_data[id] = buildCreatureDisplayData(value);
+        creatures_data[id] = build_creature_display_data(value);
     }
 }
 
 
-CreatureDisplayData ClientConfig::buildCreatureDisplayData(const toml::value& creature_toml) const {
+CreatureDisplayData ClientConfig::build_creature_display_data(const toml::value& creature_toml) const {
     return CreatureDisplayData(toml::find<std::string>(creature_toml, "name"));
 }
 

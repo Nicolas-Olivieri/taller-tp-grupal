@@ -61,15 +61,15 @@ public:
 private:
     ClientConfig();
 
-    void loadFromFile(const std::string& filepath);
+    void load_from_file(const std::string& filepath);
 
-    void parseItemsTable(const toml::value& items_table);
+    void parse_items_table(const toml::value& items_table);
 
-    ItemDisplayData buildItemDisplayData(const toml::value& item_toml) const;
+    ItemDisplayData build_item_display_data(const toml::value& item_toml) const;
 
-    void parseCreaturesTable(const toml::basic_value<toml::type_config>& creatures_table);
+    void parse_creatures_table(const toml::basic_value<toml::type_config>& creatures_table);
 
-    CreatureDisplayData buildCreatureDisplayData(const toml::value& creature_toml) const;
+    CreatureDisplayData build_creature_display_data(const toml::value& creature_toml) const;
 
     void parse_constants(const toml::value& constants_table);
 
