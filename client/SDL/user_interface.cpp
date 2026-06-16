@@ -8,27 +8,50 @@
 
 #include "client/config/client_config.h"
 
-// TODO: revisar constantes
-#define LINE_SPACING 21
-#define MAX_CHAT_HISTORY 100
-
 UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager):
         renderer(renderer),
         font_manager(font_manager),
-        ui_texture(renderer, DATA_PATH "/interfaz_principal.bmp"),
+        ui_texture(renderer, DATA_PATH "/ui/interfaz_principal.bmp"),
         player_name(player_name),
         clan_name(""),
+        founder_texture(renderer, DATA_PATH "/ui/corona_fundador.bmp"),
+        is_founder(false),
         current_inventory(),
         current_equipment(),
-        health_texture(renderer, DATA_PATH "/barra_vida.bmp"),
-        mana_texture(renderer, DATA_PATH "/barra_mana.bmp"),
-        xp_texture(renderer, DATA_PATH "/barra_experiencia.bmp") {}
+        health_texture(renderer, DATA_PATH "/ui/barra_vida.bmp"),
+        mana_texture(renderer, DATA_PATH "/ui/barra_mana.bmp"),
+        xp_texture(renderer, DATA_PATH "/ui/barra_experiencia.bmp") {
+    const auto& config = ClientConfig::get().get_ui_data();
+
+    history_messages = config.history_messages;
+    input_box = config.input_box;
+
+    username_rect = config.username;
+    clan_rect = config.clan;
+    founder_rect = config.founder;
+
+    inventory_rect = config.inventory_title;
+    inventory_slots = config.inventory_slots;
+
+    equipment_slots = config.equipment_slots;
+
+    stats_rect = config.stats_title;
+
+    health_rect = config.health;
+    mana_rect = config.mana;
+    xp_rect = config.xp;
+
+    safe_gold_rect = config.safe_gold;
+    excess_gold_rect = config.excess_gold;
+    xp_level_rect = config.xp_level;
+}
 
 void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
 
 void UserInterface::render_fields() {
     render_text(player_name, username_rect, FontType::UI_USERNAME);
     render_text(clan_name, clan_rect, FontType::UI_CLAN);
+    render_clan_founder();
 
     render_text("Inventario", inventory_rect, FontType::UI_MENU_TITLE);
     render_inventory();
@@ -60,6 +83,11 @@ void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box
                                  box_limit.y + (box_limit.h - text_h) / 2, text_w, text_h};
 
     renderer.Copy(text_texture, SDL2pp::NullOpt, centered_box);
+}
+
+void UserInterface::render_clan_founder() {
+    if (is_founder)
+        renderer.Copy(founder_texture, SDL2pp::NullOpt, founder_rect);
 }
 
 void UserInterface::render_bar_value(const SDL2pp::Rect& box, const BarValue& value) {
@@ -151,7 +179,7 @@ void UserInterface::render_chat_history() {
         SDL2pp::Font& font = font_manager.get_font(FontType::UI_CHAT);
         SDL2pp::Texture line_texture(renderer, font.RenderUTF8_Solid(text, color));
 
-        int current_y = history_messages.y + ((i - start) * LINE_SPACING);
+        int current_y = history_messages.y + ((i - start) * ClientConfig::get().get_chat_data().line_spacing);
         int text_w = line_texture.GetWidth();
         int text_h = line_texture.GetHeight();
 
@@ -219,7 +247,8 @@ void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& player
         field_values.push_back(std::pair(safe_gold_rect, std::to_string(player_info.safe_gold)));
         field_values.push_back(std::pair(excess_gold_rect, std::to_string(player_info.excess_gold)));
 
-        clan_name = player_info.clan_name;
+        clan_name = player_info.clan.name;
+        is_founder = player_info.clan.is_founder;
 
         current_inventory.clear();
 
@@ -269,7 +298,7 @@ void UserInterface::enqueue_message(const std::string& message, SDL_Color color)
 
     chat_history.push_back({message, color});
 
-    if (chat_history.size() > MAX_CHAT_HISTORY)
+    if (chat_history.size() > ClientConfig::get().get_chat_data().max_chat_history)
         chat_history.pop_front();
 
     if (!is_at_bottom)
@@ -361,7 +390,9 @@ void UserInterface::chat_scroll_down() {
         ++first_visible_message;
 }
 
-size_t UserInterface::get_visible_lines() const { return history_messages.h / LINE_SPACING; }
+size_t UserInterface::get_visible_lines() const {
+    return history_messages.h / ClientConfig::get().get_chat_data().line_spacing;
+}
 
 SDL2pp::Texture& UserInterface::get_item_texture(const uint8_t item_id) {
     if (not item_textures.contains(item_id)) {

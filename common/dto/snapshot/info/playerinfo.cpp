@@ -2,13 +2,12 @@
 
 #include "common/protocol/serializer.h"
 
-PlayerInfoDTO::PlayerInfoDTO(const std::string& name, const std::string& clan_name,
-                             const Direction& direction, uint16_t x, uint16_t y, uint16_t safe_gold,
-                             uint16_t excess_gold, const AppearanceDTO& appearance,
-                             const PlayerStatsDTO& stats, const InventoryInfoDTO& inventory,
-                             const EquipmentInfoDTO& equipment):
+PlayerInfoDTO::PlayerInfoDTO(const std::string& name, const ClanInfoDTO& clan, const Direction& direction,
+                             uint16_t x, uint16_t y, uint16_t safe_gold, uint16_t excess_gold,
+                             const AppearanceDTO& appearance, const PlayerStatsDTO& stats,
+                             const InventoryInfoDTO& inventory, const EquipmentInfoDTO& equipment):
         name(name),
-        clan_name(clan_name),
+        clan(clan),
         direction(direction),
         x(x),
         y(y),
@@ -20,8 +19,8 @@ PlayerInfoDTO::PlayerInfoDTO(const std::string& name, const std::string& clan_na
         equipment(equipment) {}
 
 size_t PlayerInfoDTO::message_size() const {
-    return sizeof(uint16_t) + name.size() + sizeof(uint16_t) + clan_name.size() + sizeof(direction) +
-           sizeof(x) + sizeof(y) + sizeof(uint16_t) * 2 + appearance.message_size() + stats.message_size() +
+    return sizeof(uint16_t) + name.size() + clan.message_size() + sizeof(direction) + sizeof(x) + sizeof(y) +
+           sizeof(uint16_t) * 2 + appearance.message_size() + stats.message_size() +
            inventory.message_size() + equipment.message_size();
 }
 

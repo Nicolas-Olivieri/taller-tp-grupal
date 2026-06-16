@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "client/config/client_config.h"
 #include "fonts/font_manager.h"
 
 #include "camera.h"
@@ -18,7 +19,8 @@ World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::
         sprite_creator(renderer, font_manager),
         audio_manager(audio_manager),
         world_view(SDL2pp::Point(0, 0),
-                   SDL2pp::Point(map_data.world_width * TILE_SIZE, map_data.world_height * TILE_SIZE)),
+                   SDL2pp::Point(map_data.world_width * ClientConfig::get().get_tile_size(),
+                                 map_data.world_height * ClientConfig::get().get_tile_size())),
         player_name(player_name) {
     init_assets(map_data);
 }
@@ -100,16 +102,18 @@ void World::render_in_z_order(const Camera& camera) const {
 }
 
 void World::update_players(const std::vector<PlayerInfoDTO>& players_information) {
+    const uint16_t tile_size = ClientConfig::get().get_tile_size();
+
     for (const PlayerInfoDTO& player_info: players_information) {
         if (!players.contains(player_info.name)) {
             add_new_player(player_info);
-            play_event(SoundEvent::SPAWN, SDL2pp::Point(player_info.x, player_info.y) * TILE_SIZE);
+            play_event(SoundEvent::SPAWN, SDL2pp::Point(player_info.x, player_info.y) * tile_size);
         }
 
         SDL2pp::Point position(player_info.x, player_info.y);
         const auto& player_sprite = players.at(player_info.name);
-        if (position * TILE_SIZE != player_sprite->get_target_position())
-            play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(player_info.x, player_info.y) * TILE_SIZE);
+        if (position * tile_size != player_sprite->get_target_position())
+            play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(player_info.x, player_info.y) * tile_size);
 
         player_sprite->set_target_position(player_info.direction, position);
 
@@ -120,18 +124,20 @@ void World::update_players(const std::vector<PlayerInfoDTO>& players_information
 }
 
 void World::update_creatures(const std::vector<CreatureInfoDTO>& creatures_information) {
+    const uint16_t tile_size = ClientConfig::get().get_tile_size();
+
     erase_dead_creatures(creatures_information);
 
     for (const CreatureInfoDTO& creature_info: creatures_information) {
         if (!creatures.contains(creature_info.sub_id)) {
             add_new_creature(creature_info);
-            play_event(SoundEvent::SPAWN, SDL2pp::Point(creature_info.x, creature_info.y) * TILE_SIZE);
+            play_event(SoundEvent::SPAWN, SDL2pp::Point(creature_info.x, creature_info.y) * tile_size);
         }
 
         SDL2pp::Point position(creature_info.x, creature_info.y);
         const auto& creature_sprite = creatures.at(creature_info.sub_id);
-        if (position * TILE_SIZE != creature_sprite->get_target_position())
-            play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(creature_info.x, creature_info.y) * TILE_SIZE);
+        if (position * tile_size != creature_sprite->get_target_position())
+            play_event(SoundEvent::FOOTSTEP, SDL2pp::Point(creature_info.x, creature_info.y) * tile_size);
 
         creature_sprite->set_target_position(creature_info.direction, position);
 
@@ -215,6 +221,13 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
             case ActionType::MEDITATION:
                 if (players.contains(action.meditation.player_meditating)) {
                     const Sprite* sprite = players.at(action.meditation.player_meditating).get();
+
+                    EffectSprite fx = sprite_creator.create_sprite(action, sprite->get_position());
+                    auto ptr = std::make_shared<EffectSprite>(std::move(fx));
+                    ptr.get()->set_visual_position(sprite->get_position() -
+                                                   SDL2pp::Point(0, sprite->get_size().GetY() / 2));
+                    effects.emplace(ptr);
+
                     play_event(SoundEvent::MEDITATION, sprite->get_position());
                 }
                 break;
@@ -309,24 +322,30 @@ void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, u
     add_new_loot(info, place);
 }
 
-PlayerSprite& World::get_client_player() { return *players.at(player_name).get(); }
+PlayerSprite& World::get_client_player() {
+    assert(players.contains(player_name));
+    return *(players.at(player_name).get());
+}
 
 SDL2pp::Rect& World::get_world_size() { return world_view; }
 
 void World::play_event(const SoundEvent& event, const SDL2pp::Point& source) {
+    const auto& config = ClientConfig::get();
+    const uint16_t tile_size = config.get_tile_size();
+    const uint8_t max_distance = config.get_sound_data().max_sound_distance;
+
     const SDL2pp::Point listener = get_client_player().get_position();
 
     const int dx = source.x - listener.x;
     const int dy = source.y - listener.y;
     const double distance = std::sqrt(dx * dx + dy * dy);
 
-    // TODO: Este límite debería venir del ClientConfig
-    constexpr double MAX_DISTANCE = 12 * TILE_SIZE;
-    if (distance >= MAX_DISTANCE)
+    const double limit = max_distance * tile_size;
+    if (distance >= limit)
         return;
 
     // TODO: Como idea, se podría multiplicar también por un factor aleatorio para que el sonido
     //  se escuche más o menos fuerte (entre un 10% más y un 10% menos, por ejemplo)
 
-    audio_manager.play_event(event, 1.0 - distance / MAX_DISTANCE);
+    audio_manager.play_event(event, 1.0 - distance / limit);
 }

@@ -48,45 +48,43 @@ private:
     SDL_Color red = {214, 30, 30, 255};
     SDL_Color light_blue = {44, 172, 230, 140};
 
-    SDL2pp::Rect history_messages = {20, 35, 710, 147};
-    SDL2pp::Rect input_box = {45, 190, 690, 25};
+    SDL2pp::Rect history_messages;
+    SDL2pp::Rect input_box;
 
-    SDL2pp::Rect username_rect = {770, 55, 240, 35};
+    SDL2pp::Rect username_rect;
 
-    SDL2pp::Rect clan_rect = {770, 100, 240, 20};
+    SDL2pp::Rect clan_rect;
     std::string clan_name;
 
-    SDL2pp::Rect inventory_rect = {770, 157, 240, 35};
+    SDL2pp::Rect founder_rect;
+    SDL2pp::Texture founder_texture;
+    bool is_founder;
+
+    SDL2pp::Rect inventory_rect;
 
     std::vector<InventorySlotData> current_inventory;
-    const std::vector<SDL2pp::Rect> inventory_slots = {
-            {806, 220, 34, 34}, {874, 220, 34, 34}, {942, 220, 34, 34},
-            {806, 284, 34, 34}, {874, 284, 34, 34}, {942, 284, 34, 34},
-            {806, 348, 34, 34}, {874, 348, 34, 34}, {942, 348, 34, 34}};
+    std::vector<SDL2pp::Rect> inventory_slots;
 
     std::optional<uint8_t> bound_item_id;
     std::optional<int> bound_slot_index;
 
     std::vector<uint8_t> current_equipment;
-    const std::vector<SDL2pp::Rect> equipment_slots = {{780, 447, 34, 34},   // Espada
-                                                       {842, 447, 34, 34},   // Escudo
-                                                       {906, 447, 34, 34},   // Casco
-                                                       {968, 447, 34, 34}};  // Armadura
+    std::vector<SDL2pp::Rect> equipment_slots;
 
     std::map<uint8_t, std::unique_ptr<SDL2pp::Texture>> item_textures;
 
-    SDL2pp::Rect stats_rect = {770, 519, 240, 35};
+    SDL2pp::Rect stats_rect;
 
-    SDL2pp::Rect health_rect = {791, 599, 216, 15};
+    SDL2pp::Rect health_rect;
     SDL2pp::Texture health_texture;
-    SDL2pp::Rect mana_rect = {791, 627, 216, 15};
+    SDL2pp::Rect mana_rect;
     SDL2pp::Texture mana_texture;
-    SDL2pp::Rect xp_rect = {837, 657, 171, 15};
+    SDL2pp::Rect xp_rect;
     SDL2pp::Texture xp_texture;
 
-    SDL2pp::Rect safe_gold_rect = {791, 562, 90, 16};
-    SDL2pp::Rect excess_gold_rect = {918, 562, 90, 16};
-    SDL2pp::Rect xp_level_rect = {787, 657, 37, 16};
+    SDL2pp::Rect safe_gold_rect;
+    SDL2pp::Rect excess_gold_rect;
+    SDL2pp::Rect xp_level_rect;
 
     void enqueue_message(const std::string& message, SDL_Color color);
 
@@ -95,6 +93,8 @@ private:
     void add_twinkling_bar(std::string& display_text);
 
     void render_text(const std::string& text, const SDL2pp::Rect& box_limit, const FontType& font_type) const;
+
+    void render_clan_founder();
 
     void render_bar_value(const SDL2pp::Rect& box, const BarValue& value);
 

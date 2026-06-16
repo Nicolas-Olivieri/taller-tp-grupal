@@ -1,0 +1,4 @@
+[creature_behavior]
+extra_target_range = 4
+extra_target_range_limit = 8
+attack_cooldowns_to_become_lonely = 20

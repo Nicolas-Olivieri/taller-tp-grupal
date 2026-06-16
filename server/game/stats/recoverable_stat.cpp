@@ -1,6 +1,6 @@
 #include "recoverable_stat.h"
 
-#define FPS 30
+#include "server/config/game_config.h"
 
 
 RecoverableStat::RecoverableStat(uint8_t recovery_factor, float factor_class, float factor_race,
@@ -20,7 +20,7 @@ void RecoverableStat::update() {
     }
 
     tick_accumulator++;
-    if (tick_accumulator >= FPS) {
+    if (tick_accumulator >= GameConfig::get().get_world_constants().ticks_per_second) {
         tick_accumulator = 0;
         current_amount += recovery_factor;
         if (current_amount >= max_amount) {

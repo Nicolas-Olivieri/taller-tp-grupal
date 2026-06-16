@@ -24,6 +24,11 @@ void UseItemCommand::build_snapshot(SnapshotBuilder& builder) {
                     ChatMessageDTO(MessageType::ERROR, player_name, "No puedes usar objetos como fantasma")));
             break;
 
+        case UseItemStatus::ARCHETYPE_FAIL:
+            builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ERROR, player_name,
+                                                        "Tu clase no es capaz de usar objetos mágicos")));
+            break;
+
         case UseItemStatus::MUST_NOT_NOTIFY:
             break;
 

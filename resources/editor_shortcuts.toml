@@ -1,0 +1,6 @@
+# shortcuts para cambiar de modo en el editor
+# Importante: Solo puede ser una única letra
+draw_key = "d"
+drag_key = "m"
+erase_key = "b"
+safe_zone_key = "s"

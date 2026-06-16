@@ -3,6 +3,8 @@
 #include <QFile>
 #include <QGraphicsItem>
 
+#include "config/editor_config.h"
+
 #include "editor_constants.h"
 
 MapLoader::MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
@@ -19,7 +21,8 @@ bool MapLoader::load(const QString& filename) const {
 
     uint16_t header = 0;
     stream >> header;
-    if (stream.status() != QDataStream::Ok || header != static_cast<uint16_t>(HEADER)) {
+    const auto expected_file_header = EditorConfig::get().get_file_header();
+    if (stream.status() != QDataStream::Ok || header != static_cast<uint16_t>(expected_file_header)) {
         return false;
     }
 
@@ -67,14 +70,17 @@ void MapLoader::load_assets(QDataStream& stream, const QHash<uint8_t, AssetData>
 }
 
 void MapLoader::load_safe_zone(QDataStream& stream, const int width, const int height) const {
+    const auto tile_size = EditorConfig::get().get_tile_size();
+    const auto safe_zone_id = EditorConfig::get().get_safe_zone_data().id;
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             uint8_t walkability;
             uint8_t biome;
             stream >> walkability >> biome;
 
-            if (biome == SAFE_ZONE_ID) {
-                canvas.set_safe_tiles(QPoint(x * TILE_SIZE, y * TILE_SIZE), 1, 1);
+            if (biome == safe_zone_id) {
+                canvas.set_safe_tiles(QPoint(x * tile_size, y * tile_size), 1, 1);
             }
         }
     }
