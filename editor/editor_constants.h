@@ -8,6 +8,4 @@ enum class ImageType { TILE, COLLIDER, NPC };
 #define WALKABLE_TILE 1
 #define UNWALKABLE_TILE 0
 
-#define TELEPORT_NPC 3
-
 #endif  // EDITOR_CONSTANTS_H

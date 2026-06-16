@@ -3,6 +3,8 @@
 #include <QSet>
 #include <algorithm>
 
+#include "config/editor_config.h"
+
 #include "grid_range.h"
 
 MapData::MapData(): tile_id(0) {}
@@ -20,7 +22,7 @@ int MapData::add_asset(const QPoint position, const AssetData& asset_data) {
 
         case ImageType::NPC:
             const int id = add_collider(position, asset_data);
-            if (asset_data.id == TELEPORT_NPC) {
+            if (asset_data.id == EditorConfig::get().get_teleport_id()) {
                 add_teleport(id);
             }
             return id;
@@ -116,7 +118,7 @@ bool MapData::erase_asset(const int asset_id) {
 
         case ImageType::NPC:
             erase_collider(placement_data);
-            if (placement_data.asset.id == TELEPORT_NPC) {
+            if (placement_data.asset.id == EditorConfig::get().get_teleport_id()) {
                 erase_teleport(placement_data.id);
             }
             return true;

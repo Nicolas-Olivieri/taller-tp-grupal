@@ -6,7 +6,6 @@
 
 #include <netinet/in.h>
 
-
 #include "common/dto/snapshot/map/teleport_info.h"
 
 #define MAGIC_NUMBER 0xFAF4
