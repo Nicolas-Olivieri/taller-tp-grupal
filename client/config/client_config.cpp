@@ -222,6 +222,11 @@ void ClientConfig::load_ui_data(toml::basic_value<toml::type_config> root) {
     ui_data.safe_gold = parse_rect(ui_table, "stats", "safe_gold");
     ui_data.excess_gold = parse_rect(ui_table, "stats", "excess_gold");
     ui_data.xp_level = parse_rect(ui_table, "stats", "xp_level");
+
+    ui_data.weapon = parse_rect(ui_table, "stats", "weapon");
+    ui_data.shield = parse_rect(ui_table, "stats", "shield");
+    ui_data.helmet = parse_rect(ui_table, "stats", "helmet");
+    ui_data.armor = parse_rect(ui_table, "stats", "armor");
 }
 
 void ClientConfig::load_sound_data(toml::basic_value<toml::type_config> root) {

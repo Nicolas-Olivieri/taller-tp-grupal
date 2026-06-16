@@ -51,6 +51,10 @@ struct UserInterfaceData {
     SDL2pp::Rect safe_gold;
     SDL2pp::Rect excess_gold;
     SDL2pp::Rect xp_level;
+    SDL2pp::Rect weapon;
+    SDL2pp::Rect shield;
+    SDL2pp::Rect helmet;
+    SDL2pp::Rect armor;
 };
 
 struct SoundData {
