@@ -303,6 +303,10 @@ data = [10, 1, 0, 0, 64, 128]
 id_range = [0, 2]
 data = [1, 1, 0, 0, 32, 64]
 
+[[items.npcs]]
+id = 2
+data = [1, 1, 0, 0, 64, 128]
+
 [[items.loot]]
 id_range = [0, 1]
 data = [1, 1, 0, 0, 32, 32]

@@ -21,6 +21,8 @@ private:
 
     void load_safe_zone(QDataStream& stream, int width, int height) const;
 
+    void load_teleports(QDataStream& stream) const;
+
 public:
     MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
               QHash<uint8_t, AssetData>& colliders, QHash<uint8_t, AssetData>& npcs);
