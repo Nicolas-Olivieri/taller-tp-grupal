@@ -21,6 +21,7 @@ private:
     MovementData movement_data;
     UserInterfaceData ui_data;
     SoundData sound_data;
+    ChatData chat_data;
 
 public:
     static ClientConfig& get();
@@ -61,6 +62,8 @@ public:
 
     const SoundData& get_sound_data() const;
 
+    const ChatData& get_chat_data() const;
+
 private:
     ClientConfig();
 
@@ -84,6 +87,8 @@ private:
                                                 const std::string& key);
 
     void parse_sound_data(const toml::value& sound_table);
+
+    void parse_chat_data(const toml::value& chat_table);
 };
 
 

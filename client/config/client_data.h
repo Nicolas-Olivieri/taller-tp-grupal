@@ -58,4 +58,9 @@ struct SoundData {
     // TODO agregar el mapeo de id_weapon a sonido?
 };
 
+struct ChatData {
+    uint8_t line_spacing;
+    uint16_t max_chat_history;
+};
+
 #endif  // CLIENT_DATA_H

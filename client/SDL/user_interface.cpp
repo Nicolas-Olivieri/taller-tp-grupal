@@ -8,10 +8,6 @@
 
 #include "client/config/client_config.h"
 
-// TODO: revisar constantes
-#define LINE_SPACING 21
-#define MAX_CHAT_HISTORY 100
-
 UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager):
         renderer(renderer),
         font_manager(font_manager),
@@ -183,7 +179,7 @@ void UserInterface::render_chat_history() {
         SDL2pp::Font& font = font_manager.get_font(FontType::UI_CHAT);
         SDL2pp::Texture line_texture(renderer, font.RenderUTF8_Solid(text, color));
 
-        int current_y = history_messages.y + ((i - start) * LINE_SPACING);
+        int current_y = history_messages.y + ((i - start) * ClientConfig::get().get_chat_data().line_spacing);
         int text_w = line_texture.GetWidth();
         int text_h = line_texture.GetHeight();
 
@@ -302,7 +298,7 @@ void UserInterface::enqueue_message(const std::string& message, SDL_Color color)
 
     chat_history.push_back({message, color});
 
-    if (chat_history.size() > MAX_CHAT_HISTORY)
+    if (chat_history.size() > ClientConfig::get().get_chat_data().max_chat_history)
         chat_history.pop_front();
 
     if (!is_at_bottom)
@@ -394,7 +390,9 @@ void UserInterface::chat_scroll_down() {
         ++first_visible_message;
 }
 
-size_t UserInterface::get_visible_lines() const { return history_messages.h / LINE_SPACING; }
+size_t UserInterface::get_visible_lines() const {
+    return history_messages.h / ClientConfig::get().get_chat_data().line_spacing;
+}
 
 SDL2pp::Texture& UserInterface::get_item_texture(const uint8_t item_id) {
     if (not item_textures.contains(item_id)) {

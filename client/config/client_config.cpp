@@ -12,6 +12,7 @@
 #define CLIENT_CONSTANTS_PATH "/client/game_constants.toml"
 #define CLIENT_UI_DATA_PATH "/client/user_interface.toml"
 #define CLIENT_SOUND_DATA_PATH "/client/sound_data.toml"
+#define CLIENT_CHAT_DATA_PATH "/client/chat.toml"
 
 ClientConfig::ClientConfig() {
     load_from_file(CONFIG_PATH CLIENT_ITEMS_PATH);
@@ -19,6 +20,7 @@ ClientConfig::ClientConfig() {
     load_from_file(CONFIG_PATH CLIENT_CONSTANTS_PATH);
     load_from_file(CONFIG_PATH CLIENT_UI_DATA_PATH);
     load_from_file(CONFIG_PATH CLIENT_SOUND_DATA_PATH);
+    load_from_file(CONFIG_PATH CLIENT_CHAT_DATA_PATH);
 }
 
 
@@ -107,6 +109,9 @@ void ClientConfig::load_from_file(const std::string& filepath) {
     }
     if (root.contains("sound")) {
         parse_sound_data(toml::find(root, "sound"));
+    }
+    if (root.contains("chat")) {
+        parse_chat_data(toml::find(root, "chat"));
     }
 }
 
@@ -244,3 +249,18 @@ void ClientConfig::parse_sound_data(const toml::value& sound_table) {
 }
 
 const SoundData& ClientConfig::get_sound_data() const { return sound_data; }
+
+void ClientConfig::parse_chat_data(const toml::value& chat_table) {
+
+    for (const auto& [key, value]: chat_table.as_table()) {
+        if (key == "data") {
+            chat_data = {toml::find<uint8_t>(value, "line_spacing"),
+                         toml::find<uint16_t>(value, "max_chat_history")};
+            continue;
+        }
+
+        throw std::runtime_error(std::format("ClientConfig encontró un dato del chat desconocido: {}", key));
+    }
+}
+
+const ChatData& ClientConfig::get_chat_data() const { return chat_data; }
