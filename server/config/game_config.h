@@ -79,6 +79,8 @@ public:
 
     uint16_t get_item_price(uint8_t item_id) const;
 
+    bool is_secret_item(uint8_t item_id) const;
+
     bool has_biome_associated(uint8_t id) const;
 
     bool usables_contains(uint8_t id) const;
@@ -91,9 +93,11 @@ public:
 
     bool shields_contains(uint8_t id) const;
 
-    std::vector<uint8_t> get_usables_ids() const;
+    std::vector<uint8_t> get_regular_usables_ids() const;
 
-    std::vector<uint8_t> get_equipables_ids() const;
+    std::vector<uint8_t> get_regular_equipables_ids() const;
+
+    std::vector<uint8_t> get_secret_equipables_ids() const;
 
     const std::vector<uint8_t>& get_priest_items(int id) const;
 

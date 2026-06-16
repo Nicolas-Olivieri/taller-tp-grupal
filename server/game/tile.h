@@ -8,6 +8,7 @@
 #include "loot.h"
 
 #define SAFE_ZONE_FLOOR 0  // TODO: toml
+#define DUNGEON_FLOOR 4
 
 class Tile {
 private:

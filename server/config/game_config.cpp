@@ -46,7 +46,9 @@ const WeaponData& GameConfig::get_weapon(uint8_t id) const { return items.weapon
 
 const DropProbabilitiesData& GameConfig::get_drop_probabilities() const { return drop_probabilities; }
 
-uint16_t GameConfig::get_item_price(uint8_t item_id) const { return items.prices.at(item_id); }
+uint16_t GameConfig::get_item_price(uint8_t item_id) const { return items.items.at(item_id).price; }
+
+bool GameConfig::is_secret_item(uint8_t item_id) const { return items.items.at(item_id).is_secret_drop; }
 
 bool GameConfig::usables_contains(uint8_t id) const { return items.usables.contains(id); }
 
@@ -58,23 +60,37 @@ bool GameConfig::armors_contains(uint8_t id) const { return items.armors.contain
 
 bool GameConfig::shields_contains(uint8_t id) const { return items.shields.contains(id); }
 
-std::vector<uint8_t> GameConfig::get_usables_ids() const {
+std::vector<uint8_t> GameConfig::get_regular_usables_ids() const {
     std::vector<uint8_t> usables_ids;
     usables_ids.reserve(items.usables.size());
 
     for (const auto& [id, value]: items.usables) {
-        usables_ids.push_back(id);
+        if (!items.items.at(id).is_secret_drop)
+            usables_ids.push_back(id);
     }
 
     return usables_ids;
 }
 
-std::vector<uint8_t> GameConfig::get_equipables_ids() const {
+std::vector<uint8_t> GameConfig::get_regular_equipables_ids() const {
     std::vector<uint8_t> equipables_ids;
     equipables_ids.reserve(items.equipables.size());
 
     for (const auto& [id, value]: items.equipables) {
-        equipables_ids.push_back(id);
+        if (!items.items.at(id).is_secret_drop)
+            equipables_ids.push_back(id);
+    }
+
+    return equipables_ids;
+}
+
+std::vector<uint8_t> GameConfig::get_secret_equipables_ids() const {
+    std::vector<uint8_t> equipables_ids;
+    equipables_ids.reserve(items.equipables.size());
+
+    for (const auto& [id, value]: items.equipables) {
+        if (items.items.at(id).is_secret_drop)
+            equipables_ids.push_back(id);
     }
 
     return equipables_ids;

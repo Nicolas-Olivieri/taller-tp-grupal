@@ -21,5 +21,6 @@ std::map<Direction, Animation>& AnimationPool::get_walking_animations(const Spri
 }
 
 Animation& AnimationPool::get_item_animation(const SpriteCategory category, const uint8_t asset_id) {
+    assert(item_animations.at(category).contains(asset_id));
     return item_animations.at(category).at(asset_id);
 }

@@ -102,6 +102,22 @@ struct toml::from<VariationData> {
     }
 };
 
+struct ItemData {
+    uint16_t price;
+    bool is_secret_drop;
+};
+
+template <>
+struct toml::from<ItemData> {
+    static ItemData from_toml(const toml::value& raw) {
+        return ItemData{
+                toml::find<uint16_t>(raw, "price"),
+                toml::find<bool>(raw, "secret_drop"),
+        };
+    }
+};
+
+
 struct EquipableItemData {
     uint8_t min;
     uint8_t max;
@@ -280,7 +296,7 @@ struct toml::from<CreatureStatsData> {
 };
 
 struct ItemsData {
-    std::unordered_map<uint8_t, uint16_t> prices;
+    std::unordered_map<uint8_t, ItemData> items;
     std::unordered_map<uint8_t, EquipableItemData> equipables;
     std::unordered_map<uint8_t, UsableItemData> usables;
     std::unordered_map<uint8_t, WeaponData> weapons;
@@ -305,7 +321,7 @@ struct toml::from<ItemsData> {
 
                 data.weapons[id] = std::move(weapon);
                 data.equipables[id] = std::move(equipable);
-                data.prices[id] = toml::find<uint16_t>(value, "price");
+                data.items[id] = toml::get<ItemData>(value);
             }
         }
 
@@ -320,7 +336,7 @@ struct toml::from<ItemsData> {
                 UsableItemData usable = toml::get<UsableItemData>(value);
 
                 data.usables[id] = std::move(usable);
-                data.prices[id] = toml::find<uint16_t>(value, "price");
+                data.items[id] = toml::get<ItemData>(value);
             }
         }
 

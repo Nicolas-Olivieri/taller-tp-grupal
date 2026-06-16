@@ -213,7 +213,12 @@ void GameWorld::remove_dead_creatures() {
             const Position& position = creature.get_position();
             Tile& tile = grid.get_tile(position);
             tile.occupy(nullptr);
-            tile.add_loot(creature.drop());
+
+            if (GameConfig::get().get_biome_id(tile.floor) == DUNGEON_FLOOR) {
+                tile.add_loot(creature.secret_drop());
+            } else {
+                tile.add_loot(creature.drop());
+            }
 
             add_tile_if_lootable(tile, position);
 
@@ -442,8 +447,9 @@ PickUpResult GameWorld::pick_up(const std::string& player_name) {
 
     const Loot& loot = tile.get_loot().top();
 
-    PickUpResult result = loot.type == LootType::ITEM ? pick_item_up(player, tile, loot.item) :
-                                                        pick_gold_up(player, tile, loot.gold);
+    PickUpResult result = loot.type == LootType::ITEM || loot.type == LootType::SECRET_ITEM ?
+                                  pick_item_up(player, tile, loot.item) :
+                                  pick_gold_up(player, tile, loot.gold);
 
     if (result.status != PickUpStatus::NOT_ENOUGH_SPACE && tile.get_loot().empty())
         tiles_with_loot.extract({position.get_x(), position.get_y()});

@@ -11,7 +11,7 @@ void toml::from<ItemsData>::add_defensive_equipables(
 
             category_set.insert(id);
             data.equipables[id] = std::move(equipable);
-            data.prices[id] = toml::find<uint16_t>(value, "price");
+            data.items[id] = toml::get<ItemData>(value);
         }
     }
 }

@@ -13,6 +13,8 @@ struct Loot {
     explicit Loot(uint8_t item_id);
 
     explicit Loot(uint16_t gold_amount);
+
+    LootType type_from_item(uint8_t item_id);
 };
 
 #endif  // LOOT_H

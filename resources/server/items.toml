@@ -8,6 +8,7 @@ max_value = 3
 range = 1
 mana_cost = 0
 type = 2
+secret_drop = true
 
 [weapons.sword]
 id = 1
@@ -17,6 +18,7 @@ max_value = 5
 range = 1
 mana_cost = 0
 type = 2
+secret_drop = false
 
 [weapons.axe]
 id = 2
@@ -26,6 +28,7 @@ max_value = 5
 range = 1
 mana_cost = 0
 type = 2
+secret_drop = false
 
 [weapons.hammer]
 id = 3
@@ -35,6 +38,7 @@ max_value = 9
 range = 1
 mana_cost = 0
 type = 2
+secret_drop = false
 
 [weapons.ash_stick]
 id = 4
@@ -44,6 +48,7 @@ max_value = 4
 range = 4
 mana_cost = 5
 type = 2
+secret_drop = false
 
 [weapons.elven_flute]
 id = 5
@@ -53,6 +58,7 @@ max_value = 255
 range = 5
 mana_cost = 100
 type = 0
+secret_drop = false
 
 [weapons.knotty_staff]
 id = 6
@@ -62,6 +68,7 @@ max_value = 8
 range = 5
 mana_cost = 15
 type = 2
+secret_drop = false
 
 [weapons.socketed_staff]
 id = 7
@@ -71,6 +78,7 @@ max_value = 20
 range = 6
 mana_cost = 30
 type = 2
+secret_drop = false
 
 [weapons.simple_bow]
 id = 8
@@ -80,6 +88,7 @@ max_value  = 4
 range = 5
 mana_cost = 0
 type = 2
+secret_drop = false
 
 [weapons.compound_bow]
 id = 9
@@ -89,6 +98,7 @@ max_value  = 16
 range = 7
 mana_cost = 0
 type = 2
+secret_drop = false
 
 
 
@@ -97,18 +107,21 @@ id = 10
 price = 670
 min_value = 2
 max_value = 6
+secret_drop = false
 
 [armors.plate]
 id = 11
 price = 1420
 min_value = 15
 max_value = 30
+secret_drop = false
 
 [armors.blue_tunic]
 id = 12
 price = 890
 min_value = 6
 max_value = 10
+secret_drop = false
 
 
 
@@ -117,18 +130,21 @@ id = 13
 price = 550
 min_value = 1
 max_value = 4
+secret_drop = false
 
 [helmets.iron_helmet]
 id = 14
 price = 710
 min_value = 4
 max_value = 8
+secret_drop = false
 
 [helmets.magic_hat]
 id = 15
 price = 850
 min_value = 4
 max_value = 12
+secret_drop = false
 
 
 
@@ -137,12 +153,14 @@ id = 16
 price = 390
 min_value = 1
 max_value = 2
+secret_drop = false
 
 [shields.iron]
 id = 17
 price = 610
 min_value = 1
 max_value = 4
+secret_drop = false
 
 
 
@@ -151,12 +169,14 @@ id = 18
 price = 90
 type = 0
 effect = 170
+secret_drop = false
 
 [usables.mana]
 id = 19
 price = 110
 type = 1
 effect = 130
+secret_drop = false
 
 
 
@@ -170,6 +190,7 @@ max_value = 16
 range = 2
 mana_cost = 0
 type = 2
+secret_drop = true
 
 [weapons.white_staff]
 id = 21
@@ -179,6 +200,7 @@ max_value = 26
 range = 7
 mana_cost = 80
 type = 2
+secret_drop = true
 
 [weapons.hero_bow]
 id = 22
@@ -188,39 +210,46 @@ max_value  = 21
 range = 6
 mana_cost = 0
 type = 2
+secret_drop = true
 
 [armors.dark]
 id = 23
 price = 4000
 min_value = 18
 max_value = 35
+secret_drop = true
 
 [armors.royal]
 id = 24
 price = 4000
 min_value = 10
 max_value = 40
+secret_drop = true
 
 [helmets.knight]
 id = 25
 price = 4000
 min_value = 10
 max_value = 22
+secret_drop = true
 
 [helmets.crown]
 id = 26
 price = 4000
 min_value = 10
 max_value = 22
+secret_drop = true
 
 [shields.reinforced]
 id = 27
 price = 4000
 min_value = 6
 max_value = 12
+secret_drop = true
 
 [shields.boquita]
 id = 28
 price = 20000
 min_value = 2
 max_value = 22
+secret_drop = true
