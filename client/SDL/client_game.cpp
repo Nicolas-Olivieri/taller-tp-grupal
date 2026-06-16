@@ -11,6 +11,7 @@
 
 #include "../client_constants.h"
 #include "client/config/client_config.h"
+#include "client/util/key_mapper.h"
 #include "common/dto/events/ally_related/deposit/deposit_gold_event.h"
 #include "common/dto/events/ally_related/deposit/deposit_item_event.h"
 #include "common/dto/events/ally_related/interact_event.h"
@@ -33,7 +34,6 @@
 #include "common/util/rate_timer.h"
 
 #include "camera.h"
-#include "key_mapper.h"
 
 
 ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,

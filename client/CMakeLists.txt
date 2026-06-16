@@ -36,11 +36,11 @@ target_sources(taller_client
         connection/client_sender.cpp
         connection/connection_handler.cpp
 
-        SDL/key_mapper.cpp
         SDL/user_interface.cpp
 
         config/client_config.cpp
 
+        util/key_mapper.cpp
         util/command_handler.cpp
 
     PUBLIC
@@ -89,12 +89,12 @@ target_sources(taller_client
         connection/client_sender.h
         connection/connection_handler.h
 
-        SDL/key_mapper.h
 
         SDL/user_interface.h
 
         config/client_config.h
         config/client_data.h
 
+        util/key_mapper.h
         util/command_handler.h
     )
