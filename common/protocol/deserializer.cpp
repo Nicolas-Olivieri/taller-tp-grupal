@@ -309,6 +309,7 @@ AllyType Deserializer::recv_ally_type() {
         case AllyType::PRIEST:
         case AllyType::MERCHANT:
         case AllyType::BANKER:
+        case AllyType::TOTEM:
             return static_cast<AllyType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de aliado no reconocido");

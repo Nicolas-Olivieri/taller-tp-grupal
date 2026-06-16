@@ -19,6 +19,15 @@ void ListItemsCommand::build_snapshot(SnapshotBuilder& builder) {
         return;
     }
 
+    if (AllyType::TOTEM == result.get()->ally) {
+        // TODO el totem te contesta?? Me parece que queda misterioso
+        builder.add_action(
+                ActionDTO(ChatMessageDTO(MessageType::ALLY, "Totem", player_name,
+                                         "No puedo decirte el destino, tendrás que descubrirlo...")));
+        return;
+    }
+    assert(AllyType::TOTEM != result.get()->ally);
+
     static std::map<AllyType, std::string> ally_type_to_string({
             {AllyType::PRIEST, "Sacerdote"},
             {AllyType::MERCHANT, "Comerciante"},

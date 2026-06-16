@@ -153,6 +153,8 @@ private:
     void load_clans();
 
     void exchange_position(const Position& old_position, const Position& new_position, Interactive* occupant);
+
+    void init_teleports(const std::vector<TeleportInfoDTO>& map_teleports);
 };
 
 

@@ -13,6 +13,7 @@
 #include "server/command/cmd_results/ally_execute/list/outcomes/vendor_list/vendor_list_outcome.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
+#include "server/game/allies/teleportation_totem.h"
 #include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
 
@@ -25,6 +26,7 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
+    init_teleports(map_data.teleports);
     load_clans();
 }
 
@@ -566,6 +568,23 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
             grid.get_tile(position).occupy(ally.get());
             allies.push_back(std::move(ally));
         }
+    }
+}
+
+void GameWorld::init_teleports(const std::vector<TeleportInfoDTO>& map_teleports) {
+    for (const auto& teleport_pair: map_teleports) {
+        assert(false);
+        const Position position_a(teleport_pair.port_a_x, teleport_pair.port_a_y);
+        const Position position_b(teleport_pair.port_b_x, teleport_pair.port_b_y);
+
+        std::unique_ptr<Ally> totem_a = std::make_unique<TeleportationTotem>(position_a, position_b);
+        std::unique_ptr<Ally> totem_b = std::make_unique<TeleportationTotem>(position_b, position_a);
+
+        grid.get_tile(position_a).occupy(totem_a.get());
+        grid.get_tile(position_b).occupy(totem_b.get());
+
+        allies.push_back(std::move(totem_a));
+        allies.push_back(std::move(totem_b));
     }
 }
 

@@ -145,6 +145,9 @@ void InteractCommand::handle_bind(SnapshotBuilder& builder) {
         case BindResult::BANKER:
             msg += "Banquero";
             break;
+        case BindResult::TOTEM:
+            msg = "Te has vinculado al Totem";
+            break;
         default:
             throw std::runtime_error(
                     "Interact command recibió una interacción de un tipo de aliado desconocido");

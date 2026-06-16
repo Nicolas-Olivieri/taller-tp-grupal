@@ -16,16 +16,6 @@ void HealCommand::build_snapshot(SnapshotBuilder& builder) {
         return;
     }
 
-    static std::map<AllyType, std::string> ally_type_to_string({
-            {AllyType::PRIEST, "Sacerdote"},
-            {AllyType::MERCHANT, "Comerciante"},
-            {AllyType::BANKER, "Banquero"},
-    });
-
-    if (not ally_type_to_string.contains(result.ally)) {
-        throw std::runtime_error("HealCommand recibió un NPC aliado desconocido");
-    }
-
     static std::map<HealStatus, std::string> result_to_message(
             {{HealStatus::PLAYER_HEALED, "A sus órdenes! Toda tu vida y maná fueron recargadas"},
              {HealStatus::GHOST_FAIL, "Estás muerto! Primero tenés que resucitar"},
@@ -35,7 +25,7 @@ void HealCommand::build_snapshot(SnapshotBuilder& builder) {
         throw std::runtime_error("HealCommand recibió un resultado incorrecto");
     }
 
-    const std::string& sender = ally_type_to_string.at(result.ally);
+    const std::string& sender = Ally::ally_type_to_string(result.ally, "HealCommand");
     const std::string& content = result_to_message.at(result.status);
     builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ALLY, sender, player_name, content)));
 
