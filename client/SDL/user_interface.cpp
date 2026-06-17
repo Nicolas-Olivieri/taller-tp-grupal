@@ -44,6 +44,11 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
     safe_gold_rect = config.safe_gold;
     excess_gold_rect = config.excess_gold;
     xp_level_rect = config.xp_level;
+
+    weapon_rect = config.weapon;
+    shield_rect = config.shield;
+    helmet_rect = config.helmet;
+    armor_rect = config.armor;
 }
 
 void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
@@ -259,13 +264,23 @@ void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& player
         std::ranges::sort(current_inventory,
                           [](const auto& a, const auto& b) { return a.item_id < b.item_id; });
 
-        current_equipment.clear();
-
-        current_equipment = {player_info.equipment.weapon, player_info.equipment.shield,
-                             player_info.equipment.helmet, player_info.equipment.armor};
-
+        update_player_equipment_state(player_info);
         break;
     }
+}
+
+void UserInterface::update_player_equipment_state(const PlayerInfoDTO& player_info) {
+    const auto weapon = player_info.equipment.weapon;
+    const auto shield = player_info.equipment.shield;
+    const auto helmet = player_info.equipment.helmet;
+    const auto armor = player_info.equipment.armor;
+
+    current_equipment = {weapon.item_id, shield.item_id, helmet.item_id, armor.item_id};
+
+    field_values.push_back(std::pair(weapon_rect, std::to_string(weapon.effect)));
+    field_values.push_back(std::pair(shield_rect, std::to_string(shield.item_id == 0 ? 0 : shield.effect)));
+    field_values.push_back(std::pair(helmet_rect, std::to_string(helmet.item_id == 0 ? 0 : helmet.effect)));
+    field_values.push_back(std::pair(armor_rect, std::to_string(armor.item_id == 0 ? 0 : armor.effect)));
 }
 
 void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {

@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 
 #include "common/dto/lobby/existence.h"
+#include "common/dto/snapshot/info/equipable_item_info.h"
 #include "common/dto/snapshot/info/inventory_info.h"
 
 Serializer::Serializer(std::vector<uint8_t>& buffer): buffer(buffer), offset(0) {}
@@ -221,6 +222,11 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
 }
 
 void Serializer::serialize(const InventoryInfoDTO& inventory) { serialize(inventory.items); }
+
+void Serializer::serialize(const EquipableItemInfoDTO& item) {
+    serialize(item.item_id);
+    serialize(item.effect);
+}
 
 void Serializer::serialize(const EquipmentInfoDTO& equipment) {
     serialize(equipment.weapon);

@@ -86,6 +86,11 @@ private:
     SDL2pp::Rect excess_gold_rect;
     SDL2pp::Rect xp_level_rect;
 
+    SDL2pp::Rect weapon_rect;
+    SDL2pp::Rect shield_rect;
+    SDL2pp::Rect helmet_rect;
+    SDL2pp::Rect armor_rect;
+
     void enqueue_message(const std::string& message, SDL_Color color);
 
     void cut_text_if_necessary(int& text_width, int max_width);
@@ -101,6 +106,8 @@ private:
     void render_inventory();
 
     void render_equipment();
+
+    void update_player_equipment_state(const PlayerInfoDTO& player_info);
 
     void render_item(const SDL2pp::Rect& slot, uint8_t item_id);
 
