@@ -804,8 +804,11 @@ TeleportResult GameWorld::teleport_player(const std::string& player_name) {
             }
         }
 
-        if (!teleported)
+        if (!teleported) {
             result.status = TeleportStatus::DESTINATION_BLOCKED;
+        } else {
+            player.unbind_ally();
+        }
     }
 
     return result;

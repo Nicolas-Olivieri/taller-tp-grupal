@@ -39,6 +39,9 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
         case AllyAction::WITHDRAW_ITEM:
             return handle_action_not_accepted<WithdrawItemResult>(WithdrawItemStatus::ACTION_NOT_ACCEPTED);
 
+        case AllyAction::TELEPORT:
+            return handle_action_not_accepted<TeleportResult>(TeleportStatus::ACTION_NOT_ACCEPTED);
+
         default:
             break;
     }

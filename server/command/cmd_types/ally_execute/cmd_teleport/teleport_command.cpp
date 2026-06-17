@@ -18,11 +18,14 @@ void TeleportCommand::build_snapshot(SnapshotBuilder& builder) {
              {TeleportStatus::DESTINATION_BLOCKED,
               "El destino está bloqueado por alguien más, no podés viajar ahora"},
              {TeleportStatus::GHOST_FAIL, "Tu forma espiritual no resistiría el viaje"},
-             {TeleportStatus::ACTION_NOT_ACCEPTED, "El tótem no responde a ese llamado"}});
+             {TeleportStatus::ACTION_NOT_ACCEPTED, "Solo un Totem responde a ese pedido"}});
 
     if (not result_to_message.contains(result.status)) {
         throw std::runtime_error("TeleportCommand recibió un resultado incorrecto");
     }
+
+    if (result.status == TeleportStatus::ACTION_NOT_ACCEPTED)
+        assert(result.ally != AllyType::TOTEM);
 
     const std::string sender = Ally::ally_type_to_string(result.ally, "TeleportCommand");
     const std::string msg = result_to_message.at(result.status);
