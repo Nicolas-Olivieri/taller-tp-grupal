@@ -1,10 +1,10 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <functional>
 #include <map>
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "../killable.h"
@@ -119,7 +119,7 @@ public:
 
     const Equipment& get_equipment() const;
 
-    const std::map<uint8_t, uint8_t, std::greater<>> &get_inventory_items() const;
+    const std::map<uint8_t, uint8_t, std::greater<>>& get_inventory_items() const;
 
     const std::map<uint8_t, uint8_t>& get_bank_items() const;
 

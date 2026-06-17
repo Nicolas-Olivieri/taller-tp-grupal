@@ -14,8 +14,8 @@
 #include "sprite_creation/sprite_creator.h"
 #include "sprite_creation/texture_pool.h"
 #include "sprites/fixed/effect_sprite.h"
-#include "sprites/moving/enemy_sprite.h"
 #include "sprites/fixed/fixed_sprite.h"
+#include "sprites/moving/enemy_sprite.h"
 #include "sprites/moving/moving_sprite.h"
 #include "sprites/moving/player_sprite.h"
 
@@ -42,7 +42,7 @@ private:
 
     void init_assets(const ClientMapDataDTO& map_data);
 
-    static bool cmp_by_y_coord(const std::shared_ptr<WorldSprite> &a, const std::shared_ptr<WorldSprite> &b);
+    static bool cmp_by_y_coord(const std::shared_ptr<WorldSprite>& a, const std::shared_ptr<WorldSprite>& b);
 
     void add_new_creature(const CreatureInfoDTO& info);
 

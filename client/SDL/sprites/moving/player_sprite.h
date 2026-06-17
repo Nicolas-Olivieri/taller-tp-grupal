@@ -1,11 +1,12 @@
 #ifndef PLAYER_SPRITE_H
 #define PLAYER_SPRITE_H
 #include <map>
+#include <vector>
 
+#include "../base/sprite_layer.h"
 #include "client/client_constants.h"
 
 #include "moving_sprite.h"
-#include "../base/sprite_layer.h"
 
 
 class PlayerSprite: public MovingSprite {

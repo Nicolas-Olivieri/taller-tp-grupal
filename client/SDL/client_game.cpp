@@ -399,7 +399,6 @@ void ClientGame::update_state_from_server() {
     world.update_loot(snapshot.loot_information);
     world.erase_finished_effects();
     ui.update_player_state(snapshot.players_information);
-    // TODO añadir el resto del manejo de sprites
 }
 
 
@@ -442,11 +441,7 @@ void ClientGame::handle_mouse_click(const SDL_Event& event) {
 }
 
 void ClientGame::render_ui_and_world() {
-    ui.render();
-
-    ui.render_chat_history();
-
-    ui.render_chat_input(chat_text, is_chat_active);
+    ui.render(chat_text, is_chat_active);
 
     renderer.SetViewport(game_viewport);
     world.render_in_z_order(camera);

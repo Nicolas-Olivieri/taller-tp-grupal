@@ -3,7 +3,7 @@
 #include "sprite.h"
 
 
-class WorldSprite : public Sprite {
+class WorldSprite: public Sprite {
 protected:
     SDL2pp::Point to_sprite_point(const SDL2pp::Point& point);
 
@@ -17,8 +17,7 @@ public:
     virtual bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const = 0;
 
     SDL2pp::Point get_ground_position() const;
-
 };
 
 
-#endif //WORLD_SPRITE_H
+#endif  // WORLD_SPRITE_H

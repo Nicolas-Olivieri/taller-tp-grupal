@@ -1,14 +1,18 @@
 #ifndef INVENTORY_UI_H
 #define INVENTORY_UI_H
-#include "../sprites/fixed/fixed_sprite.h"
-#include "client/SDL/sprites/ui/progress_bar_sprite.h"
+
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "client/SDL/sprite_creation/sprite_creator.h"
+#include "client/SDL/sprites/ui/progress_bar_sprite.h"
 
 class InventoryUI {
-friend class UserInterface;
+    friend class UserInterface;
 
 private:
-    SpriteCreator creator;
+    SpriteCreator& creator;
 
     InterfaceSprite ui;
 
@@ -20,9 +24,9 @@ private:
 
     // TODO refactorizar con toml
     const std::vector<SDL2pp::Rect> inventory_slots = {
-        {806, 220, 34, 34}, {874, 220, 34, 34}, {942, 220, 34, 34},
-        {806, 284, 34, 34}, {874, 284, 34, 34}, {942, 284, 34, 34},
-        {806, 348, 34, 34}, {874, 348, 34, 34}, {942, 348, 34, 34}};
+            {806, 220, 34, 34}, {874, 220, 34, 34}, {942, 220, 34, 34},
+            {806, 284, 34, 34}, {874, 284, 34, 34}, {942, 284, 34, 34},
+            {806, 348, 34, 34}, {874, 348, 34, 34}, {942, 348, 34, 34}};
 
     const std::vector<SDL2pp::Rect> equipment_slots = {{780, 447, 34, 34},   // Espada
                                                        {842, 447, 34, 34},   // Escudo
@@ -52,16 +56,16 @@ private:
     TextSprite safe_gold;
     TextSprite excess_gold;
 
-    int get_slot_at(const std::vector<SDL2pp::Rect> &slots, int x, int y) const;
+    int get_slot_at(const std::vector<SDL2pp::Rect>& slots, int x, int y) const;
 
-    std::optional<uint8_t> get_item_in_slot(const std::vector<HudSprite> &slots, int slot_index) const;
+    std::optional<uint8_t> get_item_in_slot(const std::vector<HudSprite>& slots, int slot_index) const;
 
 public:
-    InventoryUI(SDL2pp::Renderer &renderer, FontManager &font_manager, const std::string& username);
+    InventoryUI(SpriteCreator& sprite_creator, const std::string& username);
 
     void init_elements();
 
-    void update_player_state(const std::vector<PlayerInfoDTO> &players_information);
+    void update_player_state(const std::vector<PlayerInfoDTO>& players_information);
 
     void render();
 
@@ -71,4 +75,4 @@ public:
 };
 
 
-#endif //INVENTORY_UI_H
+#endif  // INVENTORY_UI_H

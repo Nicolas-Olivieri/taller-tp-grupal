@@ -1,6 +1,7 @@
 #ifndef INVENTORY_INFO_DTO_H
 #define INVENTORY_INFO_DTO_H
 
+#include <functional>
 #include <map>
 
 #include "common/dto/message.h"

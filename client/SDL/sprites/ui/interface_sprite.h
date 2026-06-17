@@ -4,7 +4,7 @@
 #include "client/SDL/sprites/base/sprite_layer.h"
 
 
-class InterfaceSprite : public Sprite {
+class InterfaceSprite: public Sprite {
 private:
     SpriteLayer image;
 
@@ -15,4 +15,4 @@ public:
 };
 
 
-#endif //INTERFACE_SPRITE_H
+#endif  // INTERFACE_SPRITE_H

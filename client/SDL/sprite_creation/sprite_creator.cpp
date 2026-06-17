@@ -2,20 +2,22 @@
 
 #include <map>
 #include <memory>
-#include <qcolor.h>
 #include <ranges>
+#include <string>
 #include <utility>
 
-#include "client/SDL/sprites/fixed/effect_sprite.h"
-#include "client/SDL/sprites/moving/enemy_sprite.h"
-#include "client/SDL/sprites/fixed/fixed_sprite.h"
-#include "client/SDL/sprites/moving/player_sprite.h"
+#include <qcolor.h>
+
 #include "client/SDL/sprites/base/sprite_label.h"
-#include "client/client_constants.h"
+#include "client/SDL/sprites/fixed/effect_sprite.h"
+#include "client/SDL/sprites/fixed/fixed_sprite.h"
+#include "client/SDL/sprites/moving/enemy_sprite.h"
+#include "client/SDL/sprites/moving/player_sprite.h"
 #include "client/SDL/sprites/ui/hud_sprite.h"
+#include "client/SDL/sprites/ui/interface_sprite.h"
 #include "client/SDL/sprites/ui/progress_bar_sprite.h"
 #include "client/SDL/sprites/ui/text_sprite.h"
-#include "client/SDL/sprites/ui/interface_sprite.h"
+#include "client/client_constants.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/map/asset_info.h"
 
@@ -116,7 +118,8 @@ InterfaceSprite SpriteCreator::create_sprite(UiElement ui_type, const SDL2pp::Po
     return ui;
 }
 
-ProgressBarSprite SpriteCreator::create_sprite(UiElement bar_type, const SDL2pp::Point position, size_t current, size_t max) {
+ProgressBarSprite SpriteCreator::create_sprite(UiElement bar_type, const SDL2pp::Point position,
+                                               size_t current, size_t max) {
     SpriteLayer base = create_sprite_layer(SpriteCategory::UI, static_cast<int>(bar_type));
     SDL2pp::Point size = base.frame.GetSize();
     SDL2pp::Rect box(position, size);
@@ -131,7 +134,7 @@ ProgressBarSprite SpriteCreator::create_sprite(UiElement bar_type, const SDL2pp:
 HudSprite SpriteCreator::create_sprite(const uint8_t id, const SDL2pp::Point position, bool has_amount) {
     SpriteLayer base = create_sprite_layer(SpriteCategory::HUD, id);
     SDL2pp::Point size = base.frame.GetSize();
-    SDL2pp::Rect box(position.x, position.y-4, size.x, size.y);
+    SDL2pp::Rect box(position.x, position.y - 4, size.x, size.y);
     auto ptr = std::make_unique<SpriteLayer>(base);
 
     if (has_amount) {
@@ -250,5 +253,3 @@ SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, co
         }
     }
 }
-
-

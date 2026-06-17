@@ -1,15 +1,27 @@
 #include "progress_bar_sprite.h"
 
+#include <algorithm>
+#include <utility>
 
-ProgressBarSprite::ProgressBarSprite(SpriteLayer &&image, const SDL2pp::Point &position, const SDL2pp::Point &size,
-                                     const SDL2pp::Rect box, const size_t current, const size_t max) :
-    Sprite(position, size, SDL2pp::Point(0,0)),
-    image(std::move(image)), box(box), max(max), current(current), label(std::nullopt) {}
+ProgressBarSprite::ProgressBarSprite(SpriteLayer&& image, const SDL2pp::Point& position,
+                                     const SDL2pp::Point& size, const SDL2pp::Rect box, const size_t current,
+                                     const size_t max):
+        Sprite(position, size, SDL2pp::Point(0, 0)),
+        image(std::move(image)),
+        box(box),
+        max(max),
+        current(current),
+        label(std::nullopt) {}
 
-ProgressBarSprite::ProgressBarSprite(SpriteLayer &&image, TextSprite &&label, const SDL2pp::Point &position, const SDL2pp::Point &size,
-                                     const SDL2pp::Rect box, const size_t current, const size_t max) :
-    Sprite(position, size, SDL2pp::Point(0,0)),
-    image(std::move(image)), box(box), max(max), current(current), label(std::move(label)) {}
+ProgressBarSprite::ProgressBarSprite(SpriteLayer&& image, TextSprite&& label, const SDL2pp::Point& position,
+                                     const SDL2pp::Point& size, const SDL2pp::Rect box, const size_t current,
+                                     const size_t max):
+        Sprite(position, size, SDL2pp::Point(0, 0)),
+        image(std::move(image)),
+        box(box),
+        max(max),
+        current(current),
+        label(std::move(label)) {}
 
 
 void ProgressBarSprite::update_values(const size_t new_current, const size_t new_max) {
@@ -22,7 +34,8 @@ void ProgressBarSprite::update_values(const size_t new_current, const size_t new
 }
 
 void ProgressBarSprite::render() {
-    if (max == 0) return;
+    if (max == 0)
+        return;
 
     const float ratio = static_cast<float>(current) / static_cast<float>(max);
     const int filled_w = static_cast<int>(box.w * ratio);

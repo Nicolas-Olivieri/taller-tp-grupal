@@ -1,11 +1,8 @@
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 
-
-#include <deque>
 #include <memory>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "SDL2pp/Renderer.hh"
@@ -13,106 +10,48 @@
 #include "client/SDL/fonts/font_manager.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/info/playerinfo.h"
+#include "ui/chat_box_ui.h"
 #include "ui/inventory_ui.h"
-
-struct BarValue {
-    SDL2pp::Texture& texture;
-    size_t current;
-    size_t max;
-};
-
-struct InventorySlotData {
-    uint8_t item_id;
-    uint8_t amount;
-};
 
 class UserInterface {
 private:
     SDL2pp::Renderer& renderer;
+    SpriteCreator sprite_creator;
+
     FontManager& font_manager;
 
     InventoryUI inventory_ui;
+    ChatBoxUI chat_ui;
+    InterfaceSprite game_border_ui;
 
-    // TODO convertirlo en un sprite
-    SDL2pp::Texture ui_texture;
     std::string& player_name;
     std::string clan_name;
-
-    std::deque<std::pair<std::string, SDL_Color>> chat_history;
-    size_t first_visible_message = 0;
-
-    SDL_Color yellow = {235, 224, 70, 255};
-    SDL_Color grey = {255, 255, 255, 140};
-    SDL_Color white = {255, 255, 255, 255};
-    SDL_Color green = {44, 230, 66, 140};
-    SDL_Color red = {214, 30, 30, 255};
-    SDL_Color light_blue = {44, 172, 230, 140};
-
-    SDL2pp::Rect history_messages = {20, 35, 710, 147};
-    SDL2pp::Rect input_box = {45, 190, 690, 25};
-
-
-    void enqueue_message(const std::string& message, SDL_Color color);
-
-    void cut_text_if_necessary(int& text_width, int max_width);
-
-    void add_twinkling_bar(std::string& display_text);
-
-    void render_text(const std::string& text, const SDL2pp::Rect& box_limit, const FontType& font_type) const;
-
-    void handle_chat_message(const ActionDTO& action);
-
-    void handle_chat_list(const ActionDTO& action);
-
-    void handle_list_bank(const ActionDTO& action);
-
-    void handle_list_items(const ActionDTO& action);
-
-    void handle_clan_message(const ActionDTO& action);
-
-    SDL_Color assign_message_color(const MessageType& type);
-
-    bool is_receiver_or_sender(const MessageType& type);
-
-    bool is_receiver(const MessageType& type);
-
-    size_t get_visible_lines() const;
 
 public:
     UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager);
 
-    void render();
+    void render(const std::string& input, bool is_chat_active);
 
-    void render_chat_history();
-
-    void render_chat_input(const std::string& input, bool is_chat_active);
-
-    void update_player_state(const std::vector<PlayerInfoDTO>& players_information);
-
+    // METODOS DEL CHAT ::::::
     void update_chat(const std::vector<ActionDTO>& actions);
 
     void chat_scroll_up();
-
     void chat_scroll_down();
-
     void chat_scroll_to_bottom();
+    bool is_over_chat(int x, int y);
 
-    bool is_over_chat(const int x, const int y);
 
-    int get_inventory_slot_at(int x, int y) const;
+    // METODOS DEL INVENTARIO ::::::
+    void update_player_state(const std::vector<PlayerInfoDTO>& players_information);
 
     std::optional<uint8_t> get_item_in_inventory_slot(int slot_index) const;
-
-    void bind_item(int slot_index);
-
-    std::optional<uint8_t> get_bound_item_id() const;
-
-    void clear_bound_item();
-
+    std::optional<uint8_t> get_item_in_equipment_slot(int slot_index) const;
+    int get_inventory_slot_at(int x, int y) const;
     int get_equipment_slot_at(int x, int y) const;
 
-    std::optional<uint8_t> get_item_in_equipment_slot(int slot_index) const;
+    void bind_item(int slot_index);
+    std::optional<uint8_t> get_bound_item_id() const;
+    void clear_bound_item();
 };
-
 
 #endif  // USER_INTERFACE_H

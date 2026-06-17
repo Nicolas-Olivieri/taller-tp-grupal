@@ -2,11 +2,10 @@
 #define MOVING_SPRITE_H
 #include <memory>
 
-#include "common/direction.h"
-
 #include "../base/sprite.h"
 #include "../base/sprite_label.h"
 #include "client/SDL/sprites/base/world_sprite.h"
+#include "common/direction.h"
 
 
 class MovingSprite: public WorldSprite {

@@ -14,7 +14,6 @@ public:
     bool has_finished() const;
 
     virtual void update_frame(int iteration) override;
-
 };
 
 

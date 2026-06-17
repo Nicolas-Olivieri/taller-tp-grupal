@@ -1,5 +1,7 @@
 #include "inventory_info.h"
 
+#include <functional>
+
 #include "common/protocol/serializer.h"
 
 

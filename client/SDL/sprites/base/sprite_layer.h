@@ -4,11 +4,11 @@
 #include <map>
 #include <variant>
 
-#include "common/direction.h"
-#include "client/SDL/sprite_creation/animation.h"
 #include "SDL2pp/Point.hh"
 #include "SDL2pp/Rect.hh"
 #include "SDL2pp/Texture.hh"
+#include "client/SDL/sprite_creation/animation.h"
+#include "common/direction.h"
 
 class SpriteLayer {
     friend class SpriteCreator;
@@ -32,7 +32,7 @@ public:
 
     void render(const SDL2pp::Point& base_position);
 
-    void render(const SDL2pp::Rect &source, const SDL2pp::Rect &dest);
+    void render(const SDL2pp::Rect& source, const SDL2pp::Rect& dest);
 
     void update_frame(int iteration, Direction action);
 

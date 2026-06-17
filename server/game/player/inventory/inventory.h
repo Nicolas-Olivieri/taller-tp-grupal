@@ -2,6 +2,7 @@
 #define INVENTORY_H
 
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <span>
 #include <stdexcept>
@@ -47,7 +48,7 @@ public:
 
     void drop_item(const Equipment& equipment, uint8_t item);
 
-    const std::map<uint8_t, uint8_t, std::greater<>> &get_items() const;
+    const std::map<uint8_t, uint8_t, std::greater<>>& get_items() const;
 
     void clear();
 

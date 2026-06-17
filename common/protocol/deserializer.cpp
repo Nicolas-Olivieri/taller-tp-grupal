@@ -1,8 +1,8 @@
 #include "deserializer.h"
 
+#include <functional>
 #include <map>
 #include <stdexcept>
-#include <unordered_map>
 
 #include <arpa/inet.h>
 

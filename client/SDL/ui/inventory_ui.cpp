@@ -1,19 +1,22 @@
 #include "inventory_ui.h"
 
 #include <ranges>
+#include <vector>
+
+#include <SDL2pp/Rect.hh>
 
 #include "client/config/client_config.h"
 
-InventoryUI::InventoryUI(SDL2pp::Renderer& renderer, FontManager& font_manager, const std::string& username) :
-    creator(SpriteCreator(renderer, font_manager)),
-    ui(creator.create_sprite(UiElement::INVENTORY, SDL2pp::Point(756, 0))),
-    player_name(creator.create_sprite(username_rect, username, FontType::UI_USERNAME, white)),
-    clan_name(creator.create_sprite(clan_rect, "", FontType::UI_CLAN, white)),
-    inventory_label(creator.create_sprite(inventory_rect, "Inventario", FontType::UI_MENU_TITLE, white)),
-    statistics_label(creator.create_sprite(stats_rect, "Estadísticas", FontType::UI_MENU_TITLE, white)),
-    xp_level(creator.create_sprite(xp_level_rect, "", FontType::UI_MENU, white)),
-    safe_gold(creator.create_sprite(safe_gold_rect, "", FontType::UI_MENU, white)),
-    excess_gold(creator.create_sprite(excess_gold_rect, "", FontType::UI_MENU, white)) {
+InventoryUI::InventoryUI(SpriteCreator& sprite_creator, const std::string& username):
+        creator(sprite_creator),
+        ui(creator.create_sprite(UiElement::INVENTORY, SDL2pp::Point(756, 0))),
+        player_name(creator.create_sprite(username_rect, username, FontType::UI_USERNAME, white)),
+        clan_name(creator.create_sprite(clan_rect, "", FontType::UI_CLAN, white)),
+        inventory_label(creator.create_sprite(inventory_rect, "Inventario", FontType::UI_MENU_TITLE, white)),
+        statistics_label(creator.create_sprite(stats_rect, "Estadísticas", FontType::UI_MENU_TITLE, white)),
+        xp_level(creator.create_sprite(xp_level_rect, "", FontType::UI_MENU, white)),
+        safe_gold(creator.create_sprite(safe_gold_rect, "", FontType::UI_MENU, white)),
+        excess_gold(creator.create_sprite(excess_gold_rect, "", FontType::UI_MENU, white)) {
     init_elements();
 }
 
@@ -22,27 +25,30 @@ void InventoryUI::init_elements() {
     bars.push_back(std::move(health));
 
     ProgressBarSprite mana = creator.create_sprite(UiElement::MANA_BAR, SDL2pp::Point(791, 627), 0, 1);
-    bars.push_back( std::move(mana));
+    bars.push_back(std::move(mana));
 
     ProgressBarSprite xp = creator.create_sprite(UiElement::XP_BAR, SDL2pp::Point(837, 657), 0, 1);
     bars.push_back(std::move(xp));
 
-    for (const auto& position : inventory_slots) {
+    for (const auto& position: inventory_slots) {
         HudSprite item = creator.create_sprite(0, position.GetTopLeft(), true);
         inventory.push_back(std::move(item));
     }
 
-    for (const auto& position : equipment_slots) {
+    for (const auto& position: equipment_slots) {
         HudSprite item = creator.create_sprite(0, position.GetTopLeft(), false);
         equipment.push_back(std::move(item));
     }
 }
 
 void InventoryUI::update_player_state(const std::vector<PlayerInfoDTO>& players_information) {
-    const auto player = std::ranges::find_if(players_information,
-        [this](const PlayerInfoDTO& player_info) { return player_info.name == player_name.get_text(); });
+    const auto player = std::ranges::find_if(players_information, [this](const PlayerInfoDTO& player_info) {
+        return player_info.name == player_name.get_text();
+    });
 
-    if (player == players_information.end()) { return; }
+    if (player == players_information.end()) {
+        return;
+    }
 
     const PlayerStatsDTO& stats(player->stats);
     const EquipmentInfoDTO& equipment_info(player->equipment);
@@ -58,7 +64,7 @@ void InventoryUI::update_player_state(const std::vector<PlayerInfoDTO>& players_
     clan_name.set_text(player->clan_name);
 
     int slot = 0;
-    for (const auto &[item_id, amount]: player->inventory.items) {
+    for (const auto& [item_id, amount]: player->inventory.items) {
         creator.update_appearance(inventory[slot], item_id, amount);
         slot++;
     }
@@ -78,19 +84,25 @@ void InventoryUI::render() {
     clan_name.render();
 
     inventory_label.render();
-    for (auto& item : inventory) { item.render(); }
-    for (auto& item : equipment) { item.render(); }
+    for (auto& item: inventory) {
+        item.render();
+    }
+    for (auto& item: equipment) {
+        item.render();
+    }
 
     safe_gold.render();
     excess_gold.render();
     statistics_label.render();
-    for (auto &bar: bars) { bar.render(); }
+    for (auto& bar: bars) {
+        bar.render();
+    }
     xp_level.render();
 }
 
 
 // DETECTAR CLICK EN SLOT Y OBTENER ELEMENTO ::::::::::
-int InventoryUI::get_slot_at(const std::vector<SDL2pp::Rect> &slots, const int x, const int y) const {
+int InventoryUI::get_slot_at(const std::vector<SDL2pp::Rect>& slots, const int x, const int y) const {
     const SDL2pp::Point click_pos(x, y);
     for (size_t i = 0; i < slots.size(); ++i) {
         if (slots[i].Contains(click_pos))
@@ -100,7 +112,8 @@ int InventoryUI::get_slot_at(const std::vector<SDL2pp::Rect> &slots, const int x
     return -1;
 }
 
-std::optional<uint8_t> InventoryUI::get_item_in_slot(const std::vector<HudSprite>& slots, const int slot_index) const {
+std::optional<uint8_t> InventoryUI::get_item_in_slot(const std::vector<HudSprite>& slots,
+                                                     const int slot_index) const {
     if (slot_index >= 0 and static_cast<size_t>(slot_index) < inventory.size()) {
         uint8_t id = slots[slot_index].get_id();
         if (id != 0)
