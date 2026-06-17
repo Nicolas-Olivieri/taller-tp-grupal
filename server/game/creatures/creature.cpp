@@ -65,21 +65,43 @@ std::vector<Loot> Creature::drop() {
             drop.push_back(Loot(Calculator::calculate_random_drop_gold(stats.health.get_max())));
             break;
         case DropType::USABLE:
-            drop.push_back(
-                    Loot(Calculator::random_number(config.get_min_usable_id(), config.get_max_usable_id())));
+            drop.push_back(Loot(Calculator::random_choice(config.get_regular_equipables_ids())));
             break;
         case DropType::EQUIPABLE: {
-            uint8_t item =
-                    Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
-
-            if (item != NO_ITEM)
-                drop.push_back(Loot(item));
+            uint8_t item = Calculator::random_choice(config.get_regular_equipables_ids());
+            drop.push_back(Loot(item));
         } break;
         default:
             throw std::invalid_argument("There is no known way to drop something of this type");
     }
 
     return drop;
+}
+
+std::vector<Loot> Creature::secret_drop() {
+    std::vector<Loot> secret_drop;
+
+    const DropProbabilitiesData& data = GameConfig::get().get_drop_probabilities();
+
+    std::vector<float> probabilities = {data.nothing, data.gold, data.usable, data.equipable};
+    int index = Calculator::random_from_weighted_probabilities(probabilities);
+
+    GameConfig& config = GameConfig::get();
+
+    switch (static_cast<DropType>(index)) {
+        case DropType::NOTHING:
+        case DropType::GOLD:
+        case DropType::USABLE:
+        case DropType::EQUIPABLE: {
+            uint8_t item = Calculator::random_choice(config.get_secret_equipables_ids());
+            if (item != NO_ITEM)
+                secret_drop.push_back(Loot(item));
+        } break;
+        default:
+            throw std::invalid_argument("There is no known way to secret-drop something of this type");
+    }
+
+    return secret_drop;
 }
 
 void Creature::update() {

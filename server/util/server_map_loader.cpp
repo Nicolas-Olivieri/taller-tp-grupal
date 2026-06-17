@@ -39,9 +39,9 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
         std::vector<TileInfoDTO> row;
         for (int x = 0; x < width; x++) {
             const bool walkability = parse_int<uint8_t>();
-            const auto biome = parse_int<uint8_t>();
+            const auto floor = parse_int<uint8_t>();
 
-            row.push_back(TileInfoDTO(walkability, biome));
+            row.push_back(TileInfoDTO(walkability, floor));
         }
         grid_values.push_back(row);
     }

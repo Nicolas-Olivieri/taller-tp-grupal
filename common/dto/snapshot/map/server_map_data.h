@@ -8,8 +8,7 @@
 #include "grid_matrix.h"
 #include "teleport_info.h"
 
-
-struct ServerMapDataDTO: public ProtocolMessageDTO {
+struct ServerMapDataDTO {
     uint16_t width;
     uint16_t height;
     GridMatrixDTO grid;
@@ -18,10 +17,6 @@ struct ServerMapDataDTO: public ProtocolMessageDTO {
 
     ServerMapDataDTO(uint16_t w, uint16_t h, const GridMatrixDTO& grid, const std::vector<AllyInfoDTO>& npcs,
                      const std::vector<TeleportInfoDTO>& teleports);
-
-    size_t message_size() const override;
-
-    void accept(Serializer& serializer) const override;
 };
 
 

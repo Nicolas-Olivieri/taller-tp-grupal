@@ -179,11 +179,11 @@ CreatureStatsDTO Deserializer::recv_creature_stats() {
 }
 
 LootInfoDTO Deserializer::recv_loot_info() {
-    bool is_item = recv_uint8();
+    LootType type = recv_loot_type();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
 
-    return LootInfoDTO(is_item, x, y);
+    return LootInfoDTO(type, x, y);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -486,10 +486,24 @@ AssetInfoDTO Deserializer::recv_asset_info() {
 
     return AssetInfoDTO(id, x, y);
 }
+
 ClanMessageDTO Deserializer::recv_clan_message() {
     const std::string receiver_clan = recv_string();
     const std::string content = recv_string();
     const std::string sender = recv_string();
 
     return ClanMessageDTO(receiver_clan, content, sender);
+}
+
+LootType Deserializer::recv_loot_type() {
+    uint8_t byte = recv_uint8();
+
+    switch (static_cast<LootType>(byte)) {
+        case LootType::GOLD:
+        case LootType::ITEM:
+        case LootType::SECRET_ITEM:
+            return static_cast<LootType>(byte);
+        default:  // Undefined Behavior -> Excepción
+            throw std::invalid_argument("Byte de looot no reconocido");
+    }
 }

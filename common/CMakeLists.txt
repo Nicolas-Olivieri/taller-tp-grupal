@@ -92,6 +92,7 @@ target_sources(taller_common
         toml_test.h
         util/rate_timer.h
         direction.h
+        loot_type.h
         queue.h
         logger.h
         dto/message.h

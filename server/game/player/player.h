@@ -46,6 +46,7 @@ private:
     std::string clan_name;
 
     bool has_infinite_recoverables_cheat_activated;
+    uint32_t last_experience_amount_earned;
 
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
@@ -87,6 +88,8 @@ public:
 
     void earn_xp(uint32_t amount);
 
+    void undo_xp_gain();
+
     void update() override;
 
     ~Player() override = default;
@@ -98,6 +101,10 @@ public:
     void unbind_ally();
 
     void heal();
+
+    void health_recover(uint16_t amount);
+
+    void mana_recover(uint16_t amount);
 
     void spend_gold(uint16_t amount);
 

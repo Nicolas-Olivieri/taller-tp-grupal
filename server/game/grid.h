@@ -33,9 +33,14 @@ public:
 
     Position spawn() const;
 
+    Position spawn_near(const std::vector<Position>& positions) const;
+
     Direction closest_movement(const Position& position, const Position& target) const;
 
     Direction random_movement(const Position& current) const;
+
+private:
+    void add_near_positions(std::vector<Position>& near_positions, uint16_t pos_x, uint16_t pos_y) const;
 };
 
 

@@ -61,8 +61,7 @@ EnemySprite SpriteCreator::create_sprite(const CreatureInfoDTO& creature_info) {
 
 FixedSprite SpriteCreator::create_sprite(const LootInfoDTO& loot_info) {
     const SDL2pp::Point position(loot_info.x, loot_info.y);
-    SpriteLayer base = create_sprite_layer(SpriteCategory::LOOT,
-                                           static_cast<uint8_t>(loot_info.is_item));  // false: 0, true: 1
+    SpriteLayer base = create_sprite_layer(SpriteCategory::LOOT, static_cast<uint8_t>(loot_info.type));
     const SDL2pp::Point size = base.frame.GetSize();
 
     FixedSprite loot(std::move(base), position, size);

@@ -3,7 +3,11 @@
 #include <algorithm>
 #include <utility>
 
+#include "server/util/calculator.h"
+
 #define IDLE_WEIGHT 4  // TODO: toml
+#define NEAR_MIN_FACTOR 6
+#define NEAR_MAX_FACTOR 14  // TODO: toml
 
 Grid::Grid(): width_(0), height_(0) {}
 
@@ -16,7 +20,7 @@ Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         tile_row.reserve(row.size());
 
         std::ranges::transform(row, std::back_inserter(tile_row), [](const auto& tile_value) {
-            return Tile(tile_value.walkable, tile_value.biome);
+            return Tile(tile_value.walkable, tile_value.floor);
         });
 
         tiles_.emplace_back(std::move(tile_row));
@@ -36,6 +40,8 @@ Tile& Grid::get_tile(const Position& position) {
 
 
 Position Grid::spawn() const {
+    GameConfig& config = GameConfig::get();
+
     static std::random_device rd;
     static std::default_random_engine generator(rd());
     std::uniform_int_distribution get_random_width(0, width_ - 1);
@@ -44,9 +50,40 @@ Position Grid::spawn() const {
     do {
         x = get_random_width(generator);
         y = get_random_height(generator);
-    } while (!is_tile_available(x, y));
+    } while (!is_tile_available(x, y) || !config.has_biome_associated(tiles_[y][x].floor) ||
+             config.get_biome_id(tiles_[y][x].floor) != SAFE_ZONE_FLOOR);
 
     return Position(x, y);
+}
+
+Position Grid::spawn_near(const std::vector<Position>& positions) const {
+    std::vector<Position> near_positions;
+
+    for (const auto& position: positions) {
+        add_near_positions(near_positions, position.get_x(), position.get_y());
+    }
+
+    if (near_positions.empty())
+        throw std::runtime_error("There are no positions near any player to spawn a creature");
+
+    return Calculator::random_choice(near_positions);
+}
+
+void Grid::add_near_positions(std::vector<Position>& near_positions, uint16_t pos_x, uint16_t pos_y) const {
+    for (uint16_t y = std::max(0, pos_y - NEAR_MAX_FACTOR); y < std::min(height_, pos_y + NEAR_MAX_FACTOR);
+         y++) {
+        for (uint16_t x = std::max(0, pos_x - NEAR_MAX_FACTOR); x < std::min(width_, pos_x + NEAR_MAX_FACTOR);
+             x++) {
+            uint16_t distance_x = std::abs(x - pos_x);
+            uint16_t distance_y = std::abs(y - pos_y);
+
+            uint16_t current_distance = std::max(distance_x, distance_y);
+
+            if (current_distance >= NEAR_MIN_FACTOR && is_tile_available(x, y)) {
+                near_positions.push_back(Position(x, y));
+            }
+        }
+    }
 }
 
 bool Grid::is_tile_available(int x, int y) const {

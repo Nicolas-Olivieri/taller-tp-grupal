@@ -98,7 +98,7 @@ void Serializer::serialize(const CreatureStatsDTO& stats) {
 
 
 void Serializer::serialize(const LootInfoDTO& info) {
-    serialize(static_cast<uint8_t>(info.is_item));
+    serialize(static_cast<uint8_t>(info.type));
     serialize(info.x);
     serialize(info.y);
 }

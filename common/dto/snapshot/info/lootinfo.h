@@ -2,13 +2,14 @@
 #define LOOTINFODTO_H
 
 #include "common/dto/message.h"
+#include "common/loot_type.h"
 
 struct LootInfoDTO: public ProtocolMessageDTO {
-    bool is_item;
+    LootType type;
     uint16_t x;
     uint16_t y;
 
-    LootInfoDTO(bool is_item, uint16_t x, uint16_t y);
+    LootInfoDTO(LootType type, uint16_t x, uint16_t y);
 
     size_t message_size() const override;
 

@@ -121,8 +121,3 @@ uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& e
 uint8_t Calculator::calculate_creature_level(uint8_t base, float multiplier) {
     return base * random_float(1, multiplier);
 }
-
-uint8_t Calculator::random_choice(const std::vector<uint8_t>& elems) {
-    uint8_t index = random_number(0, elems.size() - 1);
-    return elems[index];
-}

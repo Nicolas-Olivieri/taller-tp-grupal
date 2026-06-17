@@ -47,7 +47,9 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
                           GameConfig::get().get_fair_play().max_newbie_level)},
              {AttackStatus::FAIR_PLAY, std::format("No puedes atacar ni ser atacado por un jugador que "
                                                    "tengas más de {} niveles de diferencia",
-                                                   GameConfig::get().get_fair_play().fair_play_gap)}
+                                                   GameConfig::get().get_fair_play().fair_play_gap)},
+             {AttackStatus::TARGET_IN_SAFE_ZONE, "El objetivo esta en una zona segura"},
+             {AttackStatus::SELF_IN_SAFE_ZONE, "Te encuentras en una zona segura"}
 
             });
 

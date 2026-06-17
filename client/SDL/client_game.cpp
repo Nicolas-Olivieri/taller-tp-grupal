@@ -53,6 +53,7 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, 
         is_chat_active(false),
         chat_text(""),
         cmd_handler(player_name, connection, chat_text, ui) {
+    ClientConfig::get();
     SDL_SetWindowHitTest(window.Get(), hit_test_callback, this);
 }
 

@@ -39,6 +39,8 @@ public:
 
     std::vector<Loot> drop() override;
 
+    std::vector<Loot> secret_drop();
+
     void update() override;
 
     void update_state();
