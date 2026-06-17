@@ -4,14 +4,7 @@
 #include "common/npc_type.h"
 #include "server/game/position.h"
 
-enum class TeleportStatus {
-    SUCCESS,
-    GHOST_FAIL,
-    DESTINATION_BLOCKED,
-    ACTION_NOT_ACCEPTED,
-    PLAYER_UNBOUNDED,
-    NO_RESULT
-};
+enum class TeleportStatus { SUCCESS, GHOST_FAIL, ACTION_NOT_ACCEPTED, PLAYER_UNBOUNDED, NO_RESULT };
 
 struct TeleportResult {
     TeleportStatus status;

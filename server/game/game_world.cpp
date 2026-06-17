@@ -789,26 +789,13 @@ TeleportResult GameWorld::teleport_player(const std::string& player_name) {
             execute_ally_action(player_name, AllyActionPayload(AllyAction::TELEPORT)).teleport;
 
     if (result.status == TeleportStatus::SUCCESS) {
-        const std::vector<Direction> adjacent_directions = {Direction::DOWN, Direction::UP, Direction::LEFT,
-                                                            Direction::RIGHT};
+        // Como sacerdote asume que su derecha siempre está desocupada, totem asume que directamente arriba de
+        // su base no hay entidades ni colliders
+        Position target_pos = result.destination.move(Direction::UP);
 
-        bool teleported = false;
-        for (const auto& direction: adjacent_directions) {
-            Position target_pos = result.destination.move(direction);
-
-            if (grid.is_tile_available(target_pos.get_x(), target_pos.get_y())) {
-                exchange_position(player.get_position(), target_pos, &player);
-                player.update_position(target_pos, Direction::DOWN);
-                teleported = true;
-                break;
-            }
-        }
-
-        if (!teleported) {
-            result.status = TeleportStatus::DESTINATION_BLOCKED;
-        } else {
-            player.unbind_ally();
-        }
+        exchange_position(player.get_position(), target_pos, &player);
+        player.update_position(target_pos, Direction::DOWN);
+        player.unbind_ally();
     }
 
     return result;

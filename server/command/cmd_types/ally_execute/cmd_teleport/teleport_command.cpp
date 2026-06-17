@@ -15,8 +15,6 @@ void TeleportCommand::build_snapshot(SnapshotBuilder& builder) {
 
     static std::map<TeleportStatus, std::string> result_to_message(
             {{TeleportStatus::SUCCESS, "El viaje a través del éter ha sido un éxito..."},
-             {TeleportStatus::DESTINATION_BLOCKED,
-              "El destino está bloqueado por alguien más, no podés viajar ahora"},
              {TeleportStatus::GHOST_FAIL, "Tu forma espiritual no resistiría el viaje"},
              {TeleportStatus::ACTION_NOT_ACCEPTED, "Solo un Totem responde a ese pedido"}});
 
