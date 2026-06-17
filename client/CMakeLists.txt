@@ -22,6 +22,10 @@ target_sources(taller_client
         SDL/sprites/moving/moving_sprite.cpp
         SDL/sprites/moving/enemy_sprite.cpp
         SDL/sprites/moving/player_sprite.cpp
+        SDL/sprites/ui/progress_bar_sprite.cpp
+        SDL/sprites/ui/hud_sprite.cpp
+        SDL/sprites/ui/text_sprite.cpp
+        SDL/sprites/ui/interface_sprite.cpp
 
         SDL/sprite_creation/animation.cpp
         SDL/sprite_creation/animation_pool.cpp
@@ -39,6 +43,7 @@ target_sources(taller_client
 
         SDL/key_mapper.cpp
         SDL/user_interface.cpp
+        SDL/ui/inventory_ui.cpp
 
         config/client_config.cpp
 
@@ -70,6 +75,10 @@ target_sources(taller_client
         SDL/sprites/moving/moving_sprite.h
         SDL/sprites/moving/enemy_sprite.h
         SDL/sprites/moving/player_sprite.h
+        SDL/sprites/ui/progress_bar_sprite.h
+        SDL/sprites/ui/hud_sprite.h
+        SDL/sprites/ui/text_sprite.h
+        SDL/sprites/ui/interface_sprite.h
 
         SDL/sprite_creation/animation.h
         SDL/sprite_creation/animation_pool.h
@@ -92,6 +101,7 @@ target_sources(taller_client
         SDL/key_mapper.h
 
         SDL/user_interface.h
+        SDL/ui/inventory_ui.h
 
         config/client_config.h
     )

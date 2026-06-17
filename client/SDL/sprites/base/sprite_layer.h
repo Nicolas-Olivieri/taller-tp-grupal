@@ -44,6 +44,8 @@ public:
 
     int get_animation_frame_amount() const;
 
+    uint8_t get_id() const;
+
     bool is_current_texture(int other) const;
 
     std::optional<Direction> get_last_action() const;

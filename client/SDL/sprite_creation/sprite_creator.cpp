@@ -2,6 +2,7 @@
 
 #include <map>
 #include <memory>
+#include <qcolor.h>
 #include <ranges>
 #include <utility>
 
@@ -11,6 +12,10 @@
 #include "client/SDL/sprites/moving/player_sprite.h"
 #include "client/SDL/sprites/base/sprite_label.h"
 #include "client/client_constants.h"
+#include "client/SDL/sprites/ui/hud_sprite.h"
+#include "client/SDL/sprites/ui/progress_bar_sprite.h"
+#include "client/SDL/sprites/ui/text_sprite.h"
+#include "client/SDL/sprites/ui/interface_sprite.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/map/asset_info.h"
 
@@ -103,6 +108,53 @@ FixedSprite SpriteCreator::create_sprite(const SpriteCategory category, const As
     return asset;
 }
 
+InterfaceSprite SpriteCreator::create_sprite(UiElement ui_type, const SDL2pp::Point& position) {
+    SpriteLayer base = create_sprite_layer(SpriteCategory::UI, static_cast<int>(ui_type));
+    SDL2pp::Point size = base.frame.GetSize();
+
+    InterfaceSprite ui(std::move(base), position, size);
+    return ui;
+}
+
+ProgressBarSprite SpriteCreator::create_sprite(UiElement bar_type, const SDL2pp::Point position, size_t current, size_t max) {
+    SpriteLayer base = create_sprite_layer(SpriteCategory::UI, static_cast<int>(bar_type));
+    SDL2pp::Point size = base.frame.GetSize();
+    SDL2pp::Rect box(position, size);
+
+    SDL_Color white = {255, 255, 255, 255};
+    TextSprite label = create_sprite(box, "", FontType::UI_MENU, white);
+
+    ProgressBarSprite ui(std::move(base), (std::move(label)), position, size, box, current, max);
+    return ui;
+}
+
+HudSprite SpriteCreator::create_sprite(const uint8_t id, const SDL2pp::Point position, bool has_amount) {
+    SpriteLayer base = create_sprite_layer(SpriteCategory::HUD, id);
+    SDL2pp::Point size = base.frame.GetSize();
+    SDL2pp::Rect box(position.x, position.y-4, size.x, size.y);
+    auto ptr = std::make_unique<SpriteLayer>(base);
+
+    if (has_amount) {
+        SDL_Color white = {255, 255, 255, 255};
+        TextSprite amount_label = create_sprite(box, "", FontType::UI_ITEM_AMOUNT, white);
+
+        HudSprite item(renderer, std::move(ptr), std::move(amount_label), position, size);
+        return item;
+    }
+
+    HudSprite item(renderer, std::move(ptr), position, size);
+    return item;
+}
+
+TextSprite SpriteCreator::create_sprite(const SDL2pp::Rect box, const std::string& text,
+                                        const FontType font_type, const SDL2pp::Color font_color) {
+    SDL2pp::Font& font = font_manager.get_font(font_type);
+    TextSprite label(renderer, box, text, font, font_color);
+
+    return label;
+}
+
+
 void SpriteCreator::update_appearance(PlayerSprite& player, const AppearanceDTO& appearance,
                                       const EquipmentInfoDTO& equipment) {
     // En caso de ser fantasma, no se le aplica ningún update
@@ -139,28 +191,6 @@ void SpriteCreator::convert_to_ghost(PlayerSprite& player) {
         player.remove_layer(Layer::WEAPON);
 }
 
-
-SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, const uint8_t id,
-                                               const SDL2pp::Point& offset) {
-    SDL2pp::Texture& texture = texture_pool.get_sprite_texture(category, id);
-
-    switch (category) {
-        case SpriteCategory::NPC:
-        case SpriteCategory::TILE:
-        case SpriteCategory::COLLIDER:
-        case SpriteCategory::LOOT:
-        case SpriteCategory::ATTACK_VFX:
-        case SpriteCategory::ACTION_VFX: {
-            const Animation action = animation_pool.get_item_animation(category, id);
-            return SpriteLayer(renderer, texture, id, offset, action);
-        }
-        default: {
-            auto actions = animation_pool.get_walking_animations(category);
-            return SpriteLayer(renderer, texture, id, offset, actions);
-        }
-    }
-}
-
 void SpriteCreator::update_layer(PlayerSprite& player, const SpriteCategory category, const Layer layer,
                                  const uint8_t id) {
     if (!player.layer_is_different(layer, id)) {
@@ -184,3 +214,41 @@ SDL2pp::Point SpriteCreator::get_layer_offset(const Layer layer) {
             return {0, HEAD_OFFSET};
     }
 }
+
+
+void SpriteCreator::update_appearance(HudSprite& item, const uint8_t id, const int amount) {
+    item.update_amount_label(amount);
+    if (item.is_current_appearance(id)) {
+        return;
+    }
+
+    SpriteLayer new_appearance = create_sprite_layer(SpriteCategory::HUD, id);
+    auto ptr = std::make_unique<SpriteLayer>(new_appearance);
+    item.update_appearance(std::move(ptr));
+}
+
+
+SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, const uint8_t id,
+                                               const SDL2pp::Point& offset) {
+    SDL2pp::Texture& texture = texture_pool.get_sprite_texture(category, id);
+
+    switch (category) {
+        case SpriteCategory::NPC:
+        case SpriteCategory::TILE:
+        case SpriteCategory::COLLIDER:
+        case SpriteCategory::LOOT:
+        case SpriteCategory::ATTACK_VFX:
+        case SpriteCategory::ACTION_VFX:
+        case SpriteCategory::UI:
+        case SpriteCategory::HUD: {
+            const Animation action = animation_pool.get_item_animation(category, id);
+            return SpriteLayer(renderer, texture, id, offset, action);
+        }
+        default: {
+            auto actions = animation_pool.get_walking_animations(category);
+            return SpriteLayer(renderer, texture, id, offset, actions);
+        }
+    }
+}
+
+

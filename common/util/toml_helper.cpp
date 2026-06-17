@@ -17,7 +17,9 @@ SpriteCategory TomlHelper::get_sprite_category(const std::string& category) {
                                                        {"loot", SpriteCategory::LOOT},
                                                        {"equipment", SpriteCategory::EQUIPMENT},
                                                        {"vfx_attack", SpriteCategory::ATTACK_VFX},
-                                                       {"vfx_other", SpriteCategory::ACTION_VFX}};
+                                                       {"vfx_other", SpriteCategory::ACTION_VFX},
+                                                       {"game_ui", SpriteCategory::UI},
+                                                       {"hud_items", SpriteCategory::HUD}};
 
     return map.at(category);
 }

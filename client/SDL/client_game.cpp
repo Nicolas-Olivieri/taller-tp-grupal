@@ -444,8 +444,6 @@ void ClientGame::handle_mouse_click(const SDL_Event& event) {
 void ClientGame::render_ui_and_world() {
     ui.render();
 
-    ui.render_fields();
-
     ui.render_chat_history();
 
     ui.render_chat_input(chat_text, is_chat_active);

@@ -64,3 +64,5 @@ SDL2pp::Rect SpriteLayer::get_frame_area() const { return frame; }
 int SpriteLayer::get_animation_frame_amount() const {
     return std::get<Animation>(animations).get_frame_amount();
 }
+
+uint8_t SpriteLayer::get_id() const { return id; }

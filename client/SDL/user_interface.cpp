@@ -15,34 +15,14 @@
 UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager):
         renderer(renderer),
         font_manager(font_manager),
+        inventory_ui(renderer, font_manager, player_name),
         ui_texture(renderer, DATA_PATH "/interfaz_principal.bmp"),
         player_name(player_name),
-        clan_name(""),
-        current_inventory(),
-        current_equipment(),
-        health_texture(renderer, DATA_PATH "/barra_vida.bmp"),
-        mana_texture(renderer, DATA_PATH "/barra_mana.bmp"),
-        xp_texture(renderer, DATA_PATH "/barra_experiencia.bmp") {}
+        clan_name("") {}
 
-void UserInterface::render() { renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt); }
-
-void UserInterface::render_fields() {
-    render_text(player_name, username_rect, FontType::UI_USERNAME);
-    render_text(clan_name, clan_rect, FontType::UI_CLAN);
-
-    render_text("Inventario", inventory_rect, FontType::UI_MENU_TITLE);
-    render_inventory();
-    render_equipment();
-
-    render_text("Estadísticas", stats_rect, FontType::UI_MENU_TITLE);
-
-    for (const auto& [box, value]: bar_values) {
-        render_bar_value(box, value);
-    }
-
-    for (const auto& [box, value]: field_values) {
-        render_text(value, box, FontType::UI_MENU);
-    }
+void UserInterface::render() {
+    inventory_ui.render();
+    //renderer.Copy(ui_texture, SDL2pp::NullOpt, SDL2pp::NullOpt);
 }
 
 void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box_limit,
@@ -60,79 +40,6 @@ void UserInterface::render_text(const std::string& text, const SDL2pp::Rect& box
                                  box_limit.y + (box_limit.h - text_h) / 2, text_w, text_h};
 
     renderer.Copy(text_texture, SDL2pp::NullOpt, centered_box);
-}
-
-void UserInterface::render_bar_value(const SDL2pp::Rect& box, const BarValue& value) {
-    if (value.max == 0)
-        return;
-
-    float ratio = static_cast<float>(value.current) / static_cast<float>(value.max);
-    int filled_w = static_cast<int>(box.w * ratio);
-
-    renderer.Copy(value.texture, SDL2pp::Rect(0, 0, filled_w, value.texture.GetHeight()),
-                  SDL2pp::Rect(box.x, box.y, filled_w, box.h));
-
-    std::stringstream text;
-    text << value.current << " / " << value.max;
-    render_text(text.str(), box, FontType::UI_MENU);
-}
-
-void UserInterface::render_inventory() {
-    for (size_t i = 0; i < current_inventory.size(); ++i) {
-        const uint8_t item_id = current_inventory[i].item_id;
-        const uint8_t amount = current_inventory[i].amount;
-        if (item_id != 0) {
-            const SDL2pp::Rect& slot = inventory_slots[i];
-            render_item(slot, item_id);
-            render_item_amount(slot, amount);
-
-            if (bound_slot_index.has_value() and bound_slot_index.value() == static_cast<int>(i)) {
-                renderer.SetDrawColor(yellow.r, yellow.g, yellow.b, yellow.a);
-                renderer.DrawRect(slot);
-                // TODO: Esto ajusta el color por defecto, revisar si los valores son correctos
-                renderer.SetDrawColor(0, 0, 0, 255);
-            }
-        }
-    }
-}
-
-void UserInterface::render_equipment() {
-    for (size_t i = 0; i < current_equipment.size(); ++i) {
-        const uint8_t item_id = current_equipment[i];
-        if (item_id != 0) {
-            render_item(equipment_slots[i], item_id);
-        }
-    }
-}
-
-void UserInterface::render_item(const SDL2pp::Rect& slot, const uint8_t item_id) {
-    SDL2pp::Texture& item_tex = get_item_texture(item_id);
-
-    const int texture_w = item_tex.GetWidth();
-    const int texture_h = item_tex.GetHeight();
-
-    const int offset_x = slot.x + (slot.w - texture_w) / 2;
-    const int offset_y = slot.y + (slot.h - texture_h) / 2;
-
-    SDL2pp::Rect draw_rect(offset_x, offset_y, texture_w, texture_h);
-
-    renderer.Copy(item_tex, SDL2pp::NullOpt, draw_rect);
-}
-
-void UserInterface::render_item_amount(const SDL2pp::Rect& slot, const uint8_t amount) {
-    if (amount == 0)
-        return;
-
-    SDL2pp::Font& font = font_manager.get_font(FontType::UI_ITEM_AMOUNT);
-    SDL2pp::Texture text_tex(renderer, font.RenderUTF8_Solid(std::to_string(amount), white));
-
-    const int text_w = text_tex.GetWidth();
-    const int text_h = text_tex.GetHeight();
-
-    const int text_x = slot.x;
-    const int text_y = slot.y - 4;
-
-    renderer.Copy(text_tex, SDL2pp::NullOpt, SDL2pp::Rect(text_x, text_y, text_w, text_h));
 }
 
 void UserInterface::render_chat_history() {
@@ -196,47 +103,7 @@ void UserInterface::add_twinkling_bar(std::string& display_text) {
 }
 
 void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& players_information) {
-    for (const auto& player_info: players_information) {
-        if (player_info.name != player_name)
-            continue;
-
-        const PlayerStatsDTO& stats(player_info.stats);
-
-        bar_values.clear();
-        field_values.clear();
-
-        // TODO: considerar el resto de estadísticas
-        BarValue health_bar = {health_texture, stats.current_health, stats.max_health};
-        bar_values.push_back(std::pair(health_rect, health_bar));
-
-        BarValue mana_bar = {mana_texture, stats.current_mana, stats.max_mana};
-        bar_values.push_back(std::pair(mana_rect, mana_bar));
-
-        BarValue xp_bar = {xp_texture, stats.current_xp_amount, stats.max_xp_amount};
-        bar_values.push_back(std::pair(xp_rect, xp_bar));
-
-        field_values.push_back(std::pair(xp_level_rect, std::to_string(stats.xp_level)));
-        field_values.push_back(std::pair(safe_gold_rect, std::to_string(player_info.safe_gold)));
-        field_values.push_back(std::pair(excess_gold_rect, std::to_string(player_info.excess_gold)));
-
-        clan_name = player_info.clan_name;
-
-        current_inventory.clear();
-
-        for (const auto& [item_id, amount]: player_info.inventory.items) {
-            current_inventory.push_back(InventorySlotData(item_id, amount));
-        }
-
-        std::ranges::sort(current_inventory,
-                          [](const auto& a, const auto& b) { return a.item_id < b.item_id; });
-
-        current_equipment.clear();
-
-        current_equipment = {player_info.equipment.weapon, player_info.equipment.shield,
-                             player_info.equipment.helmet, player_info.equipment.armor};
-
-        break;
-    }
+    inventory_ui.update_player_state(players_information);
 }
 
 void UserInterface::update_chat(const std::vector<ActionDTO>& actions) {
@@ -363,16 +230,6 @@ void UserInterface::chat_scroll_down() {
 
 size_t UserInterface::get_visible_lines() const { return history_messages.h / LINE_SPACING; }
 
-SDL2pp::Texture& UserInterface::get_item_texture(const uint8_t item_id) {
-    if (not item_textures.contains(item_id)) {
-        const std::string icon_path = ClientConfig::get().get_item_icon_path(item_id);
-        std::string full_path = DATA_PATH + icon_path;
-
-        item_textures[item_id] = std::make_unique<SDL2pp::Texture>(renderer, full_path);
-    }
-
-    return *item_textures[item_id];
-}
 
 void UserInterface::chat_scroll_to_bottom() {
     const size_t visible_lines = get_visible_lines();
@@ -390,63 +247,31 @@ bool UserInterface::is_over_chat(const int x, const int y) {
 }
 
 int UserInterface::get_inventory_slot_at(const int x, const int y) const {
-    const SDL2pp::Point click_pos(x, y);
-    for (size_t i = 0; i < inventory_slots.size(); ++i) {
-        if (inventory_slots[i].Contains(click_pos))
-            return static_cast<int>(i);
-    }
-
-    return -1;
+    return inventory_ui.get_slot_at(inventory_ui.inventory_slots, x, y);
 }
 
 std::optional<uint8_t> UserInterface::get_item_in_inventory_slot(const int slot_index) const {
-    if (slot_index >= 0 and static_cast<size_t>(slot_index) < current_inventory.size()) {
-        uint8_t id = current_inventory[slot_index].item_id;
-        if (id != 0)
-            return id;
-    }
-
-    return std::nullopt;
+    return inventory_ui.get_item_in_slot(inventory_ui.inventory, slot_index);
 }
 
 void UserInterface::bind_item(const int slot_index) {
-    if (bound_slot_index.has_value() and bound_slot_index.value() == slot_index) {
-        clear_bound_item();
-        return;
-    }
-
-    auto item_id = get_item_in_inventory_slot(slot_index);
-    if (item_id.has_value()) {
-        bound_slot_index = slot_index;
-        bound_item_id = item_id.value();
-    }
+    inventory_ui.bind_item(slot_index);
 }
 
-std::optional<uint8_t> UserInterface::get_bound_item_id() const { return bound_item_id; }
+std::optional<uint8_t> UserInterface::get_bound_item_id() const {
+    return inventory_ui.get_bound_item_id();
+}
 
 void UserInterface::clear_bound_item() {
-    bound_slot_index = std::nullopt;
-    bound_item_id = std::nullopt;
+    inventory_ui.clear_bound_item();
 }
 
 int UserInterface::get_equipment_slot_at(const int x, const int y) const {
-    const SDL2pp::Point click_pos(x, y);
-    for (size_t i = 0; i < equipment_slots.size(); ++i) {
-        if (equipment_slots[i].Contains(click_pos))
-            return static_cast<int>(i);
-    }
-
-    return -1;
+    return inventory_ui.get_slot_at(inventory_ui.equipment_slots, x, y);
 }
 
 std::optional<uint8_t> UserInterface::get_item_in_equipment_slot(const int slot_index) const {
-    if (slot_index >= 0 and static_cast<size_t>(slot_index) < current_equipment.size()) {
-        uint8_t id = current_equipment[slot_index];
-        if (id != 0)
-            return id;
-    }
-
-    return std::nullopt;
+    return inventory_ui.get_item_in_slot(inventory_ui.equipment, slot_index);
 }
 
 void UserInterface::handle_clan_message(const ActionDTO& action) {
