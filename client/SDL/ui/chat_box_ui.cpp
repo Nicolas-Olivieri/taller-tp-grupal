@@ -226,5 +226,5 @@ bool ChatBoxUI::is_over_chat(const int x, const int y) {
 }
 
 size_t ChatBoxUI::get_visible_lines() const {
-    return config.history_messages.h / chat_config.max_chat_history;
+    return config.history_messages.h / chat_config.line_spacing;
 }

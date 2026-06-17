@@ -119,6 +119,10 @@ void InventoryUI::render() {
         bar.render();
     }
     xp_level.render();
+
+    for (auto& state : equipment_state) {
+        state.render();
+    }
 }
 
 
