@@ -13,6 +13,7 @@ target_sources(taller_server
         command/cmd_types/ally_execute/cmd_sell/sell_command.cpp
         command/cmd_types/ally_execute/cmd_withdraw_gold/withdraw_gold_command.cpp
         command/cmd_types/ally_execute/cmd_withdraw_item/withdraw_item_command.cpp
+        command/cmd_types/ally_execute/cmd_teleport/teleport_command.cpp
 
         command/cmd_types/cmd_chatmessage/chatmessage_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
@@ -53,6 +54,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/sell/sell_result.cpp
         command/cmd_results/ally_execute/withdraw_gold/withdraw_gold_result.cpp
         command/cmd_results/ally_execute/withdraw_item/withdraw_item_result.cpp
+        command/cmd_results/ally_execute/teleport/teleport_result.cpp
         command/cmd_results/ally_execute/ally_execute_result.cpp
 
         command/cmd_results/drop_item/drop_item_result.cpp
@@ -139,6 +141,7 @@ target_sources(taller_server
         command/cmd_types/ally_execute/cmd_sell/sell_command.h
         command/cmd_types/ally_execute/cmd_withdraw_gold/withdraw_gold_command.h
         command/cmd_types/ally_execute/cmd_withdraw_item/withdraw_item_command.h
+        command/cmd_types/ally_execute/cmd_teleport/teleport_command.h
 
         command/cmd_types/cmd_chatmessage/chatmessage_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
@@ -179,6 +182,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/sell/sell_result.h
         command/cmd_results/ally_execute/withdraw_gold/withdraw_gold_result.h
         command/cmd_results/ally_execute/withdraw_item/withdraw_item_result.h
+        command/cmd_results/ally_execute/teleport/teleport_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
 
         command/cmd_results/drop_item/drop_item_result.h

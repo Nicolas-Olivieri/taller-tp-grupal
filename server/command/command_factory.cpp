@@ -32,6 +32,7 @@
 #include "cmd_types/cmd_pickup/pickup_command.h"
 #include "cmd_types/cmd_unequip_item/unequip_item_command.h"
 #include "cmd_types/cmd_use_item/use_item_command.h"
+#include "server/command/cmd_types/ally_execute/cmd_teleport/teleport_command.h"
 #include "server/command/cmd_types/cmd_cheat/cmd_kill_creatures/kill_creatures_command.h"
 #include "server/command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
@@ -138,6 +139,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::CHEAT_KILL_CREATURES:
             return std::make_unique<KillCreaturesCommand>(player_name);
+
+        case CommandType::TELEPORT:
+            return std::make_unique<TeleportCommand>(player_name);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

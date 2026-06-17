@@ -13,9 +13,6 @@ public:
     AllyExecuteResult execute(Player& player, const AllyActionPayload& payload) const override;
 
     ~TeleportationTotem() override = default;
-
-private:
-    //    AllyExecuteResult handle_tp(Player& player) const;
 };
 
 

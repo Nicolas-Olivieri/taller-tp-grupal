@@ -47,7 +47,9 @@ private:
 
     void handle_withdraw_item_command(const std::string& text);
 
-    void handle_meditate() const;
+    void handle_meditate();
+
+    void handle_teleport();
 
     /// Handlers de clanes
 

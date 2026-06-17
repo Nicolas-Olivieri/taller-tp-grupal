@@ -119,6 +119,8 @@ public:
 
     void cheat_kill_all_creatures();
 
+    TeleportResult teleport_player(const std::string& player_name);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 

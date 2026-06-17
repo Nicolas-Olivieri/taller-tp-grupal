@@ -769,3 +769,37 @@ void GameWorld::cheat_get_item(const std::string& player_name, uint8_t item) {
 void GameWorld::cheat_kill_all_creatures() {
     for (auto& [_, creature]: creatures) creature.die();
 }
+
+TeleportResult GameWorld::teleport_player(const std::string& player_name) {
+    if (!players.contains(player_name)) {
+        return TeleportResult();
+    }
+
+    assert(players.contains(player_name));
+    Player& player = players.at(player_name);
+
+    TeleportResult result =
+            execute_ally_action(player_name, AllyActionPayload(AllyAction::TELEPORT)).teleport;
+
+    if (result.status == TeleportStatus::SUCCESS) {
+        const std::vector<Direction> adjacent_directions = {Direction::DOWN, Direction::UP, Direction::LEFT,
+                                                            Direction::RIGHT};
+
+        bool teleported = false;
+        for (const auto& direction: adjacent_directions) {
+            Position target_pos = result.destination.move(direction);
+
+            if (grid.is_tile_available(target_pos.get_x(), target_pos.get_y())) {
+                exchange_position(player.get_position(), target_pos, &player);
+                player.update_position(target_pos, Direction::DOWN);
+                teleported = true;
+                break;
+            }
+        }
+
+        if (!teleported)
+            result.status = TeleportStatus::DESTINATION_BLOCKED;
+    }
+
+    return result;
+}

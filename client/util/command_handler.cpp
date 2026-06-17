@@ -114,6 +114,9 @@ void CommandHandler::handle_text_command() {
 
     else if (chat_text.starts_with("/meditar"))
         handle_meditate();
+
+    else if (chat_text == "/viajar")
+        handle_teleport();
 }
 
 void CommandHandler::handle_pick_up_command() {
@@ -242,8 +245,12 @@ void CommandHandler::handle_withdraw_item_command(const std::string& text) {
     }
 }
 
-void CommandHandler::handle_meditate() const {
+void CommandHandler::handle_meditate() {
     connection.push_command(std::make_unique<EventDTO>(CommandType::MEDITATE));
+}
+
+void CommandHandler::handle_teleport() {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::TELEPORT));
 }
 
 /// Handlers de clanes

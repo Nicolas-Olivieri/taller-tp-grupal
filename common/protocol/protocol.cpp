@@ -96,7 +96,8 @@ RequestedCommandDTO Protocol::recv_command() {
                command == CommandType::LIST_ITEMS or command == CommandType::CLAN_REVIEW or
                command == CommandType::CLAN_LEAVE or command == CommandType::PICKUP or
                command == CommandType::CHEAT_DEATH or command == CommandType::CHEAT_INFINITE_RECOVERABLES or
-               command == CommandType::MEDITATE or command == CommandType::CHEAT_KILL_CREATURES) {
+               command == CommandType::MEDITATE or command == CommandType::CHEAT_KILL_CREATURES or
+               command == CommandType::TELEPORT) {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
                command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or
