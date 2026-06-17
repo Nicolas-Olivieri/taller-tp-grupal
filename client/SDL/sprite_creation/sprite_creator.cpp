@@ -111,7 +111,11 @@ void SpriteCreator::update_appearance(PlayerSprite& player, const AppearanceDTO&
         return;
     }
 
-    update_layer(player, SpriteCategory::BODY, Layer::BODY, appearance.body);
+    if (equipment.armor.item_id == NO_ITEM) {
+        update_layer(player, SpriteCategory::BODY, Layer::BODY, appearance.body);
+    } else {
+        update_layer(player, SpriteCategory::EQUIPMENT, Layer::BODY, equipment.armor.item_id);
+    }
     update_layer(player, SpriteCategory::EQUIPMENT, Layer::HELMET, equipment.helmet.item_id);
     update_layer(player, SpriteCategory::EQUIPMENT, Layer::SHIELD, equipment.shield.item_id);
     update_layer(player, SpriteCategory::EQUIPMENT, Layer::WEAPON, equipment.weapon.item_id);

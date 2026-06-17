@@ -37,12 +37,10 @@ PlayerInfoDTO SnapshotBuilder::convert_to_info(const std::string& player_name, c
     const auto& helmet = config.get_equipable(equipment.helmet);
     const auto& armor = config.get_equipable(equipment.armor);
 
-    const uint8_t body = equipment.armor == 0 ? player.get_body() : equipment.armor;
-
     return PlayerInfoDTO(
             player_name, ClanInfoDTO(player.get_clan_name(), player.is_clan_founder()),
             player.get_direction(), position.get_x(), position.get_y(), player.get_safe_gold(),
-            player.get_excess_gold(), AppearanceDTO(body, player.get_head()),
+            player.get_excess_gold(), AppearanceDTO(player.get_body(), player.get_head()),
             PlayerStatsDTO(stats.health.get_max(), stats.health.get_current(), stats.mana.get_max(),
                            stats.mana.get_current(), stats.experience.get_level(),
                            stats.experience.get_current_amount(),
