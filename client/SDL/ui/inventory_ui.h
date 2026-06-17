@@ -61,9 +61,9 @@ private:
     TextSprite safe_gold;
     TextSprite excess_gold;
 
-    int get_slot_at(const std::vector<SDL2pp::Rect>& slots, int x, int y) const;
+    int get_slot_at(const std::vector<SDL2pp::Rect>& _slots, int x, int y) const;
 
-    std::optional<uint8_t> get_item_in_slot(const std::vector<HudSprite>& slots, int slot_index) const;
+    std::optional<uint8_t> get_item_in_slot(const std::vector<HudSprite>& _slots, int slot_index) const;
 
 public:
     InventoryUI(SpriteCreator& sprite_creator, const std::string& username);

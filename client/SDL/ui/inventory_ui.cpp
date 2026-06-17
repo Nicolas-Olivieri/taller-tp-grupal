@@ -120,27 +120,27 @@ void InventoryUI::render() {
     }
     xp_level.render();
 
-    for (auto& state : equipment_state) {
+    for (auto& state: equipment_state) {
         state.render();
     }
 }
 
 
 // DETECTAR CLICK EN SLOT Y OBTENER ELEMENTO ::::::::::
-int InventoryUI::get_slot_at(const std::vector<SDL2pp::Rect>& slots, const int x, const int y) const {
+int InventoryUI::get_slot_at(const std::vector<SDL2pp::Rect>& _slots, const int x, const int y) const {
     const SDL2pp::Point click_pos(x, y);
-    for (size_t i = 0; i < slots.size(); ++i) {
-        if (slots[i].Contains(click_pos))
+    for (size_t i = 0; i < _slots.size(); ++i) {
+        if (_slots[i].Contains(click_pos))
             return static_cast<int>(i);
     }
 
     return -1;
 }
 
-std::optional<uint8_t> InventoryUI::get_item_in_slot(const std::vector<HudSprite>& slots,
+std::optional<uint8_t> InventoryUI::get_item_in_slot(const std::vector<HudSprite>& _slots,
                                                      const int slot_index) const {
     if (slot_index >= 0 and static_cast<size_t>(slot_index) < inventory.size()) {
-        uint8_t id = slots[slot_index].get_id();
+        uint8_t id = _slots[slot_index].get_id();
         if (id != 0)
             return id;
     }
