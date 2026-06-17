@@ -74,7 +74,9 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHEAT_DEATH:
         case CommandType::CHEAT_INFINITE_RECOVERABLES:
         case CommandType::CHEAT_ITEM:
+        case CommandType::CHEAT_KILL_CREATURES:
         case CommandType::MEDITATE:
+        case CommandType::TELEPORT:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -309,6 +311,7 @@ AllyType Deserializer::recv_ally_type() {
         case AllyType::PRIEST:
         case AllyType::MERCHANT:
         case AllyType::BANKER:
+        case AllyType::TOTEM:
             return static_cast<AllyType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de aliado no reconocido");

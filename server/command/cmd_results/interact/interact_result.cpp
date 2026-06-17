@@ -77,6 +77,7 @@ InteractResult::InteractResult(const AllyType& ally_type): type(InteractionType:
             {AllyType::PRIEST, BindResult::PRIEST},
             {AllyType::MERCHANT, BindResult::MERCHANT},
             {AllyType::BANKER, BindResult::BANKER},
+            {AllyType::TOTEM, BindResult::TOTEM},
     });
 
     if (!result_map.contains(ally_type))

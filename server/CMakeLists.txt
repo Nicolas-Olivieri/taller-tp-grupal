@@ -13,6 +13,7 @@ target_sources(taller_server
         command/cmd_types/ally_execute/cmd_sell/sell_command.cpp
         command/cmd_types/ally_execute/cmd_withdraw_gold/withdraw_gold_command.cpp
         command/cmd_types/ally_execute/cmd_withdraw_item/withdraw_item_command.cpp
+        command/cmd_types/ally_execute/cmd_teleport/teleport_command.cpp
 
         command/cmd_types/cmd_chatmessage/chatmessage_command.cpp
         command/cmd_types/cmd_despawn/despawn_command.cpp
@@ -37,6 +38,7 @@ target_sources(taller_server
         command/cmd_types/cmd_cheat/cmd_die/die_command.cpp
         command/cmd_types/cmd_cheat/cmd_infinite_recoverables/infinite_recoverables_command.cpp
         command/cmd_types/cmd_cheat/cmd_get_item/get_item.cpp
+        command/cmd_types/cmd_cheat/cmd_kill_creatures/kill_creatures_command.cpp
 
         command/cmd_results/ally_execute/buy/buy_result.cpp
         command/cmd_results/ally_execute/deposit_gold/deposit_gold_result.cpp
@@ -52,6 +54,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/sell/sell_result.cpp
         command/cmd_results/ally_execute/withdraw_gold/withdraw_gold_result.cpp
         command/cmd_results/ally_execute/withdraw_item/withdraw_item_result.cpp
+        command/cmd_results/ally_execute/teleport/teleport_result.cpp
         command/cmd_results/ally_execute/ally_execute_result.cpp
 
         command/cmd_results/drop_item/drop_item_result.cpp
@@ -121,6 +124,7 @@ target_sources(taller_server
         game/allies/merchant.cpp
         game/allies/priest.cpp
         game/allies/vendor_ally.cpp
+        game/allies/teleportation_totem.cpp
 
         util/server_map_loader.cpp
 
@@ -137,6 +141,7 @@ target_sources(taller_server
         command/cmd_types/ally_execute/cmd_sell/sell_command.h
         command/cmd_types/ally_execute/cmd_withdraw_gold/withdraw_gold_command.h
         command/cmd_types/ally_execute/cmd_withdraw_item/withdraw_item_command.h
+        command/cmd_types/ally_execute/cmd_teleport/teleport_command.h
 
         command/cmd_types/cmd_chatmessage/chatmessage_command.h
         command/cmd_types/cmd_despawn/despawn_command.h
@@ -161,6 +166,7 @@ target_sources(taller_server
         command/cmd_types/cmd_cheat/cmd_die/die_command.h
         command/cmd_types/cmd_cheat/cmd_infinite_recoverables/infinite_recoverables_command.h
         command/cmd_types/cmd_cheat/cmd_get_item/get_item.h
+        command/cmd_types/cmd_cheat/cmd_kill_creatures/kill_creatures_command.h
 
         command/cmd_results/ally_execute/buy/buy_result.h
         command/cmd_results/ally_execute/deposit_gold/deposit_gold_result.h
@@ -176,6 +182,7 @@ target_sources(taller_server
         command/cmd_results/ally_execute/sell/sell_result.h
         command/cmd_results/ally_execute/withdraw_gold/withdraw_gold_result.h
         command/cmd_results/ally_execute/withdraw_item/withdraw_item_result.h
+        command/cmd_results/ally_execute/teleport/teleport_result.h
         command/cmd_results/ally_execute/ally_execute_result.h
 
         command/cmd_results/drop_item/drop_item_result.h
@@ -253,6 +260,7 @@ target_sources(taller_server
         game/allies/merchant.h
         game/allies/priest.h
         game/allies/vendor_ally.h
+        game/allies/teleportation_totem.h
 
         game/world_update_status.h
 

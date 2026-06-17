@@ -117,6 +117,10 @@ public:
 
     void cheat_get_item(const std::string& player_name, uint8_t item);
 
+    void cheat_kill_all_creatures();
+
+    TeleportResult teleport_player(const std::string& player_name);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 
@@ -153,6 +157,8 @@ private:
     void load_clans();
 
     void exchange_position(const Position& old_position, const Position& new_position, Interactive* occupant);
+
+    void init_teleports(const std::vector<TeleportInfoDTO>& map_teleports);
 };
 
 

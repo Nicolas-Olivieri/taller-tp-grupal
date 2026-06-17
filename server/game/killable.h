@@ -59,6 +59,8 @@ public:
 
     uint16_t receive_damage(uint16_t damage);
 
+    void die();
+
     virtual ~Killable() = default;
 };
 

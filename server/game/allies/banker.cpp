@@ -37,6 +37,9 @@ AllyExecuteResult Banker::execute(Player& player, const AllyActionPayload& paylo
         case AllyAction::WITHDRAW_ITEM:
             return handle_withdraw_item(player, payload.item_id);
 
+        case AllyAction::TELEPORT:
+            return handle_action_not_accepted<TeleportResult>(TeleportStatus::ACTION_NOT_ACCEPTED);
+
         default:
             break;
     }
