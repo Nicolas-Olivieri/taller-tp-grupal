@@ -1,6 +1,6 @@
 #include "world_sprite.h"
 
-#include "client/client_constants.h"
+#include "client/config/client_config.h"
 
 WorldSprite::WorldSprite(const SDL2pp::Point position, const SDL2pp::Point size,
                          const SDL2pp::Point render_offset):
@@ -9,4 +9,6 @@ WorldSprite::WorldSprite(const SDL2pp::Point position, const SDL2pp::Point size,
 
 SDL2pp::Point WorldSprite::get_ground_position() const { return position + size - render_offset; }
 
-SDL2pp::Point WorldSprite::to_sprite_point(const SDL2pp::Point& point) { return point * TILE_SIZE; }
+SDL2pp::Point WorldSprite::to_sprite_point(const SDL2pp::Point& point) {
+    return point * ClientConfig::get().get_tile_size();
+}

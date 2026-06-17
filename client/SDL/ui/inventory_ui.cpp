@@ -9,7 +9,9 @@
 
 InventoryUI::InventoryUI(SpriteCreator& sprite_creator, const std::string& username):
         creator(sprite_creator),
-        ui(creator.create_sprite(UiElement::INVENTORY, SDL2pp::Point(756, 0))),
+        config(ClientConfig::get().get_ui_data()),
+        ui(creator.create_sprite(UiElement::INVENTORY, config.inventory.GetTopLeft())),
+        founder_crown(std::nullopt),
         player_name(creator.create_sprite(username_rect, username, FontType::UI_USERNAME, white)),
         clan_name(creator.create_sprite(clan_rect, "", FontType::UI_CLAN, white)),
         inventory_label(creator.create_sprite(inventory_rect, "Inventario", FontType::UI_MENU_TITLE, white)),
@@ -21,23 +23,28 @@ InventoryUI::InventoryUI(SpriteCreator& sprite_creator, const std::string& usern
 }
 
 void InventoryUI::init_elements() {
-    ProgressBarSprite health = creator.create_sprite(UiElement::HEALTH_BAR, SDL2pp::Point(791, 599), 0, 1);
+    ProgressBarSprite health = creator.create_sprite(UiElement::HEALTH_BAR, config.health.GetTopLeft(), 0, 1);
     bars.push_back(std::move(health));
 
-    ProgressBarSprite mana = creator.create_sprite(UiElement::MANA_BAR, SDL2pp::Point(791, 627), 0, 1);
+    ProgressBarSprite mana = creator.create_sprite(UiElement::MANA_BAR, config.mana.GetTopLeft(), 0, 1);
     bars.push_back(std::move(mana));
 
-    ProgressBarSprite xp = creator.create_sprite(UiElement::XP_BAR, SDL2pp::Point(837, 657), 0, 1);
+    ProgressBarSprite xp = creator.create_sprite(UiElement::XP_BAR, config.xp.GetTopLeft(), 0, 1);
     bars.push_back(std::move(xp));
 
     for (const auto& position: inventory_slots) {
-        HudSprite item = creator.create_sprite(0, position.GetTopLeft(), true);
+        HudSprite item = creator.create_sprite(NO_ITEM, position.GetTopLeft(), true);
         inventory.push_back(std::move(item));
     }
 
     for (const auto& position: equipment_slots) {
-        HudSprite item = creator.create_sprite(0, position.GetTopLeft(), false);
+        HudSprite item = creator.create_sprite(NO_ITEM, position.GetTopLeft(), false);
         equipment.push_back(std::move(item));
+    }
+
+    for (const auto& position: config.equipment_state_slots) {
+        TextSprite state = creator.create_sprite(position, "", FontType::UI_MENU, white);
+        equipment_state.push_back(std::move(state));
     }
 }
 
@@ -61,7 +68,10 @@ void InventoryUI::update_player_state(const std::vector<PlayerInfoDTO>& players_
     safe_gold.set_text(std::to_string(player->safe_gold));
     excess_gold.set_text(std::to_string(player->excess_gold));
 
-    clan_name.set_text(player->clan_name);
+    clan_name.set_text(player->clan.name);
+    if (!founder_crown.has_value() && player->clan.is_founder) {
+        founder_crown.emplace(creator.create_sprite(UiElement::FOUNDER_CROWN, config.founder.GetTopLeft()));
+    }
 
     int slot = 0;
     for (const auto& [item_id, amount]: player->inventory.items) {
@@ -69,19 +79,30 @@ void InventoryUI::update_player_state(const std::vector<PlayerInfoDTO>& players_
         slot++;
     }
     for (size_t i = slot; i < inventory_slots.size(); ++i) {
-        creator.update_appearance(inventory[i], 0, 0);
+        creator.update_appearance(inventory[i], NO_ITEM, 0);
     }
 
-    creator.update_appearance(equipment[0], equipment_info.weapon);
-    creator.update_appearance(equipment[1], equipment_info.shield);
-    creator.update_appearance(equipment[2], equipment_info.helmet);
-    creator.update_appearance(equipment[3], equipment_info.armor);
+    const std::vector equipment_data(
+            {equipment_info.weapon, equipment_info.shield, equipment_info.helmet, equipment_info.armor});
+    for (size_t i = 0; i < equipment.size(); ++i) {
+        creator.update_appearance(equipment[i], equipment_data[i].item_id);
+        if (i == 0) {
+            equipment_state[i].set_text(std::to_string(equipment_data[i].effect));
+        } else {
+            equipment_state[i].set_text(
+                    std::to_string(equipment_data[i].item_id == NO_ITEM ? 0 : equipment_data[i].effect));
+        }
+    }
 }
 
 void InventoryUI::render() {
     ui.render();
     player_name.render();
     clan_name.render();
+
+    if (founder_crown.has_value()) {
+        founder_crown->render();
+    }
 
     inventory_label.render();
     for (auto& item: inventory) {

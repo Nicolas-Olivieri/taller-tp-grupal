@@ -16,6 +16,8 @@
 class UserInterface {
 private:
     SDL2pp::Renderer& renderer;
+    const UserInterfaceData& config;
+
     SpriteCreator sprite_creator;
 
     FontManager& font_manager;

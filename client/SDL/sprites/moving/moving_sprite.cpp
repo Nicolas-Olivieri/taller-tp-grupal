@@ -7,8 +7,8 @@
 
 MovingSprite::MovingSprite(const SDL2pp::Point position, const SDL2pp::Point size, const Direction direction):
         WorldSprite(position, size,
-               SDL2pp::Point{(size.x - ClientConfig::get().get_tile_size()) / 2,
-                             size.y - ClientConfig::get().get_tile_size()}),
+                    SDL2pp::Point{(size.x - ClientConfig::get().get_tile_size()) / 2,
+                                  size.y - ClientConfig::get().get_tile_size()}),
         direction(direction) {}
 
 // METODOS PUBLICOS ::::::::::::::::::

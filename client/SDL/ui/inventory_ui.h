@@ -7,20 +7,25 @@
 
 #include "client/SDL/sprite_creation/sprite_creator.h"
 #include "client/SDL/sprites/ui/progress_bar_sprite.h"
+#include "client/config/client_data.h"
 
 class InventoryUI {
     friend class UserInterface;
 
 private:
     SpriteCreator& creator;
+    const UserInterfaceData& config;
 
     InterfaceSprite ui;
 
     std::vector<ProgressBarSprite> bars;
     std::vector<HudSprite> inventory;
     std::vector<HudSprite> equipment;
+    std::vector<TextSprite> equipment_state;
 
+    std::optional<InterfaceSprite> founder_crown;
     std::optional<int> bounded_slot;
+
 
     // TODO refactorizar con toml
     const std::vector<SDL2pp::Rect> inventory_slots = {

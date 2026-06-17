@@ -319,6 +319,10 @@ data = [1, 1, 0, 0, 171, 15]
 id_range = [4, 5]
 data = [1, 1, 0, 0, 216, 15]
 
+[[items.game_ui]]
+id = 6
+data = [1, 1, 0, 0, 18, 12]
+
 [[items.hud_items]]
 id_range = [0, 19]
 data = [1, 1, 0, 0, 32, 32]

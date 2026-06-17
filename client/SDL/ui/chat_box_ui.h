@@ -6,9 +6,7 @@
 #include <vector>
 
 #include "client/SDL/sprite_creation/sprite_creator.h"
-
-#define LINE_SPACING 21
-#define MAX_CHAT_HISTORY 100
+#include "client/config/client_data.h"
 
 struct MsgData {
     std::string text;
@@ -18,13 +16,13 @@ struct MsgData {
 class ChatBoxUI {
 private:
     SpriteCreator& creator;
+    const UserInterfaceData& config;
+    const ChatData& chat_config;
+
     InterfaceSprite ui;
 
     std::string player_name;
     std::string clan_name;
-
-    SDL2pp::Rect history_messages = {20, 35, 710, 147};
-    SDL2pp::Rect input_box = {45, 190, 690, 25};
 
     std::deque<MsgData> chat_history;
     std::vector<TextSprite> visible_texts;
