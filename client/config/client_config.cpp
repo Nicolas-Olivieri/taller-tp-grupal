@@ -73,11 +73,10 @@ std::string ClientConfig::get_item_name(const uint8_t item_id) const {
 
 
 std::optional<uint8_t> ClientConfig::get_item_id(const std::string& item_name) const {
-    const std::string target_name = string_utils::to_lowercase(item_name);
+    const std::string target_name = string_utils::normalize(item_name);
     for (const auto& [id, data]: items_data) {
-        if (string_utils::to_lowercase(data.name) == target_name) {
+        if (data.normalized_name == target_name)
             return id;
-        }
     }
 
     return std::nullopt;
@@ -94,7 +93,8 @@ std::string ClientConfig::get_item_icon_path(const uint8_t item_id) {
 
 ItemDisplayData ClientConfig::build_item_display_data(const toml::value& item_toml) const {
     // TODO: Cargar el resto de atributos de un ítem para el cliente
-    return ItemDisplayData(toml::find<std::string>(item_toml, "name"),
+    const auto name = toml::find<std::string>(item_toml, "name");
+    return ItemDisplayData(name, string_utils::normalize(name),
                            toml::find<std::string>(item_toml, "icon_path"));
 }
 

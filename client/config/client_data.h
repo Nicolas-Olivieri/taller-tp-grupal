@@ -10,6 +10,7 @@ struct CreatureDisplayData {
 struct ItemDisplayData {
     // TODO: Agregar el resto de atributos de un ítem para el cliente
     std::string name;
+    std::string normalized_name;
     std::string icon_path;
 };
 
