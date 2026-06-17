@@ -47,13 +47,13 @@ public:
 
     FixedSprite create_sprite(SpriteCategory category, const AssetInfoDTO& asset_info);
 
-    InterfaceSprite create_sprite(UiElement ui_type, const SDL2pp::Point& position);
-
     EffectSprite create_sprite(const ActionDTO& action_info, SDL2pp::Point position = {0, 0});
 
     EnemySprite create_sprite(const CreatureInfoDTO& creature_info);
 
     FixedSprite create_sprite(const LootInfoDTO& loot_info);
+
+    InterfaceSprite create_sprite(UiElement ui_type, const SDL2pp::Point& position);
 
     ProgressBarSprite create_sprite(UiElement bar_type, SDL2pp::Point position, size_t current, size_t max);
 

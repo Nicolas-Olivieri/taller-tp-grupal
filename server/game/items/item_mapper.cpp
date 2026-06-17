@@ -90,3 +90,13 @@ uint16_t ItemMapper::get_usable_effect_amount(uint8_t item_id) {
 
     return data.effect_amount;
 }
+
+bool ItemMapper::is_magic(const uint8_t item_id) {
+    if (is_weapon(item_id))
+        return GameConfig::get().get_weapon(item_id).mana_cost > 0;
+
+    if (is_usable(item_id))
+        return parse_type_effect(get_item_effect_type(item_id)) == TypeEffect::MANA;
+
+    return false;
+}

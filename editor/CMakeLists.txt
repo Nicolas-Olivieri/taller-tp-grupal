@@ -15,6 +15,8 @@ target_sources(taller_editor
         ui/editor.ui
         ui/assetselector.ui
 
+        config/editor_config.cpp
+
     PUBLIC
         components.h
 
@@ -28,5 +30,7 @@ target_sources(taller_editor
         persistance/map_saver.h
         persistance/map_loader.h
 
-        toml/asset_parser.h
+        config/asset_parser.h
+
+        config/editor_config.h
 )

@@ -10,7 +10,41 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         chat_ui(sprite_creator, player_name),
         game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, SDL2pp::Point(0, 219))),
         player_name(player_name),
-        clan_name("") {}
+        clan_name("") {
+    const auto& config = ClientConfig::get().get_ui_data();
+
+    history_messages = config.history_messages;
+    input_box = config.input_box;
+
+    username_rect = config.username;
+    clan_rect = config.clan;
+    founder_rect = config.founder;
+
+    inventory_rect = config.inventory_title;
+    inventory_slots = config.inventory_slots;
+
+    equipment_slots = config.equipment_slots;
+
+    stats_rect = config.stats_title;
+
+    health_rect = config.health;
+    mana_rect = config.mana;
+    xp_rect = config.xp;
+
+    safe_gold_rect = config.safe_gold;
+    excess_gold_rect = config.excess_gold;
+    xp_level_rect = config.xp_level;
+
+    weapon_rect = config.weapon;
+    shield_rect = config.shield;
+    helmet_rect = config.helmet;
+    armor_rect = config.armor;
+}
+void UserInterface::render_clan_founder() {
+    if (is_founder)
+        renderer.Copy(founder_texture, SDL2pp::NullOpt, founder_rect);
+}
+
 
 void UserInterface::render(const std::string& input, bool is_chat_active) {
     game_border_ui.render();
@@ -19,7 +53,22 @@ void UserInterface::render(const std::string& input, bool is_chat_active) {
 }
 
 void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& players_information) {
+
     inventory_ui.update_player_state(players_information);
+}
+
+void UserInterface::update_player_equipment_state(const PlayerInfoDTO& player_info) {
+    const auto weapon = player_info.equipment.weapon;
+    const auto shield = player_info.equipment.shield;
+    const auto helmet = player_info.equipment.helmet;
+    const auto armor = player_info.equipment.armor;
+
+    current_equipment = {weapon.item_id, shield.item_id, helmet.item_id, armor.item_id};
+
+    field_values.push_back(std::pair(weapon_rect, std::to_string(weapon.effect)));
+    field_values.push_back(std::pair(shield_rect, std::to_string(shield.item_id == 0 ? 0 : shield.effect)));
+    field_values.push_back(std::pair(helmet_rect, std::to_string(helmet.item_id == 0 ? 0 : helmet.effect)));
+    field_values.push_back(std::pair(armor_rect, std::to_string(armor.item_id == 0 ? 0 : armor.effect)));
 }
 
 void UserInterface::update_chat(const std::vector<ActionDTO>& actions) { chat_ui.update_chat(actions); }

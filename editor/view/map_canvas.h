@@ -5,6 +5,7 @@
 
 #include "../components.h"
 #include "../map_data.h"
+#include "config/editor_config.h"
 
 namespace Ui {
 class MapCanvas;
@@ -32,8 +33,9 @@ private:
     void set_unwalkable_tiles(const QPoint& clicked_cell, int tile_id) const;
     void erase_unwalkable_tiles(int tile_id) const;
 
-    void set_safe_tiles(const QPointF& clicked_pos, int width = SAFE_ZONE_BRUSH_W,
-                        int height = SAFE_ZONE_BRUSH_H) const;
+    void set_safe_tiles(const QPointF& clicked_pos,
+                        int width = EditorConfig::get().get_safe_zone_data().brush_w,
+                        int height = EditorConfig::get().get_safe_zone_data().brush_h) const;
 
     QPoint coordinates_to_grid(QPointF coordinates) const;
 

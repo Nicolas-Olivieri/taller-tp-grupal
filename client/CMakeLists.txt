@@ -106,4 +106,5 @@ target_sources(taller_client
         SDL/ui/chat_box_ui.h
 
         config/client_config.h
+        config/client_data.h
     )

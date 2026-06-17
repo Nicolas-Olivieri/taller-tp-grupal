@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 
 #include <SDL2pp/Renderer.hh>
 #include <SDL2pp/Texture.hh>
@@ -25,6 +24,7 @@ private:
     std::string name;
     uint8_t xp_level;
     std::string clan;
+    bool is_founder;
 
     SDL2pp::Texture health_texture;
     uint16_t current_health;

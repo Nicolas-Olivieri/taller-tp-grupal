@@ -21,13 +21,16 @@ private:
 
     QHash<ImageType, uint16_t> asset_counter;
 
-    int add_tile(QPoint position, const AssetData& tile_data);
+    QVector<int> curr_teleport_pair;
+    QHash<int, int> teleport_pairs;
 
+    int add_tile(QPoint position, const AssetData& tile_data);
     int add_collider(QPoint position, const AssetData& collider_data);
+    void add_teleport(int id);
 
     bool erase_tile(const Placement& placement);
-
     bool erase_collider(const Placement& placement);
+    void erase_teleport(int point_a);
 
 public:
     MapData();

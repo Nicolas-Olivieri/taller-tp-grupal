@@ -16,7 +16,6 @@ struct AssetData {
     bool inverse_unwalkable;
 };
 
-
 struct Placement {
     int id;
     QPoint origin;

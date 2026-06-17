@@ -1,6 +1,7 @@
 #include "player_sprite.h"
 
 #include <utility>
+#include <vector>
 
 PlayerSprite::PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, const SDL2pp::Point position,
                            const SDL2pp::Point size, const Direction direction):

@@ -16,8 +16,6 @@
 #include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
 
-#define MAX_CREATURE_AMOUNT 10  // TODO: toml
-
 GameWorld::GameWorld(PlayerRepository& player_repository):
         grid(), current_creature_id(0), player_repository(player_repository) {}
 
@@ -61,7 +59,7 @@ WorldUpdateStatus GameWorld::update() {
     remove_lonely_creatures();
     remove_dead_creatures();
 
-    if (creatures.size() < MAX_CREATURE_AMOUNT)
+    if (creatures.size() < GameConfig::get().get_world_constants().max_creatures_amount)
         spawn_random_creature();
 
     std::vector<CreatureUpdate> creatures_status;
@@ -231,7 +229,7 @@ void GameWorld::spawn_random_creature() {
 }
 
 uint16_t GameWorld::get_next_creature_id() {
-    assert(MAX_CREATURE_AMOUNT < UINT16_MAX);
+    assert(GameConfig::get().get_world_constants().max_creatures_amount < UINT16_MAX);
 
     // Aprovecha el overflow de UINT16_MAX -> 0 para volver a usar los ids que se liberaron
     while (creatures.contains(current_creature_id)) current_creature_id++;
@@ -421,6 +419,9 @@ UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t 
 
     } catch (const ItemNotOwned&) {
         return UseItemResult(UseItemStatus::FAILED);
+
+    } catch (const ArchetypeNotMagic&) {
+        return UseItemResult(UseItemStatus::ARCHETYPE_FAIL);
     }
 }
 
@@ -595,7 +596,7 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
         return FoundClanResult::ALREADY_IN_CLAN;
 
     const uint8_t current_level = player.get_stats().experience.get_level();
-    if (current_level < GameConfig::get().get_clan_constats().min_level_required_to_found_clan)
+    if (current_level < GameConfig::get().get_clan_constants().min_level_required_to_found_clan)
         return FoundClanResult::NOT_ENOUGH_LEVEL;
 
     if (clan_name.size() > CLAN_NAME)

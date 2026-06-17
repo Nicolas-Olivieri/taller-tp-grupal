@@ -6,6 +6,7 @@
 #include "common/dto/lobby/ally_info.h"
 
 #include "grid_matrix.h"
+#include "teleport_info.h"
 
 
 struct ServerMapDataDTO: public ProtocolMessageDTO {
@@ -13,8 +14,10 @@ struct ServerMapDataDTO: public ProtocolMessageDTO {
     uint16_t height;
     GridMatrixDTO grid;
     std::vector<AllyInfoDTO> npcs;
+    std::vector<TeleportInfoDTO> teleports;
 
-    ServerMapDataDTO(uint16_t w, uint16_t h, const GridMatrixDTO& grid, const std::vector<AllyInfoDTO>& npcs);
+    ServerMapDataDTO(uint16_t w, uint16_t h, const GridMatrixDTO& grid, const std::vector<AllyInfoDTO>& npcs,
+                     const std::vector<TeleportInfoDTO>& teleports);
 
     size_t message_size() const override;
 
