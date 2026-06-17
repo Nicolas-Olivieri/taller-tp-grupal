@@ -395,8 +395,6 @@ void Player::upgrade() {
     gold_manager.update_max(stats.experience.get_level());
 }
 
-void Player::die() { stats.health.set_current(0); }
-
 void Player::toggle_infinite_recoverables() {
     has_infinite_recoverables_cheat_activated = !has_infinite_recoverables_cheat_activated;
 }

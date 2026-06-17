@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include <toml.hpp>
+#include "editor/components.h"
 
-#include "components.h"
+#include "toml.hpp"
 
 template <>
 struct toml::from<AssetData> {

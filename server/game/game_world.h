@@ -117,6 +117,10 @@ public:
 
     void cheat_get_item(const std::string& player_name, uint8_t item);
 
+    void cheat_kill_all_creatures();
+
+    TeleportResult teleport_player(const std::string& player_name);
+
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
 
@@ -162,6 +166,8 @@ private:
     void manage_player_attacked(InteractResult& result, Tile& target_tile, Player& attacker);
 
     static void undo_attack(const AttackResult& attack, Player& target, Player& attacker);
+
+    void init_teleports(const std::vector<TeleportInfoDTO>& map_teleports);
 };
 
 

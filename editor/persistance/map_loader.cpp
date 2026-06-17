@@ -3,6 +3,8 @@
 #include <QFile>
 #include <QGraphicsItem>
 
+#include "config/editor_config.h"
+
 #include "editor_constants.h"
 
 MapLoader::MapLoader(MapData& data, MapCanvas& canvas, QHash<uint8_t, AssetData>& tiles,
@@ -19,11 +21,13 @@ bool MapLoader::load(const QString& filename) const {
 
     uint16_t header = 0;
     stream >> header;
-    if (stream.status() != QDataStream::Ok || header != static_cast<uint16_t>(HEADER)) {
+    const auto expected_file_header = EditorConfig::get().get_file_header();
+    if (stream.status() != QDataStream::Ok || header != static_cast<uint16_t>(expected_file_header)) {
         return false;
     }
 
-    uint32_t server_start, server_end;
+    uint8_t server_start;
+    qint64 server_end;
     stream >> server_start >> server_end;
 
     uint16_t width, height;
@@ -33,12 +37,13 @@ bool MapLoader::load(const QString& filename) const {
     file.seek(server_end);
     load_assets(stream, tiles);
     load_assets(stream, colliders);
-    load_assets(stream, npcs);
 
     // Cargados los items, cargo las zonas seguras (dependen de si hay tiles colocadas, se debe hacer al
-    // final)
+    // final), los npcs y los teleports que se guardan para el servidor
     file.seek(server_start);
     load_safe_zone(stream, width, height);
+    load_assets(stream, npcs);
+    load_teleports(stream);
 
     file.close();
     return true;
@@ -65,15 +70,41 @@ void MapLoader::load_assets(QDataStream& stream, const QHash<uint8_t, AssetData>
 }
 
 void MapLoader::load_safe_zone(QDataStream& stream, const int width, const int height) const {
+    const auto tile_size = EditorConfig::get().get_tile_size();
+    const auto safe_zone_id = EditorConfig::get().get_safe_zone_data().id;
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             uint8_t walkability;
             uint8_t biome;
             stream >> walkability >> biome;
 
-            if (biome == SAFE_ZONE_ID) {
-                canvas.set_safe_tiles(QPoint(x * TILE_SIZE, y * TILE_SIZE), 1, 1);
+            if (biome == safe_zone_id) {
+                canvas.set_safe_tiles(QPoint(x * tile_size, y * tile_size), 1, 1);
             }
         }
+    }
+}
+
+void MapLoader::load_teleports(QDataStream& stream) const {
+    // Al guardarse los npcs automaticamente, es muy probable que se guarden mal. De esta forma se guardan en
+    // orden.
+    data.teleport_pairs.clear();
+    data.curr_teleport_pair.clear();
+
+    uint16_t teleports_amount;
+    stream >> teleports_amount;
+
+    for (uint16_t i = 0; i < teleports_amount; i++) {
+        uint16_t port_a_x, port_a_y, port_b_x, port_b_y;
+        stream >> port_a_x >> port_a_y >> port_b_x >> port_b_y;
+
+        const auto base_a = QPoint(port_a_x, port_a_y);
+        const auto base_b = QPoint(port_b_x, port_b_y);
+
+        int a_id = data.occupied_tiles[base_a].last();
+        int b_id = data.occupied_tiles[base_b].last();
+
+        data.teleport_pairs.insert({{a_id, b_id}, {b_id, a_id}});
     }
 }

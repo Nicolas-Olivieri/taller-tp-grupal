@@ -3,16 +3,16 @@
 #include "common/protocol/serializer.h"
 
 
-EquipmentInfoDTO::EquipmentInfoDTO(): weapon(0), shield(0), helmet(0), armor(0) {}
+EquipmentInfoDTO::EquipmentInfoDTO() {}
 
 
-EquipmentInfoDTO::EquipmentInfoDTO(const uint8_t weapon, const uint8_t shield, const uint8_t helmet,
-                                   const uint8_t armor):
+EquipmentInfoDTO::EquipmentInfoDTO(const EquipableItemInfoDTO& weapon, const EquipableItemInfoDTO& shield,
+                                   const EquipableItemInfoDTO& helmet, const EquipableItemInfoDTO& armor):
         weapon(weapon), shield(shield), helmet(helmet), armor(armor) {}
 
 
 size_t EquipmentInfoDTO::message_size() const {
-    return sizeof(weapon) + sizeof(shield) + sizeof(helmet) + sizeof(armor);
+    return weapon.message_size() + shield.message_size() + helmet.message_size() + armor.message_size();
 }
 
 

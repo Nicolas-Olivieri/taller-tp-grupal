@@ -74,7 +74,9 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHEAT_DEATH:
         case CommandType::CHEAT_INFINITE_RECOVERABLES:
         case CommandType::CHEAT_ITEM:
+        case CommandType::CHEAT_KILL_CREATURES:
         case CommandType::MEDITATE:
+        case CommandType::TELEPORT:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -141,7 +143,7 @@ std::vector<LootInfoDTO> Deserializer::recv_loot_information() {
 
 PlayerInfoDTO Deserializer::recv_player_info() {
     std::string name = recv_string();
-    std::string clan_name = recv_string();
+    ClanInfoDTO clan = recv_clan();
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
@@ -152,8 +154,8 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     InventoryInfoDTO inventory = recv_inventory_info();
     EquipmentInfoDTO equipment = recv_equipment_info();
 
-    return PlayerInfoDTO(name, clan_name, direction, x, y, safe_gold, excess_gold, appearance, stats,
-                         inventory, equipment);
+    return PlayerInfoDTO(name, clan, direction, x, y, safe_gold, excess_gold, appearance, stats, inventory,
+                         equipment);
 }
 
 CreatureInfoDTO Deserializer::recv_creature_info() {
@@ -262,6 +264,13 @@ AppearanceDTO Deserializer::recv_appearance() {
     return AppearanceDTO(body, head);
 }
 
+ClanInfoDTO Deserializer::recv_clan() {
+    const std::string name = recv_string();
+    const uint8_t is_founder = recv_uint8();
+
+    return ClanInfoDTO(name, is_founder);
+}
+
 DespawnDTO Deserializer::recv_despawn() {
     std::string player_despawned = recv_string();
 
@@ -302,6 +311,7 @@ AllyType Deserializer::recv_ally_type() {
         case AllyType::PRIEST:
         case AllyType::MERCHANT:
         case AllyType::BANKER:
+        case AllyType::TOTEM:
             return static_cast<AllyType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de aliado no reconocido");
@@ -362,11 +372,18 @@ InventoryInfoDTO Deserializer::recv_inventory_info() {
     return InventoryInfoDTO(items);
 }
 
+EquipableItemInfoDTO Deserializer::recv_equipable_item_info() {
+    const uint8_t item_id = recv_uint8();
+    const uint8_t effect = recv_uint8();
+
+    return EquipableItemInfoDTO(item_id, effect);
+}
+
 EquipmentInfoDTO Deserializer::recv_equipment_info() {
-    const uint8_t weapon = recv_uint8();
-    const uint8_t shield = recv_uint8();
-    const uint8_t helmet = recv_uint8();
-    const uint8_t armor = recv_uint8();
+    const EquipableItemInfoDTO weapon = recv_equipable_item_info();
+    const EquipableItemInfoDTO shield = recv_equipable_item_info();
+    const EquipableItemInfoDTO helmet = recv_equipable_item_info();
+    const EquipableItemInfoDTO armor = recv_equipable_item_info();
 
     return EquipmentInfoDTO(weapon, shield, helmet, armor);
 }

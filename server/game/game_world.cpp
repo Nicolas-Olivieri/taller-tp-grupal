@@ -15,10 +15,9 @@
 #include "server/command/cmd_results/ally_execute/list/outcomes/vendor_list/vendor_list_outcome.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
+#include "server/game/allies/teleportation_totem.h"
 #include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
-
-#define MAX_CREATURE_AMOUNT 10  // TODO: toml
 
 GameWorld::GameWorld(PlayerRepository& player_repository):
         grid(), current_creature_id(0), player_repository(player_repository) {}
@@ -29,6 +28,7 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
+    init_teleports(map_data.teleports);
     load_clans();
 }
 
@@ -63,7 +63,7 @@ WorldUpdateStatus GameWorld::update() {
     remove_lonely_creatures();
     remove_dead_creatures();
 
-    if (creatures.size() < MAX_CREATURE_AMOUNT)
+    if (creatures.size() < GameConfig::get().get_world_constants().max_creatures_amount)
         spawn_random_creature();
 
     std::vector<CreatureUpdate> creatures_status;
@@ -288,7 +288,7 @@ std::vector<uint8_t> GameWorld::filter_compatible_creatures(const std::vector<ui
 }
 
 uint16_t GameWorld::get_next_creature_id() {
-    assert(MAX_CREATURE_AMOUNT < UINT16_MAX);
+    assert(GameConfig::get().get_world_constants().max_creatures_amount < UINT16_MAX);
 
     // Aprovecha el overflow de UINT16_MAX -> 0 para volver a usar los ids que se liberaron
     while (creatures.contains(current_creature_id)) current_creature_id++;
@@ -498,6 +498,9 @@ UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t 
 
     } catch (const ItemNotOwned&) {
         return UseItemResult(UseItemStatus::FAILED);
+
+    } catch (const ArchetypeNotMagic&) {
+        return UseItemResult(UseItemStatus::ARCHETYPE_FAIL);
     }
 }
 
@@ -645,6 +648,30 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
     }
 }
 
+void GameWorld::init_teleports(const std::vector<TeleportInfoDTO>& map_teleports) {
+    for (const auto& teleport_pair: map_teleports) {
+        const Position position_a(teleport_pair.port_a_x, teleport_pair.port_a_y);
+        const Position position_b(teleport_pair.port_b_x, teleport_pair.port_b_y);
+
+        // Por convención se recibe la posición izquierda de un totem cuya base ocupa 2 tiles
+        const Position offset_right(1, 0);
+
+        std::unique_ptr<Ally> totem_a = std::make_unique<TeleportationTotem>(position_a, position_b);
+        std::unique_ptr<Ally> totem_b = std::make_unique<TeleportationTotem>(position_b, position_a);
+
+        grid.get_tile(position_a).occupy(totem_a.get());
+        grid.get_tile(position_a + offset_right).occupy(totem_a.get());
+        grid.get_tile(position_b).occupy(totem_b.get());
+        grid.get_tile(position_b + offset_right).occupy(totem_b.get());
+
+        grid.get_tile(position_a).occupy(totem_a.get());
+        grid.get_tile(position_b).occupy(totem_b.get());
+
+        allies.push_back(std::move(totem_a));
+        allies.push_back(std::move(totem_b));
+    }
+}
+
 void GameWorld::drop_player_items(Player& player) {
     Tile& target_tile = grid.get_tile(player.get_position());
     drop_and_add(player, target_tile);
@@ -672,7 +699,7 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
         return FoundClanResult::ALREADY_IN_CLAN;
 
     const uint8_t current_level = player.get_stats().experience.get_level();
-    if (current_level < GameConfig::get().get_clan_constats().min_level_required_to_found_clan)
+    if (current_level < GameConfig::get().get_clan_constants().min_level_required_to_found_clan)
         return FoundClanResult::NOT_ENOUGH_LEVEL;
 
     if (clan_name.size() > CLAN_NAME)
@@ -821,6 +848,34 @@ void GameWorld::cheat_get_item(const std::string& player_name, uint8_t item) {
         player.acquire_item(item);
     } catch (const InventoryFull& err) {
     } catch (const SlotFull& err) {}
+}
+
+void GameWorld::cheat_kill_all_creatures() {
+    for (auto& [_, creature]: creatures) creature.die();
+}
+
+TeleportResult GameWorld::teleport_player(const std::string& player_name) {
+    if (!players.contains(player_name)) {
+        return TeleportResult();
+    }
+
+    assert(players.contains(player_name));
+    Player& player = players.at(player_name);
+
+    TeleportResult result =
+            execute_ally_action(player_name, AllyActionPayload(AllyAction::TELEPORT)).teleport;
+
+    if (result.status == TeleportStatus::SUCCESS) {
+        // Como sacerdote asume que su derecha siempre está desocupada, totem asume que directamente arriba de
+        // su base no hay entidades ni colliders
+        Position target_pos = result.destination.move(Direction::UP);
+
+        exchange_position(player.get_position(), target_pos, &player);
+        player.update_position(target_pos, Direction::DOWN);
+        player.unbind_ally();
+    }
+
+    return result;
 }
 
 bool GameWorld::is_safe_zone(const Position& position) {

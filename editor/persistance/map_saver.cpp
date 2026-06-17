@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include "config/editor_config.h"
+
 #include "grid_range.h"
 
 
@@ -11,7 +13,7 @@ MapSaver::MapSaver(MapData& data): data(data) {}
 
 /*
  * El formato en que guarda los datos es:
- * <offset inicio server uint16_t> <offset fin server uint16_t>
+ * <offset inicio server uint8_t> <offset fin server uint64_t>
  * <width en tiles del mundo uint16_t> <height en tiles del mundo uint16_t>
  *
  * <matriz fila por fila indicando si cada tile es walkable o unwalkable seguido del id de bioma uint16_t>
@@ -72,16 +74,18 @@ void MapSaver::get_origin_and_matrix_size() {
 void MapSaver::store_offset_and_dimensions_data(QDataStream& stream) const {
     const uint16_t world_width = matrix_size.width();
     const uint16_t world_height = matrix_size.height();
-    constexpr uint16_t header = HEADER;
+    const uint16_t header = EditorConfig::get().get_file_header();
     constexpr size_t npc_data_size = sizeof(uint8_t) + sizeof(uint16_t) * 2;
+    constexpr size_t teleport_data_size = sizeof(uint16_t) * 4;
 
-    constexpr uint32_t server_start =
-            sizeof(header) + sizeof(uint32_t) * 2 + sizeof(world_width) + sizeof(world_height);
+    constexpr uint8_t server_start =
+            sizeof(header) + sizeof(uint8_t) + sizeof(uint64_t) + sizeof(world_width) + sizeof(world_height);
 
-    const uint32_t server_end = server_start + sizeof(uint16_t) * world_width * world_height +
-                                sizeof(uint16_t) + data.asset_counter[ImageType::NPC] * npc_data_size;
+    const uint64_t server_end = server_start + sizeof(uint16_t) * world_width * world_height +
+                                sizeof(uint16_t) + data.asset_counter[ImageType::NPC] * npc_data_size +
+                                sizeof(uint16_t) + (data.teleport_pairs.size() / 2) * teleport_data_size;
 
-    stream << header << server_start << server_end << world_width << world_height;
+    stream << header << server_start << static_cast<qint64>(server_end) << world_width << world_height;
 }
 
 void MapSaver::store_server_data(QDataStream& stream) const {
@@ -97,8 +101,9 @@ void MapSaver::store_server_data(QDataStream& stream) const {
 
         uint8_t biome;
         if (data.occupied_tiles.contains(cell)) {
-            const uint8_t data_id = data.occupied_tiles[cell][0];
-            biome = data.safe_zone_tiles.contains(cell) ? SAFE_ZONE_ID : data.placements[data_id].asset.id;
+            const int data_id = data.occupied_tiles[cell][0];
+            const auto safe_zone_id = EditorConfig::get().get_safe_zone_data().id;
+            biome = data.safe_zone_tiles.contains(cell) ? safe_zone_id : data.placements[data_id].asset.id;
         } else {
             biome = 0;
         }
@@ -107,6 +112,7 @@ void MapSaver::store_server_data(QDataStream& stream) const {
     }
 
     store_asset_data(stream, ImageType::NPC);
+    store_teleport_data(stream);
 }
 
 void MapSaver::store_client_data(QDataStream& stream) const {
@@ -128,5 +134,29 @@ void MapSaver::store_asset_data(QDataStream& stream, const ImageType type) const
 
         const uint8_t id = placement.asset.id;
         stream << id << origin_x << origin_y;
+    }
+}
+
+void MapSaver::store_teleport_data(QDataStream& stream) const {
+    const uint16_t teleport_amount = data.teleport_pairs.size() / 2;
+    stream << teleport_amount;
+
+    QSet<int> already_checked;
+    for (const auto& [point_a, point_b]: data.teleport_pairs.asKeyValueRange()) {
+        if (already_checked.contains(point_a)) {
+            continue;
+        }
+        already_checked.insert(point_a);
+        already_checked.insert(point_b);
+
+        Placement data_a = data.placements[point_a];
+        Placement data_b = data.placements[point_b];
+
+        const uint16_t point_a_x = data_a.origin.x() - min_point.x();
+        const uint16_t point_a_y = data_a.origin.y() - min_point.y() + data_a.asset.tile_height - 1;
+        const uint16_t point_b_x = data_b.origin.x() - min_point.x();
+        const uint16_t point_b_y = data_b.origin.y() - min_point.y() + data_b.asset.tile_height - 1;
+
+        stream << point_a_x << point_a_y << point_b_x << point_b_y;
     }
 }

@@ -6,10 +6,9 @@
 #include <string>
 #include <vector>
 
-#include "toml/asset_parser.h"
+#include "config/editor_config.h"
 
 #include "editor_constants.h"
-#include "toml.hpp"
 #include "ui_editor.h"
 
 
@@ -33,20 +32,21 @@ Editor::Editor(QWidget* parent):
                            {EditorMode::ERASE, ui->eraseBtn},
                            {EditorMode::DRAG, ui->dragBtn}});
 
+    const auto& shortcuts = EditorConfig::get().get_shortcuts_keys();
     // Conexión botones
-    const auto* draw_sc = new QShortcut(QKeySequence("d"), this);
+    const auto* draw_sc = new QShortcut(QKeySequence(shortcuts.draw_key.c_str()), this);
     connect(ui->drawBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::DRAW); });
     connect(draw_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::DRAW); });
 
-    const auto* drag_sc = new QShortcut(QKeySequence("m"), this);
+    const auto* drag_sc = new QShortcut(QKeySequence(shortcuts.drag_key.c_str()), this);
     connect(ui->dragBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::DRAG); });
     connect(drag_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::DRAG); });
 
-    const auto* erase_sc = new QShortcut(QKeySequence("b"), this);
+    const auto* erase_sc = new QShortcut(QKeySequence(shortcuts.erase_key.c_str()), this);
     connect(ui->eraseBtn, &QPushButton::clicked, this, [this] { set_mode(EditorMode::ERASE); });
     connect(erase_sc, &QShortcut::activated, this, [this] { set_mode(EditorMode::ERASE); });
 
-    const auto* safe_sc = new QShortcut(QKeySequence("s"), this);
+    const auto* safe_sc = new QShortcut(QKeySequence(shortcuts.safe_zone_key.c_str()), this);
     connect(ui->safeZoneBtn, &QPushButton::clicked, this, [this] {
         if (!ui->cbox_safes->isChecked()) {
             ui->cbox_safes->click();
@@ -71,15 +71,16 @@ Editor::Editor(QWidget* parent):
 
 
 QHash<uint8_t, AssetData> Editor::populate_hash(const std::string& category_name, const ImageType type) {
-    const auto data = toml::parse(CONFIG_PATH "/assets_info.toml");
-    auto assets = toml::find<std::vector<AssetData>>(data, category_name);
+    auto assets = EditorConfig::get().get_assets_data(category_name);
+
+    const auto standard_tile_size = EditorConfig::get().get_tile_size();
 
     QHash<uint8_t, AssetData> hash;
     for (auto& tile: assets) {
         auto path = QString("%1/%2/%3.png").arg(DATA_PATH).arg(category_name.data()).arg(tile.id);
         tile.type = type;
 
-        QSize tile_size(tile.tile_width * TILE_SIZE, tile.tile_height * TILE_SIZE);
+        QSize tile_size(tile.tile_width * standard_tile_size, tile.tile_height * standard_tile_size);
         tile.img = QPixmap(path).copy(QRect(QPoint(0, 0), tile_size));
 
         hash.insert({{tile.id, tile}});

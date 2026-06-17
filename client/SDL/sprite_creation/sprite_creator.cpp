@@ -11,6 +11,7 @@
 #include "client/SDL/sprites/player_sprite.h"
 #include "client/SDL/sprites/sprite_label.h"
 #include "client/client_constants.h"
+#include "client/config/client_config.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/map/asset_info.h"
 
@@ -105,14 +106,18 @@ FixedSprite SpriteCreator::create_sprite(const SpriteCategory category, const As
 void SpriteCreator::update_appearance(PlayerSprite& player, const AppearanceDTO& appearance,
                                       const EquipmentInfoDTO& equipment) {
     // En caso de ser fantasma, no se le aplica ningún update
-    if (!player.layer_is_different(Layer::HEAD, GHOST_HEAD_ID)) {
+    if (!player.layer_is_different(Layer::HEAD, ClientConfig::get().get_ghost_head_id())) {
         return;
     }
 
-    update_layer(player, SpriteCategory::BODY, Layer::BODY, appearance.body);
-    update_layer(player, SpriteCategory::EQUIPMENT, Layer::HELMET, equipment.helmet);
-    update_layer(player, SpriteCategory::EQUIPMENT, Layer::SHIELD, equipment.shield);
-    update_layer(player, SpriteCategory::EQUIPMENT, Layer::WEAPON, equipment.weapon);
+    if (equipment.armor.item_id == NO_ITEM) {
+        update_layer(player, SpriteCategory::BODY, Layer::BODY, appearance.body);
+    } else {
+        update_layer(player, SpriteCategory::EQUIPMENT, Layer::BODY, equipment.armor.item_id);
+    }
+    update_layer(player, SpriteCategory::EQUIPMENT, Layer::HELMET, equipment.helmet.item_id);
+    update_layer(player, SpriteCategory::EQUIPMENT, Layer::SHIELD, equipment.shield.item_id);
+    update_layer(player, SpriteCategory::EQUIPMENT, Layer::WEAPON, equipment.weapon.item_id);
 }
 
 void SpriteCreator::update_appearance(PlayerSprite& player, const AppearanceDTO& appearance) {
@@ -121,7 +126,8 @@ void SpriteCreator::update_appearance(PlayerSprite& player, const AppearanceDTO&
 }
 
 void SpriteCreator::convert_to_ghost(PlayerSprite& player) {
-    const AppearanceDTO ghost_appearance = {GHOST_BODY_ID, GHOST_HEAD_ID};
+    const auto& config = ClientConfig::get();
+    const AppearanceDTO ghost_appearance = {config.get_ghost_body_id(), config.get_ghost_head_id()};
     update_appearance(player, ghost_appearance);
 
     // 0 equivale a no tener item equipado
@@ -175,6 +181,6 @@ SDL2pp::Point SpriteCreator::get_layer_offset(const Layer layer) {
         case Layer::HELMET:
             return {0, 0};
         default:
-            return {0, HEAD_OFFSET};
+            return {0, ClientConfig::get().get_head_offset()};
     }
 }

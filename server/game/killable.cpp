@@ -119,3 +119,5 @@ void Killable::update() {
 }
 
 bool Killable::is_alive() const { return stats.health.get_current() > 0; }
+
+void Killable::die() { stats.health.set_current(0); }

@@ -430,6 +430,36 @@ struct toml::from<ClanConstantsData> {
     }
 };
 
+struct WorldConstantsData {
+    uint8_t ticks_per_second;
+    uint16_t tick_between_saves;
+    uint16_t max_creatures_amount;
+};
+
+template <>
+struct toml::from<WorldConstantsData> {
+    static WorldConstantsData from_toml(const toml::value& raw) {
+        return WorldConstantsData{toml::find<uint8_t>(raw, "ticks_per_second"),
+                                  toml::find<uint16_t>(raw, "tick_between_saves"),
+                                  toml::find<uint16_t>(raw, "max_creatures_amount")};
+    }
+};
+
+struct CreatureBehaviorConstantsData {
+    uint8_t extra_target_range;
+    uint8_t extra_target_range_limit;
+    uint8_t attack_cooldowns_to_become_lonely;
+};
+
+template <>
+struct toml::from<CreatureBehaviorConstantsData> {
+    static CreatureBehaviorConstantsData from_toml(const toml::value& raw) {
+        return CreatureBehaviorConstantsData{toml::find<uint8_t>(raw, "extra_target_range"),
+                                             toml::find<uint8_t>(raw, "extra_target_range_limit"),
+                                             toml::find<uint8_t>(raw, "attack_cooldowns_to_become_lonely")};
+    }
+};
+
 struct BiomesData {
     std::unordered_map<uint8_t, uint8_t> floor_to_biome;
     std::unordered_map<uint8_t, BiomeData> biomes;

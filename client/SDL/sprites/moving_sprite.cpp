@@ -4,12 +4,12 @@
 #include <utility>
 
 #include "client/client_constants.h"
-
-#define MIN_PIXELS_PER_STEP 3
-#define CHANGE_RATE 0.3
+#include "client/config/client_config.h"
 
 MovingSprite::MovingSprite(const SDL2pp::Point position, const SDL2pp::Point size, const Direction direction):
-        Sprite(position, size, SDL2pp::Point{(size.x - TILE_SIZE) / 2, size.y - TILE_SIZE}),
+        Sprite(position, size,
+               SDL2pp::Point{(size.x - ClientConfig::get().get_tile_size()) / 2,
+                             size.y - ClientConfig::get().get_tile_size()}),
         direction(direction) {}
 
 // METODOS PUBLICOS ::::::::::::::::::
@@ -54,9 +54,11 @@ void MovingSprite::render_overlay(const SDL2pp::Point& camera_offset) const {
 // METODOS PRIVADOS ::::::::::::::::::
 
 int MovingSprite::get_new_coordinate(const int& current_coordinate, const int& coordinate_diff) {
-    const int coordinate_movement = coordinate_diff * CHANGE_RATE;
+    const MovementData& config_movement_data = ClientConfig::get().get_movement_data();
 
-    if (MIN_PIXELS_PER_STEP > std::abs(coordinate_movement)) {
+    const int coordinate_movement = coordinate_diff * config_movement_data.change_rate;
+
+    if (config_movement_data.min_pixels_per_step > std::abs(coordinate_movement)) {
         return current_coordinate + coordinate_diff;  // target coordinate
     } else {
         return current_coordinate + coordinate_movement;

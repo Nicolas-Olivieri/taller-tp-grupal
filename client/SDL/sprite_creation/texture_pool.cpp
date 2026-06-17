@@ -38,5 +38,8 @@ TexturePool::TexturePool(SDL2pp::Renderer& renderer): renderer(renderer) {
 
 
 SDL2pp::Texture& TexturePool::get_sprite_texture(const SpriteCategory category_id, const uint8_t sub_id) {
+    assert(textures.contains(category_id));
+    assert(textures.at(category_id).contains(sub_id));
+
     return textures.at(category_id).at(sub_id);
 }

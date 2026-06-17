@@ -1,6 +1,7 @@
 #ifndef PLAYER_SPRITE_H
 #define PLAYER_SPRITE_H
 #include <map>
+#include <vector>
 
 #include "client/client_constants.h"
 
@@ -13,6 +14,7 @@ class PlayerSprite: public MovingSprite {
 
 private:
     std::map<Layer, SpriteLayer> layers;
+    std::map<Direction, std::vector<Layer>> render_order;
 
 public:
     PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, SDL2pp::Point position, SDL2pp::Point size,

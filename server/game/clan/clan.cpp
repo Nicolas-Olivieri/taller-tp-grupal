@@ -80,7 +80,7 @@ ClanActionResult Clan::accept(const std::string& player_name, const std::string&
     if (is_banned(player_to_accept))
         return ClanActionResult(ClanActionStatus::IS_BANNED_PLAYER);
 
-    if (GameConfig::get().get_clan_constats().max_members_per_clan == members.size() + 1)
+    if (GameConfig::get().get_clan_constants().max_members_per_clan == members.size() + 1)
         return ClanActionResult(ClanActionStatus::CLAN_IS_FULL);
 
     assert(has_pending_request(player_to_accept));
@@ -207,7 +207,7 @@ void Clan::set_buffed_players(std::unordered_map<std::string, Player>& world_pla
                 continue;
 
             const float distance = position.distance_to(other_position);
-            if (distance <= GameConfig::get().get_clan_constats().max_distance_to_consider_near_clan_mate)
+            if (distance <= GameConfig::get().get_clan_constants().max_distance_to_consider_near_clan_mate)
                 ++near_clan_mates;
         }
         Player& player = world_players.at(name);
