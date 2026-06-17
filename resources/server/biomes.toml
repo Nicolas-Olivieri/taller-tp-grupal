@@ -25,5 +25,5 @@ variations = [0, 1, 2]
 [biomes.dungeon]
 id = 4
 floor_ids = [39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
-creatures = [0, 1, 2, 3, 4, 5]
+creatures = [1, 3, 4, 5]
 variations = [2, 3, 5, 6]

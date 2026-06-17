@@ -40,6 +40,8 @@ Tile& Grid::get_tile(const Position& position) {
 
 
 Position Grid::spawn() const {
+    GameConfig& config = GameConfig::get();
+
     static std::random_device rd;
     static std::default_random_engine generator(rd());
     std::uniform_int_distribution get_random_width(0, width_ - 1);
@@ -48,7 +50,8 @@ Position Grid::spawn() const {
     do {
         x = get_random_width(generator);
         y = get_random_height(generator);
-    } while (!is_tile_available(x, y));
+    } while (!is_tile_available(x, y) || !config.has_biome_associated(tiles_[y][x].floor) ||
+             config.get_biome_id(tiles_[y][x].floor) != SAFE_ZONE_FLOOR);
 
     return Position(x, y);
 }

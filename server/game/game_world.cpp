@@ -214,7 +214,8 @@ void GameWorld::remove_dead_creatures() {
             Tile& tile = grid.get_tile(position);
             tile.occupy(nullptr);
 
-            if (GameConfig::get().get_biome_id(tile.floor) == DUNGEON_FLOOR) {
+            GameConfig& config = GameConfig::get();
+            if (config.has_biome_associated(tile.floor) && config.get_biome_id(tile.floor) == DUNGEON_FLOOR) {
                 tile.add_loot(creature.secret_drop());
             } else {
                 tile.add_loot(creature.drop());
