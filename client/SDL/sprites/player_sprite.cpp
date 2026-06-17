@@ -1,6 +1,7 @@
 #include "player_sprite.h"
 
 #include <utility>
+#include <vector>
 
 PlayerSprite::PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, const SDL2pp::Point position,
                            const SDL2pp::Point size, const Direction direction):
@@ -8,13 +9,13 @@ PlayerSprite::PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, const SDL2pp:
         layers({{Layer::HEAD, std::move(head)}, {Layer::BODY, std::move(body)}}) {
 
     // Se define de antemano cual es el orden de renderizado de los layers según la dirección a la que mira
-    // Así por ejemplo el escudo se ve por detrás si va hacia la derecha o arriba, pero por delante en otro caso
-    render_order.insert({
-        {Direction::DOWN, {Layer::HEAD, Layer::BODY, Layer::HELMET, Layer::SHIELD, Layer::WEAPON}},
-        {Direction::UP, {Layer::SHIELD, Layer::WEAPON, Layer::BODY, Layer::HEAD, Layer::HELMET}},
-        {Direction::LEFT, {Layer::WEAPON, Layer::BODY, Layer::HEAD, Layer::HELMET, Layer::SHIELD}},
-        {Direction::RIGHT, {Layer::SHIELD, Layer::BODY, Layer::HEAD, Layer::HELMET, Layer::WEAPON}}});
-
+    // Así por ejemplo el escudo se ve por detrás si va hacia la derecha o arriba, pero por delante en otro
+    // caso
+    render_order.insert(
+            {{Direction::DOWN, {Layer::HEAD, Layer::BODY, Layer::HELMET, Layer::SHIELD, Layer::WEAPON}},
+             {Direction::UP, {Layer::SHIELD, Layer::WEAPON, Layer::BODY, Layer::HEAD, Layer::HELMET}},
+             {Direction::LEFT, {Layer::WEAPON, Layer::BODY, Layer::HEAD, Layer::HELMET, Layer::SHIELD}},
+             {Direction::RIGHT, {Layer::SHIELD, Layer::BODY, Layer::HEAD, Layer::HELMET, Layer::WEAPON}}});
 }
 
 // METODOS HEREDADOS ::::::::::::::::::
@@ -33,7 +34,7 @@ void PlayerSprite::render(const SDL2pp::Point& camera_offset) {
     const SDL2pp::Point render_position = position - camera_offset - render_offset;
     const Direction render_direction = direction == Direction::IDLE ? get_last_direction() : direction;
 
-    for (auto& layer: render_order.at(render_direction)) {
+    for (const auto& layer: render_order.at(render_direction)) {
         if (layers.contains(layer)) {
             layers.at(layer).render(render_position);
         }

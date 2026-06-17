@@ -48,8 +48,8 @@ public:
 
     FixedSprite create_sprite(const LootInfoDTO& loot_info);
 
-    void update_appearance(PlayerSprite &player,
-                           const AppearanceDTO &appearance, const EquipmentInfoDTO &equipment);
+    void update_appearance(PlayerSprite& player, const AppearanceDTO& appearance,
+                           const EquipmentInfoDTO& equipment);
 
     void update_appearance(PlayerSprite& player, const AppearanceDTO& appearance);
 

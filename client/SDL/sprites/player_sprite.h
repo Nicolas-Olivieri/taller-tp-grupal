@@ -1,6 +1,7 @@
 #ifndef PLAYER_SPRITE_H
 #define PLAYER_SPRITE_H
 #include <map>
+#include <vector>
 
 #include "client/client_constants.h"
 
