@@ -153,9 +153,9 @@ void MapSaver::store_teleport_data(QDataStream& stream) const {
         Placement data_b = data.placements[point_b];
 
         const uint16_t point_a_x = data_a.origin.x() - min_point.x();
-        const uint16_t point_a_y = data_a.origin.y() - min_point.y() + data_a.asset.tile_height;
+        const uint16_t point_a_y = data_a.origin.y() - min_point.y() + data_a.asset.tile_height - 1;
         const uint16_t point_b_x = data_b.origin.x() - min_point.x();
-        const uint16_t point_b_y = data_b.origin.y() - min_point.y() + data_b.asset.tile_height;
+        const uint16_t point_b_y = data_b.origin.y() - min_point.y() + data_b.asset.tile_height - 1;
 
         stream << point_a_x << point_a_y << point_b_x << point_b_y;
     }

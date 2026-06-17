@@ -573,12 +573,19 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
 
 void GameWorld::init_teleports(const std::vector<TeleportInfoDTO>& map_teleports) {
     for (const auto& teleport_pair: map_teleports) {
-        assert(false);
         const Position position_a(teleport_pair.port_a_x, teleport_pair.port_a_y);
         const Position position_b(teleport_pair.port_b_x, teleport_pair.port_b_y);
 
+        // Por convención se recibe la posición izquierda de un totem cuya base ocupa 2 tiles
+        const Position offset_right(1, 0);
+
         std::unique_ptr<Ally> totem_a = std::make_unique<TeleportationTotem>(position_a, position_b);
         std::unique_ptr<Ally> totem_b = std::make_unique<TeleportationTotem>(position_b, position_a);
+
+        grid.get_tile(position_a).occupy(totem_a.get());
+        grid.get_tile(position_a + offset_right).occupy(totem_a.get());
+        grid.get_tile(position_b).occupy(totem_b.get());
+        grid.get_tile(position_b + offset_right).occupy(totem_b.get());
 
         grid.get_tile(position_a).occupy(totem_a.get());
         grid.get_tile(position_b).occupy(totem_b.get());
