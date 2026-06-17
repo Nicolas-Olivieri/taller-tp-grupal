@@ -3,10 +3,13 @@
 #include <utility>
 
 #include "client/client_constants.h"
+#include "client/config/client_config.h"
 
 EffectSprite::EffectSprite(SpriteLayer&& image, const SDL2pp::Point& position, const SDL2pp::Point& size):
         FixedSprite(std::move(image), position, size), elapsed_frames(0), finished(false) {
-    render_offset = SDL2pp::Point((size.x - TILE_SIZE) / 2, (size.y - TILE_SIZE) / 2);
+    const uint16_t tile_size = ClientConfig::get().get_tile_size();
+
+    render_offset = SDL2pp::Point((size.x - tile_size) / 2, (size.y - tile_size) / 2);
 }
 
 void EffectSprite::update_frame(const int /* iteration*/) {

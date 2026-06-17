@@ -47,9 +47,11 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_clan_msg/clan_message.cpp
 
         dto/snapshot/info/appearance.cpp
+        dto/snapshot/info/clan_info.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/info/creatureinfo.cpp
         dto/snapshot/info/creature_stats.cpp
+        dto/snapshot/info/equipable_item_info.cpp
         dto/snapshot/info/equipment_info.cpp
         dto/snapshot/info/inventory_info.cpp
         dto/snapshot/info/lootinfo.cpp
@@ -59,6 +61,7 @@ target_sources(taller_common
         dto/snapshot/map/grid_matrix.cpp
         dto/snapshot/map/server_map_data.cpp
         dto/snapshot/map/tile_info.cpp
+        dto/snapshot/map/teleport_info.cpp
 
         dto/snapshot/snapshot_builder.cpp
 
@@ -130,9 +133,11 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_clan_msg/clan_message.h
 
         dto/snapshot/info/appearance.h
+        dto/snapshot/info/clan_info.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/info/creatureinfo.h
         dto/snapshot/info/creature_stats.h
+        dto/snapshot/info/equipable_item_info.h
         dto/snapshot/info/equipment_info.h
         dto/snapshot/info/inventory_info.h
         dto/snapshot/info/lootinfo.h
@@ -142,6 +147,7 @@ target_sources(taller_common
         dto/snapshot/map/grid_matrix.h
         dto/snapshot/map/server_map_data.h
         dto/snapshot/map/tile_info.h
+        dto/snapshot/map/teleport_info.h
 
         dto/snapshot/snapshot_builder.h
 

@@ -26,19 +26,30 @@ void SnapshotBuilder::add_loot(const std::map<std::pair<uint16_t, uint16_t>, Til
 void SnapshotBuilder::add_action(const ActionDTO& action) { actions.push_back(action); }
 
 PlayerInfoDTO SnapshotBuilder::convert_to_info(const std::string& player_name, const Player& player) {
+    const auto& config = GameConfig::get();
+
     Position position = player.get_position();
     Stats stats = player.get_stats();
     Equipment equipment = player.get_equipment();
 
+    const auto& weapon = config.get_equipable(equipment.weapon);
+    const auto& shield = config.get_equipable(equipment.shield);
+    const auto& helmet = config.get_equipable(equipment.helmet);
+    const auto& armor = config.get_equipable(equipment.armor);
+
     return PlayerInfoDTO(
-            player_name, player.get_clan_name(), player.get_direction(), position.get_x(), position.get_y(),
-            player.get_safe_gold(), player.get_excess_gold(), AppearanceDTO(player.get_body(), player.get_head()),
+            player_name, ClanInfoDTO(player.get_clan_name(), player.is_clan_founder()),
+            player.get_direction(), position.get_x(), position.get_y(), player.get_safe_gold(),
+            player.get_excess_gold(), AppearanceDTO(player.get_body(), player.get_head()),
             PlayerStatsDTO(stats.health.get_max(), stats.health.get_current(), stats.mana.get_max(),
                            stats.mana.get_current(), stats.experience.get_level(),
                            stats.experience.get_current_amount(),
                            Calculator::calculate_xp_limit(stats.experience.get_level())),
             InventoryInfoDTO(player.get_inventory_items()),
-            EquipmentInfoDTO(equipment.weapon, equipment.shield, equipment.helmet, equipment.armor));
+            EquipmentInfoDTO(EquipableItemInfoDTO(equipment.weapon, (weapon.min + weapon.max) / 2),
+                             EquipableItemInfoDTO(equipment.shield, (shield.min + shield.max) / 2),
+                             EquipableItemInfoDTO(equipment.helmet, (helmet.min + helmet.max) / 2),
+                             EquipableItemInfoDTO(equipment.armor, (armor.min + armor.max) / 2)));
 }
 
 CreatureInfoDTO SnapshotBuilder::convert_to_info(uint16_t sub_id, const Creature& creature) {

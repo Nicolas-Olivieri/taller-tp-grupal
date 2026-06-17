@@ -14,6 +14,9 @@ GameConfig::GameConfig() {
     drop_probabilities = retrieve_config_data<DropProbabilitiesData>(paths_data, "drops", "probabilities");
     fair_play_levels = retrieve_config_data<FairPlayData>(paths_data, "fair_play", "fair_play");
     clan_constants_data = retrieve_config_data<ClanConstantsData>(paths_data, "clans", "clans");
+    world_constants_data = retrieve_config_data<WorldConstantsData>(paths_data, "world", "world");
+    creature_constants_data = retrieve_config_data<CreatureBehaviorConstantsData>(
+            paths_data, "creature_behavior", "creature_behavior");
 }
 
 GameConfig& GameConfig::get() {
@@ -77,4 +80,10 @@ int GameConfig::get_merchant_max_id() const { return traders.merchants.items.siz
 
 const FairPlayData& GameConfig::get_fair_play() const { return fair_play_levels; }
 
-const ClanConstantsData& GameConfig::get_clan_constats() const { return clan_constants_data; }
+const ClanConstantsData& GameConfig::get_clan_constants() const { return clan_constants_data; }
+
+const WorldConstantsData& GameConfig::get_world_constants() const { return world_constants_data; }
+
+const CreatureBehaviorConstantsData& GameConfig::get_creature_behavior_constants() const {
+    return creature_constants_data;
+}

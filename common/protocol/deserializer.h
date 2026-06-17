@@ -44,6 +44,8 @@ private:
 
     AppearanceDTO recv_appearance();
 
+    ClanInfoDTO recv_clan();
+
     DespawnDTO recv_despawn();
 
     HealDTO recv_heal();
@@ -53,6 +55,8 @@ private:
     PlayerStatsDTO recv_player_stats();
 
     InventoryInfoDTO recv_inventory_info();
+
+    EquipableItemInfoDTO recv_equipable_item_info();
 
     EquipmentInfoDTO recv_equipment_info();
 
