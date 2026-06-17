@@ -90,6 +90,7 @@ void MapLoader::load_teleports(QDataStream& stream) const {
     // Al guardarse los npcs automaticamente, es muy probable que se guarden mal. De esta forma se guardan en
     // orden.
     data.teleport_pairs.clear();
+    data.curr_teleport_pair.clear();
 
     uint16_t teleports_amount;
     stream >> teleports_amount;
