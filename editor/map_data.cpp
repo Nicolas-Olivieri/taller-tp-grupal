@@ -159,6 +159,9 @@ bool MapData::erase_collider(const Placement& placement) {
     for (const auto& cell: grid_range) {
         occupied_tiles[cell].removeLast();
         unwalkable_tiles[cell].removeLast();
+        if (unwalkable_tiles[cell].empty()) {
+            unwalkable_tiles.remove(cell);
+        }
     }
     return true;
 }
