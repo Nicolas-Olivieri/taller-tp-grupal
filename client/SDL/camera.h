@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include "SDL2pp/SDL2pp.hh"
-#include "sprites/player_sprite.h"
+#include "sprites/moving/player_sprite.h"
 
 class Camera {
 private:

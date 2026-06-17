@@ -13,11 +13,11 @@
 #include "common/dto/snapshot/map/client_map_data.h"
 #include "sprite_creation/sprite_creator.h"
 #include "sprite_creation/texture_pool.h"
-#include "sprites/effect_sprite.h"
-#include "sprites/enemy_sprite.h"
-#include "sprites/fixed_sprite.h"
-#include "sprites/moving_sprite.h"
-#include "sprites/player_sprite.h"
+#include "sprites/fixed/effect_sprite.h"
+#include "sprites/fixed/fixed_sprite.h"
+#include "sprites/moving/enemy_sprite.h"
+#include "sprites/moving/moving_sprite.h"
+#include "sprites/moving/player_sprite.h"
 
 #include "camera.h"
 
@@ -38,11 +38,11 @@ private:
     std::set<std::shared_ptr<FixedSprite>> map_tiles;
     std::set<std::shared_ptr<MovingSprite>> map_entities;
     std::set<std::shared_ptr<FixedSprite>> map_loot;
-    std::set<std::shared_ptr<Sprite>> map_items;
+    std::set<std::shared_ptr<WorldSprite>> map_items;
 
     void init_assets(const ClientMapDataDTO& map_data);
 
-    static bool cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_ptr<Sprite>& b);
+    static bool cmp_by_y_coord(const std::shared_ptr<WorldSprite>& a, const std::shared_ptr<WorldSprite>& b);
 
     void add_new_creature(const CreatureInfoDTO& info);
 

@@ -1,9 +1,9 @@
 #ifndef FIXED_SPRITE_H
 #define FIXED_SPRITE_H
-#include "sprite.h"
-#include "sprite_layer.h"
+#include "../base/sprite_layer.h"
+#include "client/SDL/sprites/base/world_sprite.h"
 
-class FixedSprite: public Sprite {
+class FixedSprite: public WorldSprite {
 protected:
     SpriteLayer image;
 

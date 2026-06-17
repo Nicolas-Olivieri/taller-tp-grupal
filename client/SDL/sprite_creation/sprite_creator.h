@@ -2,12 +2,17 @@
 #define SPRITE_CREATOR_H
 
 #include <memory>
+#include <string>
 
-#include "../sprites/sprite_layer.h"
-#include "client/SDL/sprites/effect_sprite.h"
-#include "client/SDL/sprites/enemy_sprite.h"
-#include "client/SDL/sprites/fixed_sprite.h"
-#include "client/SDL/sprites/player_sprite.h"
+#include "../sprites/base/sprite_layer.h"
+#include "client/SDL/sprites/fixed/effect_sprite.h"
+#include "client/SDL/sprites/fixed/fixed_sprite.h"
+#include "client/SDL/sprites/moving/enemy_sprite.h"
+#include "client/SDL/sprites/moving/player_sprite.h"
+#include "client/SDL/sprites/ui/hud_sprite.h"
+#include "client/SDL/sprites/ui/interface_sprite.h"
+#include "client/SDL/sprites/ui/progress_bar_sprite.h"
+#include "client/SDL/sprites/ui/text_sprite.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/info/appearance.h"
 #include "common/dto/snapshot/info/creatureinfo.h"
@@ -48,6 +53,15 @@ public:
 
     FixedSprite create_sprite(const LootInfoDTO& loot_info);
 
+    InterfaceSprite create_sprite(UiElement ui_type, const SDL2pp::Point& position);
+
+    ProgressBarSprite create_sprite(UiElement bar_type, SDL2pp::Point position, size_t current, size_t max);
+
+    HudSprite create_sprite(uint8_t id, SDL2pp::Point position, bool has_amount);
+
+    TextSprite create_sprite(SDL2pp::Rect box, const std::string& text, FontType font_type,
+                             SDL2pp::Color font_color);
+
     void update_appearance(PlayerSprite& player, const AppearanceDTO& appearance,
                            const EquipmentInfoDTO& equipment);
 
@@ -63,6 +77,8 @@ public:
             sprite.get_label().update(info);
         }
     }
+
+    void update_appearance(HudSprite& item, uint8_t id, int amount = 0);
 };
 
 

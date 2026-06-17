@@ -3,13 +3,12 @@
 #include <memory>
 #include <utility>
 
-#include "client/client_constants.h"
 #include "client/config/client_config.h"
 
 MovingSprite::MovingSprite(const SDL2pp::Point position, const SDL2pp::Point size, const Direction direction):
-        Sprite(position, size,
-               SDL2pp::Point{(size.x - ClientConfig::get().get_tile_size()) / 2,
-                             size.y - ClientConfig::get().get_tile_size()}),
+        WorldSprite(position, size,
+                    SDL2pp::Point{(size.x - ClientConfig::get().get_tile_size()) / 2,
+                                  size.y - ClientConfig::get().get_tile_size()}),
         direction(direction) {}
 
 // METODOS PUBLICOS ::::::::::::::::::

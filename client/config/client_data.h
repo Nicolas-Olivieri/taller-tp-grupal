@@ -1,7 +1,10 @@
 #ifndef CLIENT_DATA_H
 #define CLIENT_DATA_H
+#include <cstdint>
 #include <string>
 #include <vector>
+
+#include <SDL2pp/Rect.hh>
 
 struct CreatureDisplayData {
     std::string name;
@@ -33,6 +36,10 @@ struct MovementData {
 };
 
 struct UserInterfaceData {
+    SDL2pp::Rect chat_box;
+    SDL2pp::Rect inventory;
+    SDL2pp::Rect screen;
+
     SDL2pp::Rect history_messages;
     SDL2pp::Rect input_box;
 
@@ -52,10 +59,8 @@ struct UserInterfaceData {
     SDL2pp::Rect safe_gold;
     SDL2pp::Rect excess_gold;
     SDL2pp::Rect xp_level;
-    SDL2pp::Rect weapon;
-    SDL2pp::Rect shield;
-    SDL2pp::Rect helmet;
-    SDL2pp::Rect armor;
+
+    std::vector<SDL2pp::Rect> equipment_state_slots;
 };
 
 struct SoundData {

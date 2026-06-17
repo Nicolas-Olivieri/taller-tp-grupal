@@ -1,7 +1,8 @@
 #ifndef ENEMY_SPRITE_H
 #define ENEMY_SPRITE_H
+#include "../base/sprite_layer.h"
+
 #include "moving_sprite.h"
-#include "sprite_layer.h"
 
 
 class EnemySprite: public MovingSprite {

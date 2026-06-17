@@ -58,7 +58,7 @@ void World::update_visuals(const int it) const {
     }
 }
 
-bool World::cmp_by_y_coord(const std::shared_ptr<Sprite>& a, const std::shared_ptr<Sprite>& b) {
+bool World::cmp_by_y_coord(const std::shared_ptr<WorldSprite>& a, const std::shared_ptr<WorldSprite>& b) {
     return a->get_ground_position().y <= b->get_ground_position().y;
 }
 

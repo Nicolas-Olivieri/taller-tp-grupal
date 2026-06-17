@@ -2,13 +2,13 @@
 #define MOVING_SPRITE_H
 #include <memory>
 
+#include "../base/sprite.h"
+#include "../base/sprite_label.h"
+#include "client/SDL/sprites/base/world_sprite.h"
 #include "common/direction.h"
 
-#include "sprite.h"
-#include "sprite_label.h"
 
-
-class MovingSprite: public Sprite {
+class MovingSprite: public WorldSprite {
 protected:
     SDL2pp::Point target_position;
     Direction direction;

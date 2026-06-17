@@ -1,8 +1,8 @@
 #include "deserializer.h"
 
+#include <functional>
 #include <map>
 #include <stdexcept>
-#include <unordered_map>
 
 #include <arpa/inet.h>
 
@@ -361,7 +361,7 @@ PlayerStatsDTO Deserializer::recv_player_stats() {
 
 InventoryInfoDTO Deserializer::recv_inventory_info() {
     const uint16_t size = recv_uint16();
-    std::unordered_map<uint8_t, uint8_t> items;
+    std::map<uint8_t, uint8_t, std::greater<>> items;
 
     for (uint16_t i = 0; i < size; ++i) {
         const uint8_t item_id = recv_uint8();
