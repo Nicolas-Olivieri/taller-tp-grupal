@@ -19,4 +19,4 @@ orc = [2, 2]
 golem = [3, 6]
 
 game_ui = [0, 6]
-hud_items = [0, 19]
+hud_items = [0, 28]
