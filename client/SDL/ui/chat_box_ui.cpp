@@ -226,3 +226,9 @@ bool ChatBoxUI::is_over_chat(const int x, const int y) {
 }
 
 size_t ChatBoxUI::get_visible_lines() const { return config.history_messages.h / chat_config.line_spacing; }
+
+void ChatBoxUI::update_player_state(const PlayerInfoDTO& player) {
+    assert(player.name == player_name);
+
+    clan_name = player.clan.name;
+}

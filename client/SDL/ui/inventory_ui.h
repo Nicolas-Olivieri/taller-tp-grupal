@@ -70,7 +70,7 @@ public:
 
     void init_elements();
 
-    void update_player_state(const std::vector<PlayerInfoDTO>& players_information);
+    void update_player_state(const PlayerInfoDTO& player);
 
     void render();
 

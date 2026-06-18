@@ -60,6 +60,8 @@ public:
 
     void render(const std::string& input, bool is_chat_active);
 
+    void update_player_state(const PlayerInfoDTO& player);
+
     void update_chat(const std::vector<ActionDTO>& actions);
 
     void chat_scroll_up();
