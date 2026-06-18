@@ -7,11 +7,10 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         config(ClientConfig::get().get_ui_data()),
         sprite_creator(SpriteCreator(renderer, font_manager)),
         font_manager(font_manager),
+        player_name(player_name),
         inventory_ui(sprite_creator, player_name),
         chat_ui(sprite_creator, player_name),
-        game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen.GetTopLeft())),
-        player_name(player_name),
-        clan_name("") {
+        game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen.GetTopLeft())) {
     // const auto& config = ClientConfig::get().get_ui_data();
 
     // history_messages = config.history_messages;
@@ -49,7 +48,16 @@ void UserInterface::render(const std::string& input, bool is_chat_active) {
 }
 
 void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& players_information) {
-    inventory_ui.update_player_state(players_information);
+    const auto player = std::ranges::find_if(players_information, [this](const PlayerInfoDTO& player_info) {
+        return player_info.name == player_name;
+    });
+
+    if (player == players_information.end()) {
+        return;
+    }
+
+    inventory_ui.update_player_state(*player);
+    chat_ui.update_player_state(*player);
 }
 
 void UserInterface::update_chat(const std::vector<ActionDTO>& actions) { chat_ui.update_chat(actions); }

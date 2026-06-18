@@ -48,33 +48,27 @@ void InventoryUI::init_elements() {
     }
 }
 
-void InventoryUI::update_player_state(const std::vector<PlayerInfoDTO>& players_information) {
-    const auto player = std::ranges::find_if(players_information, [this](const PlayerInfoDTO& player_info) {
-        return player_info.name == player_name.get_text();
-    });
+void InventoryUI::update_player_state(const PlayerInfoDTO& player) {
+    assert(player.name == player_name.get_text());
 
-    if (player == players_information.end()) {
-        return;
-    }
-
-    const PlayerStatsDTO& stats(player->stats);
-    const EquipmentInfoDTO& equipment_info(player->equipment);
+    const PlayerStatsDTO& stats(player.stats);
+    const EquipmentInfoDTO& equipment_info(player.equipment);
 
     bars[0].update_values(stats.current_health, stats.max_health);
     bars[1].update_values(stats.current_mana, stats.max_mana);
     bars[2].update_values(stats.current_xp_amount, stats.max_xp_amount);
 
     xp_level.set_text(std::to_string(stats.xp_level));
-    safe_gold.set_text(std::to_string(player->safe_gold));
-    excess_gold.set_text(std::to_string(player->excess_gold));
+    safe_gold.set_text(std::to_string(player.safe_gold));
+    excess_gold.set_text(std::to_string(player.excess_gold));
 
-    clan_name.set_text(player->clan.name);
-    if (!founder_crown.has_value() && player->clan.is_founder) {
+    clan_name.set_text(player.clan.name);
+    if (!founder_crown.has_value() && player.clan.is_founder) {
         founder_crown.emplace(creator.create_sprite(UiElement::FOUNDER_CROWN, config.founder.GetTopLeft()));
     }
 
     int slot = 0;
-    for (const auto& [item_id, amount]: player->inventory.items) {
+    for (const auto& [item_id, amount]: player.inventory.items) {
         creator.update_appearance(inventory[slot], item_id, amount);
         slot++;
     }
