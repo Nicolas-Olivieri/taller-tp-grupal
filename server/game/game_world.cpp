@@ -1,20 +1,26 @@
 #include "game_world.h"
 
+#include <algorithm>
 #include <cassert>
 #include <limits>
+#include <unordered_set>
 #include <utility>
 
 #include "allies/ally.h"
 #include "allies/banker.h"
 #include "allies/merchant.h"
 #include "allies/priest.h"
+#include "server/command/cmd_results/ally_execute/list/outcomes/bank_vault/bank_vault_outcome.h"
+#include "server/command/cmd_results/ally_execute/list/outcomes/player_unbounded/player_unbounded_outcome.h"
+#include "server/command/cmd_results/ally_execute/list/outcomes/vendor_list/vendor_list_outcome.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
+#include "server/game/allies/teleportation_totem.h"
 #include "server/game/clan/clan.h"
 #include "server/util/server_map_loader.h"
 
-
-GameWorld::GameWorld(PlayerRepository& player_repository): grid(), player_repository(player_repository) {}
+GameWorld::GameWorld(PlayerRepository& player_repository):
+        grid(), current_creature_id(0), player_repository(player_repository) {}
 
 void GameWorld::init() {
     ServerMapLoader loader;
@@ -22,7 +28,7 @@ void GameWorld::init() {
 
     this->grid = Grid(map_data.width, map_data.height, map_data.grid);
     init_npc(map_data.npcs);
-    init_creature(0);
+    init_teleports(map_data.teleports);
     load_clans();
 }
 
@@ -32,6 +38,12 @@ const std::unordered_map<uint16_t, Creature>& GameWorld::get_creatures() const {
 
 const std::map<std::pair<uint16_t, uint16_t>, Tile*>& GameWorld::get_lootable_tiles() const {
     return tiles_with_loot;
+}
+
+void GameWorld::exchange_position(const Position& old_position, const Position& new_position,
+                                  Interactive* occupant) {
+    grid.get_tile(old_position).occupy(nullptr);
+    grid.get_tile(new_position).occupy(occupant);
 }
 
 WorldUpdateStatus GameWorld::update() {
@@ -44,36 +56,48 @@ WorldUpdateStatus GameWorld::update() {
             resurrected_players.push_back(name);
             const Position& resurrect_position = player.get_position();
 
-            grid.get_tile(previous_position).occupy(nullptr);
-            grid.get_tile(resurrect_position).occupy(&player);
+            exchange_position(previous_position, resurrect_position, &player);
         }
     }
 
+    remove_lonely_creatures();
     remove_dead_creatures();
-    std::vector<CreatureUpdateStatus> creatures_status(creatures.size());
+
+    if (creatures.size() < GameConfig::get().get_world_constants().max_creatures_amount)
+        spawn_random_creature();
+
+    std::vector<CreatureUpdate> creatures_status;
+    creatures_status.reserve(creatures.size());
 
     for (auto& [id, creature]: creatures) {
         creature.update();
 
-        Direction direction = next_movement(creature);
-
         if (!creature.is_targeting_someone()) {
             for (auto& [name, player]: players) {
-                if (player.is_alive() && creature.can_target(player.get_position())) {
+                const Position& position = player.get_position();
+                if (player.is_alive() && creature.can_target(position) && !is_safe_zone(position)) {
                     creature.target_player(player);
                     break;
                 }
             }
+        } else if (is_safe_zone(creature.get_target_position())) {
+            creature.stop_targeting();
         }
 
-        std::string target_name = creature.is_targeting_someone() ? creature.get_target_name() : "";
-        creatures_status.push_back(move_creature(creature, direction));
+        CreatureUpdate creature_update = manage_creature_attack(creature);
+        creatures_status.push_back(creature_update);
 
-        if (!target_name.empty()) {
-            Player& target = players.at(target_name);
-            if (!target.is_alive())
-                drop_player_items(target);
+        Direction direction = next_movement(creature);
+
+        if (creature_update.status == CreatureStatus::MOVING) {
+            move_creature(creature, direction);
         }
+
+        creature.update_state();
+    }
+
+    for (auto& [_, clan]: clans) {
+        clan.set_buffed_players(players);
     }
 
     return WorldUpdateStatus(creatures_status, resurrected_players);
@@ -85,31 +109,41 @@ Direction GameWorld::next_movement(const Creature& creature) {
                                              grid.random_movement(current);
 }
 
-CreatureUpdateStatus GameWorld::move_creature(Creature& creature, const Direction& direction) {
+CreatureUpdate GameWorld::manage_creature_attack(Creature& creature) {
+    if (!creature.can_reach_target())
+        return CreatureUpdate(CreatureStatus::MOVING);
+
+    if (creature.is_targeting_someone() && creature.can_attack()) {
+        CreatureUpdate creature_update = creature.attack_player();
+        Player& target = players.at(creature.get_target_name());
+
+        if (target.is_infinite_recoverables_cheat_active()) {
+            target.heal();
+            return CreatureUpdate(CreatureStatus::WAITING);
+        } else if (!target.is_alive()) {
+            drop_player_items(target);
+        }
+
+        return creature_update;
+    }
+
+    return CreatureUpdate(CreatureStatus::WAITING);
+}
+
+void GameWorld::move_creature(Creature& creature, const Direction& direction) {
     Position current = creature.get_position();
 
-    if (direction == Direction::IDLE || !creature.can_move()) {
-        return creature.update_state(current, Direction::IDLE);
-    }
+    if (!creature.can_move() || direction == Direction::IDLE)
+        return;
 
     Position target = current.move(direction);
+    if (is_safe_zone(target))
+        return;
 
-    try {
-        Tile& tile = grid.get_tile(target);
-
-        if (tile.is_walkable() && tile.occupant() == nullptr) {
-            grid.get_tile(current).occupy(nullptr);
-            tile.occupy(&creature);
-
-            creature.update_state(target, direction);
-        } else {
-            creature.update_state(current, Direction::IDLE);
-        }
-    } catch (const std::out_of_range& _) {
-        creature.update_state(current, Direction::IDLE);
+    if (grid.is_tile_available(target.get_x(), target.get_y())) {
+        exchange_position(current, target, &creature);
+        creature.update_position(target, direction);
     }
-
-    return CreatureUpdateStatus();
 }
 
 void GameWorld::move_player(const std::string& player_name, const Direction direction) {
@@ -131,33 +165,13 @@ void GameWorld::move_player(const std::string& player_name, const Direction dire
     const Position target = current.move(direction);
 
     try {
-        Tile& tile = grid.get_tile(target);
-
-        // validar colisiones
-        if (not tile.is_walkable()) {
-            std::cout << "[World] Jugador " << player_name << " colisionó con el mapa" << std::endl;
-            return;  // o disparar evento de movimiento inválido
+        if (grid.is_tile_available(target.get_x(), target.get_y())) {
+            exchange_position(current, target, &player);
+            player.update_position(target, direction);
         }
 
-        if (tile.occupant() != nullptr) {
-            std::cout << "[World] Jugador " << player_name << " colisionó con otra entidad" << std::endl;
-            return;  // o disparar evento de movimiento inválido
-        }
-
-        // efectuar movimiento
-        grid.get_tile(current).occupy(nullptr);
-        tile.occupy(&player);
-
-        player.update_position(target, direction);
-
-        // notificar el evento de movimiento
-        std::cout << "[World] Jugador " << player_name << " se movió a " << target << std::endl;
-
-    } catch (const std::out_of_range& _) {
-        std::cout << "[World] Límite del mapa alcanzado" << std::endl;
-    }
+    } catch (const std::out_of_range& _) {}
 }
-
 
 void GameWorld::add_player(const std::string& player_name, const PlayerData& data) {
     const auto it = emplace_player(player_name, data);
@@ -178,6 +192,19 @@ std::unordered_map<std::string, Player>::iterator GameWorld::emplace_player(cons
     }
 }
 
+void GameWorld::remove_lonely_creatures() {
+    for (auto it = creatures.begin(); it != creatures.end();) {
+        const Creature& creature = it->second;
+
+        if (creature.is_lonely_creature()) {
+            grid.get_tile(creature.get_position()).occupy(nullptr);
+            it = creatures.erase(it);
+        } else {
+            it++;
+        }
+    }
+}
+
 void GameWorld::remove_dead_creatures() {
     for (auto it = creatures.begin(); it != creatures.end();) {
         Creature& creature = it->second;
@@ -186,18 +213,90 @@ void GameWorld::remove_dead_creatures() {
             const Position& position = creature.get_position();
             Tile& tile = grid.get_tile(position);
             tile.occupy(nullptr);
-            tile.add_loot(creature.drop());
+
+            GameConfig& config = GameConfig::get();
+            if (config.has_biome_associated(tile.floor) && config.get_biome_id(tile.floor) == DUNGEON_FLOOR) {
+                tile.add_loot(creature.secret_drop());
+            } else {
+                tile.add_loot(creature.drop());
+            }
 
             add_tile_if_lootable(tile, position);
 
-            uint16_t new_id = it->first + 1;
             it = creatures.erase(it);
-
-            init_creature(new_id);
         } else {
             it++;
         }
     }
+}
+
+void GameWorld::spawn_random_creature() {
+    // TODO: cambiar este método para considerar biomas
+    std::vector<Position> players_positions;
+    players_positions.reserve(players.size());
+
+    for (const auto& [name, player]: players) {
+        // TODO: capaz no hace falta filtrar que estén vivos
+        if (player.is_alive()) {
+            Position position = player.get_position();
+            if (grid.get_tile(position).floor != SAFE_ZONE_FLOOR)
+                players_positions.push_back(std::move(position));
+        }
+    }
+
+    try {
+        Position spawn_position = grid.spawn_near(players_positions);
+        Tile& tile = grid.get_tile(spawn_position);
+        GameConfig& config = GameConfig::get();
+
+        if (!config.has_biome_associated(tile.floor))
+            return;
+
+        const BiomeData& biome = config.get_biome_from_floor(tile.floor);
+        if (biome.variations.empty())
+            return;
+
+        uint8_t variation_id = Calculator::random_choice(biome.variations);
+
+        std::vector<uint8_t> compatible_creatures =
+                filter_compatible_creatures(biome.creatures, variation_id);
+        if (compatible_creatures.empty())
+            return;
+
+        uint8_t creature_id = Calculator::random_choice(compatible_creatures);
+        uint16_t id = get_next_creature_id();
+
+        creatures.emplace(id, Creature(creature_id, variation_id, spawn_position));
+        tile.occupy(&creatures.at(id));
+    } catch (const std::runtime_error& error) {}
+}
+
+std::vector<uint8_t> GameWorld::filter_compatible_creatures(const std::vector<uint8_t>& creatures_ids,
+                                                            uint8_t variation_id) {
+    const VariationData& variation = GameConfig::get().get_variation(variation_id);
+
+    std::unordered_set<uint8_t> variation_compatible_races;
+    for (const auto& creature: variation.compatible_races) variation_compatible_races.insert(creature);
+
+    std::vector<uint8_t> compatibles;
+
+    std::copy_if(creatures_ids.begin(), creatures_ids.end(), std::back_inserter(compatibles),
+                 [&variation_compatible_races](const auto& creature) {
+                     return variation_compatible_races.contains(creature);
+                 });
+
+    return compatibles;
+}
+
+uint16_t GameWorld::get_next_creature_id() {
+    assert(GameConfig::get().get_world_constants().max_creatures_amount < UINT16_MAX);
+
+    // Aprovecha el overflow de UINT16_MAX -> 0 para volver a usar los ids que se liberaron
+    while (creatures.contains(current_creature_id)) current_creature_id++;
+
+    uint16_t id = current_creature_id++;
+
+    return id;
 }
 
 void GameWorld::remove_player(const std::string& player_name) {
@@ -230,11 +329,7 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
 
         if (occupant != nullptr) {
             InteractResult result = occupant->interact(player);
-
-            if (result.attack.was_killed) {
-                Player& target = players.at(result.attack.player_attacked);
-                drop_and_add(target, target_tile);
-            }
+            manage_player_attacked(result, target_tile, player);
 
             return result;
         }
@@ -243,6 +338,31 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
         // Golpeó el borde del mapa
     }
     return InteractResult();
+}
+
+void GameWorld::manage_player_attacked(InteractResult& result, Tile& target_tile, Player& attacker) {
+    if (result.attack.player_attacked.empty() ||
+        (result.attack.damage_dealt <= 0 && result.attack.status != AttackStatus::TARGET_DODGED))
+        return;
+
+    assert(players.contains(result.attack.player_attacked));
+    Player& target = players.at(result.attack.player_attacked);
+
+    if (is_safe_zone(target.get_position())) {
+        undo_attack(result.attack, target, attacker);
+        result.attack.status = AttackStatus::TARGET_IN_SAFE_ZONE;
+    } else if (is_safe_zone(attacker.get_position())) {
+        undo_attack(result.attack, target, attacker);
+        result.attack.status = AttackStatus::SELF_IN_SAFE_ZONE;
+    } else if (result.attack.was_killed) {
+        drop_and_add(target, target_tile);
+    }
+}
+
+void GameWorld::undo_attack(const AttackResult& attack, Player& target, Player& attacker) {
+    target.health_recover(attack.damage_dealt);
+    attacker.mana_recover(GameConfig::get().get_weapon(attack.weapon).mana_cost);
+    attacker.undo_xp_gain();
 }
 
 void GameWorld::add_tile_if_lootable(Tile& tile, const Position& position) {
@@ -328,10 +448,11 @@ PickUpResult GameWorld::pick_up(const std::string& player_name) {
 
     const Loot& loot = tile.get_loot().top();
 
-    PickUpResult result = loot.type == LootType::ITEM ? pick_item_up(player, tile, loot.item) :
-                                                        pick_gold_up(player, tile, loot.gold);
+    PickUpResult result = loot.type == LootType::ITEM || loot.type == LootType::SECRET_ITEM ?
+                                  pick_item_up(player, tile, loot.item) :
+                                  pick_gold_up(player, tile, loot.gold);
 
-    if (result.status == PickUpStatus::SUCCESS && tile.get_loot().empty())
+    if (result.status != PickUpStatus::NOT_ENOUGH_SPACE && tile.get_loot().empty())
         tiles_with_loot.extract({position.get_x(), position.get_y()});
 
     return result;
@@ -353,15 +474,13 @@ PickUpResult GameWorld::pick_gold_up(Player& player, Tile& tile, uint16_t gold) 
     player.add_gold(gold);
     uint16_t current_gold = player.get_safe_gold() + player.get_excess_gold();
 
+    if (current_gold == previous_gold)
+        return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
+
     tile.get_loot().pop();
 
-    if (current_gold - previous_gold == gold) {
-        return PickUpResult(PickUpStatus::SUCCESS);
-    } else if (current_gold - previous_gold == 0) {
-        return PickUpResult(PickUpStatus::NOT_ENOUGH_SPACE);
-    }
-
-    return PickUpResult(PickUpStatus::GOLD_OVERFLOW);
+    return current_gold - previous_gold == gold ? PickUpResult(PickUpStatus::SUCCESS) :
+                                                  PickUpResult(PickUpStatus::GOLD_OVERFLOW);
 }
 
 UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t item_id) {
@@ -380,6 +499,9 @@ UseItemResult GameWorld::use_item(const std::string& player_name, const uint8_t 
 
     } catch (const ItemNotOwned&) {
         return UseItemResult(UseItemStatus::FAILED);
+
+    } catch (const ArchetypeNotMagic&) {
+        return UseItemResult(UseItemStatus::ARCHETYPE_FAIL);
     }
 }
 
@@ -416,6 +538,23 @@ DropItemResult GameWorld::drop_item(const std::string& player_name, const uint8_
     } catch (const ItemEquipped&) {
         return DropItemResult(DropItemStatus::ITEM_EQUIPPED);
     }
+}
+
+MeditateResult GameWorld::meditate(const std::string& player_name) {
+    if (not players.contains(player_name))
+        return MeditateResult();
+
+    Player& player = players.at(player_name);
+
+    // TODO: Estos casos se podrían manejar como excepciones
+    if (not player.is_alive())
+        return MeditateResult(MeditateStatus::GHOST_FAIL);
+
+    if (player.get_stats().archetype().meditation_factor == 0.0f)
+        return MeditateResult(MeditateStatus::ARCHETYPE_FAIL);
+
+    player.meditate();
+    return MeditateResult(MeditateStatus::SUCCESS);
 }
 
 AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
@@ -510,10 +649,28 @@ void GameWorld::init_npc(const std::vector<AllyInfoDTO>& npcs) {
     }
 }
 
-void GameWorld::init_creature(uint16_t id) {
-    Position goblin_position(30, 30);
-    creatures.emplace(id, Creature(id, 0, 0, goblin_position));
-    grid.get_tile(goblin_position).occupy(&creatures.at(id));
+void GameWorld::init_teleports(const std::vector<TeleportInfoDTO>& map_teleports) {
+    for (const auto& teleport_pair: map_teleports) {
+        const Position position_a(teleport_pair.port_a_x, teleport_pair.port_a_y);
+        const Position position_b(teleport_pair.port_b_x, teleport_pair.port_b_y);
+
+        // Por convención se recibe la posición izquierda de un totem cuya base ocupa 2 tiles
+        const Position offset_right(1, 0);
+
+        std::unique_ptr<Ally> totem_a = std::make_unique<TeleportationTotem>(position_a, position_b);
+        std::unique_ptr<Ally> totem_b = std::make_unique<TeleportationTotem>(position_b, position_a);
+
+        grid.get_tile(position_a).occupy(totem_a.get());
+        grid.get_tile(position_a + offset_right).occupy(totem_a.get());
+        grid.get_tile(position_b).occupy(totem_b.get());
+        grid.get_tile(position_b + offset_right).occupy(totem_b.get());
+
+        grid.get_tile(position_a).occupy(totem_a.get());
+        grid.get_tile(position_b).occupy(totem_b.get());
+
+        allies.push_back(std::move(totem_a));
+        allies.push_back(std::move(totem_b));
+    }
 }
 
 void GameWorld::drop_player_items(Player& player) {
@@ -543,7 +700,7 @@ FoundClanResult GameWorld::found_clan(const std::string& player_name, const std:
         return FoundClanResult::ALREADY_IN_CLAN;
 
     const uint8_t current_level = player.get_stats().experience.get_level();
-    if (current_level < Clan::MIN_LEVEL_REQUIRED_TO_FOUND_CLAN)
+    if (current_level < GameConfig::get().get_clan_constants().min_level_required_to_found_clan)
         return FoundClanResult::NOT_ENOUGH_LEVEL;
 
     if (clan_name.size() > CLAN_NAME)
@@ -642,4 +799,92 @@ void GameWorld::cheat_player_xp(const std::string& player_name, const uint8_t le
 
     Player& player = players.at(player_name);
     player.set_xp_level(level);
+}
+
+void GameWorld::cheat_player_gold(const std::string& player_name, const uint16_t gold_amount) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+    player.add_gold(gold_amount);
+}
+
+void GameWorld::cheat_kill_player(const std::string& player_name) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    if (!player.is_alive())
+        return;
+
+    player.die();
+    drop_and_add(player, grid.get_tile(player.get_position()));
+}
+
+void GameWorld::cheat_infinite_recoverables(const std::string& player_name) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    player.toggle_infinite_recoverables();
+    player.heal();
+}
+
+void GameWorld::cheat_get_item(const std::string& player_name, uint8_t item) {
+    if (not players.contains(player_name)) {
+        return;
+    }
+
+    Player& player = players.at(player_name);
+
+    if (not player.is_alive())
+        return;
+
+    try {
+        player.acquire_item(item);
+    } catch (const InventoryFull& err) {
+    } catch (const SlotFull& err) {}
+}
+
+void GameWorld::cheat_kill_all_creatures() {
+    for (auto& [_, creature]: creatures) creature.die();
+}
+
+TeleportResult GameWorld::teleport_player(const std::string& player_name) {
+    if (!players.contains(player_name)) {
+        return TeleportResult();
+    }
+
+    assert(players.contains(player_name));
+    Player& player = players.at(player_name);
+
+    TeleportResult result =
+            execute_ally_action(player_name, AllyActionPayload(AllyAction::TELEPORT)).teleport;
+
+    if (result.status == TeleportStatus::SUCCESS) {
+        // Como sacerdote asume que su derecha siempre está desocupada, totem asume que directamente arriba de
+        // su base no hay entidades ni colliders
+        Position target_pos = result.destination.move(Direction::UP);
+
+        exchange_position(player.get_position(), target_pos, &player);
+        player.update_position(target_pos, Direction::DOWN);
+        player.unbind_ally();
+    }
+
+    return result;
+}
+
+bool GameWorld::is_safe_zone(const Position& position) {
+    GameConfig& config = GameConfig::get();
+    uint8_t floor = grid.get_tile(position).floor;
+
+    if (!config.has_biome_associated(floor))
+        return false;
+
+    return config.get_biome_id(floor) == SAFE_ZONE_FLOOR;
 }

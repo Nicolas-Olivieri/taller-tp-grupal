@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <cassert>
-#include <cstring>
+#include <functional>
 #include <random>
+
+#include "server/game/items/item_mapper.h"
 
 // TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
 // modelo
@@ -13,7 +15,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
                  persisted_data.xp_level, Position(persisted_data.position_x, persisted_data.position_y),
                  Equipment{persisted_data.helmet_id, persisted_data.armor_id, persisted_data.shield_id,
-                           persisted_data.weapon_id}),
+                           persisted_data.weapon_id},
+                 reinterpret_cast<const char*>(persisted_data.clan), persisted_data.is_founder),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
@@ -25,12 +28,11 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         is_resurrecting(false),
         resurrection_timer(0),
         target_resurrection_position(0, 0),
-        _is_founder(persisted_data.is_founder) {
+        _is_founder(persisted_data.is_founder),
+        has_infinite_recoverables_cheat_activated(false),
+        last_experience_amount_earned(0) {
     stats.health.set_current(persisted_data.current_hp);
     stats.mana.set_current(persisted_data.current_mana);
-
-    const char* clan_ptr = reinterpret_cast<const char*>(persisted_data.clan);
-    clan_name = std::string(clan_ptr, strnlen(clan_ptr, CLAN_NAME));
 }
 
 // Constructor para jugador que se conecta por primera vez
@@ -39,7 +41,8 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,
                  persisted_data.xp_level, starting_position,
                  Equipment{persisted_data.helmet_id, persisted_data.armor_id, persisted_data.shield_id,
-                           persisted_data.weapon_id}),
+                           persisted_data.weapon_id},
+                 nullptr, false),
         player_name(player_name),
         body(persisted_data.body),
         head(persisted_data.head),
@@ -52,9 +55,12 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         resurrection_timer(0),
         target_resurrection_position(0, 0),
         _is_founder(false),
-        clan_name("") {}
+        clan_name(""),
+        has_infinite_recoverables_cheat_activated(false),
+        last_experience_amount_earned(0) {}
 
 int Player::attack() {
+    is_meditating = false;
     if (bound_ally != nullptr) {
         unbind_ally();
     }
@@ -62,9 +68,10 @@ int Player::attack() {
     current_attack_cooldown = required_attack_cooldown;
 
     WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
-    stats.mana.loose(data.mana_cost);
+    if (!has_infinite_recoverables_cheat_activated)
+        stats.mana.loose(data.mana_cost);
 
-    return Calculator::calculate_damage(stats.strength, equipment);
+    return Calculator::calculate_damage(stats.strength, equipment, clan.get_clan_buff_factor());
 }
 
 const Stats& Player::get_stats() const { return stats; }
@@ -80,8 +87,15 @@ uint16_t Player::get_safe_gold() const { return gold_manager.get_safe_gold(); }
 uint16_t Player::get_excess_gold() const { return gold_manager.get_excess_gold(); }
 
 void Player::earn_xp(uint32_t amount) {
+    last_experience_amount_earned = amount;
     if (stats.experience.earn_xp(amount))
-        stats.upgrade();
+        upgrade();
+}
+
+void Player::undo_xp_gain() {
+    if (stats.experience.loose_xp(last_experience_amount_earned))
+        upgrade();
+    last_experience_amount_earned = 0;
 }
 
 bool Player::can_attack() const {
@@ -95,10 +109,7 @@ bool Player::can_attack() const {
 
     WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
 
-    std::cout << "[Player] costo de mana: " << data.mana_cost << "\n";
-    std::cout << "[Player] mana actual: " << stats.mana.get_current() << "\n";
-
-    return data.mana_cost <= stats.mana.get_current();
+    return has_infinite_recoverables_cheat_activated || data.mana_cost <= stats.mana.get_current();
 }
 
 void Player::update() {
@@ -109,14 +120,6 @@ void Player::update() {
         if (resurrection_timer <= 0) {
             complete_delayed_resurrection();
         }
-    }
-
-    stats.health.update();
-
-    if (is_meditating) {
-        stats.mana.meditate();
-    } else {
-        stats.mana.update();
     }
 }
 
@@ -129,28 +132,87 @@ bool Player::can_reach(const Position& other_position) const {
            std::abs(position.get_y() - other_position.get_y()) <= range;
 }
 
-InteractResult Player::interact(Player& attacker) {
-    if (position == attacker.get_position())
+InteractResult Player::interact(Player& other) {
+    TypeEffect effect = ItemMapper::get_type_effect(other.equipment.weapon);
+    switch (effect) {
+        case TypeEffect::HEALTH:
+            return heal_intearction(other);
+        case TypeEffect::DAMAGE:
+            return attack_interaction(other);
+        case TypeEffect::MANA:
+        default:
+            throw std::invalid_argument(
+                    "This weapon has a type effect that is not valid for an interaction with another player");
+    }
+}
+
+InteractResult Player::attack_interaction(Player& attacker) {
+    if (position == attacker.get_position()) {
         return InteractResult();
+    }
 
     if (not is_alive())
         return InteractResult(AttackStatus::DEAD_TARGET);
 
+    // Suprimo el linter porque marca como si hubiera una función llamada separada del paréntesis
+    // ej: get_clan_name ().empty()
+    if ((not get_clan_name().empty()) and (get_clan_name() == attacker.get_clan_name())) {  // NOLINT
+        return InteractResult(AttackStatus::IS_CLANMATE);
+    }
+
+    const uint8_t own_level = stats.experience.get_level();
+    const uint8_t attacker_level = attacker.stats.experience.get_level();
+    const FairPlayData& fair_play_data = GameConfig::get().get_fair_play();
+
+    if (own_level <= fair_play_data.max_newbie_level)
+        return InteractResult(AttackStatus::ATTACKED_PLAYER_IS_NEWBIE);
+
+    if (attacker_level <= fair_play_data.max_newbie_level)
+        return InteractResult(AttackStatus::ATTACKER_IS_NEWBIE);
+
+    if (std::abs(own_level - attacker_level) > fair_play_data.fair_play_gap)
+        return InteractResult(AttackStatus::FAIR_PLAY);
+
     // TODO Falta considerar
-    //  - Fair game
-    //  - Daño de los compis del clan?
-    //      (en update del GameWorld -> por cada jugador recorremos las n casillas más cercanas y desde
-    //      ahí player expone un método que le agrega boost y lo usa en su attack)
-    //  - fuego amigo (entre compis no nos pegamos)
     //  - zona segura?
 
     InteractResult result = Killable::interact(attacker);
     result.attack.player_attacked = player_name;
+    result.attack.attacked_clan_name = clan_name;
+
+    if (has_infinite_recoverables_cheat_activated) {
+        stats.health.recover(result.attack.damage_dealt);
+    }
+
+    return result;
+}
+
+InteractResult Player::heal_intearction(Player& healer) {
+    if (not is_alive())
+        return InteractResult(RecoverStatus::DEAD_TARGET);
+
+    if (not healer.can_reach(position))
+        return InteractResult(RecoverStatus::OUT_OF_RANGE);
+
+    if (not healer.can_attack())
+        return InteractResult(RecoverStatus::CANNOT_HEAL);
+
+    if (stats.health.get_current() == stats.health.get_max())
+        return InteractResult(RecoverStatus::COMPLETE);
+
+    healer.attack();
+    const EquipableItemData& equipable_data = GameConfig::get().get_equipable(healer.equipment.weapon);
+
+    uint16_t amount = Calculator::random_number(equipable_data.min, equipable_data.max);
+
+    stats.health.recover(amount);
+    InteractResult result(healer.equipment.weapon, amount, player_name);
 
     return result;
 }
 
 void Player::update_position(const Position& new_position, const Direction& new_direction) {
+    is_meditating = false;
     if (bound_ally != nullptr) {
         unbind_ally();
     }
@@ -225,6 +287,10 @@ void Player::heal() {
     stats.mana.recover_all();
 }
 
+void Player::health_recover(uint16_t amount) { stats.health.recover(amount); }
+
+void Player::mana_recover(uint16_t amount) { stats.mana.recover(amount); }
+
 void Player::spend_gold(const uint16_t amount) { gold_manager.spend(amount); }
 
 void Player::add_gold(const uint16_t amount) { gold_manager.add(amount); }
@@ -257,7 +323,7 @@ void Player::withdraw_gold_from_bank(const uint16_t amount) {
 
 const Equipment& Player::get_equipment() const { return this->equipment; }
 
-const std::unordered_map<uint8_t, uint8_t>& Player::get_inventory_items() const {
+const std::map<uint8_t, uint8_t, std::greater<>>& Player::get_inventory_items() const {
     return inventory.get_items();
 }
 
@@ -310,26 +376,36 @@ void Player::complete_delayed_resurrection() {
     std::cout << "[Player] " << player_name << " ha resucitado junto al sacerdote." << std::endl;
 }
 
-std::string Player::get_clan_name() const { return clan_name; }
+std::string Player::get_clan_name() const { return clan.get_clan_name(); }
 
-void Player::join_clan(const std::string& _clan_name) {
-    clan_name = _clan_name;
-    _is_founder = false;
-}
+void Player::join_clan(const std::string& clan_name) { clan.join(clan_name); }
 
-void Player::found_clan(const std::string& _clan_name) {
-    clan_name = _clan_name;
-    _is_founder = true;
-}
+void Player::found_clan(const std::string& clan_name) { clan.found(clan_name); }
 
-void Player::leave_clan() {
-    clan_name.clear();
-    _is_founder = false;
-}
+void Player::leave_clan() { clan.leave(); }
 
-bool Player::is_clan_founder() const { return _is_founder; }
+bool Player::is_clan_founder() const { return clan.is_founder(); }
 
 void Player::set_xp_level(const uint8_t new_level) {
     stats.experience.set_level(new_level);
-    stats.upgrade();
+    upgrade();
 }
+
+void Player::upgrade() {
+    stats.upgrade();
+    gold_manager.update_max(stats.experience.get_level());
+}
+
+void Player::toggle_infinite_recoverables() {
+    has_infinite_recoverables_cheat_activated = !has_infinite_recoverables_cheat_activated;
+}
+
+bool Player::is_infinite_recoverables_cheat_active() const {
+    return has_infinite_recoverables_cheat_activated;
+}
+
+void Player::set_near_clan_mates(const uint8_t near_clan_mates_amount) {
+    clan.set_near_clan_mates(near_clan_mates_amount);
+}
+
+void Player::meditate() { is_meditating = true; }

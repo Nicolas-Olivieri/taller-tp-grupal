@@ -26,6 +26,8 @@ private:
 
     CreatureInfoDTO recv_creature_info();
 
+    CreatureStatsDTO recv_creature_stats();
+
     LootInfoDTO recv_loot_info();
 
     AllyInfoDTO recv_ally_info();
@@ -42,6 +44,8 @@ private:
 
     AppearanceDTO recv_appearance();
 
+    ClanInfoDTO recv_clan();
+
     DespawnDTO recv_despawn();
 
     HealDTO recv_heal();
@@ -52,9 +56,13 @@ private:
 
     InventoryInfoDTO recv_inventory_info();
 
+    EquipableItemInfoDTO recv_equipable_item_info();
+
     EquipmentInfoDTO recv_equipment_info();
 
     AttackDTO recv_attack();
+
+    MeditationDTO recv_meditation();
 
     ResurrectionDTO recv_resurrection();
 
@@ -66,7 +74,11 @@ private:
 
     ListItemsDTO recv_list_items();
 
+    ClanMessageDTO recv_clan_message();
+
     AssetInfoDTO recv_asset_info();
+
+    LootType recv_loot_type();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT

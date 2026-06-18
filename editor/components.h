@@ -3,9 +3,7 @@
 
 #include <QPixmap>
 
-enum class EditorMode { DRAW, ERASE, DRAG };
-
-enum class ImageType { TILE, COLLIDER, NPC };
+#include "editor_constants.h"
 
 struct AssetData {
     uint8_t id;
@@ -17,7 +15,6 @@ struct AssetData {
     QRect unwalkable_area;
     bool inverse_unwalkable;
 };
-
 
 struct Placement {
     int id;

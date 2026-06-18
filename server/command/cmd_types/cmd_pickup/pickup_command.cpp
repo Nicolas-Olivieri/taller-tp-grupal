@@ -25,7 +25,7 @@ ChatMessageDTO PickUpCommand::create_message() {
                                   "No puedes levantar cosas del piso como fantasma");
         case PickUpStatus::GOLD_OVERFLOW:
             return ChatMessageDTO(MessageType::SYSTEM, player_name,
-                                  "Llenaste tus bolsillos con oro, se perdio parte del botin");
+                                  "Tomaste el oro, pero tus bolsillos se llenaron");
         case PickUpStatus::NO_LOOT:
             return ChatMessageDTO(MessageType::ERROR, player_name, "No hay nada en el piso para levantar");
 

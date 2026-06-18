@@ -20,9 +20,11 @@ const std::vector<uint8_t>& VendorAlly::assign_items(const AllyType& type, uint8
 }
 
 AllyExecuteResult VendorAlly::handle_buy_item(Player& player, const uint8_t item_id) const {
-    if (std::ranges::find(items, item_id) == items.end()) {
+    if (not player.is_alive())
+        return AllyExecuteResult(BuyResult(BuyStatus::GHOST_FAIL, type));
+
+    if (std::ranges::find(items, item_id) == items.end())
         return AllyExecuteResult(BuyResult(BuyStatus::ITEM_NOT_SOLD, type));
-    }
 
     try {
         const uint16_t price = GameConfig::get().get_item_price(item_id);

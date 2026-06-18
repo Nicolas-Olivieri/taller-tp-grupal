@@ -2,23 +2,38 @@
 
 #include <cassert>
 
-#include "cmd_types/cmd_buy/buy_command.h"
+#include "cmd_types/ally_execute/cmd_buy/buy_command.h"
+#include "cmd_types/ally_execute/cmd_deposit_gold/deposit_gold_command.h"
+#include "cmd_types/ally_execute/cmd_deposit_item/deposit_item_command.h"
+#include "cmd_types/ally_execute/cmd_heal/heal_command.h"
+#include "cmd_types/ally_execute/cmd_list_items/list_items_command.h"
+#include "cmd_types/ally_execute/cmd_resurrect/resurrect_command.h"
+#include "cmd_types/ally_execute/cmd_sell/sell_command.h"
+#include "cmd_types/ally_execute/cmd_withdraw_gold/withdraw_gold_command.h"
+#include "cmd_types/ally_execute/cmd_withdraw_item/withdraw_item_command.h"
 #include "cmd_types/cmd_chatmessage/chatmessage_command.h"
+#include "cmd_types/cmd_cheat/cmd_die/die_command.h"
+#include "cmd_types/cmd_cheat/cmd_gain_gold/gain_gold_command.h"
+#include "cmd_types/cmd_cheat/cmd_get_item/get_item.h"
+#include "cmd_types/cmd_cheat/cmd_infinite_recoverables/infinite_recoverables_command.h"
+#include "cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h"
+#include "cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
+#include "cmd_types/cmd_clan/cmd_ban/clan_ban_command.h"
 #include "cmd_types/cmd_clan/cmd_found/clan_found_command.h"
-#include "cmd_types/cmd_deposit_gold/deposit_gold_command.h"
-#include "cmd_types/cmd_deposit_item/deposit_item_command.h"
+#include "cmd_types/cmd_clan/cmd_join/clan_join_command.h"
+#include "cmd_types/cmd_clan/cmd_kick/clan_kick_command.h"
+#include "cmd_types/cmd_clan/cmd_leave/clan_leave_command.h"
+#include "cmd_types/cmd_clan/cmd_reject/clan_reject_command.h"
+#include "cmd_types/cmd_clan/cmd_review/clan_review_command.h"
 #include "cmd_types/cmd_drop_item/drop_item_command.h"
-#include "cmd_types/cmd_heal/heal_command.h"
 #include "cmd_types/cmd_interact/interact_command.h"
-#include "cmd_types/cmd_list_items/list_items_command.h"
+#include "cmd_types/cmd_meditate/meditate_command.h"
 #include "cmd_types/cmd_move/move_command.h"
 #include "cmd_types/cmd_pickup/pickup_command.h"
-#include "cmd_types/cmd_resurrect/resurrect_command.h"
-#include "cmd_types/cmd_sell/sell_command.h"
 #include "cmd_types/cmd_unequip_item/unequip_item_command.h"
 #include "cmd_types/cmd_use_item/use_item_command.h"
-#include "cmd_types/cmd_withdraw_gold/withdraw_gold_command.h"
-#include "cmd_types/cmd_withdraw_item/withdraw_item_command.h"
+#include "server/command/cmd_types/ally_execute/cmd_teleport/teleport_command.h"
+#include "server/command/cmd_types/cmd_cheat/cmd_kill_creatures/kill_creatures_command.h"
 #include "server/command/cmd_types/cmd_cheat/cmd_set_xp/set_experience_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_accept/clan_accept_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_ban/clan_ban_command.h"
@@ -106,6 +121,27 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::CHEAT_XP:
             return std::make_unique<SetExperienceCommand>(player_name, dto.item_id);
+
+        case CommandType::CHEAT_GOLD:
+            return std::make_unique<GainGoldCommand>(player_name, dto.gold_amount);
+
+        case CommandType::CHEAT_DEATH:
+            return std::make_unique<DieCommand>(player_name);
+
+        case CommandType::CHEAT_INFINITE_RECOVERABLES:
+            return std::make_unique<InfiniteRecoberableStatsCommand>(player_name);
+
+        case CommandType::CHEAT_ITEM:
+            return std::make_unique<GetItemCommand>(player_name, dto.item_id);
+
+        case CommandType::MEDITATE:
+            return std::make_unique<MeditateCommand>(player_name);
+
+        case CommandType::CHEAT_KILL_CREATURES:
+            return std::make_unique<KillCreaturesCommand>(player_name);
+
+        case CommandType::TELEPORT:
+            return std::make_unique<TeleportCommand>(player_name);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

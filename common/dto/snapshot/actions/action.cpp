@@ -18,6 +18,8 @@ size_t ActionDTO::message_size() const {
             return base + heal.message_size();
         case ActionType::MESSAGE:
             return base + chat_message.message_size();
+        case ActionType::MEDITATION:
+            return base + meditation.message_size();
         case ActionType::RESURRECTION:
             return base + resurrection.message_size();
         case ActionType::DEATH:
@@ -28,6 +30,8 @@ size_t ActionDTO::message_size() const {
             return base + items.message_size();
         case ActionType::LIST_BANK:
             return base + bank.message_size();
+        case ActionType::CLAN_MESSAGE:
+            return base + clan_msg.message_size();
         default:
             throw std::runtime_error("ActionDTO Descubrió que tiene un tipo de acción desconocido al "
                                      "calcular su message_size");
@@ -45,7 +49,8 @@ ActionDTO::ActionDTO(const HealDTO& heal):
         resurrection("", {}),
         death(""),
         list(MessageType::SYSTEM, {}, ""),
-        items() {}
+        items(),
+        clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const AttackDTO& attack):
         action(ActionType::ATTACK),
@@ -55,7 +60,8 @@ ActionDTO::ActionDTO(const AttackDTO& attack):
         resurrection("", {}),
         death(""),
         list(MessageType::SYSTEM, {}, ""),
-        items() {}
+        items(),
+        clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const DespawnDTO& despawn):
         action(ActionType::DESPAWN),
@@ -65,7 +71,8 @@ ActionDTO::ActionDTO(const DespawnDTO& despawn):
         death(""),
         list(MessageType::SYSTEM, {}, ""),
         items(),
-        bank() {}
+        bank(),
+        clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const ChatMessageDTO& message):
         action(ActionType::MESSAGE),
@@ -75,7 +82,19 @@ ActionDTO::ActionDTO(const ChatMessageDTO& message):
         death(""),
         list(MessageType::SYSTEM, {}, ""),
         items(),
-        bank() {}
+        bank(),
+        clan_msg("", "", "") {}
+
+ActionDTO::ActionDTO(const MeditationDTO& meditation):
+        action(ActionType::MEDITATION),
+        despawn(""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
+        meditation(meditation),
+        resurrection("", {}),
+        death(""),
+        list(MessageType::SYSTEM, {}, ""),
+        items(),
+        clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const ResurrectionDTO& resurrection):
         action(ActionType::RESURRECTION),
@@ -85,7 +104,8 @@ ActionDTO::ActionDTO(const ResurrectionDTO& resurrection):
         death(""),
         list(MessageType::SYSTEM, {}, ""),
         items(),
-        bank() {}
+        bank(),
+        clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const DeathDTO& death):
         action(ActionType::DEATH),
@@ -95,7 +115,8 @@ ActionDTO::ActionDTO(const DeathDTO& death):
         death(death),
         list(MessageType::SYSTEM, {}, ""),
         items(),
-        bank() {}
+        bank(),
+        clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const ChatListDTO& list):
         action(ActionType::MESSAGE_LIST),
@@ -105,7 +126,8 @@ ActionDTO::ActionDTO(const ChatListDTO& list):
         death(""),
         list(list),
         items(),
-        bank() {}
+        bank(),
+        clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const ListItemsDTO& items):
         action(ActionType::LIST_ITEMS),
@@ -115,7 +137,8 @@ ActionDTO::ActionDTO(const ListItemsDTO& items):
         death(""),
         list(MessageType::SYSTEM, {}, ""),
         items(items),
-        bank() {}
+        bank(),
+        clan_msg("", "", "") {}
 
 ActionDTO::ActionDTO(const ListBankDTO& bank):
         action(ActionType::LIST_BANK),
@@ -125,4 +148,16 @@ ActionDTO::ActionDTO(const ListBankDTO& bank):
         death(""),
         list(MessageType::SYSTEM, {}, ""),
         items(),
-        bank(bank) {}
+        bank(bank),
+        clan_msg("", "", "") {}
+
+ActionDTO::ActionDTO(const ClanMessageDTO& clan_msg):
+        action(ActionType::CLAN_MESSAGE),
+        despawn(""),
+        chat_message(MessageType::SYSTEM, "", "", ""),
+        resurrection("", {}),
+        death(""),
+        list(MessageType::SYSTEM, {}, ""),
+        items(),
+        bank(),
+        clan_msg(clan_msg) {}

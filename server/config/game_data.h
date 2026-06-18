@@ -102,6 +102,22 @@ struct toml::from<VariationData> {
     }
 };
 
+struct ItemData {
+    uint16_t price;
+    bool is_secret_drop;
+};
+
+template <>
+struct toml::from<ItemData> {
+    static ItemData from_toml(const toml::value& raw) {
+        return ItemData{
+                toml::find<uint16_t>(raw, "price"),
+                toml::find<bool>(raw, "secret_drop"),
+        };
+    }
+};
+
+
 struct EquipableItemData {
     uint8_t min;
     uint8_t max;
@@ -135,6 +151,7 @@ struct toml::from<UsableItemData> {
 struct WeaponData {
     uint8_t range;
     uint8_t mana_cost;
+    uint8_t type_effect;
 };
 
 template <>
@@ -143,6 +160,7 @@ struct toml::from<WeaponData> {
         return WeaponData{
                 toml::find<uint8_t>(raw, "range"),
                 toml::find<uint8_t>(raw, "mana_cost"),
+                toml::find<uint8_t>(raw, "type"),
         };
     }
 };
@@ -190,6 +208,23 @@ struct toml::from<TraderSetData> {
         }
 
         return data;
+    }
+};
+
+struct BiomeData {
+    std::vector<uint8_t> floor_ids;
+    std::vector<uint8_t> creatures;
+    std::vector<uint8_t> variations;
+};
+
+template <>
+struct toml::from<BiomeData> {
+    static BiomeData from_toml(const toml::value& raw) {
+        return BiomeData{
+                toml::find<std::vector<uint8_t>>(raw, "floor_ids"),
+                toml::find<std::vector<uint8_t>>(raw, "creatures"),
+                toml::find<std::vector<uint8_t>>(raw, "variations"),
+        };
     }
 };
 
@@ -261,11 +296,7 @@ struct toml::from<CreatureStatsData> {
 };
 
 struct ItemsData {
-    uint8_t min_equipable_id;
-    uint8_t max_equipable_id;
-    uint8_t min_usable_id;
-    uint8_t max_usable_id;
-    std::unordered_map<uint8_t, uint16_t> prices;
+    std::unordered_map<uint8_t, ItemData> items;
     std::unordered_map<uint8_t, EquipableItemData> equipables;
     std::unordered_map<uint8_t, UsableItemData> usables;
     std::unordered_map<uint8_t, WeaponData> weapons;
@@ -278,24 +309,19 @@ template <>
 struct toml::from<ItemsData> {
     static ItemsData from_toml(const toml::value& raw) {
         ItemsData data;
-        data.min_equipable_id = UINT8_MAX;
-        data.max_equipable_id = 0;
-        data.min_usable_id = UINT8_MAX;
-        data.max_usable_id = 0;
 
         const auto& items_table = raw.as_table();
 
         if (items_table.contains("weapons")) {
             for (const auto& [name, value]: items_table.at("weapons").as_table()) {
                 uint8_t id = toml::find<uint8_t>(value, "id");
-                update_min_max_id(data.min_equipable_id, data.max_equipable_id, id);
 
                 WeaponData weapon = toml::get<WeaponData>(value);
                 EquipableItemData equipable = toml::get<EquipableItemData>(value);
 
                 data.weapons[id] = std::move(weapon);
                 data.equipables[id] = std::move(equipable);
-                data.prices[id] = toml::find<uint16_t>(value, "price");
+                data.items[id] = toml::get<ItemData>(value);
             }
         }
 
@@ -306,12 +332,11 @@ struct toml::from<ItemsData> {
         if (items_table.contains("usables")) {
             for (const auto& [name, value]: items_table.at("usables").as_table()) {
                 uint8_t id = toml::find<uint8_t>(value, "id");
-                update_min_max_id(data.min_usable_id, data.max_usable_id, id);
 
                 UsableItemData usable = toml::get<UsableItemData>(value);
 
                 data.usables[id] = std::move(usable);
-                data.prices[id] = toml::find<uint16_t>(value, "price");
+                data.items[id] = toml::get<ItemData>(value);
             }
         }
 
@@ -367,6 +392,95 @@ struct toml::from<TradersData> {
 
         data.priests = toml::find<TraderSetData>(traders_node, "priests");
         data.merchants = toml::find<TraderSetData>(traders_node, "merchants");
+
+        return data;
+    }
+};
+
+struct FairPlayData {
+    uint8_t max_newbie_level;
+    uint8_t fair_play_gap;
+};
+
+template <>
+struct toml::from<FairPlayData> {
+    static FairPlayData from_toml(const toml::value& raw) {
+        return FairPlayData{toml::find<uint8_t>(raw, "max_newbie_level"),
+                            toml::find<uint8_t>(raw, "fair_play_gap")};
+    }
+};
+
+struct ClanConstantsData {
+    uint8_t max_members_per_clan;
+    uint8_t min_level_required_to_found_clan;
+    float max_distance_to_consider_near_clan_mate;
+    float max_attack_buff_factor;
+};
+
+
+template <>
+struct toml::from<ClanConstantsData> {
+    static ClanConstantsData from_toml(const toml::value& raw) {
+        return ClanConstantsData{
+                toml::find<uint8_t>(raw, "max_members_per_clan"),
+                toml::find<uint8_t>(raw, "min_level_required_to_found_clan"),
+                toml::find<float>(raw, "max_distance_to_consider_near_clan_mate"),
+                toml::find<float>(raw, "max_attack_buff_factor"),
+        };
+    }
+};
+
+struct WorldConstantsData {
+    uint8_t ticks_per_second;
+    uint16_t tick_between_saves;
+    uint16_t max_creatures_amount;
+};
+
+template <>
+struct toml::from<WorldConstantsData> {
+    static WorldConstantsData from_toml(const toml::value& raw) {
+        return WorldConstantsData{toml::find<uint8_t>(raw, "ticks_per_second"),
+                                  toml::find<uint16_t>(raw, "tick_between_saves"),
+                                  toml::find<uint16_t>(raw, "max_creatures_amount")};
+    }
+};
+
+struct CreatureBehaviorConstantsData {
+    uint8_t extra_target_range;
+    uint8_t extra_target_range_limit;
+    uint8_t attack_cooldowns_to_become_lonely;
+};
+
+template <>
+struct toml::from<CreatureBehaviorConstantsData> {
+    static CreatureBehaviorConstantsData from_toml(const toml::value& raw) {
+        return CreatureBehaviorConstantsData{toml::find<uint8_t>(raw, "extra_target_range"),
+                                             toml::find<uint8_t>(raw, "extra_target_range_limit"),
+                                             toml::find<uint8_t>(raw, "attack_cooldowns_to_become_lonely")};
+    }
+};
+
+struct BiomesData {
+    std::unordered_map<uint8_t, uint8_t> floor_to_biome;
+    std::unordered_map<uint8_t, BiomeData> biomes;
+};
+
+template <>
+struct toml::from<BiomesData> {
+    static BiomesData from_toml(const toml::value& raw) {
+        BiomesData data;
+        const auto& biomes_table = raw.as_table();
+
+        if (!biomes_table.contains("biomes"))
+            throw std::runtime_error("No se encontró un TOML con la información de biomas");
+
+        for (const auto& [category, value]: biomes_table.at("biomes").as_table()) {
+            uint8_t id = toml::find<uint8_t>(value, "id");
+            auto biome = toml::get<BiomeData>(value);
+
+            data.biomes[id] = biome;
+            for (const auto& floor_id: data.biomes[id].floor_ids) data.floor_to_biome[floor_id] = id;
+        }
 
         return data;
     }

@@ -16,6 +16,8 @@
 #include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
 #include "common/dto/events/chat/chatevent.h"
 #include "common/dto/events/cheat/cheat_experience_set_event.h"
+#include "common/dto/events/cheat/cheat_get_item_event.h"
+#include "common/dto/events/cheat/cheat_gold_gain_event.h"
 #include "common/dto/events/clan/clan_found_event.h"
 #include "common/dto/events/clan/clan_join_event.h"
 #include "common/dto/events/clan/clan_remove_player_event.h"
@@ -33,7 +35,10 @@
 #include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
+#include "common/dto/snapshot/actions/action_types/act_meditation/meditation.h"
 #include "common/dto/snapshot/actions/action_types/act_resurrection/resurrection.h"
+#include "common/dto/snapshot/info/creature_stats.h"
+#include "common/dto/snapshot/info/equipable_item_info.h"
 #include "common/dto/snapshot/info/inventory_info.h"
 #include "common/dto/snapshot/info/player_stats.h"
 #include "common/dto/snapshot/map/client_map_data.h"
@@ -62,8 +67,8 @@ private:
     }
 
     // Generaliza la forma de serializar mapas con claves K y valores V
-    template <typename K, typename V>
-    void serialize(const std::map<K, V>& container) {
+    template <typename K, typename V, typename CMP>
+    void serialize(const std::map<K, V, CMP>& container) {
         serialize(static_cast<uint16_t>(container.size()));
         for (const auto& [key, value]: container) {
             serialize(key);
@@ -107,12 +112,16 @@ public:
 
     void serialize(const CreatureInfoDTO& info);
 
+    void serialize(const CreatureStatsDTO& stats);
+
     void serialize(const LootInfoDTO& info);
 
     // Es el que se sigue expandiendo al agregar una action nueva
     void serialize(const ActionDTO& action);
 
     void serialize(const AppearanceDTO& appearance);
+
+    void serialize(const ClanInfoDTO& clan);
 
     void serialize(const DespawnDTO& despawn);
 
@@ -130,9 +139,13 @@ public:
 
     void serialize(const InventoryInfoDTO& inventory);
 
+    void serialize(const EquipableItemInfoDTO& item);
+
     void serialize(const EquipmentInfoDTO& equipment);
 
     void serialize(const AttackDTO& attack);
+
+    void serialize(const MeditationDTO& meditation);
 
     void serialize(const ResurrectionDTO& resurrection);
 
@@ -143,6 +156,8 @@ public:
     void serialize(const ListBankDTO& bank);
 
     void serialize(const ListItemsDTO& list);
+
+    void serialize(const ClanMessageDTO& clan_msg);
 
     void serialize(const BuyEventDTO& event);
 
@@ -171,6 +186,10 @@ public:
     void serialize(const ClanRemovePlayerEventDTO& event);
 
     void serialize(const CheatExperienceSetEventDTO& event);
+
+    void serialize(const CheatGoldGainEventDTO& event);
+
+    void serialize(const CheatGetItemEventDTO& event);
 };
 
 #endif  // SERIALIZER_H

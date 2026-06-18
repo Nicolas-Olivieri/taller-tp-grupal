@@ -6,6 +6,8 @@
 
 #include <netinet/in.h>
 
+#include "common/dto/snapshot/map/teleport_info.h"
+
 #define MAGIC_NUMBER 0xFAF4
 
 ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
@@ -24,23 +26,28 @@ ServerMapLoader::ServerMapLoader(): map_path(DATA_PATH "/map/map.bin") {
 }
 
 ServerMapDataDTO ServerMapLoader::get_server_data() {
-    // Leo los 4 bytes de offset (inicio y fin de bytes del servidor)
-    parse_int<uint32_t>();
+    // Leo los 5 bytes de offset (inicio y fin de bytes del servidor)
+    parse_int<uint8_t>();
+    parse_int<uint64_t>();
 
+    // Parseo la grilla
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
 
-    std::vector<std::vector<bool>> grid_values;
+    std::vector<std::vector<TileInfoDTO>> grid_values;
     for (int y = 0; y < height; y++) {
-        std::vector<bool> row;
+        std::vector<TileInfoDTO> row;
         for (int x = 0; x < width; x++) {
-            const bool value = parse_int<uint8_t>();
-            row.push_back(value);
+            const bool walkability = parse_int<uint8_t>();
+            const auto floor = parse_int<uint8_t>();
+
+            row.push_back(TileInfoDTO(walkability, floor));
         }
         grid_values.push_back(row);
     }
     GridMatrixDTO grid(grid_values);
 
+    // Parseo los NPCs
     const auto npc_amount = parse_int<uint16_t>();
     std::vector<AllyInfoDTO> npcs;
     for (int i = 0; i < npc_amount; i++) {
@@ -51,14 +58,26 @@ ServerMapDataDTO ServerMapLoader::get_server_data() {
         npcs.emplace_back(static_cast<AllyType>(id), x, y);
     }
 
+    // Parseo los teletransportadores
+    const auto teleport_amount = parse_int<uint16_t>();
+    std::vector<TeleportInfoDTO> teleports;
+    for (int i = 0; i < teleport_amount; i++) {
+        auto port_a_x = parse_int<uint16_t>();
+        auto port_a_y = parse_int<uint16_t>();
+        auto port_b_x = parse_int<uint16_t>();
+        auto port_b_y = parse_int<uint16_t>();
+
+        teleports.emplace_back(port_a_x, port_a_y, port_b_x, port_b_y);
+    }
+
     map.close();
 
-    return {width, height, grid, npcs};
+    return {width, height, grid, npcs, teleports};
 }
 
 ClientMapDataDTO ServerMapLoader::get_client_data() {
-    const auto server_start = parse_int<uint16_t>();
-    const auto server_end = parse_int<uint16_t>();
+    const auto server_start = parse_int<uint8_t>();
+    const auto server_end = parse_int<uint64_t>();
 
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
@@ -97,6 +116,12 @@ intType ServerMapLoader::parse_int() {
 
     if (sizeof(intType) == 2) {
         return ntohs(data);
+    }
+    if (sizeof(intType) == 4) {
+        return ntohl(data);
+    }
+    if (sizeof(intType) == 8) {
+        return be64toh(data);
     }
 
     return data;

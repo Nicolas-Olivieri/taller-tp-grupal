@@ -3,16 +3,19 @@
 
 #include "common/dto/message.h"
 
+#include "equipable_item_info.h"
+
 
 struct EquipmentInfoDTO: public ProtocolMessageDTO {
-    uint8_t weapon;
-    uint8_t shield;
-    uint8_t helmet;
-    uint8_t armor;
+    EquipableItemInfoDTO weapon;
+    EquipableItemInfoDTO shield;
+    EquipableItemInfoDTO helmet;
+    EquipableItemInfoDTO armor;
 
     EquipmentInfoDTO();
 
-    EquipmentInfoDTO(uint8_t weapon, uint8_t shield, uint8_t helmet, uint8_t armor);
+    EquipmentInfoDTO(const EquipableItemInfoDTO& weapon, const EquipableItemInfoDTO& shield,
+                     const EquipableItemInfoDTO& helmet, const EquipableItemInfoDTO& armor);
 
     size_t message_size() const override;
 

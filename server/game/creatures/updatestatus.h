@@ -1,19 +1,21 @@
-#ifndef CREATUREUPDATESTATUS_H
-#define CREATUREUPDATESTATUS_H
+#ifndef CREATUREUPDATE_H
+#define CREATUREUPDATE_H
 
 #include <cstdint>
 #include <string>
 
-struct CreatureUpdateStatus {
+enum class CreatureStatus { MOVING, WAITING, ATTACKED };
+
+struct CreatureUpdate {
+    CreatureStatus status;
     uint8_t creature_id;
-    bool did_attack;
     std::string player_name;
     uint16_t damage_dealt;
     bool killed_target;
 
-    CreatureUpdateStatus();
+    explicit CreatureUpdate(const CreatureStatus& status);
 
-    CreatureUpdateStatus(uint8_t id, std::string player_name, uint16_t damage_dealt, bool killed_target);
+    CreatureUpdate(uint8_t id, std::string player_name, uint16_t damage_dealt, bool killed_target);
 };
 
-#endif  // CREATUREUPDATESTATUS_H
+#endif  // CREATUREUPDATE_H

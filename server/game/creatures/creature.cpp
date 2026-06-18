@@ -5,20 +5,48 @@
 #include <utility>
 
 #include "server/config/game_config.h"
+#include "server/game/items/item_mapper.h"
 #include "server/game/player/player.h"
 #include "server/util/calculator.h"
 #include "state/idlestate.h"
 
-#define EXTRA_TARGET_RANGE 5  // TODO: toml
+Creature::Creature(const uint8_t race, const uint8_t variation, const Position& position):
+        Killable(race, variation, random_level(race, variation), position, equip_items(variation)),
+        state(&IdleState::get()),
+        target(nullptr),
+        is_alone(false),
+        count_to_loneliness(
+                required_attack_cooldown *
+                GameConfig::get().get_creature_behavior_constants().attack_cooldowns_to_become_lonely) {}
 
-// TODO: todos las creatures spawnean nivel 5 de momento, después hay que hacer que puedan aparecer con
-// ditintos niveles
-Creature::Creature(const uint16_t sub_id, const uint8_t race, const uint8_t variation,
-                   const Position& position):
-        Killable(race, variation, 5, position, Equipment{0, 0, 0, 1}),
-        sub_id(sub_id),
-        state(std::make_unique<IdleState>()),
-        target(nullptr) {}
+uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
+    GameConfig& config = GameConfig::get();
+
+    uint8_t level = Calculator::calculate_creature_level(
+            config.get_creature_base_level(race), config.get_variation(variation).max_level_multiplier);
+
+    return level;
+}
+
+Equipment Creature::equip_items(uint8_t variation) {
+    GameConfig& config = GameConfig::get();
+    Equipment equipment{NO_ITEM, NO_ITEM, NO_ITEM, NO_ITEM};
+
+    const std::vector<uint8_t>& items = config.get_variation(variation).equipment;
+
+    for (const auto& item: items) {
+        if (config.weapons_contains(item))
+            equipment.weapon = item;
+        else if (config.armors_contains(item))
+            equipment.armor = item;
+        else if (config.helmets_contains(item))
+            equipment.helmet = item;
+        else if (config.shields_contains(item))
+            equipment.shield = item;
+    }
+
+    return equipment;
+}
 
 std::vector<Loot> Creature::drop() {
     std::vector<Loot> drop;
@@ -37,17 +65,11 @@ std::vector<Loot> Creature::drop() {
             drop.push_back(Loot(Calculator::calculate_random_drop_gold(stats.health.get_max())));
             break;
         case DropType::USABLE:
-            drop.push_back(
-                    Loot(Calculator::random_number(config.get_min_usable_id(), config.get_max_usable_id())));
+            drop.push_back(Loot(Calculator::random_choice(config.get_regular_equipables_ids())));
             break;
         case DropType::EQUIPABLE: {
-            uint8_t item =
-                    Calculator::random_number(config.get_min_equipable_id(), config.get_max_equipable_id());
-            // TODO: NI BIEN SE IMPLEMENTE EL BÁCULO DE CURACIÓN SACAR ESTE HARDCODEO
-            if (item == 0 or item == 5)  // TODO: CORREGIME
-                item++;                  // TODO: CORREGIME
-            drop.push_back(Loot(item));  // TODO: CORREGIME
-            // TODO: CORREGIRRRR
+            uint8_t item = Calculator::random_choice(config.get_regular_equipables_ids());
+            drop.push_back(Loot(item));
         } break;
         default:
             throw std::invalid_argument("There is no known way to drop something of this type");
@@ -56,28 +78,72 @@ std::vector<Loot> Creature::drop() {
     return drop;
 }
 
-CreatureUpdateStatus Creature::update_state(const Position& position, const Direction& direction) {
-    CreatureUpdateStatus result = this->state->act(*this, position, direction);
-    this->state->next(*this);
+std::vector<Loot> Creature::secret_drop() {
+    std::vector<Loot> secret_drop;
 
-    return result;
+    const DropProbabilitiesData& data = GameConfig::get().get_drop_probabilities();
+
+    std::vector<float> probabilities = {data.nothing, data.gold, data.usable, data.equipable};
+    int index = Calculator::random_from_weighted_probabilities(probabilities);
+
+    GameConfig& config = GameConfig::get();
+
+    switch (static_cast<DropType>(index)) {
+        case DropType::NOTHING:
+        case DropType::GOLD:
+        case DropType::USABLE:
+        case DropType::EQUIPABLE: {
+            uint8_t item = Calculator::random_choice(config.get_secret_equipables_ids());
+            if (item != NO_ITEM)
+                secret_drop.push_back(Loot(item));
+        } break;
+        default:
+            throw std::invalid_argument("There is no known way to secret-drop something of this type");
+    }
+
+    return secret_drop;
 }
 
+void Creature::update() {
+    Killable::update();
+
+    if (current_attack_cooldown == 0 && target == nullptr) {
+        count_to_loneliness--;
+    } else {
+        count_to_loneliness =
+                required_attack_cooldown *
+                GameConfig::get().get_creature_behavior_constants().attack_cooldowns_to_become_lonely;
+    }
+
+    if (count_to_loneliness == 0) {
+        is_alone = true;
+    }
+}
+
+bool Creature::is_lonely_creature() const { return is_alone; }
+
+void Creature::update_state() { this->state = this->state->next(*this); }
+
 InteractResult Creature::interact(Player& attacker) {
+    if (ItemMapper::get_type_effect(attacker.get_equipment().weapon) != TypeEffect::DAMAGE)
+        return InteractResult(RecoverStatus::CANNOT_HEAL_CREATURE);
     target = &attacker;
     return Killable::interact(attacker);
 }
 
-CreatureUpdateStatus Creature::attack_player() {
-    assert(can_reach(target->get_position()) && can_attack());
+CreatureUpdate Creature::attack_player() {
+    assert(is_targeting_someone() && can_reach(target->get_position()) && can_attack());
 
-    if (Calculator::can_dodge(target->get_stats().agility))
-        return CreatureUpdateStatus(stats.race_id, target->get_name(), 0, false);
+    const uint16_t damage = attack();
 
-    const uint16_t damage_applied = target->receive_damage(*this);
+    if (Calculator::can_dodge(target->get_stats().agility)) {
+        return CreatureUpdate(stats.race_id, target->get_name(), 0, false);
+    }
+
+    const uint16_t damage_applied = target->receive_damage(damage);
     const bool was_killed = !target->is_alive();
 
-    return CreatureUpdateStatus(stats.race_id, target->get_name(), damage_applied, was_killed);
+    return CreatureUpdate(stats.race_id, target->get_name(), damage_applied, was_killed);
 }
 
 int Creature::attack() {
@@ -105,7 +171,9 @@ bool Creature::can_reach(const Position& other_position) const {
 }
 
 bool Creature::can_target(const Position& other_position) const {
-    uint8_t range = get_weapon_range() + EXTRA_TARGET_RANGE;
+    const auto& behavior_constants = GameConfig::get().get_creature_behavior_constants();
+    uint8_t range = std::min(static_cast<int>(behavior_constants.extra_target_range_limit),
+                             get_weapon_range() + behavior_constants.extra_target_range);
     return is_in_range(other_position, range);
 }
 
@@ -142,8 +210,6 @@ bool Creature::is_targeting_someone() const {
 bool Creature::is_target_alive() const { return is_targeting_someone() && target->is_alive(); }
 
 bool Creature::can_reach_target() { return is_targeting_someone() && can_reach(target->get_position()); }
-
-void Creature::set_state(std::unique_ptr<CreatureState> new_state) { state = std::move(new_state); }
 
 Position Creature::get_target_position() const {
     if (!is_targeting_someone())

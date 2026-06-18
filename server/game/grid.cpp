@@ -3,18 +3,25 @@
 #include <algorithm>
 #include <utility>
 
+#include "server/util/calculator.h"
+
+#define IDLE_WEIGHT 4  // TODO: toml
+#define NEAR_MIN_FACTOR 6
+#define NEAR_MAX_FACTOR 14  // TODO: toml
+
 Grid::Grid(): width_(0), height_(0) {}
 
 Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
         width_(width),
         height_(height),
         directions({Direction::DOWN, Direction::RIGHT, Direction::LEFT, Direction::UP}) {
-    for (const auto& row: grid_data.walkable_tiles) {
+    for (const auto& row: grid_data.tiles_info) {
         std::vector<Tile> tile_row;
         tile_row.reserve(row.size());
 
-        std::ranges::transform(row, std::back_inserter(tile_row),
-                               [](auto tile_value) { return Tile(tile_value); });
+        std::ranges::transform(row, std::back_inserter(tile_row), [](const auto& tile_value) {
+            return Tile(tile_value.walkable, tile_value.floor);
+        });
 
         tiles_.emplace_back(std::move(tile_row));
     }
@@ -33,6 +40,8 @@ Tile& Grid::get_tile(const Position& position) {
 
 
 Position Grid::spawn() const {
+    GameConfig& config = GameConfig::get();
+
     static std::random_device rd;
     static std::default_random_engine generator(rd());
     std::uniform_int_distribution get_random_width(0, width_ - 1);
@@ -41,9 +50,40 @@ Position Grid::spawn() const {
     do {
         x = get_random_width(generator);
         y = get_random_height(generator);
-    } while (!is_tile_available(x, y));
+    } while (!is_tile_available(x, y) || !config.has_biome_associated(tiles_[y][x].floor) ||
+             config.get_biome_id(tiles_[y][x].floor) != SAFE_ZONE_FLOOR);
 
     return Position(x, y);
+}
+
+Position Grid::spawn_near(const std::vector<Position>& positions) const {
+    std::vector<Position> near_positions;
+
+    for (const auto& position: positions) {
+        add_near_positions(near_positions, position.get_x(), position.get_y());
+    }
+
+    if (near_positions.empty())
+        throw std::runtime_error("There are no positions near any player to spawn a creature");
+
+    return Calculator::random_choice(near_positions);
+}
+
+void Grid::add_near_positions(std::vector<Position>& near_positions, uint16_t pos_x, uint16_t pos_y) const {
+    for (uint16_t y = std::max(0, pos_y - NEAR_MAX_FACTOR); y < std::min(height_, pos_y + NEAR_MAX_FACTOR);
+         y++) {
+        for (uint16_t x = std::max(0, pos_x - NEAR_MAX_FACTOR); x < std::min(width_, pos_x + NEAR_MAX_FACTOR);
+             x++) {
+            uint16_t distance_x = std::abs(x - pos_x);
+            uint16_t distance_y = std::abs(y - pos_y);
+
+            uint16_t current_distance = std::max(distance_x, distance_y);
+
+            if (current_distance >= NEAR_MIN_FACTOR && is_tile_available(x, y)) {
+                near_positions.push_back(Position(x, y));
+            }
+        }
+    }
 }
 
 bool Grid::is_tile_available(int x, int y) const {
@@ -55,7 +95,7 @@ bool Grid::is_tile_available(int x, int y) const {
 // TODO: seguramente se puede hacer sin crear tantos objetos
 Direction Grid::closest_movement(const Position& current, const Position& target) const {
     Direction closest_direction = Direction::IDLE;
-    float min_distance = current.distance_to(target);
+    float min_distance = MAXFLOAT;
 
     for (const auto& direction: directions) {
         Position position = current.move(direction);
@@ -75,7 +115,7 @@ Direction Grid::closest_movement(const Position& current, const Position& target
 Direction Grid::random_movement(const Position& current) const {
     static std::random_device rd;
     static std::default_random_engine generator(rd());
-    std::uniform_int_distribution<size_t> get_random_width(0, directions.size() + 4);
+    std::uniform_int_distribution<size_t> get_random_width(0, directions.size() + IDLE_WEIGHT);
 
     size_t index = get_random_width(generator);
     Direction direction = index < directions.size() ? directions[index] : Direction::IDLE;

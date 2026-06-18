@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 
 #include "common/dto/lobby/existence.h"
+#include "common/dto/snapshot/info/equipable_item_info.h"
 #include "common/dto/snapshot/info/inventory_info.h"
 
 Serializer::Serializer(std::vector<uint8_t>& buffer): buffer(buffer), offset(0) {}
@@ -67,7 +68,7 @@ void Serializer::serialize(const SnapshotDTO& snapshot) {
 
 void Serializer::serialize(const PlayerInfoDTO& info) {
     serialize(info.name);
-    serialize(info.clan_name);
+    serialize(info.clan);
     serialize(static_cast<uint8_t>(info.direction));
     serialize(info.x);
     serialize(info.y);
@@ -86,10 +87,18 @@ void Serializer::serialize(const CreatureInfoDTO& info) {
     serialize(static_cast<uint8_t>(info.direction));
     serialize(info.x);
     serialize(info.y);
+    serialize(info.stats);
 }
 
+void Serializer::serialize(const CreatureStatsDTO& stats) {
+    serialize(stats.max_health);
+    serialize(stats.current_health);
+    serialize(stats.xp_level);
+}
+
+
 void Serializer::serialize(const LootInfoDTO& info) {
-    serialize(static_cast<uint8_t>(info.is_item));
+    serialize(static_cast<uint8_t>(info.type));
     serialize(info.x);
     serialize(info.y);
 }
@@ -107,6 +116,9 @@ void Serializer::serialize(const ActionDTO& action) {
             break;
         case ActionType::HEAL:
             serialize(action.heal);
+            break;
+        case ActionType::MEDITATION:
+            serialize(action.meditation);
             break;
         case ActionType::MESSAGE:
             serialize(action.chat_message);
@@ -126,6 +138,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::LIST_BANK:
             serialize(action.bank);
             break;
+        case ActionType::CLAN_MESSAGE:
+            serialize(action.clan_msg);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -134,6 +149,11 @@ void Serializer::serialize(const ActionDTO& action) {
 void Serializer::serialize(const AppearanceDTO& appearance) {
     serialize(appearance.body);
     serialize(appearance.head);
+}
+
+void Serializer::serialize(const ClanInfoDTO& clan) {
+    serialize(clan.name);
+    serialize(clan.is_founder);
 }
 
 void Serializer::serialize(const std::string& value) {
@@ -146,13 +166,13 @@ void Serializer::serialize(const std::string& value) {
 void Serializer::serialize(uint8_t value) { this->buffer[this->offset++] = value; }
 
 void Serializer::serialize(uint16_t value) {
-    uint16_t netvalue = ntohs(value);
+    uint16_t netvalue = htons(value);
 
     copy_to_buffer(&netvalue, sizeof(netvalue));
 }
 
 void Serializer::serialize(uint32_t value) {
-    uint32_t netvalue = ntohl(value);
+    uint32_t netvalue = htonl(value);
 
     copy_to_buffer(&netvalue, sizeof(netvalue));
 }
@@ -203,6 +223,11 @@ void Serializer::serialize(const PlayerStatsDTO& stats) {
 
 void Serializer::serialize(const InventoryInfoDTO& inventory) { serialize(inventory.items); }
 
+void Serializer::serialize(const EquipableItemInfoDTO& item) {
+    serialize(item.item_id);
+    serialize(item.effect);
+}
+
 void Serializer::serialize(const EquipmentInfoDTO& equipment) {
     serialize(equipment.weapon);
     serialize(equipment.shield);
@@ -213,7 +238,12 @@ void Serializer::serialize(const EquipmentInfoDTO& equipment) {
 void Serializer::serialize(const AttackDTO& attack) {
     serialize(attack.attacker);
     serialize(attack.weapon);
+    serialize(attack.x);
+    serialize(attack.y);
+    serialize(attack.missed);
 }
+
+void Serializer::serialize(const MeditationDTO& meditation) { serialize(meditation.player_meditating); }
 
 void Serializer::serialize(const ResurrectionDTO& resurrection) {
     serialize(resurrection.player_resurrected);
@@ -311,4 +341,20 @@ void Serializer::serialize(const ClanRemovePlayerEventDTO& event) {
 void Serializer::serialize(const CheatExperienceSetEventDTO& event) {
     serialize(EventDTO(event.command));
     serialize(event.level);
+}
+
+void Serializer::serialize(const CheatGoldGainEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.amount);
+}
+
+void Serializer::serialize(const CheatGetItemEventDTO& event) {
+    serialize(EventDTO(event.command));
+    serialize(event.item);
+}
+
+void Serializer::serialize(const ClanMessageDTO& clan_msg) {
+    serialize(clan_msg.receiver_clan);
+    serialize(clan_msg.content);
+    serialize(clan_msg.sender);
 }

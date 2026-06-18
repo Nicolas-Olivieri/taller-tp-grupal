@@ -4,13 +4,14 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
+#include <iostream>
 
+#include "editor_constants.h"
 #include "grid_range.h"
 #include "ui_mapcanvas.h"
 
-#define TILE_SIZE 32
 
-MapCanvas::MapCanvas(MapData& map_data, QGraphicsView* parent):
+MapCanvas::MapCanvas(MapData& map_data, QWidget* parent):
         QGraphicsView(parent),
         ui(new Ui::MapCanvas),
         scene(new QGraphicsScene(this)),
@@ -34,23 +35,44 @@ MapCanvas::MapCanvas(MapData& map_data, QGraphicsView* parent):
     asset_preview->setZValue(99.0);
     scene->addItem(asset_preview);
 
+    auto& config = EditorConfig::get();
+    const auto tile_size = config.get_tile_size();
+    const auto safe_zone_data = config.get_safe_zone_data();
+
+    // Setea preview de zona segura
+    safe_preview = new QGraphicsRectItem(0, 0, safe_zone_data.brush_w * tile_size,
+                                         safe_zone_data.brush_h * tile_size);
+    safe_preview->setBrush(QBrush(QColor(95, 170, 50)));
+    safe_preview->setPen(Qt::NoPen);
+    safe_preview->setOpacity(0.5);
+    safe_preview->setZValue(99.0);
+    safe_preview->hide();
+    scene->addItem(safe_preview);
+
     // Setea capa de no caminable
     unwalkable_tiles = scene->createItemGroup({});
     unwalkable_tiles->setZValue(98.0);
     unwalkable_tiles->setVisible(false);
+
+    // Setea capa de zona segura
+    safe_tiles = scene->createItemGroup({});
+    safe_tiles->setZValue(99.0);
+    safe_tiles->setVisible(false);
 }
 
 
 // MÉTODOS DE QGRAPHICSVIEW ::::::::::::::::::::::::::::
 
 void MapCanvas::drawBackground(QPainter* painter, const QRectF& rect) {
-    QPixmap gridTile(TILE_SIZE, TILE_SIZE);
+    const uint16_t tile_size = EditorConfig::get().get_tile_size();
+
+    QPixmap gridTile(tile_size, tile_size);
     gridTile.fill(Qt::white);
 
     QPainter tilePainter(&gridTile);
     tilePainter.setPen(QColor(220, 220, 220));
-    tilePainter.drawLine(0, 0, TILE_SIZE, 0);  // Borde superior
-    tilePainter.drawLine(0, 0, 0, TILE_SIZE);  // Borde izquierdo
+    tilePainter.drawLine(0, 0, tile_size, 0);  // Borde superior
+    tilePainter.drawLine(0, 0, 0, tile_size);  // Borde izquierdo
     tilePainter.end();
 
     const auto grid_brush = QBrush(gridTile);
@@ -58,6 +80,8 @@ void MapCanvas::drawBackground(QPainter* painter, const QRectF& rect) {
 }
 
 void MapCanvas::mouseMoveEvent(QMouseEvent* event) {
+    const uint16_t tile_size = EditorConfig::get().get_tile_size();
+
     if (mode == EditorMode::DRAG) {
         const QRectF visible_area = this->mapToScene(this->viewport()->rect()).boundingRect();
         const QRectF limits = scene->sceneRect();
@@ -77,22 +101,30 @@ void MapCanvas::mouseMoveEvent(QMouseEvent* event) {
     } else if (mode == EditorMode::DRAW) {
         asset_preview->show();
         const QPointF scene_pos = mapToScene(event->pos());
-        asset_preview->setPos(coordinates_to_grid(scene_pos) * TILE_SIZE);
+        asset_preview->setPos(coordinates_to_grid(scene_pos) * tile_size);
+
+    } else if (mode == EditorMode::SAFE_ZONE) {
+        safe_preview->show();
+        const QPointF scene_pos = mapToScene(event->pos());
+        safe_preview->setPos(coordinates_to_grid(scene_pos) * tile_size);
     }
 }
 
 void MapCanvas::mousePressEvent(QMouseEvent* event) {
-    if (mode == EditorMode::DRAG) {
-        QGraphicsView::mousePressEvent(event);
-        return;
-    }
-
     const QPointF scene_pos = mapToScene(event->pos());
-
-    if (mode == EditorMode::DRAW) {
-        place_asset(scene_pos);
-    } else if (mode == EditorMode::ERASE) {
-        erase_asset(scene_pos);
+    switch (mode) {
+        case EditorMode::DRAG:
+            QGraphicsView::mousePressEvent(event);
+            return;
+        case EditorMode::DRAW:
+            place_asset(scene_pos);
+            break;
+        case EditorMode::ERASE:
+            erase_asset(scene_pos);
+            break;
+        case EditorMode::SAFE_ZONE:
+            set_safe_tiles(scene_pos);
+            break;
     }
 }
 
@@ -104,6 +136,9 @@ void MapCanvas::set_mode(const EditorMode new_mode) {
 
     if (mode != EditorMode::DRAW) {
         asset_preview->hide();
+    }
+    if (mode != EditorMode::SAFE_ZONE) {
+        safe_preview->hide();
     }
     if (mode == EditorMode::DRAG) {
         this->setDragMode(ScrollHandDrag);
@@ -126,6 +161,11 @@ void MapCanvas::set_visibility_unwalkables() const {
     QGraphicsItemGroup group(unwalkable_tiles);
 }
 
+void MapCanvas::set_visibility_safes() const {
+    const bool curr_state = safe_tiles->isVisible();
+    safe_tiles->setVisible(!curr_state);
+    QGraphicsItemGroup group(safe_tiles);
+}
 
 // MÉTODOS DE ASSETS ::::::::::::::::::::::::::::
 
@@ -143,25 +183,32 @@ void MapCanvas::add_asset_to_scene(const QPoint clicked_cell, const int asset_id
     set_unwalkable_tiles(clicked_cell, asset_id);
 
     const auto tile = new QGraphicsPixmapItem(asset_preview->pixmap());
-    tile->setPos(clicked_cell * TILE_SIZE);
+
+    tile->setPos(clicked_cell * EditorConfig::get().get_tile_size());
     tile->setData(0, asset_id);
     scene->addItem(tile);
 }
 
 void MapCanvas::erase_asset(const QPointF clicked_pos) const {
+    // Valido que no sea un punto de colisión
     const QList<QGraphicsItem*> cell_assets = scene->items(clicked_pos);
     if (cell_assets.empty() || !cell_assets.first()->data(0).isValid() ||
         cell_assets.first()->group() == unwalkable_tiles) {
         return;
     }
 
+    // En caso de ser visible la zona segura, se borra ese componente, sino se borra el collider o tile
     QGraphicsItem* clicked_asset = cell_assets.first();
-    const bool erased = map_data.erase_asset(clicked_asset->data(0).toInt());
-    if (!erased) {
-        return;
-    }
+    if (clicked_asset->group() == safe_tiles && safe_tiles->isVisible()) {
+        map_data.erase_safe_tile(coordinates_to_grid(clicked_pos));
 
-    erase_unwalkable_tiles(clicked_asset->data(0).toInt());
+    } else {
+        const bool erased = map_data.erase_asset(clicked_asset->data(0).toInt());
+        if (!erased) {
+            return;
+        }
+        erase_unwalkable_tiles(clicked_asset->data(0).toInt());
+    }
 
     scene->removeItem(clicked_asset);
     delete clicked_asset;
@@ -171,7 +218,8 @@ void MapCanvas::clear_all() {
     QList<QGraphicsItem*> assets = scene->items();
     for (const auto asset: assets) {
         // Evito eliminar los elementos necesarios para el funcionamiento del editor
-        if (asset != asset_preview && asset != unwalkable_tiles) {
+        if (asset != asset_preview && asset != unwalkable_tiles && asset != safe_preview &&
+            asset != safe_tiles) {
             scene->removeItem(asset);
         }
     }
@@ -193,7 +241,7 @@ void MapCanvas::set_unwalkable_tiles(const QPoint& clicked_cell, const int tile_
             mark->setData(0, tile_id);
             mark->setBrush(redBrush);
             mark->setPen(noPen);
-            mark->setPos(cell * TILE_SIZE);
+            mark->setPos(cell * EditorConfig::get().get_tile_size());
 
             unwalkable_tiles->addToGroup(mark);
         }
@@ -211,10 +259,32 @@ void MapCanvas::erase_unwalkable_tiles(const int tile_id) const {
     }
 }
 
+void MapCanvas::set_safe_tiles(const QPointF& clicked_pos, const int width, const int height) const {
+    const uint16_t tile_size = EditorConfig::get().get_tile_size();
+
+    const QPoint clicked_cell = coordinates_to_grid(clicked_pos);
+    QSet<QPair<int, QPoint>> added_tiles = map_data.add_safe_tiles(clicked_cell, width, height);
+
+    const QBrush greenBrush(QColor(95, 170, 50, 100));
+    const QPen noPen(Qt::NoPen);
+    for (const auto& [id, cell]: added_tiles) {
+        auto* mark = new QGraphicsRectItem(0, 0, tile_size, tile_size);
+        mark->setZValue(98.0);
+        mark->setData(0, id);
+        mark->setBrush(greenBrush);
+        mark->setPen(noPen);
+        mark->setPos(cell * tile_size);
+
+        safe_tiles->addToGroup(mark);
+    }
+}
+
 
 QPoint MapCanvas::coordinates_to_grid(const QPointF coordinates) const {
-    const int x_grid = qFloor(coordinates.x() / TILE_SIZE);
-    const int y_grid = qFloor(coordinates.y() / TILE_SIZE);
+    const uint16_t tile_size = EditorConfig::get().get_tile_size();
+
+    const int x_grid = qFloor(coordinates.x() / tile_size);
+    const int y_grid = qFloor(coordinates.y() / tile_size);
 
     return {x_grid, y_grid};
 }

@@ -5,10 +5,9 @@
 
 class AttackingState: public CreatureState {
 public:
-    CreatureUpdateStatus act(Creature& creature, const Position& position,
-                             const Direction& direction) override;
+    static AttackingState& get();
 
-    void next(Creature& creature) override;
+    CreatureState* next(Creature& creature) override;
 };
 
 #endif  // ATTACKINGSTATE_H

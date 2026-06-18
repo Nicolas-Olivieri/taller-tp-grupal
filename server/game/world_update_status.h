@@ -9,7 +9,7 @@
 
 // TODO: Encontrarle un mejor lugar a nivel directorios
 struct WorldUpdateStatus {
-    std::vector<CreatureUpdateStatus> creatures;
+    std::vector<CreatureUpdate> creatures;
     std::vector<std::string> resurrected_players;
 };
 

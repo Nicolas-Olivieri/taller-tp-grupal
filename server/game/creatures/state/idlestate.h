@@ -5,10 +5,9 @@
 
 class IdleState: public CreatureState {
 public:
-    CreatureUpdateStatus act(Creature& creature, const Position& position,
-                             const Direction& direction) override;
+    static IdleState& get();
 
-    void next(Creature& creature) override;
+    CreatureState* next(Creature& creature) override;
 };
 
 #endif  // IDLESTATE_H

@@ -1,9 +1,10 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <functional>
 #include <map>
+#include <stdexcept>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "../killable.h"
@@ -15,6 +16,12 @@
 #include "server/game/player/inventory/inventory.h"
 #include "server/persistance/playerdata.h"
 #include "server/util/calculator.h"
+
+#include "clan_membership.h"
+
+struct MaxLevelExceeded: std::runtime_error {
+    MaxLevelExceeded(): std::runtime_error("Player cannot keep leveling up.") {}
+};
 
 
 class Player: public Killable, public Attacker {
@@ -38,11 +45,8 @@ private:
     bool _is_founder;
     std::string clan_name;
 
-    void drop_excess_gold(std::vector<Loot>& drops);
-
-    void drop_inventory(std::vector<Loot>& drops);
-
-    void drop_equipment(std::vector<Loot>& drops);
+    bool has_infinite_recoverables_cheat_activated;
+    uint32_t last_experience_amount_earned;
 
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
@@ -64,7 +68,7 @@ public:
 
     std::vector<Loot> drop() override;
 
-    InteractResult interact(Player& attacker) override;
+    InteractResult interact(Player& other) override;
 
     void update_position(const Position& new_position, const Direction& new_direction) override;
 
@@ -84,6 +88,8 @@ public:
 
     void earn_xp(uint32_t amount);
 
+    void undo_xp_gain();
+
     void update() override;
 
     ~Player() override = default;
@@ -95,6 +101,10 @@ public:
     void unbind_ally();
 
     void heal();
+
+    void health_recover(uint16_t amount);
+
+    void mana_recover(uint16_t amount);
 
     void spend_gold(uint16_t amount);
 
@@ -116,7 +126,7 @@ public:
 
     const Equipment& get_equipment() const;
 
-    const std::unordered_map<uint8_t, uint8_t>& get_inventory_items() const;
+    const std::map<uint8_t, uint8_t, std::greater<>>& get_inventory_items() const;
 
     const std::map<uint8_t, uint8_t>& get_bank_items() const;
 
@@ -132,9 +142,9 @@ public:
 
     std::string get_clan_name() const;
 
-    void join_clan(const std::string& _clan_name);
+    void join_clan(const std::string& clan_name);
 
-    void found_clan(const std::string& _clan_name);
+    void found_clan(const std::string& clan_name);
 
     void leave_clan();
 
@@ -142,8 +152,28 @@ public:
 
     void set_xp_level(const uint8_t new_level);
 
+    void toggle_infinite_recoverables();
+
+    bool is_infinite_recoverables_cheat_active() const;
+
+    void set_near_clan_mates(const uint8_t near_clan_mates_amount);
+
+    void meditate();
+
 private:
     void complete_delayed_resurrection();
+
+    void upgrade();
+
+    void drop_excess_gold(std::vector<Loot>& drops);
+
+    void drop_inventory(std::vector<Loot>& drops);
+
+    void drop_equipment(std::vector<Loot>& drops);
+
+    InteractResult attack_interaction(Player& attacker);
+
+    InteractResult heal_intearction(Player& healer);
 };
 
 

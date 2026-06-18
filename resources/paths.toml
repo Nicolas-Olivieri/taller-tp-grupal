@@ -15,3 +15,19 @@ path = "/server/traders.toml"
 
 [server.drops]
 path = "/server/drops.toml"
+
+[server.fair_play]
+path = "/server/fair_play.toml"
+
+[server.clans]
+path = "/server/clans.toml"
+
+[server.world]
+path = "/server/world.toml"
+
+[server.creature_behavior]
+path = "/server/creature_behavior.toml"
+
+
+[server.biomes]
+path = "/server/biomes.toml"

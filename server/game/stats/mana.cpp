@@ -2,8 +2,6 @@
 
 #include "server/util/calculator.h"
 
-#define FPS 30
-
 
 Mana::Mana(uint8_t recovery_factor, float factor_class, float factor_race, float factor_class_meditation,
            uint8_t intelligence, uint8_t level):
@@ -15,13 +13,7 @@ Mana::Mana(uint8_t recovery_factor, float factor_class, float factor_race, float
 
 void Mana::update_max(uint8_t level, uint8_t intelligence) {
     const int new_max = Calculator::calculate_max_mana(level, intelligence, factor_class, factor_race);
-
-    const int difference = new_max - max_amount;
     max_amount = new_max;
-
-    if (difference > 0) {
-        current_amount += difference;
-    }
 
     this->intelligence = intelligence;
 
@@ -37,7 +29,7 @@ void Mana::meditate() {
     }
 
     tick_accumulator++;
-    if (tick_accumulator >= FPS) {
+    if (tick_accumulator >= GameConfig::get().get_world_constants().ticks_per_second) {
         tick_accumulator = 0;
         current_amount += Calculator::meditation_mana_recovery(intelligence, factor_class_meditation);
         if (current_amount >= max_amount) {

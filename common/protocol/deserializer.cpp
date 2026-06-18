@@ -1,8 +1,8 @@
 #include "deserializer.h"
 
+#include <functional>
 #include <map>
 #include <stdexcept>
-#include <unordered_map>
 
 #include <arpa/inet.h>
 
@@ -70,6 +70,13 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CLAN_LEAVE:
         case CommandType::CLAN_REVIEW:
         case CommandType::CHEAT_XP:
+        case CommandType::CHEAT_GOLD:
+        case CommandType::CHEAT_DEATH:
+        case CommandType::CHEAT_INFINITE_RECOVERABLES:
+        case CommandType::CHEAT_ITEM:
+        case CommandType::CHEAT_KILL_CREATURES:
+        case CommandType::MEDITATE:
+        case CommandType::TELEPORT:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -136,7 +143,7 @@ std::vector<LootInfoDTO> Deserializer::recv_loot_information() {
 
 PlayerInfoDTO Deserializer::recv_player_info() {
     std::string name = recv_string();
-    std::string clan_name = recv_string();
+    ClanInfoDTO clan = recv_clan();
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
@@ -147,8 +154,8 @@ PlayerInfoDTO Deserializer::recv_player_info() {
     InventoryInfoDTO inventory = recv_inventory_info();
     EquipmentInfoDTO equipment = recv_equipment_info();
 
-    return PlayerInfoDTO(name, clan_name, direction, x, y, safe_gold, excess_gold, appearance, stats,
-                         inventory, equipment);
+    return PlayerInfoDTO(name, clan, direction, x, y, safe_gold, excess_gold, appearance, stats, inventory,
+                         equipment);
 }
 
 CreatureInfoDTO Deserializer::recv_creature_info() {
@@ -158,16 +165,25 @@ CreatureInfoDTO Deserializer::recv_creature_info() {
     Direction direction = recv_direction();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
+    CreatureStatsDTO stats = recv_creature_stats();
 
-    return CreatureInfoDTO(creature_id, variation_id, sub_id, direction, x, y);
+    return CreatureInfoDTO(creature_id, variation_id, sub_id, direction, x, y, stats);
+}
+
+CreatureStatsDTO Deserializer::recv_creature_stats() {
+    const uint16_t max_health = recv_uint16();
+    const uint16_t current_health = recv_uint16();
+    const uint8_t xp_level = recv_uint8();
+
+    return CreatureStatsDTO(max_health, current_health, xp_level);
 }
 
 LootInfoDTO Deserializer::recv_loot_info() {
-    bool is_item = recv_uint8();
+    LootType type = recv_loot_type();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
 
-    return LootInfoDTO(is_item, x, y);
+    return LootInfoDTO(type, x, y);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -194,6 +210,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_despawn());
         case ActionType::HEAL:
             return ActionDTO(recv_heal());
+        case ActionType::MEDITATION:
+            return ActionDTO(recv_meditation());
         case ActionType::MESSAGE:
             return ActionDTO(recv_chat_message());
         case ActionType::RESURRECTION:
@@ -206,6 +224,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_list_items());
         case ActionType::LIST_BANK:
             return ActionDTO(recv_list_bank());
+        case ActionType::CLAN_MESSAGE:
+            return ActionDTO(recv_clan_message());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -220,12 +240,14 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::ATTACK:
         case ActionType::DESPAWN:
         case ActionType::HEAL:
+        case ActionType::MEDITATION:
         case ActionType::MESSAGE:
         case ActionType::RESURRECTION:
         case ActionType::DEATH:
         case ActionType::MESSAGE_LIST:
         case ActionType::LIST_ITEMS:
         case ActionType::LIST_BANK:
+        case ActionType::CLAN_MESSAGE:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -240,6 +262,13 @@ AppearanceDTO Deserializer::recv_appearance() {
     uint8_t head = recv_uint8();
 
     return AppearanceDTO(body, head);
+}
+
+ClanInfoDTO Deserializer::recv_clan() {
+    const std::string name = recv_string();
+    const uint8_t is_founder = recv_uint8();
+
+    return ClanInfoDTO(name, is_founder);
 }
 
 DespawnDTO Deserializer::recv_despawn() {
@@ -282,6 +311,7 @@ AllyType Deserializer::recv_ally_type() {
         case AllyType::PRIEST:
         case AllyType::MERCHANT:
         case AllyType::BANKER:
+        case AllyType::TOTEM:
             return static_cast<AllyType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de aliado no reconocido");
@@ -331,7 +361,7 @@ PlayerStatsDTO Deserializer::recv_player_stats() {
 
 InventoryInfoDTO Deserializer::recv_inventory_info() {
     const uint16_t size = recv_uint16();
-    std::unordered_map<uint8_t, uint8_t> items;
+    std::map<uint8_t, uint8_t, std::greater<>> items;
 
     for (uint16_t i = 0; i < size; ++i) {
         const uint8_t item_id = recv_uint8();
@@ -342,11 +372,18 @@ InventoryInfoDTO Deserializer::recv_inventory_info() {
     return InventoryInfoDTO(items);
 }
 
+EquipableItemInfoDTO Deserializer::recv_equipable_item_info() {
+    const uint8_t item_id = recv_uint8();
+    const uint8_t effect = recv_uint8();
+
+    return EquipableItemInfoDTO(item_id, effect);
+}
+
 EquipmentInfoDTO Deserializer::recv_equipment_info() {
-    const uint8_t weapon = recv_uint8();
-    const uint8_t shield = recv_uint8();
-    const uint8_t helmet = recv_uint8();
-    const uint8_t armor = recv_uint8();
+    const EquipableItemInfoDTO weapon = recv_equipable_item_info();
+    const EquipableItemInfoDTO shield = recv_equipable_item_info();
+    const EquipableItemInfoDTO helmet = recv_equipable_item_info();
+    const EquipableItemInfoDTO armor = recv_equipable_item_info();
 
     return EquipmentInfoDTO(weapon, shield, helmet, armor);
 }
@@ -354,8 +391,17 @@ EquipmentInfoDTO Deserializer::recv_equipment_info() {
 AttackDTO Deserializer::recv_attack() {
     const std::string attacker = recv_string();
     const uint8_t weapon = recv_uint8();
+    const uint16_t x = recv_uint16();
+    const uint16_t y = recv_uint16();
+    const uint8_t missed = recv_uint8();
 
-    return AttackDTO(attacker, weapon);
+    return AttackDTO(attacker, weapon, x, y, missed);
+}
+
+MeditationDTO Deserializer::recv_meditation() {
+    const std::string player_meditating = recv_string();
+
+    return MeditationDTO(player_meditating);
 }
 
 ResurrectionDTO Deserializer::recv_resurrection() {
@@ -439,4 +485,25 @@ AssetInfoDTO Deserializer::recv_asset_info() {
     const uint16_t y = recv_uint16();
 
     return AssetInfoDTO(id, x, y);
+}
+
+ClanMessageDTO Deserializer::recv_clan_message() {
+    const std::string receiver_clan = recv_string();
+    const std::string content = recv_string();
+    const std::string sender = recv_string();
+
+    return ClanMessageDTO(receiver_clan, content, sender);
+}
+
+LootType Deserializer::recv_loot_type() {
+    uint8_t byte = recv_uint8();
+
+    switch (static_cast<LootType>(byte)) {
+        case LootType::GOLD:
+        case LootType::ITEM:
+        case LootType::SECRET_ITEM:
+            return static_cast<LootType>(byte);
+        default:  // Undefined Behavior -> Excepción
+            throw std::invalid_argument("Byte de looot no reconocido");
+    }
 }

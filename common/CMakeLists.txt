@@ -30,21 +30,28 @@ target_sources(taller_common
         dto/events/clan/clan_request_response_event.cpp
         dto/events/clan/clan_remove_player_event.cpp
         dto/events/cheat/cheat_experience_set_event.cpp
+        dto/events/cheat/cheat_gold_gain_event.cpp
+        dto/events/cheat/cheat_get_item_event.cpp
 
         dto/snapshot/snapshot.cpp
         dto/snapshot/actions/action.cpp
         dto/snapshot/actions/action_types/act_attack/attack.cpp
         dto/snapshot/actions/action_types/act_heal/heal.cpp
+        dto/snapshot/actions/action_types/act_meditation/meditation.cpp
         dto/snapshot/actions/action_types/act_message/chatmessage.cpp
         dto/snapshot/actions/action_types/act_resurrection/resurrection.cpp
         dto/snapshot/actions/action_types/act_death/death.cpp
         dto/snapshot/actions/action_types/act_list/chat_list.cpp
         dto/snapshot/actions/action_types/act_list_bank/list_bank.cpp
         dto/snapshot/actions/action_types/act_list_items/list_items.cpp
+        dto/snapshot/actions/action_types/act_clan_msg/clan_message.cpp
 
         dto/snapshot/info/appearance.cpp
+        dto/snapshot/info/clan_info.cpp
         dto/snapshot/info/playerinfo.cpp
         dto/snapshot/info/creatureinfo.cpp
+        dto/snapshot/info/creature_stats.cpp
+        dto/snapshot/info/equipable_item_info.cpp
         dto/snapshot/info/equipment_info.cpp
         dto/snapshot/info/inventory_info.cpp
         dto/snapshot/info/lootinfo.cpp
@@ -53,6 +60,8 @@ target_sources(taller_common
         dto/snapshot/map/client_map_data.cpp
         dto/snapshot/map/grid_matrix.cpp
         dto/snapshot/map/server_map_data.cpp
+        dto/snapshot/map/tile_info.cpp
+        dto/snapshot/map/teleport_info.cpp
 
         dto/snapshot/snapshot_builder.cpp
 
@@ -83,6 +92,7 @@ target_sources(taller_common
         toml_test.h
         util/rate_timer.h
         direction.h
+        loot_type.h
         queue.h
         logger.h
         dto/message.h
@@ -107,21 +117,28 @@ target_sources(taller_common
         dto/events/clan/clan_request_response_event.h
         dto/events/clan/clan_remove_player_event.h
         dto/events/cheat/cheat_experience_set_event.h
+        dto/events/cheat/cheat_gold_gain_event.h
+        dto/events/cheat/cheat_get_item_event.h
 
         dto/snapshot/snapshot.h
         dto/snapshot/actions/action.h
         dto/snapshot/actions/action_types/act_attack/attack.h
         dto/snapshot/actions/action_types/act_heal/heal.h
+        dto/snapshot/actions/action_types/act_meditation/meditation.h
         dto/snapshot/actions/action_types/act_message/chatmessage.h
         dto/snapshot/actions/action_types/act_resurrection/resurrection.h
         dto/snapshot/actions/action_types/act_death/death.h
         dto/snapshot/actions/action_types/act_list/chat_list.h
         dto/snapshot/actions/action_types/act_list_bank/list_bank.h
         dto/snapshot/actions/action_types/act_list_items/list_items.h
+        dto/snapshot/actions/action_types/act_clan_msg/clan_message.h
 
         dto/snapshot/info/appearance.h
+        dto/snapshot/info/clan_info.h
         dto/snapshot/info/playerinfo.h
         dto/snapshot/info/creatureinfo.h
+        dto/snapshot/info/creature_stats.h
+        dto/snapshot/info/equipable_item_info.h
         dto/snapshot/info/equipment_info.h
         dto/snapshot/info/inventory_info.h
         dto/snapshot/info/lootinfo.h
@@ -130,6 +147,8 @@ target_sources(taller_common
         dto/snapshot/map/client_map_data.h
         dto/snapshot/map/grid_matrix.h
         dto/snapshot/map/server_map_data.h
+        dto/snapshot/map/tile_info.h
+        dto/snapshot/map/teleport_info.h
 
         dto/snapshot/snapshot_builder.h
 

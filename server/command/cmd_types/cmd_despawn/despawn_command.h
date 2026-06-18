@@ -10,6 +10,7 @@
 class DespawnCommand: public Command {
 private:
     std::string player_name;
+    std::string clan_name;
 
 public:
     explicit DespawnCommand(const std::string& player_name);

@@ -1,0 +1,8 @@
+[clans]
+max_members_per_clan = 16
+min_level_required_to_found_clan = 6
+max_distance_to_consider_near_clan_mate = 10.00
+max_attack_buff_factor = 5.00
+
+# Si teneés a max_members_per_clan de compañeros de tu clan con vos, vas a hacer max_attack_buff_factor va a multiplicar a tu daño
+# Ejemplo: si max_attack_buff_factor == 10.00 -> vas a hacer x10 de daño

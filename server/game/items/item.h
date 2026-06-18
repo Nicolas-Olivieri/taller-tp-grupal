@@ -6,9 +6,13 @@
 
 #include "server/game/stats/stats.h"
 
+struct ArchetypeNotMagic: public std::runtime_error {
+    ArchetypeNotMagic(): std::runtime_error("The player's archetype cannot use this magic item.") {}
+};
+
 struct Equipment;
 
-enum class UsableTypeEffect : uint8_t { HEALTH = 0, MANA = 1 };
+enum class TypeEffect : uint8_t { HEALTH = 0, MANA = 1, DAMAGE = 2 };
 
 struct Weapon {
     uint8_t item;

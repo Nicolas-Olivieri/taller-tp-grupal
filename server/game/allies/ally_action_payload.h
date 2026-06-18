@@ -14,6 +14,7 @@ enum class AllyAction {
     SELL,
     WITHDRAW_GOLD,
     WITHDRAW_ITEM,
+    TELEPORT,
 };
 
 

@@ -28,6 +28,8 @@ private:
     void handle_dodge(SnapshotBuilder& builder);
 
     void handle_bind(SnapshotBuilder& builder);
+
+    void handle_recover(SnapshotBuilder& builder);
 };
 
 

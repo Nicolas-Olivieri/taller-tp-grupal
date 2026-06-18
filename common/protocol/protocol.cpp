@@ -77,6 +77,7 @@ RequestedCommandDTO Protocol::recv_command() {
 
     CommandType command = deserializer.recv_command_type();
 
+    // TODO: Refactorizar (convertir a switch case o mapa)
     if (command == CommandType::INTERACT) {
         const int x = deserializer.recv_uint16();
         const int y = deserializer.recv_uint16();
@@ -93,15 +94,19 @@ RequestedCommandDTO Protocol::recv_command() {
         return RequestedCommandDTO(command, receiver, content);
     } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
                command == CommandType::LIST_ITEMS or command == CommandType::CLAN_REVIEW or
-               command == CommandType::CLAN_LEAVE or command == CommandType::PICKUP) {
+               command == CommandType::CLAN_LEAVE or command == CommandType::PICKUP or
+               command == CommandType::CHEAT_DEATH or command == CommandType::CHEAT_INFINITE_RECOVERABLES or
+               command == CommandType::MEDITATE or command == CommandType::CHEAT_KILL_CREATURES or
+               command == CommandType::TELEPORT) {
         return RequestedCommandDTO(command);
     } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
                command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or
                command == CommandType::USE_ITEM or command == CommandType::DROP_ITEM or
-               command == CommandType::UNEQUIP_ITEM) {
+               command == CommandType::UNEQUIP_ITEM or command == CommandType::CHEAT_ITEM) {
         const uint8_t item_id = deserializer.recv_uint8();
         return RequestedCommandDTO(command, item_id);
-    } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD) {
+    } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD or
+               command == CommandType::CHEAT_GOLD) {
         const uint16_t gold_amount = deserializer.recv_uint16();
         return RequestedCommandDTO(command, gold_amount);
     } else if (command == CommandType::CLAN_FOUND or command == CommandType::CLAN_JOIN) {

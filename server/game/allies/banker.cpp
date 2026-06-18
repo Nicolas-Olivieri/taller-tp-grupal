@@ -37,6 +37,9 @@ AllyExecuteResult Banker::execute(Player& player, const AllyActionPayload& paylo
         case AllyAction::WITHDRAW_ITEM:
             return handle_withdraw_item(player, payload.item_id);
 
+        case AllyAction::TELEPORT:
+            return handle_action_not_accepted<TeleportResult>(TeleportStatus::ACTION_NOT_ACCEPTED);
+
         default:
             break;
     }
@@ -46,6 +49,9 @@ AllyExecuteResult Banker::execute(Player& player, const AllyActionPayload& paylo
 
 
 AllyExecuteResult Banker::handle_deposit_gold(Player& player, const uint16_t gold_amount) const {
+    if (not player.is_alive())
+        return AllyExecuteResult(DepositGoldResult(DepositGoldStatus::GHOST_FAIL, type));
+
     try {
         player.deposit_gold_to_bank(gold_amount);
         std::cout << "[Banker] Se han depositado " << static_cast<int>(gold_amount) << " monedas de oro"
@@ -62,6 +68,9 @@ AllyExecuteResult Banker::handle_deposit_gold(Player& player, const uint16_t gol
 
 
 AllyExecuteResult Banker::handle_deposit_item(Player& player, const uint8_t item_id) const {
+    if (not player.is_alive())
+        return AllyExecuteResult(DepositItemResult(DepositItemStatus::GHOST_FAIL, type));
+
     try {
         player.deposit_item_to_bank(item_id);
         std::cout << "[Banker] Se ha depositado el ítem de ID " << static_cast<int>(item_id) << std::endl;
@@ -91,6 +100,9 @@ AllyExecuteResult Banker::handle_list_items(const Player& player) const {
 
 
 AllyExecuteResult Banker::handle_withdraw_gold(Player& player, const uint16_t gold_amount) const {
+    if (not player.is_alive())
+        return AllyExecuteResult(WithdrawGoldResult(WithdrawGoldStatus::GHOST_FAIL, type));
+
     try {
         player.withdraw_gold_from_bank(gold_amount);
         std::cout << "[Banker] Se han retirado " << static_cast<int>(gold_amount) << " monedas de oro"
@@ -107,6 +119,9 @@ AllyExecuteResult Banker::handle_withdraw_gold(Player& player, const uint16_t go
 
 
 AllyExecuteResult Banker::handle_withdraw_item(Player& player, const uint8_t item_id) const {
+    if (not player.is_alive())
+        return AllyExecuteResult(WithdrawItemResult(WithdrawItemStatus::GHOST_FAIL, type));
+
     try {
         player.withdraw_item_from_bank(item_id);
         std::cout << "[Banker] Se ha retirado el ítem de ID " << static_cast<int>(item_id) << std::endl;

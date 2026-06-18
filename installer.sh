@@ -30,6 +30,7 @@ sudo apt update
 echo -e "${GREEN}[2/6] Instalando dependencias...${NC}"
 sudo apt install -y \
     git cmake build-essential ninja-build pkg-config \
+    gcc-13 g++-13 \
     qt6-base-dev \
     libasound2-dev libopus-dev libopusfile-dev libxmp-dev \
     libfluidsynth-dev fluidsynth libwavpack-dev libfreetype-dev \
@@ -85,7 +86,10 @@ sudo chown -R $USER:$USER "$INSTALL_DATA"
 
 # No debería de ser debug, pero de momento rompe si no lo ponemos como tal
 echo -e "${GREEN}[5/6] Compilando el proyecto...${NC}"
-cmake -S . -B cmake-build-debug -G Ninja -DCMAKE_BUILD_TYPE=Debug\
+cmake -S . -B cmake-build-debug -G Ninja \
+        -DCMAKE_C_COMPILER=gcc-13 \
+        -DCMAKE_CXX_COMPILER=g++-13 \
+        -DCMAKE_BUILD_TYPE=Debug \
         -DCONFIG_PATH="${INSTALL_CONFIG}" \
         -DDATA_PATH="${INSTALL_DATA}/resources"
 

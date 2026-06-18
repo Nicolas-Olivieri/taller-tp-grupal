@@ -1,0 +1,68 @@
+#include "sprite_layer.h"
+
+SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const uint8_t id,
+                         const SDL2pp::Point& offset, Animation animation):
+        offset(offset),
+        last_action(std::nullopt),
+        id(id),
+        texture(texture),
+        animations(animation),
+        renderer(renderer) {
+    set_base_frame();
+}
+
+
+SpriteLayer::SpriteLayer(SDL2pp::Renderer& renderer, SDL2pp::Texture& texture, const uint8_t id,
+                         const SDL2pp::Point& offset, std::map<Direction, Animation>& animations):
+        offset(offset),
+        last_action(Direction::DOWN),
+        id(id),
+        texture(texture),
+        animations(animations),
+        renderer(renderer) {
+    set_base_frame();
+}
+
+void SpriteLayer::render(const SDL2pp::Point& base_position) {
+    renderer.Copy(texture, frame, SDL2pp::Rect(base_position + offset, frame.GetSize()));
+}
+
+void SpriteLayer::render(const SDL2pp::Rect& source, const SDL2pp::Rect& dest) {
+    renderer.Copy(texture, source, dest);
+}
+
+void SpriteLayer::update_frame(const int iteration, const Direction action) {
+    if (action != Direction::IDLE) {
+        const auto& anim_map = std::get<std::map<Direction, Animation>>(animations);
+        frame = anim_map.at(action).next_frame(iteration);
+        last_action = action;
+    }
+}
+
+void SpriteLayer::update_frame(const int iteration) {
+    const Animation& anim = std::get<Animation>(animations);
+    frame = anim.next_frame(iteration);
+}
+
+void SpriteLayer::set_base_frame() {
+    if (std::holds_alternative<Animation>(animations)) {
+        frame = std::get<Animation>(animations).get_first();
+    } else {
+        const auto& anim_map = std::get<std::map<Direction, Animation>>(animations);
+        frame = anim_map.at(last_action.value()).get_first();
+    }
+}
+
+bool SpriteLayer::has_static_animation() const { return std::holds_alternative<Animation>(animations); }
+
+bool SpriteLayer::is_current_texture(const int other) const { return other == id; }
+
+std::optional<Direction> SpriteLayer::get_last_action() const { return last_action; }
+
+SDL2pp::Rect SpriteLayer::get_frame_area() const { return frame; }
+
+int SpriteLayer::get_animation_frame_amount() const {
+    return std::get<Animation>(animations).get_frame_amount();
+}
+
+uint8_t SpriteLayer::get_id() const { return id; }

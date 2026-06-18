@@ -29,6 +29,13 @@ enum class CommandType : uint8_t {
     CLAN_LEAVE,
     CLAN_REVIEW,
     CHEAT_XP,
+    CHEAT_GOLD,
+    CHEAT_DEATH,
+    CHEAT_INFINITE_RECOVERABLES,
+    CHEAT_ITEM,
+    CHEAT_KILL_CREATURES,
+    MEDITATE,
+    TELEPORT
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a

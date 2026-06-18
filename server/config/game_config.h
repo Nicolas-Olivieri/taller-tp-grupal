@@ -14,6 +14,11 @@ private:
     CooldownsData cooldowns;
     TradersData traders;
     DropProbabilitiesData drop_probabilities;
+    FairPlayData fair_play_levels;
+    ClanConstantsData clan_constants_data;
+    WorldConstantsData world_constants_data;
+    CreatureBehaviorConstantsData creature_constants_data;
+    BiomesData biomes_data;
 
     GameConfig();
 
@@ -66,7 +71,24 @@ public:
 
     const DropProbabilitiesData& get_drop_probabilities() const;
 
+    const FairPlayData& get_fair_play() const;
+
+    const ClanConstantsData& get_clan_constats() const;
+
+    const BiomeData& get_biome_from_floor(uint8_t id) const;
+
+    uint8_t get_biome_id(uint8_t floor_id) const;
+    const ClanConstantsData& get_clan_constants() const;
+
+    const WorldConstantsData& get_world_constants() const;
+
+    const CreatureBehaviorConstantsData& get_creature_behavior_constants() const;
+
     uint16_t get_item_price(uint8_t item_id) const;
+
+    bool is_secret_item(uint8_t item_id) const;
+
+    bool has_biome_associated(uint8_t id) const;
 
     bool usables_contains(uint8_t id) const;
 
@@ -78,13 +100,11 @@ public:
 
     bool shields_contains(uint8_t id) const;
 
-    uint8_t get_min_usable_id() const;
+    std::vector<uint8_t> get_regular_usables_ids() const;
 
-    uint8_t get_max_usable_id() const;
+    std::vector<uint8_t> get_regular_equipables_ids() const;
 
-    uint8_t get_min_equipable_id() const;
-
-    uint8_t get_max_equipable_id() const;
+    std::vector<uint8_t> get_secret_equipables_ids() const;
 
     const std::vector<uint8_t>& get_priest_items(int id) const;
 

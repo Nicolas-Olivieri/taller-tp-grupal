@@ -39,6 +39,9 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
         case AllyAction::WITHDRAW_ITEM:
             return handle_action_not_accepted<WithdrawItemResult>(WithdrawItemStatus::ACTION_NOT_ACCEPTED);
 
+        case AllyAction::TELEPORT:
+            return handle_action_not_accepted<TeleportResult>(TeleportStatus::ACTION_NOT_ACCEPTED);
+
         default:
             break;
     }
@@ -55,7 +58,7 @@ AllyExecuteResult Priest::handle_heal(Player& player) const {
     }
 
     std::cout << "[Priest] El jugador está muerto" << std::endl;
-    return AllyExecuteResult(HealResult(HealStatus::PLAYER_IS_DEAD, type));
+    return AllyExecuteResult(HealResult(HealStatus::GHOST_FAIL, type));
 }
 
 

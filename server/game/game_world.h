@@ -14,10 +14,11 @@
 #include "common/dto/snapshot/map/server_map_data.h"
 #include "creatures/creature.h"
 #include "player/player.h"
-#include "server/command/cmd_results/ally_execute/list_outcomes.h"
-#include "server/command/cmd_results/ally_execute/resurrect_result.h"
+#include "server/command/cmd_results/ally_execute/list/outcomes/list_outcomes.h"
+#include "server/command/cmd_results/ally_execute/resurrect/resurrect_result.h"
 #include "server/command/cmd_results/clan/clan_action_result.h"
 #include "server/command/cmd_results/drop_item/drop_item_result.h"
+#include "server/command/cmd_results/meditate/meditate_result.h"
 #include "server/command/cmd_results/pickup/pickup_result.h"
 #include "server/command/cmd_results/unequip_item/unequip_item_result.h"
 #include "server/command/cmd_results/use_item/use_item_result.h"
@@ -29,7 +30,6 @@
 #include "position.h"
 #include "world_update_status.h"
 
-
 class GameWorld {
 private:
     Grid grid;
@@ -37,6 +37,7 @@ private:
     std::unordered_map<std::string, Player> players;
 
     std::unordered_map<uint16_t, Creature> creatures;
+    uint16_t current_creature_id;
 
     std::map<std::pair<uint16_t, uint16_t>, Tile*> tiles_with_loot;
 
@@ -59,7 +60,7 @@ public:
 
     WorldUpdateStatus update();
 
-    CreatureUpdateStatus move_creature(Creature& creature, const Direction& direction);
+    void move_creature(Creature& creature, const Direction& direction);
 
     void move_player(const std::string& player_name, Direction direction);
 
@@ -98,6 +99,8 @@ public:
 
     DropItemResult drop_item(const std::string& player_name, uint8_t item_id);
 
+    MeditateResult meditate(const std::string& player_name);
+
     FoundClanResult found_clan(const std::string& player_name, const std::string& clan_name);
 
     JoinClanResult join_clan(const std::string& player_name, const std::string& clan_name);
@@ -105,6 +108,18 @@ public:
     ClanActionResult execute_clan_action(const ClanActionPayload& payload);
 
     void cheat_player_xp(const std::string& player_name, const uint8_t level);
+
+    void cheat_player_gold(const std::string& player_name, const uint16_t gold_amount);
+
+    void cheat_kill_player(const std::string& player_name);
+
+    void cheat_infinite_recoverables(const std::string& player_name);
+
+    void cheat_get_item(const std::string& player_name, uint8_t item);
+
+    void cheat_kill_all_creatures();
+
+    TeleportResult teleport_player(const std::string& player_name);
 
 private:
     AllyExecuteResult execute_ally_action(const std::string& player_name, const AllyActionPayload& payload);
@@ -115,15 +130,21 @@ private:
 
     AllyExecuteResult start_delayed_resurrection(Player& player, const Ally* priest) const;
 
+    CreatureUpdate manage_creature_attack(Creature& creature);
+
     Direction next_movement(const Creature& creature);
 
     PickUpResult pick_item_up(Player& player, Tile& tile, uint8_t item);
 
     PickUpResult pick_gold_up(Player& player, Tile& tile, uint16_t gold);
 
-    void init_creature(uint16_t id);
+    void remove_lonely_creatures();
 
     void remove_dead_creatures();
+
+    void spawn_random_creature();
+
+    uint16_t get_next_creature_id();
 
     void init_npc(const std::vector<AllyInfoDTO>& npcs);
 
@@ -134,6 +155,19 @@ private:
     void drop_and_add(Player& player, Tile& tile);
 
     void load_clans();
+
+    void exchange_position(const Position& old_position, const Position& new_position, Interactive* occupant);
+
+    static std::vector<uint8_t> filter_compatible_creatures(const std::vector<uint8_t>& creatures_ids,
+                                                            uint8_t variation_id);
+
+    bool is_safe_zone(const Position& position);
+
+    void manage_player_attacked(InteractResult& result, Tile& target_tile, Player& attacker);
+
+    static void undo_attack(const AttackResult& attack, Player& target, Player& attacker);
+
+    void init_teleports(const std::vector<TeleportInfoDTO>& map_teleports);
 };
 
 

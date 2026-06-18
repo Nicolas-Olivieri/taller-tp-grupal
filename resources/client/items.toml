@@ -32,17 +32,17 @@ icon_path = "/hud_items/4.png"
 
 [items.elven_flute]
 id = 5
-name = "Flauta elfica"
+name = "Flauta élfica"
 icon_path = "/hud_items/5.png"
 
 [items.knotty_staff]
 id = 6
-name = "Baculo nudoso"
+name = "Báculo nudoso"
 icon_path = "/hud_items/6.png"
 
 [items.socketed_staff]
 id = 7
-name = "Baculo engarzado"
+name = "Báculo engarzado"
 icon_path = "/hud_items/7.png"
 
 
@@ -73,7 +73,7 @@ icon_path = "/hud_items/11.png"
 
 [items.blue_tunic]
 id = 12
-name = "Tunica azul"
+name = "Túnica azul"
 icon_path = "/hud_items/12.png"
 
 
@@ -91,7 +91,7 @@ icon_path = "/hud_items/14.png"
 
 [items.magic_hat]
 id = 15
-name = "Sombrero magico"
+name = "Sombrero mágico"
 icon_path = "/hud_items/15.png"
 
 
@@ -113,11 +113,59 @@ icon_path = "/hud_items/17.png"
 
 [items.health_potion]
 id = 18
-name = "Pocion de vida"
+name = "Poción de vida"
 icon_path = "/hud_items/18.png"
 
 
 [items.mana_potion]
 id = 19
-name = "Pocion de mana"
+name = "Poción de maná"
 icon_path = "/hud_items/19.png"
+
+
+# Secretos
+
+[items.black_sword]
+id = 20
+name = "Espada negra"
+icon_path = "/hud_items/20.png"
+
+[items.white_staff]
+id = 21
+name = "Báculo blanco"
+icon_path = "/hud_items/21.png"
+
+[items.hero_bow]
+id = 22
+name = "Arco heróico"
+icon_path = "/hud_items/22.png"
+
+[items.dark]
+id = 23
+name = "Armadura oscura"
+icon_path = "/hud_items/23.png"
+
+[items.royal]
+id = 24
+name = "Túnica real"
+icon_path = "/hud_items/24.png"
+
+[items.knight]
+id = 25
+name = "Casco de caballero"
+icon_path = "/hud_items/25.png"
+
+[items.crown]
+id = 26
+name = "Corona"
+icon_path = "/hud_items/26.png"
+
+[items.reinforced]
+id = 27
+name = "Escudo reforzado"
+icon_path = "/hud_items/27.png"
+
+[items.boquita]
+id = 28
+name = "Escudo de boca"
+icon_path = "/hud_items/28.png"
