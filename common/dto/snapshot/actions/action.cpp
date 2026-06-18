@@ -32,6 +32,12 @@ size_t ActionDTO::message_size() const {
             return base + bank.message_size();
         case ActionType::CLAN_MESSAGE:
             return base + clan_msg.message_size();
+        case ActionType::CLAN_ACCEPT:
+            return base + clan_accept.message_size();
+        case ActionType::CLAN_FOUND:
+            return base + clan_found.message_size();
+        case ActionType::CLAN_LEAVE:
+            return base + clan_leave.message_size();
         default:
             throw std::runtime_error("ActionDTO Descubrió que tiene un tipo de acción desconocido al "
                                      "calcular su message_size");
@@ -64,13 +70,11 @@ ActionDTO::ActionDTO(const ListBankDTO& bank): action(ActionType::LIST_BANK), ba
 
 ActionDTO::ActionDTO(const ClanMessageDTO& clan_msg): action(ActionType::CLAN_MESSAGE), clan_msg(clan_msg) {}
 
-ActionDTO::ActionDTO(const ClanMessageDTO& clan_msg):
-        action(ActionType::CLAN_MESSAGE),
-        despawn(""),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection("", {}),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        bank(),
-        clan_msg(clan_msg) {}
+ActionDTO::ActionDTO(const ClanAcceptDTO& clan_accept):
+        action(ActionType::CLAN_ACCEPT), clan_accept(clan_accept) {}
+
+ActionDTO::ActionDTO(const ClanFoundDTO& clan_found):
+        action(ActionType::CLAN_FOUND), clan_found(clan_found) {}
+
+ActionDTO::ActionDTO(const ClanLeaveDTO& clan_leave):
+        action(ActionType::CLAN_LEAVE), clan_leave(clan_leave) {}

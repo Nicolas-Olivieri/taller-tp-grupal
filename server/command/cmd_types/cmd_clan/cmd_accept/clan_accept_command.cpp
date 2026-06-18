@@ -1,6 +1,7 @@
 #include "clan_accept_command.h"
 
 #include <cassert>
+#include "common/dto/snapshot/actions/action_types/act_clan_accept/clan_accept.h"
 #include <format>
 
 ClanAcceptCommand::ClanAcceptCommand(const std::string& player_name, const std::string& other_player_name):
@@ -15,6 +16,7 @@ void ClanAcceptCommand::build_snapshot(SnapshotBuilder& builder) {
     std::string error_msg;
     switch (result.status) {
         case ClanActionStatus::SUCCESS:
+            builder.add_action(ActionDTO(ClanAcceptDTO(player_name, other_player_name)));
             builder.add_action(
                     ActionDTO(ChatMessageDTO(MessageType::CLAN, player_name,
                                              std::format("{} fue aceptado al clan", other_player_name))));

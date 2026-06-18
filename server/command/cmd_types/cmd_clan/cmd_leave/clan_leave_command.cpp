@@ -1,6 +1,7 @@
 #include "clan_leave_command.h"
 
 #include <cassert>
+#include "common/dto/snapshot/actions/action_types/act_clan_leave/clan_leave.h"
 
 ClanLeaveCommand::ClanLeaveCommand(const std::string& player_name): player_name(player_name) {}
 
@@ -12,6 +13,7 @@ void ClanLeaveCommand::build_snapshot(SnapshotBuilder& builder) {
     std::string error_msg;
     switch (result.status) {
         case ClanActionStatus::SUCCESS:
+            builder.add_action(ActionDTO(ClanLeaveDTO(player_name)));
             builder.add_action(
                     ActionDTO(ChatMessageDTO(MessageType::CLAN, player_name, "Has abandonado el clan")));
             return;
