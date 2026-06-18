@@ -3,6 +3,8 @@
 #include "common/protocol/serializer.h"
 
 
+ResurrectionDTO::ResurrectionDTO(): player_resurrected(""), original_appearance({}) {}
+
 ResurrectionDTO::ResurrectionDTO(const std::string& player_name, const AppearanceDTO& appearance):
         player_resurrected(player_name), original_appearance(appearance) {}
 

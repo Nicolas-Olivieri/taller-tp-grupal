@@ -3,6 +3,9 @@
 #include "common/protocol/serializer.h"
 
 
+ListItemsDTO::ListItemsDTO(): type(MessageType::SYSTEM), items({}), receiver("") {}
+
+
 ListItemsDTO::ListItemsDTO(const MessageType& type, const std::map<uint8_t, uint16_t>& items,
                            const std::string& receiver):
         type(type), items(items), receiver(receiver) {}

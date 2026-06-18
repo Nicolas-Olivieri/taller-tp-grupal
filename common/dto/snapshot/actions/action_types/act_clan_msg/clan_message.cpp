@@ -2,6 +2,8 @@
 
 #include "common/protocol/serializer.h"
 
+ClanMessageDTO::ClanMessageDTO(): receiver_clan(""), content(""), sender("") {}
+
 ClanMessageDTO::ClanMessageDTO(const std::string& receiver_clan, const std::string& content,
                                const std::string& sender):
         receiver_clan(receiver_clan), content(content), sender(sender) {}

@@ -1,5 +1,5 @@
-#ifndef CLAN_MESSAGE_H
-#define CLAN_MESSAGE_H
+#ifndef CLAN_MESSAGE_DTO_H
+#define CLAN_MESSAGE_DTO_H
 
 
 #include <string>
@@ -11,6 +11,7 @@ struct ClanMessageDTO: public ProtocolMessageDTO {
     std::string content;
     std::string sender;
 
+    ClanMessageDTO();
 
     ClanMessageDTO(const std::string& receiver_clan, const std::string& content, const std::string& sender);
 
@@ -20,4 +21,4 @@ struct ClanMessageDTO: public ProtocolMessageDTO {
 };
 
 
-#endif  // CLAN_MESSAGE_H
+#endif  // CLAN_MESSAGE_DTO_H

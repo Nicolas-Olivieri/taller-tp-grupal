@@ -1,5 +1,5 @@
-#ifndef ACTIONDTO_H
-#define ACTIONDTO_H
+#ifndef ACTION_DTO_H
+#define ACTION_DTO_H
 
 #include "action_types/act_meditation/meditation.h"
 #include "common/dto/message.h"
@@ -75,4 +75,4 @@ struct ActionDTO: public ProtocolMessageDTO {
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // ACTIONDTO_H
+#endif  // ACTION_DTO_H

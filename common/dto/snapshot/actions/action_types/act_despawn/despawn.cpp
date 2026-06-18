@@ -2,6 +2,8 @@
 
 #include "common/protocol/serializer.h"
 
+DespawnDTO::DespawnDTO(): player_despawned("") {}
+
 DespawnDTO::DespawnDTO(const std::string& player_name): player_despawned(player_name) {}
 
 size_t DespawnDTO::message_size() const { return sizeof(uint16_t) + player_despawned.size(); }

@@ -40,116 +40,29 @@ size_t ActionDTO::message_size() const {
 
 void ActionDTO::accept(Serializer& serializer) const { serializer.serialize(*this); }
 
-// TODO: Agregar constructores por defecto para evitar tener que inicializar siempre los que no se usan
-ActionDTO::ActionDTO(const HealDTO& heal):
-        action(ActionType::HEAL),
-        despawn(""),
-        heal(heal),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection("", {}),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        clan_msg("", "", "") {}
+ActionDTO::ActionDTO(const HealDTO& heal): action(ActionType::HEAL), heal(heal) {}
 
-ActionDTO::ActionDTO(const AttackDTO& attack):
-        action(ActionType::ATTACK),
-        attack(attack),
-        despawn(""),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection("", {}),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        clan_msg("", "", "") {}
+ActionDTO::ActionDTO(const AttackDTO& attack): action(ActionType::ATTACK), attack(attack) {}
 
-ActionDTO::ActionDTO(const DespawnDTO& despawn):
-        action(ActionType::DESPAWN),
-        despawn(despawn),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection("", {}),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        bank(),
-        clan_msg("", "", "") {}
+ActionDTO::ActionDTO(const DespawnDTO& despawn): action(ActionType::DESPAWN), despawn(despawn) {}
 
-ActionDTO::ActionDTO(const ChatMessageDTO& message):
-        action(ActionType::MESSAGE),
-        despawn(""),
-        chat_message(message),
-        resurrection("", {}),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        bank(),
-        clan_msg("", "", "") {}
+ActionDTO::ActionDTO(const ChatMessageDTO& message): action(ActionType::MESSAGE), chat_message(message) {}
 
 ActionDTO::ActionDTO(const MeditationDTO& meditation):
-        action(ActionType::MEDITATION),
-        despawn(""),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        meditation(meditation),
-        resurrection("", {}),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        clan_msg("", "", "") {}
+        action(ActionType::MEDITATION), meditation(meditation) {}
 
 ActionDTO::ActionDTO(const ResurrectionDTO& resurrection):
-        action(ActionType::RESURRECTION),
-        despawn(""),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection(resurrection),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        bank(),
-        clan_msg("", "", "") {}
+        action(ActionType::RESURRECTION), resurrection(resurrection) {}
 
-ActionDTO::ActionDTO(const DeathDTO& death):
-        action(ActionType::DEATH),
-        despawn(""),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection("", {}),
-        death(death),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        bank(),
-        clan_msg("", "", "") {}
+ActionDTO::ActionDTO(const DeathDTO& death): action(ActionType::DEATH), death(death) {}
 
-ActionDTO::ActionDTO(const ChatListDTO& list):
-        action(ActionType::MESSAGE_LIST),
-        despawn(""),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection("", {}),
-        death(""),
-        list(list),
-        items(),
-        bank(),
-        clan_msg("", "", "") {}
+ActionDTO::ActionDTO(const ChatListDTO& list): action(ActionType::MESSAGE_LIST), list(list) {}
 
-ActionDTO::ActionDTO(const ListItemsDTO& items):
-        action(ActionType::LIST_ITEMS),
-        despawn(""),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection("", {}),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(items),
-        bank(),
-        clan_msg("", "", "") {}
+ActionDTO::ActionDTO(const ListItemsDTO& items): action(ActionType::LIST_ITEMS), items(items) {}
 
-ActionDTO::ActionDTO(const ListBankDTO& bank):
-        action(ActionType::LIST_BANK),
-        despawn(""),
-        chat_message(MessageType::SYSTEM, "", "", ""),
-        resurrection("", {}),
-        death(""),
-        list(MessageType::SYSTEM, {}, ""),
-        items(),
-        bank(bank),
-        clan_msg("", "", "") {}
+ActionDTO::ActionDTO(const ListBankDTO& bank): action(ActionType::LIST_BANK), bank(bank) {}
+
+ActionDTO::ActionDTO(const ClanMessageDTO& clan_msg): action(ActionType::CLAN_MESSAGE), clan_msg(clan_msg) {}
 
 ActionDTO::ActionDTO(const ClanMessageDTO& clan_msg):
         action(ActionType::CLAN_MESSAGE),

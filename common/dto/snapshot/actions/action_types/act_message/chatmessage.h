@@ -1,5 +1,5 @@
-#ifndef CHATMESSAGE_H
-#define CHATMESSAGE_H
+#ifndef CHAT_MESSAGE_DTO_H
+#define CHAT_MESSAGE_DTO_H
 
 #include <string>
 
@@ -13,6 +13,8 @@ struct ChatMessageDTO: public ProtocolMessageDTO {
     std::string receiver;
     std::string content;
 
+    ChatMessageDTO();
+
     ChatMessageDTO(const MessageType& type, const std::string& sender, const std::string& receiver,
                    const std::string& content);
 
@@ -23,4 +25,4 @@ struct ChatMessageDTO: public ProtocolMessageDTO {
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // CHATMESSAGE_H
+#endif  // CHAT_MESSAGE_DTO_H

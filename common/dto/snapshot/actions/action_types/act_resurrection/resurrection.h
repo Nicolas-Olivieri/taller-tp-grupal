@@ -1,6 +1,5 @@
-#ifndef RESURRECTION_H
-#define RESURRECTION_H
-
+#ifndef RESURRECTION_DTO_H
+#define RESURRECTION_DTO_H
 
 #include <string>
 
@@ -8,9 +7,10 @@
 #include "common/dto/snapshot/info/appearance.h"
 
 struct ResurrectionDTO: public ProtocolMessageDTO {
-
     std::string player_resurrected;
     AppearanceDTO original_appearance;
+
+    ResurrectionDTO();
 
     explicit ResurrectionDTO(const std::string& player_name, const AppearanceDTO& appearance);
 
@@ -20,4 +20,4 @@ struct ResurrectionDTO: public ProtocolMessageDTO {
 };
 
 
-#endif  // RESURRECTION_H
+#endif  // RESURRECTION_DTO_H
