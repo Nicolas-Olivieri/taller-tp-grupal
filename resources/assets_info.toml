@@ -718,7 +718,7 @@ id = 0
 name = "Arbol 1"
 width = 4
 height = 8
-unwalkable = [0, 1, 2, 1]
+unwalkable = [1, 7, 2, 1]
 
 [[colliders]]
 id = 1
@@ -781,7 +781,7 @@ id = 9
 name = "Arbol 10"
 width = 7
 height = 7
-unwalkable = [1, 6, 2, 1]
+unwalkable = [2, 6, 2, 1]
 
 [[colliders]]
 id = 10
@@ -865,7 +865,7 @@ id = 21
 name = "Hongo 1"
 width = 9
 height = 8
-unwalkable = [1, 5, 4, 2]
+unwalkable = [1, 6, 4, 2]
 
 [[colliders]]
 id = 22
