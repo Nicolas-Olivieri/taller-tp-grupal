@@ -28,7 +28,6 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data)
         is_resurrecting(false),
         resurrection_timer(0),
         target_resurrection_position(0, 0),
-        _is_founder(persisted_data.is_founder),
         has_infinite_recoverables_cheat_activated(false),
         last_experience_amount_earned(0) {
     stats.health.set_current(persisted_data.current_hp);
@@ -54,8 +53,6 @@ Player::Player(const std::string& player_name, const PlayerData& persisted_data,
         is_resurrecting(false),
         resurrection_timer(0),
         target_resurrection_position(0, 0),
-        _is_founder(false),
-        clan_name(""),
         has_infinite_recoverables_cheat_activated(false),
         last_experience_amount_earned(0) {}
 
@@ -173,12 +170,9 @@ InteractResult Player::attack_interaction(Player& attacker) {
     if (std::abs(own_level - attacker_level) > fair_play_data.fair_play_gap)
         return InteractResult(AttackStatus::FAIR_PLAY);
 
-    // TODO Falta considerar
-    //  - zona segura?
-
     InteractResult result = Killable::interact(attacker);
     result.attack.player_attacked = player_name;
-    result.attack.attacked_clan_name = clan_name;
+    result.attack.attacked_clan_name = get_clan_name();
 
     if (has_infinite_recoverables_cheat_activated) {
         stats.health.recover(result.attack.damage_dealt);

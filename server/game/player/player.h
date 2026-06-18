@@ -42,9 +42,6 @@ private:
     int resurrection_timer;
     Position target_resurrection_position;
 
-    bool _is_founder;
-    std::string clan_name;
-
     bool has_infinite_recoverables_cheat_activated;
     uint32_t last_experience_amount_earned;
 
