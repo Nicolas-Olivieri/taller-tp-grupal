@@ -7,6 +7,8 @@
 #include <netinet/in.h>
 
 #include "common/dto/snapshot/map/teleport_info.h"
+#include "server/config/game_config.h"
+#include "server/game/tile.h"
 
 #define MAGIC_NUMBER 0xFAF4
 
@@ -82,16 +84,18 @@ ClientMapDataDTO ServerMapLoader::get_client_data() {
     auto width = parse_int<uint16_t>();
     auto height = parse_int<uint16_t>();
 
-    // Salteo la parte que corresponde al servidor
-    map.ignore(server_end - server_start);
+    std::vector<AssetInfoDTO> safe_zones = get_safe_zones(width, height);
+
+    // Calculo cuántos bytes se leyeron de la grilla (2 bytes por tile) y salteo los sobrantes
+    const size_t bytes_read = width * height * 2;
+    map.ignore((server_end - server_start) - bytes_read);
 
     std::vector<AssetInfoDTO> tiles = get_assets();
     std::vector<AssetInfoDTO> colliders = get_assets();
     std::vector<AssetInfoDTO> npcs = get_assets();
-
     map.close();
 
-    return {width, height, tiles, colliders, npcs};
+    return {width, height, tiles, safe_zones, colliders, npcs};
 }
 
 
@@ -107,6 +111,25 @@ std::vector<AssetInfoDTO> ServerMapLoader::get_assets() {
     }
 
     return assets;
+}
+
+// TODO: No me termina de convencer tener que para el cliente se tenga que consultar esta información
+//  desde los datos del servidor... Tal vez el editor podría guardar los datos de zonas seguras (?)
+std::vector<AssetInfoDTO> ServerMapLoader::get_safe_zones(const uint16_t width, const uint16_t height) {
+    std::vector<AssetInfoDTO> safe_zones;
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            parse_int<uint8_t>();
+            const uint8_t floor = parse_int<uint8_t>();
+
+            GameConfig& config = GameConfig::get();
+            // TODO: Cambiar el uso de la macro por GameConfig::is_safe_zone_floor
+            if (config.has_biome_associated(floor) && config.get_biome_id(floor) == SAFE_ZONE_FLOOR)
+                safe_zones.emplace_back(SAFE_ZONE_FLOOR, x, y);
+        }
+    }
+
+    return safe_zones;
 }
 
 template <typename intType>

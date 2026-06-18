@@ -243,7 +243,8 @@ SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, co
         case SpriteCategory::ATTACK_VFX:
         case SpriteCategory::ACTION_VFX:
         case SpriteCategory::UI:
-        case SpriteCategory::HUD: {
+        case SpriteCategory::HUD:
+        case SpriteCategory::SAFE_ZONE: {
             const Animation action = animation_pool.get_item_animation(category, id);
             return SpriteLayer(renderer, texture, id, offset, action);
         }

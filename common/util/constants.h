@@ -23,7 +23,8 @@ enum class SpriteCategory : uint8_t {
     ACTION_VFX,
 
     UI,
-    HUD
+    HUD,
+    SAFE_ZONE,
 };
 
 #endif  // CONSTANTS_H
