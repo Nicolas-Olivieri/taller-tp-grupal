@@ -46,8 +46,7 @@ Position Grid::spawn() const {
     do {
         x = get_random_width(generator);
         y = get_random_height(generator);
-    } while (!is_tile_available(x, y) || !config.has_biome_associated(tiles_[y][x].floor) ||
-             config.get_biome_id(tiles_[y][x].floor) != SAFE_ZONE_FLOOR);
+    } while (!is_tile_available(x, y) || !config.is_safe_zone_floor(tiles_[y][x].floor));
 
     return Position(x, y);
 }

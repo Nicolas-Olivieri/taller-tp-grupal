@@ -78,8 +78,6 @@ public:
 
     const BiomeData& get_biome_from_floor(uint8_t id) const;
 
-    uint8_t get_biome_id(uint8_t floor_id) const;
-
     const ClanConstantsData& get_clan_constants() const;
 
     const WorldConstantsData& get_world_constants() const;
@@ -117,6 +115,10 @@ public:
     const std::vector<uint8_t>& get_merchant_items(int id) const;
 
     int get_merchant_max_id() const;
+
+    bool is_safe_zone_floor(uint8_t floor_id);
+
+    bool is_dungeon_floor(uint8_t floor_id);
 };
 
 

@@ -461,6 +461,8 @@ struct toml::from<CreatureBehaviorConstantsData> {
 };
 
 struct BiomesData {
+    uint8_t safe_zone_id;
+    uint8_t dungeon_id;
     std::unordered_map<uint8_t, uint8_t> floor_to_biome;
     std::unordered_map<uint8_t, BiomeData> biomes;
 };
@@ -476,6 +478,12 @@ struct toml::from<BiomesData> {
 
         for (const auto& [category, value]: biomes_table.at("biomes").as_table()) {
             uint8_t id = toml::find<uint8_t>(value, "id");
+            if (category == "safe_zone") {
+                data.safe_zone_id = id;
+            } else if (category == "dungeon") {
+                data.dungeon_id = id;
+            }
+
             auto biome = toml::get<BiomeData>(value);
 
             data.biomes[id] = biome;

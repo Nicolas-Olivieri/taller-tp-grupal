@@ -215,7 +215,7 @@ void GameWorld::remove_dead_creatures() {
             tile.occupy(nullptr);
 
             GameConfig& config = GameConfig::get();
-            if (config.has_biome_associated(tile.floor) && config.get_biome_id(tile.floor) == DUNGEON_FLOOR) {
+            if (config.is_dungeon_floor(tile.floor)) {
                 tile.add_loot(creature.secret_drop());
             } else {
                 tile.add_loot(creature.drop());
@@ -231,7 +231,8 @@ void GameWorld::remove_dead_creatures() {
 }
 
 void GameWorld::spawn_random_creature() {
-    // TODO: cambiar este método para considerar biomas
+    GameConfig& config = GameConfig::get();
+
     std::vector<Position> players_positions;
     players_positions.reserve(players.size());
 
@@ -239,7 +240,7 @@ void GameWorld::spawn_random_creature() {
         // TODO: capaz no hace falta filtrar que estén vivos
         if (player.is_alive()) {
             Position position = player.get_position();
-            if (grid.get_tile(position).floor != SAFE_ZONE_FLOOR)
+            if (!config.is_safe_zone_floor(grid.get_tile(position).floor))
                 players_positions.push_back(std::move(position));
         }
     }
@@ -247,7 +248,6 @@ void GameWorld::spawn_random_creature() {
     try {
         Position spawn_position = grid.spawn_near(players_positions);
         Tile& tile = grid.get_tile(spawn_position);
-        GameConfig& config = GameConfig::get();
 
         if (!config.has_biome_associated(tile.floor))
             return;
@@ -883,8 +883,5 @@ bool GameWorld::is_safe_zone(const Position& position) {
     GameConfig& config = GameConfig::get();
     uint8_t floor = grid.get_tile(position).floor;
 
-    if (!config.has_biome_associated(floor))
-        return false;
-
-    return config.get_biome_id(floor) == SAFE_ZONE_FLOOR;
+    return config.is_safe_zone_floor(floor);
 }

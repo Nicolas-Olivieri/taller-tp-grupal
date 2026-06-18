@@ -122,7 +122,8 @@ const CreatureBehaviorConstantsData& GameConfig::get_creature_behavior_constants
 const ClanConstantsData& GameConfig::get_clan_constats() const { return clan_constants_data; }
 
 const BiomeData& GameConfig::get_biome_from_floor(uint8_t id) const {
-    uint8_t biome_id = get_biome_id(id);
+    assert(biomes_data.floor_to_biome.contains(id));
+    uint8_t biome_id = biomes_data.floor_to_biome.at(id);
 
     assert(biomes_data.biomes.contains(biome_id));
     return biomes_data.biomes.at(biome_id);
@@ -130,9 +131,12 @@ const BiomeData& GameConfig::get_biome_from_floor(uint8_t id) const {
 
 bool GameConfig::has_biome_associated(uint8_t id) const { return biomes_data.floor_to_biome.contains(id); }
 
-uint8_t GameConfig::get_biome_id(uint8_t floor_id) const {
-    assert(biomes_data.floor_to_biome.contains(floor_id));
-    return biomes_data.floor_to_biome.at(floor_id);
+const GridConstantsData& GameConfig::get_grid_constants() const { return grid_constants_data; }
+
+bool GameConfig::is_safe_zone_floor(uint8_t floor_id) {
+    return has_biome_associated(floor_id) && floor_id == biomes_data.safe_zone_id;
 }
 
-const GridConstantsData& GameConfig::get_grid_constants() const { return grid_constants_data; }
+bool GameConfig::is_dungeon_floor(uint8_t floor_id) {
+    return has_biome_associated(floor_id) && floor_id == biomes_data.dungeon_id;
+}
