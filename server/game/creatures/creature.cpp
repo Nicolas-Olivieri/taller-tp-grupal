@@ -92,6 +92,7 @@ std::vector<Loot> Creature::secret_drop() {
         case DropType::NOTHING:
         case DropType::GOLD:
         case DropType::USABLE:
+            break;
         case DropType::EQUIPABLE: {
             uint8_t item = Calculator::random_choice(config.get_secret_equipables_ids());
             if (item != NO_ITEM)

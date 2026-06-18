@@ -19,6 +19,7 @@ private:
     WorldConstantsData world_constants_data;
     CreatureBehaviorConstantsData creature_constants_data;
     BiomesData biomes_data;
+    GridConstantsData grid_constants_data;
 
     GameConfig();
 
@@ -78,11 +79,14 @@ public:
     const BiomeData& get_biome_from_floor(uint8_t id) const;
 
     uint8_t get_biome_id(uint8_t floor_id) const;
+
     const ClanConstantsData& get_clan_constants() const;
 
     const WorldConstantsData& get_world_constants() const;
 
     const CreatureBehaviorConstantsData& get_creature_behavior_constants() const;
+
+    const GridConstantsData& get_grid_constants() const;
 
     uint16_t get_item_price(uint8_t item_id) const;
 

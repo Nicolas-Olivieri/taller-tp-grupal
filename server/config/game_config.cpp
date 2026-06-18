@@ -18,6 +18,7 @@ GameConfig::GameConfig() {
     world_constants_data = retrieve_config_data<WorldConstantsData>(paths_data, "world", "world");
     creature_constants_data = retrieve_config_data<CreatureBehaviorConstantsData>(
             paths_data, "creature_behavior", "creature_behavior");
+    grid_constants_data = retrieve_config_data<GridConstantsData>(paths_data, "world", "grid");
 }
 
 GameConfig& GameConfig::get() {
@@ -133,3 +134,5 @@ uint8_t GameConfig::get_biome_id(uint8_t floor_id) const {
     assert(biomes_data.floor_to_biome.contains(floor_id));
     return biomes_data.floor_to_biome.at(floor_id);
 }
+
+const GridConstantsData& GameConfig::get_grid_constants() const { return grid_constants_data; }

@@ -486,4 +486,21 @@ struct toml::from<BiomesData> {
     }
 };
 
+struct GridConstantsData {
+    uint8_t roam_idle_weight;
+    uint8_t min_near_factor;
+    uint8_t max_near_factor;
+};
+
+template <>
+struct toml::from<GridConstantsData> {
+    static GridConstantsData from_toml(const toml::value& raw) {
+        return GridConstantsData{
+                toml::find<uint8_t>(raw, "roam_idle_weight"),
+                toml::find<uint8_t>(raw, "min_near_factor"),
+                toml::find<uint8_t>(raw, "max_near_factor"),
+        };
+    }
+};
+
 #endif  // GAME_DATA_H
