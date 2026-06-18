@@ -2,6 +2,7 @@
 
 #include <format>
 
+#include "common/dto/snapshot/actions/action_types/act_clan_found/clan_found.h"
 #include "server/game/clan/clan.h"
 
 ClanFoundCommand::ClanFoundCommand(const std::string& player_name, const std::string& clan_name):
@@ -13,6 +14,7 @@ void ClanFoundCommand::build_snapshot(SnapshotBuilder& builder) {
     std::string error_msg;
     switch (result) {
         case FoundClanResult::SUCCESS:
+            builder.add_action(ActionDTO(ClanFoundDTO(player_name)));
             builder.add_action(ActionDTO(ChatMessageDTO(
                     MessageType::CLAN, player_name, std::format("Has fundado el clan: \"{}\"", clan_name))));
             return;

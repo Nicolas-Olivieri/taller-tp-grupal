@@ -141,6 +141,15 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::CLAN_MESSAGE:
             serialize(action.clan_msg);
             break;
+        case ActionType::CLAN_ACCEPT:
+            serialize(action.clan_accept);
+            break;
+        case ActionType::CLAN_FOUND:
+            serialize(action.clan_found);
+            break;
+        case ActionType::CLAN_LEAVE:
+            serialize(action.clan_leave);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -358,3 +367,12 @@ void Serializer::serialize(const ClanMessageDTO& clan_msg) {
     serialize(clan_msg.content);
     serialize(clan_msg.sender);
 }
+
+void Serializer::serialize(const ClanAcceptDTO& clan_accept) {
+    serialize(clan_accept.founder);
+    serialize(clan_accept.accepted);
+}
+
+void Serializer::serialize(const ClanFoundDTO& clan_found) { serialize(clan_found.founder); }
+
+void Serializer::serialize(const ClanLeaveDTO& clan_leave) { serialize(clan_leave.leaver); }

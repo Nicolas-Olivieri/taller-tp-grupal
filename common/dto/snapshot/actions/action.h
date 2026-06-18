@@ -1,6 +1,9 @@
-#ifndef ACTIONDTO_H
-#define ACTIONDTO_H
+#ifndef ACTION_DTO_H
+#define ACTION_DTO_H
 
+#include "action_types/act_clan_accept/clan_accept.h"
+#include "action_types/act_clan_found/clan_found.h"
+#include "action_types/act_clan_leave/clan_leave.h"
 #include "action_types/act_meditation/meditation.h"
 #include "common/dto/message.h"
 #include "common/dto/snapshot/actions/action_types/act_attack/attack.h"
@@ -25,7 +28,10 @@ enum class ActionType : uint8_t {
     MESSAGE_LIST,
     LIST_ITEMS,
     LIST_BANK,
-    CLAN_MESSAGE
+    CLAN_MESSAGE,
+    CLAN_ACCEPT,
+    CLAN_FOUND,
+    CLAN_LEAVE,
 };
 
 struct ActionDTO: public ProtocolMessageDTO {
@@ -42,6 +48,9 @@ struct ActionDTO: public ProtocolMessageDTO {
     ListItemsDTO items;
     ListBankDTO bank;
     ClanMessageDTO clan_msg;
+    ClanFoundDTO clan_found;
+    ClanAcceptDTO clan_accept;
+    ClanLeaveDTO clan_leave;
 
     // TODO: REVISAR CONSTRUCTOR DEPENDIENDO DE COMO SE MANEJEN LAS ACTION EN EL FUTURO.
     // pueden llegar a no necesitar el ActionType dependiendo del contenido.
@@ -69,10 +78,16 @@ struct ActionDTO: public ProtocolMessageDTO {
 
     explicit ActionDTO(const ClanMessageDTO& clan_msg);
 
+    explicit ActionDTO(const ClanAcceptDTO& clan_accept);
+
+    explicit ActionDTO(const ClanFoundDTO& clan_found);
+
+    explicit ActionDTO(const ClanLeaveDTO& clan_leave);
+
     // Modificarlo al agregar nuevas actions
     size_t message_size() const override;
 
     void accept(Serializer& serializer) const override;
 };
 
-#endif  // ACTIONDTO_H
+#endif  // ACTION_DTO_H

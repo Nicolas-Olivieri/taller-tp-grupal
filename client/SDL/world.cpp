@@ -268,6 +268,31 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 
                 break;
 
+            case ActionType::CLAN_ACCEPT:
+                if (players.contains(action.clan_accept.founder)) {
+                    const Sprite* sprite = players.at(action.clan_accept.founder).get();
+                    play_event(SoundEvent::CLAN_ACCEPT, sprite->get_position());
+                }
+                if (players.contains(action.clan_accept.accepted)) {
+                    const Sprite* sprite = players.at(action.clan_accept.accepted).get();
+                    play_event(SoundEvent::CLAN_ACCEPT, sprite->get_position());
+                }
+                break;
+
+
+            case ActionType::CLAN_FOUND:
+                if (players.contains(action.clan_found.founder)) {
+                    const Sprite* sprite = players.at(action.clan_found.founder).get();
+                    play_event(SoundEvent::CLAN_FOUND, sprite->get_position());
+                }
+                break;
+
+            case ActionType::CLAN_LEAVE:
+                if (players.contains(action.clan_leave.leaver)) {
+                    const Sprite* sprite = players.at(action.clan_leave.leaver).get();
+                    play_event(SoundEvent::CLAN_LEAVE, sprite->get_position());
+                }
+                break;
 
             default:
                 break;

@@ -1,5 +1,5 @@
-#ifndef DESPAWNDTO_H
-#define DESPAWNDTO_H
+#ifndef DESPAWN_DTO_H
+#define DESPAWN_DTO_H
 
 #include <string>
 
@@ -7,6 +7,8 @@
 
 struct DespawnDTO: public ProtocolMessageDTO {
     std::string player_despawned;
+
+    DespawnDTO();
 
     explicit DespawnDTO(const std::string& player_name);
 
@@ -16,4 +18,4 @@ struct DespawnDTO: public ProtocolMessageDTO {
 };
 
 
-#endif  // DESPAWNDTO_H
+#endif  // DESPAWN_DTO_H

@@ -1,5 +1,5 @@
-#ifndef DEATH_H
-#define DEATH_H
+#ifndef DEATH_DTO_H
+#define DEATH_DTO_H
 
 #include <string>
 
@@ -9,6 +9,8 @@
 struct DeathDTO: public ProtocolMessageDTO {
     std::string player_dead;
 
+    DeathDTO();
+
     explicit DeathDTO(const std::string& player_name);
 
     size_t message_size() const override;
@@ -17,4 +19,4 @@ struct DeathDTO: public ProtocolMessageDTO {
 };
 
 
-#endif  // DEATH_H
+#endif  // DEATH_DTO_H

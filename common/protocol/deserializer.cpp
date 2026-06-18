@@ -226,6 +226,12 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_list_bank());
         case ActionType::CLAN_MESSAGE:
             return ActionDTO(recv_clan_message());
+        case ActionType::CLAN_ACCEPT:
+            return ActionDTO(recv_clan_accept());
+        case ActionType::CLAN_FOUND:
+            return ActionDTO(recv_clan_found());
+        case ActionType::CLAN_LEAVE:
+            return ActionDTO(recv_clan_leave());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -248,6 +254,9 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::LIST_ITEMS:
         case ActionType::LIST_BANK:
         case ActionType::CLAN_MESSAGE:
+        case ActionType::CLAN_ACCEPT:
+        case ActionType::CLAN_FOUND:
+        case ActionType::CLAN_LEAVE:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -493,6 +502,25 @@ ClanMessageDTO Deserializer::recv_clan_message() {
     const std::string sender = recv_string();
 
     return ClanMessageDTO(receiver_clan, content, sender);
+}
+
+ClanAcceptDTO Deserializer::recv_clan_accept() {
+    const std::string founder = recv_string();
+    const std::string accepted = recv_string();
+
+    return ClanAcceptDTO(founder, accepted);
+}
+
+ClanFoundDTO Deserializer::recv_clan_found() {
+    const std::string founder = recv_string();
+
+    return ClanFoundDTO(founder);
+}
+
+ClanLeaveDTO Deserializer::recv_clan_leave() {
+    const std::string leaver = recv_string();
+
+    return ClanLeaveDTO(leaver);
 }
 
 LootType Deserializer::recv_loot_type() {

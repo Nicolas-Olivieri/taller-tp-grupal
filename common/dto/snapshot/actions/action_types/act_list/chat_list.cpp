@@ -4,6 +4,8 @@
 
 #include "common/protocol/serializer.h"
 
+ChatListDTO::ChatListDTO(): type(MessageType::SYSTEM), lines({}), receiver("") {}
+
 ChatListDTO::ChatListDTO(const MessageType& type, const std::vector<std::string>& lines,
                          const std::string& receiver):
         type(type), lines(lines), receiver(receiver) {}

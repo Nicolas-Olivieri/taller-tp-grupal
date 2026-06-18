@@ -159,6 +159,12 @@ public:
 
     void serialize(const ClanMessageDTO& clan_msg);
 
+    void serialize(const ClanAcceptDTO& clan_accept);
+
+    void serialize(const ClanFoundDTO& clan_found);
+
+    void serialize(const ClanLeaveDTO& clan_leave);
+
     void serialize(const BuyEventDTO& event);
 
     void serialize(const SellEventDTO& event);

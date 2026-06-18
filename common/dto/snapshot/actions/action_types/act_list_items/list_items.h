@@ -12,7 +12,7 @@ struct ListItemsDTO: public ProtocolMessageDTO {
     std::map<uint8_t, uint16_t> items;
     std::string receiver;
 
-    ListItemsDTO() = default;
+    ListItemsDTO();
 
     ListItemsDTO(const MessageType& type, const std::map<uint8_t, uint16_t>& items,
                  const std::string& receiver);
