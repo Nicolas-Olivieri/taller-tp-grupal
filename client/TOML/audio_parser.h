@@ -40,6 +40,9 @@ enum class SoundEvent {
     MISSILE_SPELL,
     EXPLOSION_SPELL,
     BOW_ATTACK,
+    CLAN_ACCEPT,
+    CLAN_FOUND,
+    CLAN_LEAVE,
 };
 
 struct SFXConfig {
@@ -98,6 +101,9 @@ struct toml::from<SFXConfig> {
                 {"missile_spell", SoundEvent::MISSILE_SPELL},
                 {"explosion_spell", SoundEvent::EXPLOSION_SPELL},
                 {"bow_attack", SoundEvent::BOW_ATTACK},
+                {"clan_accept", SoundEvent::CLAN_ACCEPT},
+                {"clan_found", SoundEvent::CLAN_FOUND},
+                {"clan_leave", SoundEvent::CLAN_LEAVE},
                 // TODO: Agregar más sonidos...
         });
 
