@@ -1,6 +1,7 @@
 #include "clan_leave_command.h"
 
 #include <cassert>
+
 #include "common/dto/snapshot/actions/action_types/act_clan_leave/clan_leave.h"
 
 ClanLeaveCommand::ClanLeaveCommand(const std::string& player_name): player_name(player_name) {}

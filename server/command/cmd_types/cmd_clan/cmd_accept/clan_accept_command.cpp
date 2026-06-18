@@ -1,8 +1,9 @@
 #include "clan_accept_command.h"
 
 #include <cassert>
-#include "common/dto/snapshot/actions/action_types/act_clan_accept/clan_accept.h"
 #include <format>
+
+#include "common/dto/snapshot/actions/action_types/act_clan_accept/clan_accept.h"
 
 ClanAcceptCommand::ClanAcceptCommand(const std::string& player_name, const std::string& other_player_name):
         player_name(player_name), other_player_name(other_player_name) {}
