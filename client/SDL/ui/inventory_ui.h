@@ -26,8 +26,8 @@ private:
     std::optional<InterfaceSprite> founder_crown;
     std::optional<int> bounded_slot;
 
-    SDL_Color white = {255, 255, 255, 255};
-    SDL_Color yellow = {235, 224, 70, 255};
+    SDL_Color white;
+    //    SDL_Color yellow;
 
     TextSprite player_name;
     TextSprite clan_name;

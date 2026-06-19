@@ -75,12 +75,12 @@ struct UserInterfaceData {
 };
 
 struct ColorData {
-    SDL2pp::Color yellow = {235, 224, 70, 255};
-    SDL2pp::Color grey = {255, 255, 255, 140};
-    SDL2pp::Color white = {255, 255, 255, 255};
-    SDL2pp::Color green = {44, 230, 66, 140};
-    SDL2pp::Color red = {214, 30, 30, 255};
-    SDL2pp::Color light_blue = {44, 172, 230, 140};
+    SDL2pp::Color yellow;
+    SDL2pp::Color grey;
+    SDL2pp::Color white;
+    SDL2pp::Color green;
+    SDL2pp::Color red;
+    SDL2pp::Color light_blue;
 };
 
 struct SoundData {

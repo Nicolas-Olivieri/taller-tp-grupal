@@ -12,6 +12,8 @@ InventoryUI::InventoryUI(SpriteCreator& sprite_creator, const std::string& usern
         ui_config(ClientConfig::get().get_ui_data()),
         ui(creator.create_sprite(UiElement::INVENTORY, ui_config.inventory)),
         founder_crown(std::nullopt),
+        white(ClientConfig::get().get_color_data().white),
+        //        yellow(ClientConfig::get().get_color_data().yellow),
         player_name(creator.create_sprite(ui_config.username, username, FontType::UI_USERNAME, white)),
         clan_name(creator.create_sprite(ui_config.clan, "", FontType::UI_CLAN, white)),
         inventory_label(creator.create_sprite(ui_config.inventory_title, "Inventario",

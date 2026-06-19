@@ -125,8 +125,8 @@ ProgressBarSprite SpriteCreator::create_sprite(UiElement bar_type, const SDL2pp:
     SDL2pp::Point size = base.frame.GetSize();
     SDL2pp::Rect texture_rect(dest_rect.GetTopLeft(), size);
 
-    SDL_Color white = {255, 255, 255, 255};
-    TextSprite label = create_sprite(dest_rect, "", FontType::UI_MENU, white);
+    TextSprite label =
+            create_sprite(dest_rect, "", FontType::UI_MENU, ClientConfig::get().get_color_data().white);
 
     ProgressBarSprite ui(std::move(base), (std::move(label)), dest_rect.GetTopLeft(), size, dest_rect,
                          current, max);
@@ -140,9 +140,9 @@ HudSprite SpriteCreator::create_sprite(const uint8_t id, const SDL2pp::Rect& des
     auto ptr = std::make_unique<SpriteLayer>(base);
 
     if (has_amount) {
-        SDL_Color white = {255, 255, 255, 255};
         SDL2pp::Rect amount_rect(texture_rect.GetTopLeft() + SDL2pp::Point(4, 0), texture_rect.GetSize());
-        TextSprite amount_label = create_sprite(amount_rect, "", FontType::UI_ITEM_AMOUNT, white);
+        TextSprite amount_label = create_sprite(amount_rect, "", FontType::UI_ITEM_AMOUNT,
+                                                ClientConfig::get().get_color_data().white);
 
         HudSprite item(renderer, std::move(ptr), std::move(amount_label), texture_rect.GetTopLeft(), size,
                        dest_rect);
@@ -189,12 +189,11 @@ void SpriteCreator::convert_to_ghost(PlayerSprite& player) {
     const AppearanceDTO ghost_appearance = {config.get_ghost_body_id(), config.get_ghost_head_id()};
     update_appearance(player, ghost_appearance);
 
-    // 0 equivale a no tener item equipado
-    if (player.layer_is_different(Layer::HELMET, 0))
+    if (player.layer_is_different(Layer::HELMET, NO_ITEM))
         player.remove_layer(Layer::HELMET);
-    if (player.layer_is_different(Layer::SHIELD, 0))
+    if (player.layer_is_different(Layer::SHIELD, NO_ITEM))
         player.remove_layer(Layer::SHIELD);
-    if (player.layer_is_different(Layer::WEAPON, 0))
+    if (player.layer_is_different(Layer::WEAPON, NO_ITEM))
         player.remove_layer(Layer::WEAPON);
 }
 

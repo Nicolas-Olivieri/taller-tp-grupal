@@ -5,3 +5,6 @@ white = [255, 255, 255, 255]
 green = [44, 230, 66, 140]
 red = [214, 30, 30, 255]
 light_blue = [44, 172, 230, 140]
+
+#  en chat, inventory y sprite creator
+# creo que hay un color mas en hud sprit, no se si es medio custom, es el amarillito del borde

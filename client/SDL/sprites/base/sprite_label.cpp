@@ -89,7 +89,9 @@ void SpriteLabel::render(const SDL2pp::Point render_position, const SDL2pp::Poin
 
 
 void SpriteLabel::refresh_name_level_texture() {
+    const SDL_Color white = ClientConfig::get().get_color_data().white;
     const std::string text = name + " - " + std::to_string(xp_level);
+
     name_level_texture = std::make_unique<SDL2pp::Texture>(
             renderer, font_manager.get_font(FontType::LABEL_NAME_LEVEL).RenderUTF8_Solid(text, white));
 }
@@ -100,6 +102,9 @@ void SpriteLabel::refresh_clan_texture() {
         clan_texture.reset();
         return;
     }
+    const ColorData& config = ClientConfig::get().get_color_data();
+    const SDL_Color yellow = config.yellow;
+    const SDL_Color white = config.white;
 
     const std::string text = "<" + clan + ">";
     const auto color = is_founder ? yellow : white;

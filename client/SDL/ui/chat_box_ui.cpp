@@ -14,8 +14,10 @@ ChatBoxUI::ChatBoxUI(SpriteCreator& sprite_creator, const std::string& username)
         chat_config(ClientConfig::get().get_chat_data()),
         ui(creator.create_sprite(UiElement::CHAT, ui_config.chat_box)),
         player_name(username),
+        white(ClientConfig::get().get_color_data().white),
         input_msg(creator.create_sprite(ui_config.input_box, "", FontType::UI_CHAT, white)) {
     init_texts();
+    init_color_msg();
 }
 
 void ChatBoxUI::init_texts() {
@@ -29,6 +31,18 @@ void ChatBoxUI::init_texts() {
         TextSprite msg_sprite = creator.create_sprite(box, "", FontType::UI_CHAT, white);
         visible_texts.push_back(std::move(msg_sprite));
     }
+}
+
+void ChatBoxUI::init_color_msg() {
+    assert(msg_type_to_color.empty());
+    const ColorData& config = ClientConfig::get().get_color_data();
+
+    msg_type_to_color.insert({{MessageType::SYSTEM, config.yellow},
+                              {MessageType::PRIVATE, config.grey},
+                              {MessageType::GLOBAL, config.white},
+                              {MessageType::CLAN, config.green},
+                              {MessageType::ERROR, config.red},
+                              {MessageType::ALLY, config.light_blue}});
 }
 
 void ChatBoxUI::render(const std::string& input, bool is_chat_active) {
@@ -185,10 +199,8 @@ void ChatBoxUI::handle_clan_message(const ActionDTO& action) {
 }
 
 
-SDL2pp::Color ChatBoxUI::assign_message_color(const MessageType& type) {
-    static std::unordered_map<MessageType, SDL_Color> msg_type_to_color = {
-            {MessageType::SYSTEM, yellow}, {MessageType::PRIVATE, grey}, {MessageType::GLOBAL, white},
-            {MessageType::CLAN, green},    {MessageType::ERROR, red},    {MessageType::ALLY, light_blue}};
+SDL2pp::Color ChatBoxUI::assign_message_color(const MessageType& type) const {
+    assert(msg_type_to_color.contains(type));
 
     return msg_type_to_color.at(type);
 }

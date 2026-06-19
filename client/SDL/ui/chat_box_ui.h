@@ -3,6 +3,7 @@
 
 #include <deque>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "client/SDL/sprite_creation/sprite_creator.h"
@@ -27,18 +28,15 @@ private:
     std::deque<MsgData> chat_history;
     std::vector<TextSprite> visible_texts;
 
-    SDL2pp::Color white = {255, 255, 255, 255};
+    SDL2pp::Color white;
     size_t first_visible_message = 0;
 
     TextSprite input_msg;
 
-    SDL2pp::Color yellow = {235, 224, 70, 255};
-    SDL2pp::Color grey = {255, 255, 255, 140};
-    SDL2pp::Color green = {44, 230, 66, 140};
-    SDL2pp::Color red = {214, 30, 30, 255};
-    SDL2pp::Color light_blue = {44, 172, 230, 140};
+    std::unordered_map<MessageType, SDL_Color> msg_type_to_color;
 
     void init_texts();
+    void init_color_msg();
 
     void render_chat_history();
     void render_chat_input(const std::string& input, bool is_chat_active);
@@ -52,7 +50,7 @@ private:
     void handle_list_items(const ActionDTO& action);
     void handle_clan_message(const ActionDTO& action);
 
-    SDL2pp::Color assign_message_color(const MessageType& type);
+    SDL2pp::Color assign_message_color(const MessageType& type) const;
     size_t get_visible_lines() const;
 
 public:
