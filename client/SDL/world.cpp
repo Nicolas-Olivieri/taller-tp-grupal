@@ -170,7 +170,7 @@ void World::update_loot(const std::vector<LootInfoDTO>& loot_information) {
         const std::pair<uint16_t, uint16_t> place = {loot_info.x, loot_info.y};
         if (!loot.contains(place)) {
             add_new_loot(loot_info, place);
-        } else if (loot.at(place).second != loot_info.is_item) {
+        } else if (loot.at(place).second != loot_info.type) {
             update_top_loot(loot_info, place);
         }
     }
@@ -268,6 +268,31 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 
                 break;
 
+            case ActionType::CLAN_ACCEPT:
+                if (players.contains(action.clan_accept.founder)) {
+                    const Sprite* sprite = players.at(action.clan_accept.founder).get();
+                    play_event(SoundEvent::CLAN_ACCEPT, sprite->get_position());
+                }
+                if (players.contains(action.clan_accept.accepted)) {
+                    const Sprite* sprite = players.at(action.clan_accept.accepted).get();
+                    play_event(SoundEvent::CLAN_ACCEPT, sprite->get_position());
+                }
+                break;
+
+
+            case ActionType::CLAN_FOUND:
+                if (players.contains(action.clan_found.founder)) {
+                    const Sprite* sprite = players.at(action.clan_found.founder).get();
+                    play_event(SoundEvent::CLAN_FOUND, sprite->get_position());
+                }
+                break;
+
+            case ActionType::CLAN_LEAVE:
+                if (players.contains(action.clan_leave.leaver)) {
+                    const Sprite* sprite = players.at(action.clan_leave.leaver).get();
+                    play_event(SoundEvent::CLAN_LEAVE, sprite->get_position());
+                }
+                break;
 
             default:
                 break;
@@ -312,12 +337,12 @@ void World::add_new_creature(const CreatureInfoDTO& info) {
 void World::add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
     FixedSprite drop = sprite_creator.create_sprite(info);
     auto ptr = std::make_shared<FixedSprite>(std::move(drop));
-    loot[place] = {ptr, info.is_item};
+    loot[place] = {ptr, info.type};
     map_loot.emplace(ptr);
 }
 
 void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
-    auto& [sprite, is_item] = loot[place];
+    auto& [sprite, type] = loot[place];
     map_loot.extract(sprite);
     add_new_loot(info, place);
 }

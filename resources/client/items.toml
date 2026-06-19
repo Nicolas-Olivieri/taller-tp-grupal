@@ -121,3 +121,51 @@ icon_path = "/hud_items/18.png"
 id = 19
 name = "Poción de maná"
 icon_path = "/hud_items/19.png"
+
+
+# Secretos
+
+[items.black_sword]
+id = 20
+name = "Espada negra"
+icon_path = "/hud_items/20.png"
+
+[items.white_staff]
+id = 21
+name = "Báculo blanco"
+icon_path = "/hud_items/21.png"
+
+[items.hero_bow]
+id = 22
+name = "Arco heróico"
+icon_path = "/hud_items/22.png"
+
+[items.dark]
+id = 23
+name = "Armadura oscura"
+icon_path = "/hud_items/23.png"
+
+[items.royal]
+id = 24
+name = "Túnica real"
+icon_path = "/hud_items/24.png"
+
+[items.knight]
+id = 25
+name = "Casco de caballero"
+icon_path = "/hud_items/25.png"
+
+[items.crown]
+id = 26
+name = "Corona"
+icon_path = "/hud_items/26.png"
+
+[items.reinforced]
+id = 27
+name = "Escudo reforzado"
+icon_path = "/hud_items/27.png"
+
+[items.boquita]
+id = 28
+name = "Escudo de boca"
+icon_path = "/hud_items/28.png"

@@ -9,6 +9,7 @@
 #include "list/list_items/list_items_result.h"
 #include "resurrect/resurrect_result.h"
 #include "sell/sell_result.h"
+#include "server/command/cmd_results/ally_execute/teleport/teleport_result.h"
 #include "withdraw_gold/withdraw_gold_result.h"
 #include "withdraw_item/withdraw_item_result.h"
 
@@ -27,6 +28,7 @@ struct AllyExecuteResult {
     SellResult sell;
     WithdrawGoldResult withdraw_gold;
     WithdrawItemResult withdraw_item;
+    TeleportResult teleport;
 
     // Se sobrecarga en función al aliado invocado
     explicit AllyExecuteResult(const bool was_bounded);
@@ -50,6 +52,8 @@ struct AllyExecuteResult {
     explicit AllyExecuteResult(const DepositGoldResult& result);
 
     explicit AllyExecuteResult(const WithdrawGoldResult& result);
+
+    explicit AllyExecuteResult(const TeleportResult& result);
 };
 
 

@@ -17,16 +17,6 @@ void WithdrawItemCommand::build_snapshot(SnapshotBuilder& builder) {
         return;
     }
 
-    static std::map<AllyType, std::string> ally_type_to_string({
-            {AllyType::PRIEST, "Sacerdote"},
-            {AllyType::MERCHANT, "Comerciante"},
-            {AllyType::BANKER, "Banquero"},
-    });
-
-    if (not ally_type_to_string.contains(result.ally)) {
-        throw std::runtime_error("WithdrawItemCommand recibió un NPC aliado desconocido");
-    }
-
     static std::map<WithdrawItemStatus, std::string> result_to_message({
             {WithdrawItemStatus::ITEM_WITHDRAWN, "Tu ítem ha sido retirado del banco, gracias por confiar"},
             {WithdrawItemStatus::ITEM_NOT_IN_BANK,
@@ -41,7 +31,7 @@ void WithdrawItemCommand::build_snapshot(SnapshotBuilder& builder) {
         throw std::runtime_error("WithdrawItemCommand recibió un resultado incorrecto");
     }
 
-    const std::string& sender = ally_type_to_string.at(result.ally);
+    const std::string& sender = Ally::ally_type_to_string(result.ally, "WithdrawItemCommand");
     const std::string& content = result_to_message.at(result.status);
     builder.add_action(ActionDTO(ChatMessageDTO(MessageType::ALLY, sender, player_name, content)));
 }

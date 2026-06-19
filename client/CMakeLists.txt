@@ -42,12 +42,14 @@ target_sources(taller_client
         connection/client_sender.cpp
         connection/connection_handler.cpp
 
-        SDL/key_mapper.cpp
         SDL/user_interface.cpp
         SDL/ui/inventory_ui.cpp
         SDL/ui/chat_box_ui.cpp
 
         config/client_config.cpp
+
+        util/key_mapper.cpp
+        util/command_handler.cpp
 
     PUBLIC
         # .h files
@@ -102,7 +104,6 @@ target_sources(taller_client
         connection/client_sender.h
         connection/connection_handler.h
 
-        SDL/key_mapper.h
 
         SDL/user_interface.h
         SDL/ui/inventory_ui.h
@@ -110,4 +111,7 @@ target_sources(taller_client
 
         config/client_config.h
         config/client_data.h
+
+        util/key_mapper.h
+        util/command_handler.h
     )

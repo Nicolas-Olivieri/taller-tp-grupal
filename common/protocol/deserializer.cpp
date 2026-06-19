@@ -74,7 +74,9 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHEAT_DEATH:
         case CommandType::CHEAT_INFINITE_RECOVERABLES:
         case CommandType::CHEAT_ITEM:
+        case CommandType::CHEAT_KILL_CREATURES:
         case CommandType::MEDITATE:
+        case CommandType::TELEPORT:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -177,11 +179,11 @@ CreatureStatsDTO Deserializer::recv_creature_stats() {
 }
 
 LootInfoDTO Deserializer::recv_loot_info() {
-    bool is_item = recv_uint8();
+    LootType type = recv_loot_type();
     uint16_t x = recv_uint16();
     uint16_t y = recv_uint16();
 
-    return LootInfoDTO(is_item, x, y);
+    return LootInfoDTO(type, x, y);
 }
 
 std::vector<ActionDTO> Deserializer::recv_actions() {
@@ -224,6 +226,12 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_list_bank());
         case ActionType::CLAN_MESSAGE:
             return ActionDTO(recv_clan_message());
+        case ActionType::CLAN_ACCEPT:
+            return ActionDTO(recv_clan_accept());
+        case ActionType::CLAN_FOUND:
+            return ActionDTO(recv_clan_found());
+        case ActionType::CLAN_LEAVE:
+            return ActionDTO(recv_clan_leave());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -246,6 +254,9 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::LIST_ITEMS:
         case ActionType::LIST_BANK:
         case ActionType::CLAN_MESSAGE:
+        case ActionType::CLAN_ACCEPT:
+        case ActionType::CLAN_FOUND:
+        case ActionType::CLAN_LEAVE:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -309,6 +320,7 @@ AllyType Deserializer::recv_ally_type() {
         case AllyType::PRIEST:
         case AllyType::MERCHANT:
         case AllyType::BANKER:
+        case AllyType::TOTEM:
             return static_cast<AllyType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de aliado no reconocido");
@@ -483,10 +495,43 @@ AssetInfoDTO Deserializer::recv_asset_info() {
 
     return AssetInfoDTO(id, x, y);
 }
+
 ClanMessageDTO Deserializer::recv_clan_message() {
     const std::string receiver_clan = recv_string();
     const std::string content = recv_string();
     const std::string sender = recv_string();
 
     return ClanMessageDTO(receiver_clan, content, sender);
+}
+
+ClanAcceptDTO Deserializer::recv_clan_accept() {
+    const std::string founder = recv_string();
+    const std::string accepted = recv_string();
+
+    return ClanAcceptDTO(founder, accepted);
+}
+
+ClanFoundDTO Deserializer::recv_clan_found() {
+    const std::string founder = recv_string();
+
+    return ClanFoundDTO(founder);
+}
+
+ClanLeaveDTO Deserializer::recv_clan_leave() {
+    const std::string leaver = recv_string();
+
+    return ClanLeaveDTO(leaver);
+}
+
+LootType Deserializer::recv_loot_type() {
+    uint8_t byte = recv_uint8();
+
+    switch (static_cast<LootType>(byte)) {
+        case LootType::GOLD:
+        case LootType::ITEM:
+        case LootType::SECRET_ITEM:
+            return static_cast<LootType>(byte);
+        default:  // Undefined Behavior -> Excepción
+            throw std::invalid_argument("Byte de looot no reconocido");
+    }
 }

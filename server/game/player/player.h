@@ -42,10 +42,8 @@ private:
     int resurrection_timer;
     Position target_resurrection_position;
 
-    bool _is_founder;
-    std::string clan_name;
-
     bool has_infinite_recoverables_cheat_activated;
+    uint32_t last_experience_amount_earned;
 
 public:
     Player(const std::string& player_name, const PlayerData& persisted_data);
@@ -87,6 +85,8 @@ public:
 
     void earn_xp(uint32_t amount);
 
+    void undo_xp_gain();
+
     void update() override;
 
     ~Player() override = default;
@@ -98,6 +98,10 @@ public:
     void unbind_ally();
 
     void heal();
+
+    void health_recover(uint16_t amount);
+
+    void mana_recover(uint16_t amount);
 
     void spend_gold(uint16_t amount);
 
@@ -144,8 +148,6 @@ public:
     bool is_clan_founder() const;
 
     void set_xp_level(const uint8_t new_level);
-
-    void die();
 
     void toggle_infinite_recoverables();
 

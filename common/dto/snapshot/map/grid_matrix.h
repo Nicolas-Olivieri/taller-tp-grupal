@@ -2,18 +2,12 @@
 #define GRID_MATRIX_H
 #include <vector>
 
-#include "common/dto/message.h"
-
 #include "tile_info.h"
 
-struct GridMatrixDTO: public ProtocolMessageDTO {
+struct GridMatrixDTO {
     std::vector<std::vector<TileInfoDTO>> tiles_info;
 
     explicit GridMatrixDTO(const std::vector<std::vector<TileInfoDTO>>& walkable_tiles);
-
-    size_t message_size() const override;
-
-    void accept(Serializer& serializer) const override;
 };
 
 

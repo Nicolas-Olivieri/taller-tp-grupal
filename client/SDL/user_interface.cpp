@@ -11,36 +11,7 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         chat_ui(sprite_creator, player_name),
         game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen)),
         player_name(player_name),
-        clan_name("") {
-    // const auto& ui_config = ClientConfig::get().get_ui_data();
-
-    // history_messages = ui_config.history_messages;
-    // input_box = ui_config.input_box;
-    //
-    // username_rect = ui_config.username;
-    // clan_rect = ui_config.clan;
-    // founder_rect = ui_config.founder;
-    //
-    // inventory_rect = ui_config.inventory_title;
-    // inventory_slots = ui_config.inventory_slots;
-    //
-    // equipment_slots = ui_config.equipment_slots;
-    //
-    // stats_rect = ui_config.stats_title;
-    //
-    // health_rect = ui_config.health;
-    // mana_rect = ui_config.mana;
-    // xp_rect = ui_config.xp;
-    //
-    // safe_gold_rect = ui_config.safe_gold;
-    // excess_gold_rect = ui_config.excess_gold;
-    // xp_level_rect = ui_config.xp_level;
-    //
-    // weapon_rect = ui_config.weapon;
-    // shield_rect = ui_config.shield;
-    // helmet_rect = ui_config.helmet;
-    // armor_rect = ui_config.armor;
-}
+        clan_name("") {}
 
 void UserInterface::render(const std::string& input, bool is_chat_active) {
     game_border_ui.render();
@@ -49,7 +20,16 @@ void UserInterface::render(const std::string& input, bool is_chat_active) {
 }
 
 void UserInterface::update_player_state(const std::vector<PlayerInfoDTO>& players_information) {
-    inventory_ui.update_player_state(players_information);
+    const auto player = std::ranges::find_if(players_information, [this](const PlayerInfoDTO& player_info) {
+        return player_info.name == player_name;
+    });
+
+    if (player == players_information.end()) {
+        return;
+    }
+
+    inventory_ui.update_player_state(*player);
+    chat_ui.update_player_state(*player);
 }
 
 void UserInterface::update_chat(const std::vector<ActionDTO>& actions) { chat_ui.update_chat(actions); }

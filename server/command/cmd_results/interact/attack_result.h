@@ -13,7 +13,9 @@ enum class AttackStatus {
     IS_CLANMATE,
     ATTACKER_IS_NEWBIE,
     ATTACKED_PLAYER_IS_NEWBIE,
-    FAIR_PLAY
+    FAIR_PLAY,
+    TARGET_IN_SAFE_ZONE,
+    SELF_IN_SAFE_ZONE
 };
 
 // TODO va a tener que incluir el clan name para notificar a los compis

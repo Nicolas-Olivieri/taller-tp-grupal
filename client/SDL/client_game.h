@@ -10,6 +10,7 @@
 
 #include "audio/audio_manager.h"
 #include "client/connection/connection_handler.h"
+#include "client/util/command_handler.h"
 
 #include "camera.h"
 #include "user_interface.h"
@@ -37,6 +38,8 @@ private:
     bool is_chat_active;
     std::string chat_text;
 
+    CommandHandler cmd_handler;
+
     // TODO: acá meter las cosas del chat
 
     // Principales
@@ -62,60 +65,9 @@ private:
 
     void handle_mouse_wheel(const SDL_Event& event);
 
-    void handle_meditate() const;
-
-    void handle_text_command(const std::string& text);
-
-    void handle_buy_item_command(const std::string& text);
-
-    void handle_sell_item_command(const std::string& text);
-
-    void handle_deposit_gold_command(const std::string& text);
-
-    void handle_deposit_item_command(const std::string& text);
-
-    void handle_withdraw_gold_command(const std::string& text);
-
-    void handle_withdraw_item_command(const std::string& text);
-
-    void handle_pick_up_command();
-
-    void handle_drop_item_command();
-
-    void handle_clan_foundation(const std::string& text);
-
-    void handle_clan_join(const std::string& text);
-
-    std::string extract_prefix(const std::string& prefix, const std::string& text) const;
-
-    void trim_text(std::string& text);
-
-    void handle_clan_operation(const std::string& text);
-
-    void handle_clan_accept(const std::string& text);
-
-    void handle_clan_reject(const std::string& text);
-
-    void handle_clan_kick(const std::string& text);
-
-    void handle_clan_ban(const std::string& text);
-
-    void send_private_message();
 
     // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes
     static SDL_HitTestResult hit_test_callback(SDL_Window*, const SDL_Point* area, void* data);
-
-    void handle_cheat(const std::string& text);
-
-    void handle_xp_cheat(const std::string& text);
-
-    void handle_gold_cheat(const std::string& text);
-
-    void handle_kill_self_cheat();
-
-    void handle_infinite_recoverables_cheat();
-
-    void handle_get_item_cheat(const std::string& text);
 
 public:
     ClientGame(ConnectionHandler& connection, std::string& player_name, const std::string& resolution,

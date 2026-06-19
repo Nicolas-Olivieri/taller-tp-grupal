@@ -76,7 +76,15 @@ private:
 
     ClanMessageDTO recv_clan_message();
 
+    ClanAcceptDTO recv_clan_accept();
+
+    ClanFoundDTO recv_clan_found();
+
+    ClanLeaveDTO recv_clan_leave();
+
     AssetInfoDTO recv_asset_info();
+
+    LootType recv_loot_type();
 
 public:
     explicit Deserializer(Socket& socket);  // NOLINT

@@ -1,13 +1,14 @@
 #ifndef ALLY_H
 #define ALLY_H
 
+#include <string>
+
 #include "common/npc_type.h"
 #include "server/command/cmd_results/ally_execute/ally_execute_result.h"
 #include "server/game/interactive.h"
 #include "server/game/position.h"
 
 #include "ally_action_payload.h"
-
 
 // Forward declaration
 class Player;
@@ -35,6 +36,8 @@ public:
     virtual AllyExecuteResult execute(Player& player, const AllyActionPayload& payload) const = 0;
 
     ~Ally() override = default;
+
+    static std::string ally_type_to_string(const AllyType& type, const std::string& caller);
 };
 
 

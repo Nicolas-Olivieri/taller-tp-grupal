@@ -1,5 +1,5 @@
-#ifndef CHAT_LIST_H
-#define CHAT_LIST_H
+#ifndef CHAT_LIST_DTO_H
+#define CHAT_LIST_DTO_H
 
 #include <string>
 #include <vector>
@@ -13,6 +13,8 @@ struct ChatListDTO: public ProtocolMessageDTO {
     std::vector<std::string> lines;
     std::string receiver;
 
+    ChatListDTO();
+
     ChatListDTO(const MessageType& type, const std::vector<std::string>& lines, const std::string& receiver);
 
     size_t message_size() const override;
@@ -21,4 +23,4 @@ struct ChatListDTO: public ProtocolMessageDTO {
 };
 
 
-#endif  // CHAT_LIST_H
+#endif  // CHAT_LIST_DTO_H
