@@ -380,4 +380,7 @@ void Serializer::serialize(const ClanFoundDTO& clan_found) { serialize(clan_foun
 
 void Serializer::serialize(const ClanLeaveDTO& clan_leave) { serialize(clan_leave.leaver); }
 
-void Serializer::serialize(const InventoryListDTO& inventory_list) { serialize(inventory_list.inventory); }
+void Serializer::serialize(const InventoryListDTO& inventory_list) {
+    serialize(inventory_list.player_name);
+    serialize(inventory_list.inventory);
+}

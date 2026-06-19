@@ -20,5 +20,5 @@ void ShowInventoryCommand::execute(GameWorld& world) {
 }
 
 void ShowInventoryCommand::build_snapshot(SnapshotBuilder& builder) {
-    builder.add_action(ActionDTO(InventoryListDTO(inventory)));
+    builder.add_action(ActionDTO(InventoryListDTO(player_name, inventory)));
 }

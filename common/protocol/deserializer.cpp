@@ -89,8 +89,6 @@ Direction Deserializer::recv_direction() {
     uint8_t byte = recv_uint8();
 
     switch (static_cast<Direction>(byte)) {
-        // TODO: agregar un case para todos los tipos de comandos existentes,
-        // luego borrar este comentario
         case Direction::DOWN:
         case Direction::UP:
         case Direction::LEFT:
@@ -540,4 +538,8 @@ LootType Deserializer::recv_loot_type() {
     }
 }
 
-InventoryListDTO Deserializer::recv_inventory_list() { return InventoryListDTO(recv_inventory_info()); }
+InventoryListDTO Deserializer::recv_inventory_list() {
+    const std::string player_name = recv_string();
+    const InventoryInfoDTO inventory = recv_inventory_info();
+    return InventoryListDTO(player_name, inventory);
+}

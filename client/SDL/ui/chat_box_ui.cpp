@@ -250,9 +250,13 @@ void ChatBoxUI::update_player_state(const PlayerInfoDTO& player) {
 
     clan_name = player.clan.name;
 }
+
 void ChatBoxUI::handle_inventory_list(const ActionDTO& action) {
     assert(action.action == ActionType::INVENTORY_LIST);
     const InventoryListDTO& inventory_list = action.inventory_list;
+    if (inventory_list.player_name != player_name)
+        return;
+
     const auto& items = inventory_list.inventory.items;
 
     const SDL_Color color = msg_type_to_color.at(MessageType::SYSTEM);
