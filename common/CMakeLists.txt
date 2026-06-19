@@ -48,6 +48,7 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_clan_found/clan_found.cpp
         dto/snapshot/actions/action_types/act_clan_leave/clan_leave.cpp
         dto/snapshot/actions/action_types/act_clan_msg/clan_message.cpp
+        dto/snapshot/actions/action_types/act_inventory_list/inventory_list.cpp
 
         dto/snapshot/info/appearance.cpp
         dto/snapshot/info/clan_info.cpp
@@ -138,6 +139,7 @@ target_sources(taller_common
         dto/snapshot/actions/action_types/act_clan_found/clan_found.h
         dto/snapshot/actions/action_types/act_clan_leave/clan_leave.h
         dto/snapshot/actions/action_types/act_clan_msg/clan_message.h
+        dto/snapshot/actions/action_types/act_inventory_list/inventory_list.h
 
         dto/snapshot/info/appearance.h
         dto/snapshot/info/clan_info.h

@@ -165,6 +165,8 @@ public:
 
     void serialize(const ClanLeaveDTO& clan_leave);
 
+    void serialize(const InventoryListDTO& inventory_list);
+
     void serialize(const BuyEventDTO& event);
 
     void serialize(const SellEventDTO& event);

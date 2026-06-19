@@ -38,6 +38,8 @@ size_t ActionDTO::message_size() const {
             return base + clan_found.message_size();
         case ActionType::CLAN_LEAVE:
             return base + clan_leave.message_size();
+        case ActionType::INVENTORY_LIST:
+            return base + inventory_list.message_size();
         default:
             throw std::runtime_error("ActionDTO Descubrió que tiene un tipo de acción desconocido al "
                                      "calcular su message_size");
@@ -78,3 +80,6 @@ ActionDTO::ActionDTO(const ClanFoundDTO& clan_found):
 
 ActionDTO::ActionDTO(const ClanLeaveDTO& clan_leave):
         action(ActionType::CLAN_LEAVE), clan_leave(clan_leave) {}
+
+ActionDTO::ActionDTO(const InventoryListDTO& inventory_list):
+        action(ActionType::INVENTORY_LIST), inventory_list(inventory_list) {}

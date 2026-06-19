@@ -77,6 +77,7 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHEAT_KILL_CREATURES:
         case CommandType::MEDITATE:
         case CommandType::TELEPORT:
+        case CommandType::INVENTORY_INFO:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
@@ -232,6 +233,8 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_clan_found());
         case ActionType::CLAN_LEAVE:
             return ActionDTO(recv_clan_leave());
+        case ActionType::INVENTORY_LIST:
+            return ActionDTO(recv_inventory_list());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -257,6 +260,7 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::CLAN_ACCEPT:
         case ActionType::CLAN_FOUND:
         case ActionType::CLAN_LEAVE:
+        case ActionType::INVENTORY_LIST:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
@@ -535,3 +539,5 @@ LootType Deserializer::recv_loot_type() {
             throw std::invalid_argument("Byte de looot no reconocido");
     }
 }
+
+InventoryListDTO Deserializer::recv_inventory_list() { return InventoryListDTO(recv_inventory_info()); }

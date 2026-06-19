@@ -11,6 +11,7 @@
 #include "common/dto/snapshot/actions/action_types/act_death/death.h"
 #include "common/dto/snapshot/actions/action_types/act_despawn/despawn.h"
 #include "common/dto/snapshot/actions/action_types/act_heal/heal.h"
+#include "common/dto/snapshot/actions/action_types/act_inventory_list/inventory_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list/chat_list.h"
 #include "common/dto/snapshot/actions/action_types/act_list_bank/list_bank.h"
 #include "common/dto/snapshot/actions/action_types/act_list_items/list_items.h"
@@ -32,6 +33,7 @@ enum class ActionType : uint8_t {
     CLAN_ACCEPT,
     CLAN_FOUND,
     CLAN_LEAVE,
+    INVENTORY_LIST,
 };
 
 struct ActionDTO: public ProtocolMessageDTO {
@@ -51,6 +53,7 @@ struct ActionDTO: public ProtocolMessageDTO {
     ClanFoundDTO clan_found;
     ClanAcceptDTO clan_accept;
     ClanLeaveDTO clan_leave;
+    InventoryListDTO inventory_list;
 
     // TODO: REVISAR CONSTRUCTOR DEPENDIENDO DE COMO SE MANEJEN LAS ACTION EN EL FUTURO.
     // pueden llegar a no necesitar el ActionType dependiendo del contenido.
@@ -83,6 +86,8 @@ struct ActionDTO: public ProtocolMessageDTO {
     explicit ActionDTO(const ClanFoundDTO& clan_found);
 
     explicit ActionDTO(const ClanLeaveDTO& clan_leave);
+
+    explicit ActionDTO(const InventoryListDTO& inventory_list);
 
     // Modificarlo al agregar nuevas actions
     size_t message_size() const override;
