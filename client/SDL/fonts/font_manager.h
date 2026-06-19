@@ -1,6 +1,7 @@
 #ifndef FONT_MANAGER_H
 #define FONT_MANAGER_H
 
+#include <string>
 #include <unordered_map>
 
 #include <SDL2pp/Font.hh>
@@ -15,12 +16,12 @@ private:
     std::unordered_map<FontType, SDL2pp::Font> fonts;
 
 public:
-    FontManager();
+    explicit FontManager(const std::string& resolution);
 
     SDL2pp::Font& get_font(const FontType& type);
 
 private:
-    void load_font_config();
+    void load_font_config(const std::string& resolution);
 };
 
 

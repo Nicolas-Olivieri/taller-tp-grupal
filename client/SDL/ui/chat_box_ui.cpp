@@ -10,11 +10,11 @@
 
 ChatBoxUI::ChatBoxUI(SpriteCreator& sprite_creator, const std::string& username):
         creator(sprite_creator),
-        config(ClientConfig::get().get_ui_data()),
+        ui_config(ClientConfig::get().get_ui_data()),
         chat_config(ClientConfig::get().get_chat_data()),
-        ui(creator.create_sprite(UiElement::CHAT, config.chat_box.GetTopLeft())),
+        ui(creator.create_sprite(UiElement::CHAT, ui_config.chat_box)),
         player_name(username),
-        input_msg(creator.create_sprite(config.input_box, "", FontType::UI_CHAT, white)) {
+        input_msg(creator.create_sprite(ui_config.input_box, "", FontType::UI_CHAT, white)) {
     init_texts();
 }
 
@@ -22,8 +22,8 @@ void ChatBoxUI::init_texts() {
     const size_t start = first_visible_message;
     const size_t end = start + get_visible_lines();
     for (size_t i = start; i < end; ++i) {
-        const SDL2pp::Rect history_messages = config.history_messages;
-        const int current_y = history_messages.y + ((i - start) * chat_config.line_spacing);
+        const SDL2pp::Rect history_messages = ui_config.history_messages;
+        const int current_y = history_messages.y + ((i - start) * ui_config.chat_line_spacing);
         const SDL2pp::Rect box(history_messages.x, current_y, history_messages.w, history_messages.h);
 
         TextSprite msg_sprite = creator.create_sprite(box, "", FontType::UI_CHAT, white);
@@ -222,7 +222,10 @@ void ChatBoxUI::chat_scroll_to_bottom() {
 
 bool ChatBoxUI::is_over_chat(const int x, const int y) {
     SDL2pp::Point click_position(x, y);
-    return config.history_messages.Contains(click_position) || config.input_box.Contains(click_position);
+    return ui_config.history_messages.Contains(click_position) ||
+           ui_config.input_box.Contains(click_position);
 }
 
-size_t ChatBoxUI::get_visible_lines() const { return config.history_messages.h / chat_config.line_spacing; }
+size_t ChatBoxUI::get_visible_lines() const {
+    return ui_config.history_messages.h / ui_config.chat_line_spacing;
+}

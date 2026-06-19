@@ -16,7 +16,7 @@ struct MsgData {
 class ChatBoxUI {
 private:
     SpriteCreator& creator;
-    const UserInterfaceData& config;
+    const UserInterfaceData& ui_config;
     const ChatData& chat_config;
 
     InterfaceSprite ui;

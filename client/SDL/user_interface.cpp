@@ -9,37 +9,37 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         font_manager(font_manager),
         inventory_ui(sprite_creator, player_name),
         chat_ui(sprite_creator, player_name),
-        game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen.GetTopLeft())),
+        game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen)),
         player_name(player_name),
         clan_name("") {
-    // const auto& config = ClientConfig::get().get_ui_data();
+    // const auto& ui_config = ClientConfig::get().get_ui_data();
 
-    // history_messages = config.history_messages;
-    // input_box = config.input_box;
+    // history_messages = ui_config.history_messages;
+    // input_box = ui_config.input_box;
     //
-    // username_rect = config.username;
-    // clan_rect = config.clan;
-    // founder_rect = config.founder;
+    // username_rect = ui_config.username;
+    // clan_rect = ui_config.clan;
+    // founder_rect = ui_config.founder;
     //
-    // inventory_rect = config.inventory_title;
-    // inventory_slots = config.inventory_slots;
+    // inventory_rect = ui_config.inventory_title;
+    // inventory_slots = ui_config.inventory_slots;
     //
-    // equipment_slots = config.equipment_slots;
+    // equipment_slots = ui_config.equipment_slots;
     //
-    // stats_rect = config.stats_title;
+    // stats_rect = ui_config.stats_title;
     //
-    // health_rect = config.health;
-    // mana_rect = config.mana;
-    // xp_rect = config.xp;
+    // health_rect = ui_config.health;
+    // mana_rect = ui_config.mana;
+    // xp_rect = ui_config.xp;
     //
-    // safe_gold_rect = config.safe_gold;
-    // excess_gold_rect = config.excess_gold;
-    // xp_level_rect = config.xp_level;
+    // safe_gold_rect = ui_config.safe_gold;
+    // excess_gold_rect = ui_config.excess_gold;
+    // xp_level_rect = ui_config.xp_level;
     //
-    // weapon_rect = config.weapon;
-    // shield_rect = config.shield;
-    // helmet_rect = config.helmet;
-    // armor_rect = config.armor;
+    // weapon_rect = ui_config.weapon;
+    // shield_rect = ui_config.shield;
+    // helmet_rect = ui_config.helmet;
+    // armor_rect = ui_config.armor;
 }
 
 void UserInterface::render(const std::string& input, bool is_chat_active) {
@@ -63,7 +63,7 @@ void UserInterface::chat_scroll_down() { chat_ui.chat_scroll_down(); }
 bool UserInterface::is_over_chat(const int x, const int y) { return chat_ui.is_over_chat(x, y); }
 
 int UserInterface::get_inventory_slot_at(const int x, const int y) const {
-    return inventory_ui.get_slot_at(inventory_ui.inventory_slots, x, y);
+    return inventory_ui.get_slot_at(config.inventory_slots, x, y);
 }
 
 std::optional<uint8_t> UserInterface::get_item_in_inventory_slot(const int slot_index) const {
@@ -77,7 +77,7 @@ std::optional<uint8_t> UserInterface::get_bound_item_id() const { return invento
 void UserInterface::clear_bound_item() { inventory_ui.clear_bound_item(); }
 
 int UserInterface::get_equipment_slot_at(const int x, const int y) const {
-    return inventory_ui.get_slot_at(inventory_ui.equipment_slots, x, y);
+    return inventory_ui.get_slot_at(config.equipment_slots, x, y);
 }
 
 std::optional<uint8_t> UserInterface::get_item_in_equipment_slot(const int slot_index) const {

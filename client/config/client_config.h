@@ -30,6 +30,8 @@ public:
 
     ClientConfig& operator=(const ClientConfig&) = delete;
 
+    const UserInterfaceData& load_resolution_data(const std::string& resolution);
+
     const CreatureDisplayData& get_creature_data(uint8_t creature) const;
 
     std::string get_creature_name(uint8_t creature) const;

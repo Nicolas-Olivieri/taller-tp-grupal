@@ -6,10 +6,11 @@
 
 class InterfaceSprite: public Sprite {
 private:
+    SDL2pp::Rect dest;
     SpriteLayer image;
 
 public:
-    InterfaceSprite(SpriteLayer&& image, SDL2pp::Point position, SDL2pp::Point size);
+    InterfaceSprite(SpriteLayer&& image, SDL2pp::Point position, SDL2pp::Point size, SDL2pp::Rect dest);
 
     void render();
 };

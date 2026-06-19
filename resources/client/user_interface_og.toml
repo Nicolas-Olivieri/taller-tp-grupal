@@ -1,14 +1,26 @@
 # Todos los vecotres son SDL2pp::Rect, en formato
 # [x, y, w, h] o vectores que contienen SDL2pp::Rect
 
+[ui.resolution]
+window_width = 1024
+window_height = 726
+
 [ui.layout]
+viewport = [10, 219, 736, 498]
 chat_box = [0, 0, 756, 219]
 inventory = [756, 0, 268, 726]
 screen = [0, 219, 756, 507]
+minimize_button = [948, 5, 20, 20]
+maximize_button = [973, 5, 20, 20]
+close_button = [998, 5, 20, 20]
+header_bar = [112, 0, 836, 30]
+
 
 [ui.chat]
 history_messages = [20, 35, 710, 147]
 input_box = [45, 190, 690, 25]
+chat_icon = [10, 190, 736, 30]
+chat_line_spacing = 21
 
 [ui.player]
 username = [770, 55, 240, 35]

@@ -17,6 +17,7 @@
 
 class ClientGame {
 private:
+    const UserInterfaceData& config;
     SDL2pp::SDL sdl;
     SDL2pp::Window window;
     SDL2pp::Renderer renderer;
@@ -25,20 +26,16 @@ private:
     std::string player_name;
     World world;
     int key_being_pressed;
-    const SDL2pp::Rect game_viewport = {10, 219, 736, 498};
     Camera camera;
 
     UserInterface ui;
 
     bool keep_running;
     bool just_restored;
-    const SDL2pp::Rect minimize_button = {977, 5, 20, 20};
-    const SDL2pp::Rect close_button = {998, 5, 20, 20};
-    const SDL2pp::Rect header_bar = {112, 0, 858, 30};
+    bool is_fullscreen;
 
     bool is_chat_active;
     std::string chat_text;
-    const SDL2pp::Rect chat_icon = {10, 190, 736, 30};
 
     // TODO: acá meter las cosas del chat
 
@@ -121,8 +118,8 @@ private:
     void handle_get_item_cheat(const std::string& text);
 
 public:
-    ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,
-               FontManager& font_manager);
+    ClientGame(ConnectionHandler& connection, std::string& player_name, const std::string& resolution,
+               AudioManager& audio_manager, FontManager& font_manager);
 
     void run();
 

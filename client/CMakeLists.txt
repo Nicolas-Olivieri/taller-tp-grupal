@@ -36,6 +36,7 @@ target_sources(taller_client
         qt/creator_window.cpp
         qt/widgets/selector_widget.cpp
         qt/widgets/preview_widget.cpp
+        qt/widgets/resolution_widget.cpp
 
         connection/client_receiver.cpp
         connection/client_sender.cpp
@@ -94,6 +95,8 @@ target_sources(taller_client
         qt/ui/selector_widget.ui
         qt/widgets/preview_widget.h
         qt/ui/preview_widget.ui
+        qt/widgets/resolution_widget.cpp
+        qt/ui/resolution_widget.ui
 
         connection/client_receiver.h
         connection/client_sender.h

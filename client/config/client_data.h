@@ -19,8 +19,6 @@ struct ItemDisplayData {
 
 struct RenderData {
     uint8_t fps;
-    uint16_t screen_w;
-    uint16_t screen_h;
     uint16_t tile_size;
 };
 
@@ -36,12 +34,23 @@ struct MovementData {
 };
 
 struct UserInterfaceData {
+    uint16_t window_width;
+    uint16_t window_height;
+
+    SDL2pp::Rect viewport;
+    SDL2pp::Rect minimize_button;
+    SDL2pp::Rect maximize_button;
+    SDL2pp::Rect close_button;
+    SDL2pp::Rect header_bar;
+
     SDL2pp::Rect chat_box;
     SDL2pp::Rect inventory;
     SDL2pp::Rect screen;
 
     SDL2pp::Rect history_messages;
     SDL2pp::Rect input_box;
+    SDL2pp::Rect chat_icon;
+    uint16_t chat_line_spacing;
 
     SDL2pp::Rect username;
     SDL2pp::Rect clan;
@@ -69,7 +78,6 @@ struct SoundData {
 };
 
 struct ChatData {
-    uint8_t line_spacing;
     uint16_t max_chat_history;
 };
 
