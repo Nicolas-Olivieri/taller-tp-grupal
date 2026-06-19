@@ -14,10 +14,6 @@
 
 class SpriteLabel {
 private:
-    // TODO: Refactorizar inicialización de colores (se me ocurre un ColorManager o ColorConfig)
-    SDL_Color yellow = {235, 224, 70, 255};
-    SDL_Color white = {255, 255, 255, 255};
-
     SDL2pp::Renderer& renderer;
     FontManager& font_manager;
 

@@ -434,6 +434,17 @@ p {
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>580</y>
+      <width>160</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="res_widget"/>
+   </widget>
    <zorder>animation</zorder>
    <zorder>frame</zorder>
    <zorder>connectBtn</zorder>
@@ -448,6 +459,7 @@ p {
    <zorder>conn_err</zorder>
    <zorder>btnMinimize</zorder>
    <zorder>btnClose</zorder>
+   <zorder>verticalLayoutWidget</zorder>
   </widget>
  </widget>
  <resources>

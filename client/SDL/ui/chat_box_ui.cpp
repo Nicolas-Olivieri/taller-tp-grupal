@@ -10,25 +10,39 @@
 
 ChatBoxUI::ChatBoxUI(SpriteCreator& sprite_creator, const std::string& username):
         creator(sprite_creator),
-        config(ClientConfig::get().get_ui_data()),
+        ui_config(ClientConfig::get().get_ui_data()),
         chat_config(ClientConfig::get().get_chat_data()),
-        ui(creator.create_sprite(UiElement::CHAT, config.chat_box.GetTopLeft())),
+        ui(creator.create_sprite(UiElement::CHAT, ui_config.chat_box)),
         player_name(username),
-        input_msg(creator.create_sprite(config.input_box, "", FontType::UI_CHAT, white)) {
+        white(ClientConfig::get().get_color_data().white),
+        input_msg(creator.create_sprite(ui_config.input_box, "", FontType::UI_CHAT, white)) {
     init_texts();
+    init_color_msg();
 }
 
 void ChatBoxUI::init_texts() {
     const size_t start = first_visible_message;
     const size_t end = start + get_visible_lines();
     for (size_t i = start; i < end; ++i) {
-        const SDL2pp::Rect history_messages = config.history_messages;
-        const int current_y = history_messages.y + ((i - start) * chat_config.line_spacing);
+        const SDL2pp::Rect history_messages = ui_config.history_messages;
+        const int current_y = history_messages.y + ((i - start) * ui_config.chat_line_spacing);
         const SDL2pp::Rect box(history_messages.x, current_y, history_messages.w, history_messages.h);
 
         TextSprite msg_sprite = creator.create_sprite(box, "", FontType::UI_CHAT, white);
         visible_texts.push_back(std::move(msg_sprite));
     }
+}
+
+void ChatBoxUI::init_color_msg() {
+    assert(msg_type_to_color.empty());
+    const ColorData& config = ClientConfig::get().get_color_data();
+
+    msg_type_to_color.insert({{MessageType::SYSTEM, config.yellow},
+                              {MessageType::PRIVATE, config.grey},
+                              {MessageType::GLOBAL, config.white},
+                              {MessageType::CLAN, config.green},
+                              {MessageType::ERROR, config.red},
+                              {MessageType::ALLY, config.light_blue}});
 }
 
 void ChatBoxUI::render(const std::string& input, bool is_chat_active) {
@@ -185,10 +199,8 @@ void ChatBoxUI::handle_clan_message(const ActionDTO& action) {
 }
 
 
-SDL2pp::Color ChatBoxUI::assign_message_color(const MessageType& type) {
-    static std::unordered_map<MessageType, SDL_Color> msg_type_to_color = {
-            {MessageType::SYSTEM, yellow}, {MessageType::PRIVATE, grey}, {MessageType::GLOBAL, white},
-            {MessageType::CLAN, green},    {MessageType::ERROR, red},    {MessageType::ALLY, light_blue}};
+SDL2pp::Color ChatBoxUI::assign_message_color(const MessageType& type) const {
+    assert(msg_type_to_color.contains(type));
 
     return msg_type_to_color.at(type);
 }
@@ -222,10 +234,13 @@ void ChatBoxUI::chat_scroll_to_bottom() {
 
 bool ChatBoxUI::is_over_chat(const int x, const int y) {
     SDL2pp::Point click_position(x, y);
-    return config.history_messages.Contains(click_position) || config.input_box.Contains(click_position);
+    return ui_config.history_messages.Contains(click_position) ||
+           ui_config.input_box.Contains(click_position);
 }
 
-size_t ChatBoxUI::get_visible_lines() const { return config.history_messages.h / chat_config.line_spacing; }
+size_t ChatBoxUI::get_visible_lines() const {
+    return ui_config.history_messages.h / ui_config.chat_line_spacing;
+}
 
 void ChatBoxUI::update_player_state(const PlayerInfoDTO& player) {
     assert(player.name == player_name);

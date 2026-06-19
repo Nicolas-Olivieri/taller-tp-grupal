@@ -1,0 +1,94 @@
+# Todos los vecotres son SDL2pp::Rect, en formato
+# [x, y, w, h] o vectores que contienen SDL2pp::Rect
+
+[ui.resolution]
+window_width = 1366
+window_height = 768
+
+[ui.layout]
+viewport = [14, 232, 1054, 526]
+chat_box = [0, 0, 1082, 232]
+inventory = [1082, 0, 284, 768]
+screen = [0, 232, 1082, 536]
+minimize_button = [1285, 5, 21, 21]
+maximize_button = [1312, 5, 21, 21]
+close_button = [1338, 5, 21, 21]
+header_bar = [112, 0, 1173, 30]
+
+
+[ui.chat]
+history_messages = [29, 37, 1016, 156]
+input_box = [64, 201, 988, 26]
+chat_icon = [14, 201, 1053, 32]
+chat_line_spacing = 22
+
+[ui.player]
+username = [1097, 58, 254, 37]
+clan = [1097, 106, 254, 21]
+founder_icon = [1213, 143, 19, 13]
+
+[ui.inventory]
+title = [1097, 166, 254, 37]
+
+slots = [
+    [1133, 231, 36, 36],
+    [1205, 231, 36, 36],
+    [1277, 231, 36, 36],
+
+    [1133, 298, 36, 36],
+    [1205, 298, 36, 36],
+    [1277, 298, 36, 36],
+
+    [1133, 366, 36, 36],
+    [1205, 366, 36, 36],
+    [1277, 366, 36, 36]
+]
+
+[ui.equipment]
+slots = [
+    [1107, 473, 36, 36],   # sword
+    [1173, 473, 36, 36],   # shield
+    [1241, 473, 36, 36],   # helmet
+    [1306, 473, 36, 36]    # armor
+]
+
+[ui.stats]
+title = [1097, 549, 254, 37]
+
+health_bar = [1119, 634, 228, 16]
+mana_bar = [1119, 663, 228, 16]
+xp_bar = [1168, 695, 181, 16]
+
+safe_gold = [1119, 595, 95, 17]
+excess_gold = [1253, 595, 95, 17]
+xp_level = [1115, 695, 39, 17]
+
+equipment_state_slots = [
+    [1116, 737, 39, 17],
+    [1180, 737, 39, 17],
+    [1243, 737, 39, 17],
+    [1310, 737, 39, 17]
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
