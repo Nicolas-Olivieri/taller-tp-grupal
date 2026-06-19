@@ -27,7 +27,6 @@ private:
     std::optional<int> bounded_slot;
 
     SDL_Color white;
-    //    SDL_Color yellow;
 
     TextSprite player_name;
     TextSprite clan_name;
