@@ -3,6 +3,8 @@
 #include <memory>
 #include <utility>
 
+#include "client/config/client_config.h"
+
 HudSprite::HudSprite(SDL2pp::Renderer& renderer, std::unique_ptr<SpriteLayer>&& image,
                      const SDL2pp::Point& position, const SDL2pp::Point& size, const SDL2pp::Rect& dest):
         Sprite(position, size, dest.GetSize() - size),
@@ -40,10 +42,11 @@ void HudSprite::render() {
         amount_label->render_left();
     }
     if (bounded) {
-        constexpr SDL_Color yellow = {235, 224, 70, 255};
+        const SDL_Color yellow = ClientConfig::get().get_color_data().yellow;
+        const SDL_Color black = ClientConfig::get().get_color_data().black;
         renderer.SetDrawColor(yellow.r, yellow.g, yellow.b, yellow.a);
         renderer.DrawRect(position, position + dest.GetSize());
-        renderer.SetDrawColor(0, 0, 0, 255);
+        renderer.SetDrawColor(black);
     }
 }
 

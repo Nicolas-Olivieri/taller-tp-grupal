@@ -287,6 +287,7 @@ void ClientConfig::load_color_data(toml::basic_value<toml::type_config> root) {
     color_data.green = to_color(parse_rect(color_table, "colors", "green"));
     color_data.red = to_color(parse_rect(color_table, "colors", "red"));
     color_data.light_blue = to_color(parse_rect(color_table, "colors", "light_blue"));
+    color_data.black = to_color(parse_rect(color_table, "colors", "black"));
 }
 
 const ColorData& ClientConfig::get_color_data() const { return color_data; }

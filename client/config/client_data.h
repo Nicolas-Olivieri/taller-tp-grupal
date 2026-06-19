@@ -81,6 +81,7 @@ struct ColorData {
     SDL2pp::Color green;
     SDL2pp::Color red;
     SDL2pp::Color light_blue;
+    SDL2pp::Color black;
 };
 
 struct SoundData {
