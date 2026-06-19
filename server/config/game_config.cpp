@@ -19,7 +19,9 @@ GameConfig::GameConfig() {
     creature_constants_data = retrieve_config_data<CreatureBehaviorConstantsData>(
             paths_data, "creature_behavior", "creature_behavior");
     grid_constants_data = retrieve_config_data<GridConstantsData>(paths_data, "world", "grid");
-    player_constants_data = retrieve_config_data<PlayerConstantsData>(paths_data, "players", "config");
+    killables_constants_data = retrieve_config_data<KillablesConstantsData>(paths_data, "world", "killables");
+    calculator_constants_data =
+            retrieve_config_data<CalculatorConstantsData>(paths_data, "calculator", "calculator");
 }
 
 GameConfig& GameConfig::get() {
@@ -142,4 +144,8 @@ bool GameConfig::is_dungeon_floor(uint8_t floor_id) {
     return has_biome_associated(floor_id) && floor_id == biomes_data.dungeon_id;
 }
 
-const PlayerConstantsData& GameConfig::get_player_constants() const { return player_constants_data; }
+const KillablesConstantsData& GameConfig::get_killables_constants() const { return killables_constants_data; }
+
+const CalculatorConstantsData& GameConfig::get_calculator_constants() const {
+    return calculator_constants_data;
+}

@@ -17,5 +17,6 @@ void SetExperienceCommand::build_snapshot(SnapshotBuilder& builder) {
 }
 
 bool SetExperienceCommand::is_valid_level(uint8_t level) {
-    return level > 0 && level <= GameConfig::get().get_player_constants().max_level;
+    return level >= GameConfig::get().get_killables_constants().min_level &&
+           level <= GameConfig::get().get_killables_constants().max_level;
 }

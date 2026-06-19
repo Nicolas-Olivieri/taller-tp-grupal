@@ -25,7 +25,7 @@ uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
     uint8_t level = Calculator::calculate_creature_level(
             config.get_creature_base_level(race), config.get_variation(variation).max_level_multiplier);
 
-    return level;
+    return std::min(config.get_killables_constants().max_level, level);
 }
 
 Equipment Creature::equip_items(uint8_t variation) {

@@ -20,7 +20,8 @@ private:
     CreatureBehaviorConstantsData creature_constants_data;
     BiomesData biomes_data;
     GridConstantsData grid_constants_data;
-    PlayerConstantsData player_constants_data;
+    KillablesConstantsData killables_constants_data;
+    CalculatorConstantsData calculator_constants_data;
 
     GameConfig();
 
@@ -87,7 +88,9 @@ public:
 
     const GridConstantsData& get_grid_constants() const;
 
-    const PlayerConstantsData& get_player_constants() const;
+    const KillablesConstantsData& get_killables_constants() const;
+
+    const CalculatorConstantsData& get_calculator_constants() const;
 
     uint16_t get_item_price(uint8_t item_id) const;
 

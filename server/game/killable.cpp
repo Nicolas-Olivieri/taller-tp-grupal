@@ -77,7 +77,7 @@ InteractResult Killable::interact(Player& attacker) {
 
     bool was_killed = !is_alive();
 
-    if (attacker.stats.experience.get_level() < GameConfig::get().get_player_constants().max_level) {
+    if (attacker.stats.experience.get_level() < GameConfig::get().get_killables_constants().max_level) {
         uint32_t earned_xp =
                 was_killed ? Calculator::kill_exp(stats.health.get_max(), stats.experience.get_level(),
                                                   attacker.stats.experience.get_level()) :

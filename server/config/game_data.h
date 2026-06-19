@@ -513,14 +513,53 @@ struct toml::from<GridConstantsData> {
     }
 };
 
-struct PlayerConstantsData {
+struct KillablesConstantsData {
+    uint8_t min_level;
     uint8_t max_level;
 };
 
 template <>
-struct toml::from<PlayerConstantsData> {
-    static PlayerConstantsData from_toml(const toml::value& raw) {
-        return PlayerConstantsData{toml::find<uint8_t>(raw, "max_player_level")};
+struct toml::from<KillablesConstantsData> {
+    static KillablesConstantsData from_toml(const toml::value& raw) {
+        return KillablesConstantsData{toml::find<uint8_t>(raw, "min_level"),
+                                      toml::find<uint8_t>(raw, "max_level")};
+    }
+};
+
+struct CalculatorConstantsData {
+    uint8_t base_gold_per_level;
+    float pow_gold_per_level;
+    float excess_gold_multiplier;
+    uint16_t base_xp_limit_per_level;
+    float pow_xp_limit_per_level;
+    uint8_t added_xp_levels_difference;
+    float floor_kill_xp_random_factor;
+    float top_kill_xp_random_factor;
+    float floor_dodge_random_factor;
+    float top_dodge_random_factor;
+    float dodge_threshold;
+    float floor_gold_drop_random_factor;
+    float top_gold_drop_random_factor;
+};
+
+template <>
+struct toml::from<CalculatorConstantsData> {
+    static CalculatorConstantsData from_toml(const toml::value& raw) {
+        return CalculatorConstantsData{
+                toml::find<uint8_t>(raw, "base_gold_per_level"),
+                toml::find<float>(raw, "pow_gold_per_level"),
+                toml::find<float>(raw, "excess_gold_multiplier"),
+                toml::find<uint16_t>(raw, "base_xp_limit_per_level"),
+                toml::find<float>(raw, "pow_xp_limit_per_level"),
+                toml::find<uint8_t>(raw, "added_xp_levels_difference"),
+                toml::find<float>(raw, "floor_kill_xp_random_factor"),
+                toml::find<float>(raw, "top_kill_xp_random_factor"),
+                toml::find<float>(raw, "floor_dodge_random_factor"),
+                toml::find<float>(raw, "top_dodge_random_factor"),
+                toml::find<float>(raw, "dodge_threshold"),
+                toml::find<float>(raw, "floor_gold_drop_random_factor"),
+                toml::find<float>(raw, "top_gold_drop_random_factor"),
+        };
     }
 };
 
