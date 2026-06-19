@@ -109,6 +109,9 @@ void ChatBoxUI::update_chat(const std::vector<ActionDTO>& actions) {
             case ActionType::CLAN_MESSAGE:
                 handle_clan_message(action);
                 break;
+            case ActionType::INVENTORY_LIST:
+                handle_inventory_list(action);
+                break;
             default:
                 break;
         }
@@ -246,4 +249,27 @@ void ChatBoxUI::update_player_state(const PlayerInfoDTO& player) {
     assert(player.name == player_name);
 
     clan_name = player.clan.name;
+}
+
+void ChatBoxUI::handle_inventory_list(const ActionDTO& action) {
+    assert(action.action == ActionType::INVENTORY_LIST);
+    const InventoryListDTO& inventory_list = action.inventory_list;
+    if (inventory_list.player_name != player_name)
+        return;
+
+    const auto& items = inventory_list.inventory.items;
+
+    const SDL_Color color = msg_type_to_color.at(MessageType::SYSTEM);
+
+    if (items.empty()) {
+        enqueue_message("No tienes items en tu inventario", color);
+        return;
+    }
+
+    enqueue_message("Tu inventario tiene los siguientes items:", color);
+
+    for (const auto& [id, amount]: items) {
+        std::string item_name = ClientConfig::get().get_item_name(id);
+        enqueue_message(std::format("    - {} - Cantidad: {}", item_name, amount), color);
+    }
 }

@@ -86,6 +86,8 @@ private:
 
     LootType recv_loot_type();
 
+    InventoryListDTO recv_inventory_list();
+
 public:
     explicit Deserializer(Socket& socket);  // NOLINT
 

@@ -49,6 +49,7 @@ private:
     void handle_list_bank(const ActionDTO& action);
     void handle_list_items(const ActionDTO& action);
     void handle_clan_message(const ActionDTO& action);
+    void handle_inventory_list(const ActionDTO& action);
 
     SDL2pp::Color assign_message_color(const MessageType& type) const;
     size_t get_visible_lines() const;

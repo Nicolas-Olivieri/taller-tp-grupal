@@ -150,6 +150,9 @@ void Serializer::serialize(const ActionDTO& action) {
         case ActionType::CLAN_LEAVE:
             serialize(action.clan_leave);
             break;
+        case ActionType::INVENTORY_LIST:
+            serialize(action.inventory_list);
+            break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
     }
@@ -376,3 +379,8 @@ void Serializer::serialize(const ClanAcceptDTO& clan_accept) {
 void Serializer::serialize(const ClanFoundDTO& clan_found) { serialize(clan_found.founder); }
 
 void Serializer::serialize(const ClanLeaveDTO& clan_leave) { serialize(clan_leave.leaver); }
+
+void Serializer::serialize(const InventoryListDTO& inventory_list) {
+    serialize(inventory_list.player_name);
+    serialize(inventory_list.inventory);
+}

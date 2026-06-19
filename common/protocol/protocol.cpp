@@ -104,7 +104,8 @@ RequestedCommandDTO Protocol::recv_command() {
         case CommandType::CHEAT_INFINITE_RECOVERABLES:
         case CommandType::MEDITATE:
         case CommandType::CHEAT_KILL_CREATURES:
-        case CommandType::TELEPORT: {
+        case CommandType::TELEPORT:
+        case CommandType::INVENTORY_INFO: {
             return RequestedCommandDTO(command);
         }
 

@@ -51,6 +51,8 @@ private:
 
     void handle_teleport();
 
+    void handle_inventory_request();
+
     /// Handlers de clanes
 
     void handle_clan_foundation(const std::string& text);
