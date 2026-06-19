@@ -20,7 +20,7 @@ header_bar = [112, 0, 1173, 30]
 history_messages = [29, 37, 1016, 156]
 input_box = [64, 201, 988, 26]
 chat_icon = [14, 201, 1053, 32]
-chat_line_spacing = 21
+chat_line_spacing = 22
 
 [ui.player]
 username = [1097, 58, 254, 37]

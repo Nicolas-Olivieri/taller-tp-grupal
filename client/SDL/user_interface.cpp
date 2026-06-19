@@ -7,11 +7,10 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         config(ClientConfig::get().get_ui_data()),
         sprite_creator(SpriteCreator(renderer, font_manager)),
         font_manager(font_manager),
+        player_name(player_name),
         inventory_ui(sprite_creator, player_name),
         chat_ui(sprite_creator, player_name),
-        game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen)),
-        player_name(player_name),
-        clan_name("") {}
+        game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen)) {}
 
 void UserInterface::render(const std::string& input, bool is_chat_active) {
     game_border_ui.render();

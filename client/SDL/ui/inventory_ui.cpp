@@ -67,7 +67,7 @@ void InventoryUI::update_player_state(const PlayerInfoDTO& player) {
 
     clan_name.set_text(player.clan.name);
     if (!founder_crown.has_value() && player.clan.is_founder) {
-        founder_crown.emplace(creator.create_sprite(UiElement::FOUNDER_CROWN, config.founder.GetTopLeft()));
+        founder_crown.emplace(creator.create_sprite(UiElement::FOUNDER_CROWN, ui_config.founder));
     }
 
     int slot = 0;
