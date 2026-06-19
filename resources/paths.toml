@@ -28,6 +28,8 @@ path = "/server/world.toml"
 [server.creature_behavior]
 path = "/server/creature_behavior.toml"
 
-
 [server.biomes]
 path = "/server/biomes.toml"
+
+[server.calculator]
+path = "/server/calculator.toml"

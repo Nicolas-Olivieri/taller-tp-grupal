@@ -18,6 +18,10 @@ GameConfig::GameConfig() {
     world_constants_data = retrieve_config_data<WorldConstantsData>(paths_data, "world", "world");
     creature_constants_data = retrieve_config_data<CreatureBehaviorConstantsData>(
             paths_data, "creature_behavior", "creature_behavior");
+    grid_constants_data = retrieve_config_data<GridConstantsData>(paths_data, "world", "grid");
+    killables_constants_data = retrieve_config_data<KillablesConstantsData>(paths_data, "world", "killables");
+    calculator_constants_data =
+            retrieve_config_data<CalculatorConstantsData>(paths_data, "calculator", "calculator");
 }
 
 GameConfig& GameConfig::get() {
@@ -121,7 +125,8 @@ const CreatureBehaviorConstantsData& GameConfig::get_creature_behavior_constants
 const ClanConstantsData& GameConfig::get_clan_constats() const { return clan_constants_data; }
 
 const BiomeData& GameConfig::get_biome_from_floor(uint8_t id) const {
-    uint8_t biome_id = get_biome_id(id);
+    assert(biomes_data.floor_to_biome.contains(id));
+    uint8_t biome_id = biomes_data.floor_to_biome.at(id);
 
     assert(biomes_data.biomes.contains(biome_id));
     return biomes_data.biomes.at(biome_id);
@@ -129,7 +134,18 @@ const BiomeData& GameConfig::get_biome_from_floor(uint8_t id) const {
 
 bool GameConfig::has_biome_associated(uint8_t id) const { return biomes_data.floor_to_biome.contains(id); }
 
-uint8_t GameConfig::get_biome_id(uint8_t floor_id) const {
-    assert(biomes_data.floor_to_biome.contains(floor_id));
-    return biomes_data.floor_to_biome.at(floor_id);
+const GridConstantsData& GameConfig::get_grid_constants() const { return grid_constants_data; }
+
+bool GameConfig::is_safe_zone_floor(uint8_t floor_id) {
+    return has_biome_associated(floor_id) && floor_id == biomes_data.safe_zone_id;
+}
+
+bool GameConfig::is_dungeon_floor(uint8_t floor_id) {
+    return has_biome_associated(floor_id) && floor_id == biomes_data.dungeon_id;
+}
+
+const KillablesConstantsData& GameConfig::get_killables_constants() const { return killables_constants_data; }
+
+const CalculatorConstantsData& GameConfig::get_calculator_constants() const {
+    return calculator_constants_data;
 }

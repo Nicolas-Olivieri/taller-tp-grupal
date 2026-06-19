@@ -1,4 +1,14 @@
 [world]
 ticks_per_second = 30 # máximo es 255
 tick_between_saves = 300
-max_creatures_amount = 5
+creatures_amount_per_player = 5
+max_player_amount = 100
+
+[grid]
+roam_idle_weight = 4
+min_near_factor = 6
+max_near_factor = 14
+
+[killables]
+min_level = 1
+max_level = 100

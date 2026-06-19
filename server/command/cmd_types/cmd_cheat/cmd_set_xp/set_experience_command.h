@@ -10,6 +10,8 @@ private:
     std::string player_name;
     uint8_t level;
 
+    bool is_valid_level(uint8_t level);
+
 public:
     SetExperienceCommand(const std::string& player_name, uint8_t level);
 
