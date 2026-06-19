@@ -63,7 +63,7 @@ WorldUpdateStatus GameWorld::update() {
     remove_lonely_creatures();
     remove_dead_creatures();
 
-    if (creatures.size() < GameConfig::get().get_world_constants().max_creatures_amount)
+    if (creatures.size() < get_max_current_creatures_amount())
         spawn_random_creature();
 
     std::vector<CreatureUpdate> creatures_status;
@@ -289,8 +289,6 @@ std::vector<uint8_t> GameWorld::filter_compatible_creatures(const std::vector<ui
 }
 
 uint16_t GameWorld::get_next_creature_id() {
-    assert(GameConfig::get().get_world_constants().max_creatures_amount < UINT16_MAX);
-
     // Aprovecha el overflow de UINT16_MAX -> 0 para volver a usar los ids que se liberaron
     while (creatures.contains(current_creature_id)) current_creature_id++;
 
@@ -798,6 +796,7 @@ void GameWorld::cheat_player_xp(const std::string& player_name, const uint8_t le
     }
 
     Player& player = players.at(player_name);
+
     player.set_xp_level(level);
 }
 
@@ -884,4 +883,17 @@ bool GameWorld::is_safe_zone(const Position& position) {
     uint8_t floor = grid.get_tile(position).floor;
 
     return config.is_safe_zone_floor(floor);
+}
+
+uint16_t GameWorld::get_max_current_creatures_amount() {
+    uint16_t creature_per_player = GameConfig::get().get_world_constants().creatures_amount_per_player;
+
+    if (players.empty() || creature_per_player == 0)
+        return 0;
+
+    uint16_t max_valid_size = creature_per_player * players.size();
+    if (max_valid_size / creature_per_player != players.size())  // overflow
+        return UINT16_MAX;
+
+    return max_valid_size;
 }

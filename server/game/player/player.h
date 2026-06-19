@@ -19,11 +19,6 @@
 
 #include "clan_membership.h"
 
-struct MaxLevelExceeded: std::runtime_error {
-    MaxLevelExceeded(): std::runtime_error("Player cannot keep leveling up.") {}
-};
-
-
 class Player: public Killable, public Attacker {
 private:
     const std::string player_name;

@@ -433,7 +433,8 @@ struct toml::from<ClanConstantsData> {
 struct WorldConstantsData {
     uint8_t ticks_per_second;
     uint16_t tick_between_saves;
-    uint16_t max_creatures_amount;
+    uint16_t creatures_amount_per_player;
+    uint16_t max_player_amount;
 };
 
 template <>
@@ -441,7 +442,8 @@ struct toml::from<WorldConstantsData> {
     static WorldConstantsData from_toml(const toml::value& raw) {
         return WorldConstantsData{toml::find<uint8_t>(raw, "ticks_per_second"),
                                   toml::find<uint16_t>(raw, "tick_between_saves"),
-                                  toml::find<uint16_t>(raw, "max_creatures_amount")};
+                                  toml::find<uint16_t>(raw, "creatures_amount_per_player"),
+                                  toml::find<uint16_t>(raw, "max_player_amount")};
     }
 };
 
@@ -508,6 +510,17 @@ struct toml::from<GridConstantsData> {
                 toml::find<uint8_t>(raw, "min_near_factor"),
                 toml::find<uint8_t>(raw, "max_near_factor"),
         };
+    }
+};
+
+struct PlayerConstantsData {
+    uint8_t max_level;
+};
+
+template <>
+struct toml::from<PlayerConstantsData> {
+    static PlayerConstantsData from_toml(const toml::value& raw) {
+        return PlayerConstantsData{toml::find<uint8_t>(raw, "max_player_level")};
     }
 };
 

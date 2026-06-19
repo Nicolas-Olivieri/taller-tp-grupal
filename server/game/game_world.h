@@ -168,6 +168,8 @@ private:
     static void undo_attack(const AttackResult& attack, Player& target, Player& attacker);
 
     void init_teleports(const std::vector<TeleportInfoDTO>& map_teleports);
+
+    uint16_t get_max_current_creatures_amount();
 };
 
 
