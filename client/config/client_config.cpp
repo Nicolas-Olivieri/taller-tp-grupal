@@ -14,6 +14,7 @@
 #define CLIENT_UI_DATA_PATH_DEFAULT "/client/user_interface_1920x1080.toml"
 #define CLIENT_SOUND_DATA_PATH "/client/sound_data.toml"
 #define CLIENT_CHAT_DATA_PATH "/client/chat.toml"
+#define CLIENT_COLOR_PATH "/client/color.toml"
 
 ClientConfig::ClientConfig() {
     load_items_data(toml::parse(CONFIG_PATH CLIENT_ITEMS_PATH));
@@ -22,6 +23,7 @@ ClientConfig::ClientConfig() {
     load_ui_data(toml::parse(CONFIG_PATH CLIENT_UI_DATA_PATH_DEFAULT));
     load_sound_data(toml::parse(CONFIG_PATH CLIENT_SOUND_DATA_PATH));
     load_chat_data(toml::parse(CONFIG_PATH CLIENT_CHAT_DATA_PATH));
+    load_color_data(toml::parse(CONFIG_PATH CLIENT_COLOR_PATH));
 }
 
 
@@ -274,4 +276,21 @@ void ClientConfig::load_chat_data(toml::basic_value<toml::type_config> root) {
 
         throw std::runtime_error(std::format("ClientConfig encontró un dato del chat desconocido: {}", key));
     }
+}
+
+void ClientConfig::load_color_data(toml::basic_value<toml::type_config> root) {
+    const auto color_table = toml::find(root, "color");
+
+    color_data.yellow = to_color(parse_rect(color_table, "colors", "yellow"));
+    color_data.grey = to_color(parse_rect(color_table, "colors", "grey"));
+    color_data.white = to_color(parse_rect(color_table, "colors", "white"));
+    color_data.green = to_color(parse_rect(color_table, "colors", "green"));
+    color_data.red = to_color(parse_rect(color_table, "colors", "red"));
+    color_data.light_blue = to_color(parse_rect(color_table, "colors", "light_blue"));
+}
+
+const ColorData& ClientConfig::get_color_data() const { return color_data; }
+
+SDL2pp::Color ClientConfig::to_color(const SDL2pp::Rect& rect) {
+    return SDL2pp::Color(rect.x, rect.y, rect.w, rect.h);
 }

@@ -6,6 +6,8 @@
 
 #include <SDL2pp/Rect.hh>
 
+#include "SDL2pp/Color.hh"
+
 struct CreatureDisplayData {
     std::string name;
 };
@@ -70,6 +72,15 @@ struct UserInterfaceData {
     SDL2pp::Rect xp_level;
 
     std::vector<SDL2pp::Rect> equipment_state_slots;
+};
+
+struct ColorData {
+    SDL2pp::Color yellow = {235, 224, 70, 255};
+    SDL2pp::Color grey = {255, 255, 255, 140};
+    SDL2pp::Color white = {255, 255, 255, 255};
+    SDL2pp::Color green = {44, 230, 66, 140};
+    SDL2pp::Color red = {214, 30, 30, 255};
+    SDL2pp::Color light_blue = {44, 172, 230, 140};
 };
 
 struct SoundData {
