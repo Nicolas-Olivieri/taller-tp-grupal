@@ -123,9 +123,8 @@ std::vector<AssetInfoDTO> ServerMapLoader::get_safe_zones(const uint16_t width, 
             const uint8_t floor = parse_int<uint8_t>();
 
             GameConfig& config = GameConfig::get();
-            // TODO: Cambiar el uso de la macro por GameConfig::is_safe_zone_floor
-            if (config.has_biome_associated(floor) && config.get_biome_id(floor) == SAFE_ZONE_FLOOR)
-                safe_zones.emplace_back(SAFE_ZONE_FLOOR, x, y);
+            if (config.is_safe_zone_floor(floor))
+                safe_zones.emplace_back(floor, x, y);
         }
     }
 
