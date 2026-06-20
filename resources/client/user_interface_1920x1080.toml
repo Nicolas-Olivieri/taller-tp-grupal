@@ -13,7 +13,7 @@ screen = [0, 326, 1521, 754]
 minimize_button = [1807, 7, 30, 30]
 maximize_button = [1844, 7, 30, 30]
 close_button = [1881, 7, 30, 30]
-header_bar = [112, 0, 1695, 30]
+header_bar = [112, 0, 1695, 50]
 
 
 [ui.chat]
