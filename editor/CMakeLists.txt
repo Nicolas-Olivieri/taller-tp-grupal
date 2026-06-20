@@ -7,6 +7,7 @@ target_sources(taller_editor
 
         view/map_canvas.cpp
         view/asset_selector.cpp
+        view/tutorial_overlay.cpp
 
         persistance/map_saver.cpp
         persistance/map_loader.cpp
@@ -14,6 +15,7 @@ target_sources(taller_editor
         ui/mapcanvas.ui
         ui/editor.ui
         ui/assetselector.ui
+        ui/tutorialoverlay.ui
 
         config/editor_config.cpp
 
@@ -26,6 +28,7 @@ target_sources(taller_editor
 
         view/map_canvas.h
         view/asset_selector.h
+        view/tutorial_overlay.h
 
         persistance/map_saver.h
         persistance/map_loader.h

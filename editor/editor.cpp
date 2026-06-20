@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "config/editor_config.h"
+#include "view/tutorial_overlay.h"
 
 #include "editor_constants.h"
 #include "ui_editor.h"
@@ -18,6 +19,7 @@ Editor::Editor(QWidget* parent):
         tiles(populate_hash("tiles", ImageType::TILE)),
         colliders(populate_hash("colliders", ImageType::COLLIDER)),
         npcs(populate_hash("npcs", ImageType::NPC)),
+        tutorial(TutorialOverlay(this)),
         map_data(MapData()),
         map_canvas(MapCanvas(this->map_data, this)),
         asset_selector(this->tiles, this->colliders, this->npcs, this),
@@ -27,10 +29,6 @@ Editor::Editor(QWidget* parent):
     ui->setupUi(this);
     ui->mapWidget->addWidget(&map_canvas);
     ui->selectorWidget->addWidget(&asset_selector);
-
-    action_buttons.insert({{EditorMode::DRAW, ui->drawBtn},
-                           {EditorMode::ERASE, ui->eraseBtn},
-                           {EditorMode::DRAG, ui->dragBtn}});
 
     const auto& shortcuts = EditorConfig::get().get_shortcuts_keys();
     // Conexión botones
@@ -60,12 +58,13 @@ Editor::Editor(QWidget* parent):
         set_mode(EditorMode::SAFE_ZONE);
     });
 
+    config_tutorial();
+
     connect(ui->saveBtn, &QPushButton::clicked, this, &Editor::prompt_file_saving);
     connect(ui->loadBtn, &QPushButton::clicked, this, &Editor::prompt_file_opening);
+    connect(ui->helpBtn, &QPushButton::clicked, &tutorial, &TutorialOverlay::start);
     connect(ui->cbox_unwalkables, &QCheckBox::clicked, &map_canvas, &MapCanvas::set_visibility_unwalkables);
     connect(ui->cbox_safes, &QCheckBox::clicked, &map_canvas, &MapCanvas::set_visibility_safes);
-
-    // Conxiones Selector <-> Mapa (canvas)
     connect(&asset_selector, &AssetSelector::clickedImage, &map_canvas, &MapCanvas::set_selected_asset);
 }
 
@@ -89,13 +88,22 @@ QHash<uint8_t, AssetData> Editor::populate_hash(const std::string& category_name
     return hash;
 }
 
+void Editor::config_tutorial() {
+    const auto& tutorial_info = EditorConfig::get().get_tutorial_data();
 
-void Editor::set_mode(const EditorMode& new_mode) {
-    for (const auto& [mode, btn]: action_buttons.asKeyValueRange()) {
-        btn->setChecked(mode == new_mode);
-    }
-    map_canvas.set_mode(new_mode);
+    tutorial.add_step(ui->dragBtn, QString::fromStdString(tutorial_info.drag_btn));
+    tutorial.add_step(ui->drawBtn, QString::fromStdString(tutorial_info.draw_btn));
+    tutorial.add_step(ui->eraseBtn, QString::fromStdString(tutorial_info.erase_btn));
+    tutorial.add_step(ui->safeZoneBtn, QString::fromStdString(tutorial_info.safe_zone_btn));
+    tutorial.add_step(ui->cbox_unwalkables, QString::fromStdString(tutorial_info.unwalkable_cbox));
+    tutorial.add_step(ui->cbox_safes, QString::fromStdString(tutorial_info.safe_zone_cbox));
+    tutorial.add_step(asset_selector.childAt(0, 0), QString::fromStdString(tutorial_info.asset_info));
+    tutorial.add_step(ui->loadBtn, QString::fromStdString(tutorial_info.load_btn));
+    tutorial.add_step(ui->saveBtn, QString::fromStdString(tutorial_info.save_btn));
 }
+
+
+void Editor::set_mode(const EditorMode& new_mode) { map_canvas.set_mode(new_mode); }
 
 void Editor::prompt_file_saving() {
     const QString filename = QFileDialog::getSaveFileName();

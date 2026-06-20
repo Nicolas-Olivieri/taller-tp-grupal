@@ -10,9 +10,9 @@ ResolutionWidget::ResolutionWidget(QWidget* parent): QWidget(parent), ui(new Ui:
     ui->setupUi(this);
 
     resolution_values << "1024x726"
-                      << "1920x1080"
                       << "1280x800"
-                      << "1366x768";
+                      << "1366x768"
+                      << "1920x1080";
     this->curr_opt = 0;
     ui->resolution->setText(resolution_values[curr_opt]);
 
