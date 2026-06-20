@@ -42,6 +42,7 @@
 #include "server/command/cmd_types/cmd_clan/cmd_leave/clan_leave_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_reject/clan_reject_command.h"
 #include "server/command/cmd_types/cmd_clan/cmd_review/clan_review_command.h"
+#include "server/command/cmd_types/cmd_show_inventory/show_inventory_command.h"
 
 
 CommandFactory::CommandFactory(const std::string& player_name): player_name(player_name) {}
@@ -142,6 +143,9 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
 
         case CommandType::TELEPORT:
             return std::make_unique<TeleportCommand>(player_name);
+
+        case CommandType::INVENTORY_INFO:
+            return std::make_unique<ShowInventoryCommand>(player_name);
 
         default:
             throw std::invalid_argument("CommandFactory recibió un comando desconocido");

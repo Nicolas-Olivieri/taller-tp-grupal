@@ -76,15 +76,15 @@ InteractResult Killable::interact(Player& attacker) {
         return InteractResult(attacker.get_equipment().weapon, 0, false);
 
     bool was_killed = !is_alive();
-    uint32_t earned_xp =
-            was_killed ?
-                    Calculator::kill_exp(this->stats.health.get_max(), this->stats.experience.get_level(),
-                                         attacker.stats.experience.get_level()) :
-                    Calculator::attack_exp(damage_applied, this->stats.experience.get_level(),
-                                           attacker.stats.experience.get_level());
-    try {
+
+    if (attacker.stats.experience.get_level() < GameConfig::get().get_killables_constants().max_level) {
+        uint32_t earned_xp =
+                was_killed ? Calculator::kill_exp(stats.health.get_max(), stats.experience.get_level(),
+                                                  attacker.stats.experience.get_level()) :
+                             Calculator::attack_exp(damage_applied, stats.experience.get_level(),
+                                                    attacker.stats.experience.get_level());
         attacker.earn_xp(earned_xp);
-    } catch (const MaxLevelExceeded& error) {}
+    }
 
     return InteractResult(attacker.get_equipment().weapon, damage_applied, was_killed);
 }

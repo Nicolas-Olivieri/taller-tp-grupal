@@ -1,7 +1,5 @@
 [constants.render]
 fps = 30
-screen_width = 1024
-screen_height = 726
 tile_size = 32
 
 [constants.sprites]

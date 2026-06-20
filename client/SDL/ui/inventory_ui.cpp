@@ -9,76 +9,73 @@
 
 InventoryUI::InventoryUI(SpriteCreator& sprite_creator, const std::string& username):
         creator(sprite_creator),
-        config(ClientConfig::get().get_ui_data()),
-        ui(creator.create_sprite(UiElement::INVENTORY, config.inventory.GetTopLeft())),
+        ui_config(ClientConfig::get().get_ui_data()),
+        ui(creator.create_sprite(UiElement::INVENTORY, ui_config.inventory)),
         founder_crown(std::nullopt),
-        player_name(creator.create_sprite(username_rect, username, FontType::UI_USERNAME, white)),
-        clan_name(creator.create_sprite(clan_rect, "", FontType::UI_CLAN, white)),
-        inventory_label(creator.create_sprite(inventory_rect, "Inventario", FontType::UI_MENU_TITLE, white)),
-        statistics_label(creator.create_sprite(stats_rect, "Estadísticas", FontType::UI_MENU_TITLE, white)),
-        xp_level(creator.create_sprite(xp_level_rect, "", FontType::UI_MENU, white)),
-        safe_gold(creator.create_sprite(safe_gold_rect, "", FontType::UI_MENU, white)),
-        excess_gold(creator.create_sprite(excess_gold_rect, "", FontType::UI_MENU, white)) {
+        white(ClientConfig::get().get_color_data().white),
+        player_name(creator.create_sprite(ui_config.username, username, FontType::UI_USERNAME, white)),
+        clan_name(creator.create_sprite(ui_config.clan, "", FontType::UI_CLAN, white)),
+        inventory_label(creator.create_sprite(ui_config.inventory_title, "Inventario",
+                                              FontType::UI_MENU_TITLE, white)),
+        statistics_label(
+                creator.create_sprite(ui_config.stats_title, "Estadísticas", FontType::UI_MENU_TITLE, white)),
+        xp_level(creator.create_sprite(ui_config.xp_level, "", FontType::UI_MENU, white)),
+        safe_gold(creator.create_sprite(ui_config.safe_gold, "", FontType::UI_MENU, white)),
+        excess_gold(creator.create_sprite(ui_config.excess_gold, "", FontType::UI_MENU, white)) {
     init_elements();
 }
 
 void InventoryUI::init_elements() {
-    ProgressBarSprite health = creator.create_sprite(UiElement::HEALTH_BAR, config.health.GetTopLeft(), 0, 1);
+    ProgressBarSprite health = creator.create_sprite(UiElement::HEALTH_BAR, ui_config.health, 0, 1);
     bars.push_back(std::move(health));
 
-    ProgressBarSprite mana = creator.create_sprite(UiElement::MANA_BAR, config.mana.GetTopLeft(), 0, 1);
+    ProgressBarSprite mana = creator.create_sprite(UiElement::MANA_BAR, ui_config.mana, 0, 1);
     bars.push_back(std::move(mana));
 
-    ProgressBarSprite xp = creator.create_sprite(UiElement::XP_BAR, config.xp.GetTopLeft(), 0, 1);
+    ProgressBarSprite xp = creator.create_sprite(UiElement::XP_BAR, ui_config.xp, 0, 1);
     bars.push_back(std::move(xp));
 
-    for (const auto& position: inventory_slots) {
-        HudSprite item = creator.create_sprite(NO_ITEM, position.GetTopLeft(), true);
+    for (const auto& position: ui_config.inventory_slots) {
+        HudSprite item = creator.create_sprite(NO_ITEM, position, true);
         inventory.push_back(std::move(item));
     }
 
-    for (const auto& position: equipment_slots) {
-        HudSprite item = creator.create_sprite(NO_ITEM, position.GetTopLeft(), false);
+    for (const auto& position: ui_config.equipment_slots) {
+        HudSprite item = creator.create_sprite(NO_ITEM, position, false);
         equipment.push_back(std::move(item));
     }
 
-    for (const auto& position: config.equipment_state_slots) {
+    for (const auto& position: ui_config.equipment_state_slots) {
         TextSprite state = creator.create_sprite(position, "", FontType::UI_MENU, white);
         equipment_state.push_back(std::move(state));
     }
 }
 
-void InventoryUI::update_player_state(const std::vector<PlayerInfoDTO>& players_information) {
-    const auto player = std::ranges::find_if(players_information, [this](const PlayerInfoDTO& player_info) {
-        return player_info.name == player_name.get_text();
-    });
+void InventoryUI::update_player_state(const PlayerInfoDTO& player) {
+    assert(player.name == player_name.get_text());
 
-    if (player == players_information.end()) {
-        return;
-    }
-
-    const PlayerStatsDTO& stats(player->stats);
-    const EquipmentInfoDTO& equipment_info(player->equipment);
+    const PlayerStatsDTO& stats(player.stats);
+    const EquipmentInfoDTO& equipment_info(player.equipment);
 
     bars[0].update_values(stats.current_health, stats.max_health);
     bars[1].update_values(stats.current_mana, stats.max_mana);
     bars[2].update_values(stats.current_xp_amount, stats.max_xp_amount);
 
     xp_level.set_text(std::to_string(stats.xp_level));
-    safe_gold.set_text(std::to_string(player->safe_gold));
-    excess_gold.set_text(std::to_string(player->excess_gold));
+    safe_gold.set_text(std::to_string(player.safe_gold));
+    excess_gold.set_text(std::to_string(player.excess_gold));
 
-    clan_name.set_text(player->clan.name);
-    if (!founder_crown.has_value() && player->clan.is_founder) {
-        founder_crown.emplace(creator.create_sprite(UiElement::FOUNDER_CROWN, config.founder.GetTopLeft()));
+    clan_name.set_text(player.clan.name);
+    if (!founder_crown.has_value() && player.clan.is_founder) {
+        founder_crown.emplace(creator.create_sprite(UiElement::FOUNDER_CROWN, ui_config.founder));
     }
 
     int slot = 0;
-    for (const auto& [item_id, amount]: player->inventory.items) {
+    for (const auto& [item_id, amount]: player.inventory.items) {
         creator.update_appearance(inventory[slot], item_id, amount);
         slot++;
     }
-    for (size_t i = slot; i < inventory_slots.size(); ++i) {
+    for (size_t i = slot; i < ui_config.inventory_slots.size(); ++i) {
         creator.update_appearance(inventory[i], NO_ITEM, 0);
     }
 

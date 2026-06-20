@@ -25,7 +25,10 @@ int Client::run() {
     ConnectionHandler connection(std::move(socket));
 
     std::string player_name = lobby.get_username();
-    ClientGame game(connection, player_name, audio_manager, font_manager);
+    std::string resolution = lobby.get_resolution();
+    FontManager font_manager(resolution);
+
+    ClientGame game(connection, player_name, resolution, audio_manager, font_manager);
     game.run();
 
     return 0;

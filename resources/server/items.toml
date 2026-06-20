@@ -229,15 +229,15 @@ secret_drop = true
 [helmets.knight]
 id = 25
 price = 4000
-min_value = 10
-max_value = 22
+min_value = 7
+max_value = 17
 secret_drop = true
 
 [helmets.crown]
 id = 26
 price = 4000
-min_value = 10
-max_value = 22
+min_value = 4
+max_value = 20
 secret_drop = true
 
 [shields.reinforced]

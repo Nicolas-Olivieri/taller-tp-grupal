@@ -35,7 +35,8 @@ enum class CommandType : uint8_t {
     CHEAT_ITEM,
     CHEAT_KILL_CREATURES,
     MEDITATE,
-    TELEPORT
+    TELEPORT,
+    INVENTORY_INFO,
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a

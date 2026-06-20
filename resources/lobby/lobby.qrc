@@ -9,5 +9,6 @@
         <file>login/interfaz.png</file>
         <file>btn_cerrar.png</file>
         <file>btn_minimizar.png</file>
+        <file>login/input_res.png</file>
     </qresource>
 </RCC>

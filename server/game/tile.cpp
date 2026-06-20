@@ -6,7 +6,7 @@ Tile::Tile(const bool is_walkable, const uint8_t floor):
 
 
 Tile::Tile(Interactive* occupant):
-        is_walkable_(true), occupant_(occupant), loot_(std::stack<Loot>()), floor(SAFE_ZONE_FLOOR) {}
+        is_walkable_(true), occupant_(occupant), loot_(std::stack<Loot>()), floor() {}
 
 
 bool Tile::is_walkable() const { return is_walkable_; }

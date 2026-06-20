@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+// TODO: toml con mensajes?
 #define NOT_IN_CLAN_MSG "Debes estar en un clan para realizar esta accion"
 #define NOT_A_PLAYER_MSG "El jugador {} no existe"
 #define IS_MEMBER_MSG "Solo el fundador del clan puede realizar esa accion"

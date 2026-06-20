@@ -10,17 +10,20 @@
 #define CLIENT_ITEMS_PATH "/client/items.toml"
 #define CLIENT_CREATURES_PATH "/client/creatures.toml"
 #define CLIENT_CONSTANTS_PATH "/client/game_constants.toml"
-#define CLIENT_UI_DATA_PATH "/client/user_interface.toml"
+#define CLIENT_UI_DATA_PATH "/client/user_interface"
+#define CLIENT_UI_DATA_PATH_DEFAULT "/client/user_interface_1920x1080.toml"
 #define CLIENT_SOUND_DATA_PATH "/client/sound_data.toml"
 #define CLIENT_CHAT_DATA_PATH "/client/chat.toml"
+#define CLIENT_COLOR_PATH "/client/color.toml"
 
 ClientConfig::ClientConfig() {
     load_items_data(toml::parse(CONFIG_PATH CLIENT_ITEMS_PATH));
     load_creatures_data(toml::parse(CONFIG_PATH CLIENT_CREATURES_PATH));
     load_constants_data(toml::parse(CONFIG_PATH CLIENT_CONSTANTS_PATH));
-    load_ui_data(toml::parse(CONFIG_PATH CLIENT_UI_DATA_PATH));
+    load_ui_data(toml::parse(CONFIG_PATH CLIENT_UI_DATA_PATH_DEFAULT));
     load_sound_data(toml::parse(CONFIG_PATH CLIENT_SOUND_DATA_PATH));
     load_chat_data(toml::parse(CONFIG_PATH CLIENT_CHAT_DATA_PATH));
+    load_color_data(toml::parse(CONFIG_PATH CLIENT_COLOR_PATH));
 }
 
 
@@ -110,9 +113,9 @@ int ClientConfig::get_head_offset() const { return sprite_data.head_offset; }
 
 uint8_t ClientConfig::get_fps() const { return render_data.fps; }
 
-uint16_t ClientConfig::get_screen_w() const { return render_data.screen_w; }
+uint16_t ClientConfig::get_screen_w() const { return ui_data.window_width; }
 
-uint16_t ClientConfig::get_screen_h() const { return render_data.screen_h; }
+uint16_t ClientConfig::get_screen_h() const { return ui_data.window_height; }
 
 uint16_t ClientConfig::get_tile_size() const { return render_data.tile_size; }
 
@@ -172,8 +175,6 @@ void ClientConfig::load_constants_data(toml::basic_value<toml::type_config> root
         if (key == "render") {
             render_data = {
                     toml::find<uint8_t>(value, "fps"),
-                    toml::find<uint16_t>(value, "screen_width"),
-                    toml::find<uint16_t>(value, "screen_height"),
                     toml::find<uint16_t>(value, "tile_size"),
             };
             continue;
@@ -199,11 +200,32 @@ void ClientConfig::load_constants_data(toml::basic_value<toml::type_config> root
     }
 }
 
+const UserInterfaceData& ClientConfig::load_resolution_data(const std::string& resolution) {
+    const std::string path = std::format("{}_{}.toml", DATA_PATH CLIENT_UI_DATA_PATH, resolution);
+    if (path == DATA_PATH CLIENT_UI_DATA_PATH_DEFAULT) {
+        return ui_data;
+    }
+    load_ui_data(toml::parse(path));
+    return ui_data;
+}
+
+
 void ClientConfig::load_ui_data(toml::basic_value<toml::type_config> root) {
     const auto ui_table = toml::find(root, "ui");
 
+    ui_data.window_width = toml::find<int>(ui_table, "resolution", "window_width");
+    ui_data.window_height = toml::find<int>(ui_table, "resolution", "window_height");
+
+    ui_data.viewport = parse_rect(ui_table, "layout", "viewport");
+    ui_data.minimize_button = parse_rect(ui_table, "layout", "minimize_button");
+    ui_data.maximize_button = parse_rect(ui_table, "layout", "maximize_button");
+    ui_data.close_button = parse_rect(ui_table, "layout", "close_button");
+    ui_data.header_bar = parse_rect(ui_table, "layout", "header_bar");
+
     ui_data.history_messages = parse_rect(ui_table, "chat", "history_messages");
     ui_data.input_box = parse_rect(ui_table, "chat", "input_box");
+    ui_data.chat_icon = parse_rect(ui_table, "chat", "chat_icon");
+    ui_data.chat_line_spacing = toml::find<uint8_t>(ui_table, "chat", "chat_line_spacing"),
 
     ui_data.username = parse_rect(ui_table, "player", "username");
     ui_data.clan = parse_rect(ui_table, "player", "clan");
@@ -248,11 +270,28 @@ void ClientConfig::load_chat_data(toml::basic_value<toml::type_config> root) {
 
     for (const auto& [key, value]: chat_table.as_table()) {
         if (key == "data") {
-            chat_data = {toml::find<uint8_t>(value, "line_spacing"),
-                         toml::find<uint16_t>(value, "max_chat_history")};
+            chat_data = {toml::find<uint16_t>(value, "max_chat_history")};
             continue;
         }
 
         throw std::runtime_error(std::format("ClientConfig encontró un dato del chat desconocido: {}", key));
     }
+}
+
+void ClientConfig::load_color_data(toml::basic_value<toml::type_config> root) {
+    const auto color_table = toml::find(root, "color");
+
+    color_data.yellow = to_color(parse_rect(color_table, "colors", "yellow"));
+    color_data.grey = to_color(parse_rect(color_table, "colors", "grey"));
+    color_data.white = to_color(parse_rect(color_table, "colors", "white"));
+    color_data.green = to_color(parse_rect(color_table, "colors", "green"));
+    color_data.red = to_color(parse_rect(color_table, "colors", "red"));
+    color_data.light_blue = to_color(parse_rect(color_table, "colors", "light_blue"));
+    color_data.black = to_color(parse_rect(color_table, "colors", "black"));
+}
+
+const ColorData& ClientConfig::get_color_data() const { return color_data; }
+
+SDL2pp::Color ClientConfig::to_color(const SDL2pp::Rect& rect) {
+    return SDL2pp::Color(rect.x, rect.y, rect.w, rect.h);
 }

@@ -117,6 +117,9 @@ void CommandHandler::handle_text_command() {
 
     else if (chat_text == "/viajar")
         handle_teleport();
+
+    else if (chat_text == "/inventario")
+        handle_inventory_request();
 }
 
 void CommandHandler::handle_pick_up_command() {
@@ -436,4 +439,8 @@ void CommandHandler::trim_text(std::string& text) {
     auto not_space = [](uint8_t c) { return !std::isspace(c); };
     text.erase(text.begin(), std::find_if(text.begin(), text.end(), not_space));
     text.erase(std::find_if(text.rbegin(), text.rend(), not_space).base(), text.end());
+}
+
+void CommandHandler::handle_inventory_request() {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::INVENTORY_INFO));
 }

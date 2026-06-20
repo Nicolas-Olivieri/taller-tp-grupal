@@ -19,11 +19,6 @@
 
 #include "clan_membership.h"
 
-struct MaxLevelExceeded: std::runtime_error {
-    MaxLevelExceeded(): std::runtime_error("Player cannot keep leveling up.") {}
-};
-
-
 class Player: public Killable, public Attacker {
 private:
     const std::string player_name;
@@ -41,9 +36,6 @@ private:
     bool is_resurrecting;
     int resurrection_timer;
     Position target_resurrection_position;
-
-    bool _is_founder;
-    std::string clan_name;
 
     bool has_infinite_recoverables_cheat_activated;
     uint32_t last_experience_amount_earned;

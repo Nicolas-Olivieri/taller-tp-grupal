@@ -22,12 +22,12 @@ private:
 
     FontManager& font_manager;
 
+    std::string& player_name;
+
     InventoryUI inventory_ui;
     ChatBoxUI chat_ui;
     InterfaceSprite game_border_ui;
 
-    std::string& player_name;
-    std::string clan_name;
 
 public:
     UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager);
