@@ -288,6 +288,7 @@ void ClientConfig::load_color_data(toml::basic_value<toml::type_config> root) {
     color_data.red = to_color(parse_rect(color_table, "colors", "red"));
     color_data.light_blue = to_color(parse_rect(color_table, "colors", "light_blue"));
     color_data.black = to_color(parse_rect(color_table, "colors", "black"));
+    color_data.transparent_black = to_color(parse_rect(color_table, "colors", "transparent_black"));
 }
 
 const ColorData& ClientConfig::get_color_data() const { return color_data; }
@@ -295,3 +296,10 @@ const ColorData& ClientConfig::get_color_data() const { return color_data; }
 SDL2pp::Color ClientConfig::to_color(const SDL2pp::Rect& rect) {
     return SDL2pp::Color(rect.x, rect.y, rect.w, rect.h);
 }
+
+const HelpMsgData& ClientConfig::get_help_data() const {
+    assert(false);  // no lo implemente todavía
+    return help_data;
+}
+
+void ClientConfig::load_help_msg_data(toml::basic_value<toml::type_config> /* root */) { assert(false); }

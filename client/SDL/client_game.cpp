@@ -243,6 +243,9 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
         case SDLK_q:
             cmd_handler.handle_drop_item_command();
             break;
+        case SDLK_h:
+            ui.toggle_help();
+            break;
         default:
             throw std::runtime_error("Esta tecla aún no tiene una funcionalidad asignada");
     }
@@ -265,7 +268,7 @@ void ClientGame::render_ui_and_world() {
 
     renderer.SetViewport(SDL2pp::NullOpt);
 
-    // TODO actualizar campos de vida, mana en función a que se sabe del personaje, si escribió, etc.
+    ui.render_help();
 }
 
 bool ClientGame::is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport) {

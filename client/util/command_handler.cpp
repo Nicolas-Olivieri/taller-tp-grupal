@@ -66,7 +66,9 @@ void CommandHandler::handle_text_command() {
     assert(not chat_text.empty());
     assert(chat_text[0] == '/');
 
-    if (chat_text == "/resucitar")
+    if (chat_text == "/ayuda")
+        ui.toggle_help();
+    else if (chat_text == "/resucitar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::RESURRECT));
     else if (chat_text == "/curar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));

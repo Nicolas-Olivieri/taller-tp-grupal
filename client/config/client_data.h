@@ -82,6 +82,7 @@ struct ColorData {
     SDL2pp::Color red;
     SDL2pp::Color light_blue;
     SDL2pp::Color black;
+    SDL2pp::Color transparent_black;
 };
 
 struct SoundData {
@@ -91,6 +92,10 @@ struct SoundData {
 
 struct ChatData {
     uint16_t max_chat_history;
+};
+
+struct HelpMsgData {
+    std::vector<std::string> help_messages;
 };
 
 #endif  // CLIENT_DATA_H
