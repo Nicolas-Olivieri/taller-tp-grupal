@@ -48,12 +48,12 @@ int MapData::add_tile(const QPoint position, const AssetData& tile_data) {
     const QRect unwalkable_area = tile_data.unwalkable_area.translated(position);
 
     for (const auto& cell: grid_range) {
-        occupied_tiles.insert(cell, QVector{tile_id});
+        occupied_tiles.insert(cell, {tile_id});
 
         if (!tile_data.inverse_unwalkable && unwalkable_area.contains(cell)) {
-            unwalkable_tiles[cell].append(tile_id);
+            unwalkable_tiles[cell].emplace(tile_id);
         } else if (tile_data.inverse_unwalkable && !unwalkable_area.contains(cell)) {
-            unwalkable_tiles[cell].append(tile_id);
+            unwalkable_tiles[cell].emplace(tile_id);
         }
     }
 
@@ -69,7 +69,7 @@ int MapData::add_collider(const QPoint position, const AssetData& collider_data)
     // con la de otro collider (las zonas caminables puede superponerse)
     if (std::any_of(grid_range.begin(), grid_range.end(), [this, unwalkable_area](const QPoint& cell) {
             return !occupied_tiles.contains(cell) ||
-                   (unwalkable_area.contains(cell) && occupied_tiles[cell].length() == 2);
+                   (unwalkable_area.contains(cell) && occupied_tiles[cell].size() == 2);
         })) {
         return -1;
     }
@@ -81,8 +81,8 @@ int MapData::add_collider(const QPoint position, const AssetData& collider_data)
     for (const auto& cell: grid_range) {
         if ((!collider_data.inverse_unwalkable && unwalkable_area.contains(cell)) ||
             (collider_data.inverse_unwalkable && !unwalkable_area.contains(cell))) {
-            occupied_tiles[cell].append(tile_id);
-            unwalkable_tiles[cell].append(tile_id);
+            occupied_tiles[cell].push_back(tile_id);
+            unwalkable_tiles[cell].emplace(tile_id);
         }
     }
 
@@ -132,7 +132,7 @@ bool MapData::erase_tile(const Placement& placement) {
     const GridRange grid_range(placement.origin, asset.tile_width, asset.tile_height);
 
     if (std::any_of(grid_range.begin(), grid_range.end(),
-                    [this](const QPoint& cell) { return occupied_tiles[cell].length() == 2; })) {
+                    [this](const QPoint& cell) { return occupied_tiles[cell].size() == 2; })) {
         return false;
     }
 
@@ -157,8 +157,8 @@ bool MapData::erase_collider(const Placement& placement) {
     placements.remove(placement.id);
     asset_counter[asset.type]--;
     for (const auto& cell: grid_range) {
-        occupied_tiles[cell].removeLast();
-        unwalkable_tiles[cell].removeLast();
+        std::erase(occupied_tiles[cell], placement.id);
+        unwalkable_tiles[cell].erase(placement.id);
         if (unwalkable_tiles[cell].empty()) {
             unwalkable_tiles.remove(cell);
         }

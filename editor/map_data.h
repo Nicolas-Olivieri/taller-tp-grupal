@@ -1,6 +1,8 @@
 #ifndef MAP_DATA_H
 #define MAP_DATA_H
 #include <QSet>
+#include <set>
+#include <vector>
 
 #include <qhash.h>
 #include <qpoint.h>
@@ -15,8 +17,8 @@ class MapData {
 private:
     int tile_id;
     QHash<int, Placement> placements;
-    QHash<QPoint, QVector<int>> occupied_tiles;
-    QHash<QPoint, QVector<int>> unwalkable_tiles;
+    QHash<QPoint, std::vector<int>> occupied_tiles;
+    QHash<QPoint, std::set<int>> unwalkable_tiles;
     QSet<QPoint> safe_zone_tiles;
 
     QHash<ImageType, uint16_t> asset_counter;
