@@ -400,13 +400,12 @@ EquipmentInfoDTO Deserializer::recv_equipment_info() {
 }
 
 AttackDTO Deserializer::recv_attack() {
-    const std::string attacker = recv_string();
     const uint8_t weapon = recv_uint8();
     const uint16_t x = recv_uint16();
     const uint16_t y = recv_uint16();
     const uint8_t missed = recv_uint8();
 
-    return AttackDTO(attacker, weapon, x, y, missed);
+    return AttackDTO(weapon, x, y, missed);
 }
 
 MeditationDTO Deserializer::recv_meditation() {

@@ -73,7 +73,7 @@ void GameLoop::broadcast_creature_attack(SnapshotBuilder& builder, const Creatur
     assert(update.status == CreatureStatus::ATTACKED);
     std::string msg = CreatureFormatter::get_attack_message(update);
 
-    builder.add_action(ActionDTO(AttackDTO("", update.attack.weapon, update.x, update.y,
+    builder.add_action(ActionDTO(AttackDTO(update.attack.weapon, update.x, update.y,
                                            update.attack.status == AttackStatus::TARGET_DODGED)));
     builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, update.attack.player_attacked, msg)));
 
