@@ -256,9 +256,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 break;
 
             case ActionType::ATTACK:
-                if (players.contains(action.attack.attacker)) {
-                    handle_attack(action.attack);
-                }
+                handle_attack(action.attack);
 
                 if (!action.attack.missed) {
                     EffectSprite fx = sprite_creator.create_sprite(action);
@@ -301,8 +299,6 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 }
 
 void World::handle_attack(const AttackDTO& attack) {
-    const Sprite* sprite = players.at(attack.attacker).get();
-
     // TODO: Este mapa debería estar en otro lugar (o que el SoundEvent sea un atributo de un ítem en
     //  ClientConfig)
     static const std::map<uint8_t, SoundEvent> weapon_to_sound_event{
@@ -315,7 +311,8 @@ void World::handle_attack(const AttackDTO& attack) {
     if (not weapon_to_sound_event.contains(attack.weapon))
         return;
 
-    play_event(weapon_to_sound_event.at(attack.weapon), sprite->get_position());
+    play_event(weapon_to_sound_event.at(attack.weapon),
+               SDL2pp::Point(attack.x, attack.y) * ClientConfig::get().get_tile_size());
 }
 
 void World::add_new_player(const PlayerInfoDTO& info) {
