@@ -26,6 +26,8 @@ public:
 
     void handle_drop_item_command();
 
+    void handle_meditate();
+
 private:
     /// Handlers generales
 
@@ -46,8 +48,6 @@ private:
     void handle_withdraw_gold_command(const std::string& text);
 
     void handle_withdraw_item_command(const std::string& text);
-
-    void handle_meditate();
 
     void handle_teleport();
 

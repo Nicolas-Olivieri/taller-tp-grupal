@@ -246,6 +246,9 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
         case SDLK_h:
             ui.toggle_help();
             break;
+        case SDLK_m:
+            cmd_handler.handle_meditate();
+            break;
         default:
             throw std::runtime_error("Esta tecla aún no tiene una funcionalidad asignada");
     }
