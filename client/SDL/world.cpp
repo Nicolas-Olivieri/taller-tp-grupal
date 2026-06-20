@@ -269,9 +269,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 break;
 
             case ActionType::ATTACK:
-                if (players.contains(action.attack.attacker)) {
-                    handle_attack(action.attack);
-                }
+                handle_attack(action.attack);
 
                 if (!action.attack.missed) {
                     EffectSprite fx = sprite_creator.create_sprite(action);
@@ -314,21 +312,22 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 }
 
 void World::handle_attack(const AttackDTO& attack) {
-    const Sprite* sprite = players.at(attack.attacker).get();
-
     // TODO: Este mapa debería estar en otro lugar (o que el SoundEvent sea un atributo de un ítem en
     //  ClientConfig)
     static const std::map<uint8_t, SoundEvent> weapon_to_sound_event{
-            {0, SoundEvent::FISTS_ATTACK},  {1, SoundEvent::SWORD_ATTACK},      {2, SoundEvent::AXE_ATTACK},
-            {3, SoundEvent::HAMMER_ATTACK}, {4, SoundEvent::MAGIC_ARROW_SPELL}, {5, SoundEvent::HEAL_SPELL},
-            {6, SoundEvent::MISSILE_SPELL}, {7, SoundEvent::EXPLOSION_SPELL},   {8, SoundEvent::BOW_ATTACK},
-            {9, SoundEvent::BOW_ATTACK},
-    };
+            {0, SoundEvent::FISTS_ATTACK},      {1, SoundEvent::SWORD_ATTACK},
+            {2, SoundEvent::AXE_ATTACK},        {3, SoundEvent::HAMMER_ATTACK},
+            {4, SoundEvent::MAGIC_ARROW_SPELL}, {5, SoundEvent::HEAL_SPELL},
+            {6, SoundEvent::MISSILE_SPELL},     {7, SoundEvent::EXPLOSION_SPELL},
+            {8, SoundEvent::BOW_ATTACK},        {9, SoundEvent::BOW_ATTACK},
+            {20, SoundEvent::SWORD_ATTACK},     {21, SoundEvent::DISTORTION_SPELL},
+            {22, SoundEvent::BOW_ATTACK}};
 
     if (not weapon_to_sound_event.contains(attack.weapon))
         return;
 
-    play_event(weapon_to_sound_event.at(attack.weapon), sprite->get_position());
+    play_event(weapon_to_sound_event.at(attack.weapon),
+               SDL2pp::Point(attack.x, attack.y) * ClientConfig::get().get_tile_size());
 }
 
 void World::add_new_player(const PlayerInfoDTO& info) {

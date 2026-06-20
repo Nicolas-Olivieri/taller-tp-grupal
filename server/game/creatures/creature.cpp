@@ -136,15 +136,18 @@ CreatureUpdate Creature::attack_player() {
     assert(is_targeting_someone() && can_reach(target->get_position()) && can_attack());
 
     const uint16_t damage = attack();
+    const Position& position = get_target_position();
 
     if (Calculator::can_dodge(target->get_stats().agility)) {
-        return CreatureUpdate(stats.race_id, target->get_name(), 0, false);
+        return CreatureUpdate(stats.race_id, target->get_name(), 0, false, equipment.weapon, position.get_x(),
+                              position.get_y());
     }
 
     const uint16_t damage_applied = target->receive_damage(damage);
     const bool was_killed = !target->is_alive();
 
-    return CreatureUpdate(stats.race_id, target->get_name(), damage_applied, was_killed);
+    return CreatureUpdate(stats.race_id, target->get_name(), damage_applied, was_killed, equipment.weapon,
+                          position.get_x(), position.get_y());
 }
 
 int Creature::attack() {

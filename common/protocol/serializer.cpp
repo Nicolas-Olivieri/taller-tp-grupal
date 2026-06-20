@@ -249,7 +249,6 @@ void Serializer::serialize(const EquipmentInfoDTO& equipment) {
 }
 
 void Serializer::serialize(const AttackDTO& attack) {
-    serialize(attack.attacker);
     serialize(attack.weapon);
     serialize(attack.x);
     serialize(attack.y);

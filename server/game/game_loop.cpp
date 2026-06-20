@@ -73,19 +73,25 @@ void GameLoop::broadcast_creature_attack(SnapshotBuilder& builder, const Creatur
     assert(update.status == CreatureStatus::ATTACKED);
     std::string msg = CreatureFormatter::get_attack_message(update);
 
-    if (update.killed_target)
-        builder.add_action(ActionDTO(DeathDTO(update.player_name)));
-    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, update.player_name, msg)));
+    builder.add_action(ActionDTO(AttackDTO(update.attack.weapon, update.x, update.y,
+                                           update.attack.status == AttackStatus::TARGET_DODGED)));
+    builder.add_action(ActionDTO(ChatMessageDTO(MessageType::SYSTEM, update.attack.player_attacked, msg)));
 
-    assert(game_world.get_players().contains(update.player_name));
-    std::string clan_name = game_world.get_players().at(update.player_name).get_clan_name();
+    // Si mata al objetivo
+    if (update.attack.was_killed)
+        builder.add_action(ActionDTO(DeathDTO(update.attack.player_attacked)));
+
+    // TODO: creo que nunca falló, pero este assert no puede provocar una race condition en la que el jugador
+    // se fue antes de que se haga el broadcast del ataque de la creature? Además, el assert se hace después
+    // de haber usado el player_name arriba
+    assert(game_world.get_players().contains(update.attack.player_attacked));
+    std::string clan_name = game_world.get_players().at(update.attack.player_attacked).get_clan_name();
 
     if (not clan_name.empty()) {
         std::string clan_msg = CreatureFormatter::get_clan_attack_message(update);
-        builder.add_action(ActionDTO(ClanMessageDTO(clan_name, clan_msg, update.player_name)));
+        builder.add_action(ActionDTO(ClanMessageDTO(clan_name, clan_msg, update.attack.player_attacked)));
     }
 }
-
 
 void GameLoop::broadcast_resurrected_players(SnapshotBuilder& builder,
                                              const std::vector<std::string>& resurrected_players) const {
