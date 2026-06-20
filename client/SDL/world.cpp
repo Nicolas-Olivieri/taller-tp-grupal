@@ -31,6 +31,11 @@ void World::init_assets(const ClientMapDataDTO& map_data) {
         map_tiles.emplace(std::make_shared<FixedSprite>(std::move(tile)));
     }
 
+    for (const auto& safe_zone_data: map_data.safe_zones) {
+        FixedSprite safe_zone = sprite_creator.create_sprite(SpriteCategory::SAFE_ZONE, safe_zone_data);
+        map_safe_zones.emplace(std::make_shared<FixedSprite>(std::move(safe_zone)));
+    }
+
     for (const auto& collider_data: map_data.colliders) {
         FixedSprite collider = sprite_creator.create_sprite(SpriteCategory::COLLIDER, collider_data);
         map_items.emplace(std::make_shared<FixedSprite>(std::move(collider)));
@@ -46,6 +51,9 @@ void World::init_assets(const ClientMapDataDTO& map_data) {
 void World::update_visuals(const int it) const {
     for (auto& tile: map_tiles) {
         tile->update_frame(it);
+    }
+    for (auto& safe_zone: map_safe_zones) {
+        safe_zone->update_frame(it);
     }
     for (auto& entity: map_entities) {
         entity->update_visual_position();
@@ -65,6 +73,7 @@ bool World::cmp_by_y_coord(const std::shared_ptr<WorldSprite>& a, const std::sha
 void World::render_in_z_order(const Camera& camera) const {
     // Obtengo tiles e items (colliders, npcs, players, enemies) que se llegan a ver en la cámara
     auto viewed_tiles = filter_viewed_sprites(camera, map_tiles);
+    auto viewed_safe_zones = filter_viewed_sprites(camera, map_safe_zones);
     auto viewed_loot = filter_viewed_sprites(camera, map_loot);
     auto viewed_items = filter_viewed_sprites(camera, map_items);
     auto viewed_effects = filter_viewed_sprites(camera, effects);
@@ -77,6 +86,10 @@ void World::render_in_z_order(const Camera& camera) const {
     // Renderizo primero los tiles y luego los loot/items/fx por encima
     for (const auto& tile: viewed_tiles) {
         tile->render(camera.get_view().GetTopLeft());
+    }
+
+    for (const auto& safe_zone: viewed_safe_zones) {
+        safe_zone->render(camera.get_view().GetTopLeft());
     }
 
     for (const auto& top_loot: viewed_loot) {

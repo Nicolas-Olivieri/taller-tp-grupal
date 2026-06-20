@@ -48,6 +48,7 @@ void Serializer::serialize(const ClientMapDataDTO& map) {
     serialize(map.world_width);
     serialize(map.world_height);
     serialize(map.tiles);
+    serialize(map.safe_zones);
     serialize(map.colliders);
     serialize(map.npcs);
 }

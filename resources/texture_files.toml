@@ -20,3 +20,5 @@ golem = [3, 6]
 
 game_ui = [0, 6]
 hud_items = [0, 28]
+
+safe_zones = [0, 0]

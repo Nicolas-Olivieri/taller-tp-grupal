@@ -36,6 +36,7 @@ private:
 
     std::set<std::shared_ptr<EffectSprite>> effects;
     std::set<std::shared_ptr<FixedSprite>> map_tiles;
+    std::set<std::shared_ptr<FixedSprite>> map_safe_zones;
     std::set<std::shared_ptr<MovingSprite>> map_entities;
     std::set<std::shared_ptr<FixedSprite>> map_loot;
     std::set<std::shared_ptr<WorldSprite>> map_items;
