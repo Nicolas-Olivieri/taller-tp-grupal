@@ -105,6 +105,7 @@ struct HelpMsgData {
 
     std::vector<std::string> clan_help_messages;
     std::vector<std::string> cheat_help_messages;
+    std::vector<std::string> npc_help_messages;
 };
 
 #endif  // CLIENT_DATA_H

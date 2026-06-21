@@ -312,5 +312,7 @@ void ClientConfig::load_help_msg_data(toml::basic_value<toml::type_config> root)
     help_data.line_spacing = toml::find<uint16_t>(help_table, "spaces", "line_spacing");
     help_data.max_msg_per_page = toml::find<uint16_t>(help_table, "spaces", "max_msg_per_page");
     help_data.clan_help_messages = toml::find<std::vector<std::string>>(help_table, "clan", "help_messages");
-    help_data.cheat_help_messages = toml::find<std::vector<std::string>>(help_table, "cheat", "help_messages");
+    help_data.cheat_help_messages =
+            toml::find<std::vector<std::string>>(help_table, "cheat", "help_messages");
+    help_data.npc_help_messages = toml::find<std::vector<std::string>>(help_table, "npc", "help_messages");
 }

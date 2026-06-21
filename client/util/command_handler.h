@@ -53,6 +53,8 @@ private:
 
     void handle_inventory_request();
 
+    void handle_help_request(const std::string& text);
+
     /// Handlers de clanes
 
     void handle_clan_foundation(const std::string& text);

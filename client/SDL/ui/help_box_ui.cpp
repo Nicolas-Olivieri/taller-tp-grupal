@@ -4,12 +4,50 @@
 
 #include "client/config/client_config.h"
 HelpBoxUi::HelpBoxUi(SpriteCreator& sprite_creator, SDL2pp::Renderer& renderer):
-        renderer(renderer), must_be_rendered(false) {
-    const auto& config = ClientConfig::get().get_help_data();
-    const std::vector<std::string>& help_messages = config.help_messages;
+        config(ClientConfig::get().get_help_data()), renderer(renderer), current_page(HelpPage::NO_PAGE) {
+    load_page(HelpPage::GENERAL, config.help_messages, sprite_creator);
+    load_page(HelpPage::CLAN, config.clan_help_messages, sprite_creator);
+    load_page(HelpPage::CHEAT, config.cheat_help_messages, sprite_creator);
+    load_page(HelpPage::NPC, config.npc_help_messages, sprite_creator);
+}
+
+void HelpBoxUi::choose_page(const HelpPage& page) {
+    assert(page != HelpPage::NO_PAGE);
+
+    // Uso la general como cierre de todas
+    if (current_page != HelpPage::NO_PAGE and page == HelpPage::GENERAL) {
+        current_page = HelpPage::NO_PAGE;
+        return;
+    }
+
+    current_page = page;
+}
+
+void HelpBoxUi::render() {
+    if (current_page == HelpPage::NO_PAGE)
+        return;
+
+    assert(help_pages.contains(current_page));
+    auto& help_texts = help_pages.at(current_page);
+
+    const auto& client_config = ClientConfig::get();
+
+    renderer.SetDrawBlendMode(SDL_BLENDMODE_BLEND);
+    renderer.SetDrawColor(client_config.get_color_data().transparent_black);
+    renderer.FillRect(client_config.get_ui_data().viewport);
+    renderer.SetDrawBlendMode(SDL_BLENDMODE_NONE);
+
+    for (auto& text: help_texts) text.render_left();
+}
+
+void HelpBoxUi::load_page(const HelpPage& page, const std::vector<std::string>& help_messages,
+                          SpriteCreator& sprite_creator) {
+    assert(not help_pages.contains(page));
+
     const auto& viewport = ClientConfig::get().get_ui_data().viewport;
 
-    help_texts.reserve(help_messages.size());
+    std::vector<TextSprite> help_new_page;
+    help_new_page.reserve(help_messages.size());
 
     SDL2pp::Color white = ClientConfig::get().get_color_data().white;
 
@@ -21,25 +59,9 @@ HelpBoxUi::HelpBoxUi(SpriteCreator& sprite_creator, SDL2pp::Renderer& renderer):
 
     for (const std::string& msg: help_messages) {
         SDL2pp::Rect text_box(x_offset, y_offset, msg_width, msg_height);
-        help_texts.push_back(sprite_creator.create_sprite(text_box, msg, FontType::UI_MENU, white));
+        help_new_page.push_back(sprite_creator.create_sprite(text_box, msg, FontType::UI_MENU, white));
         y_offset += line_spacing;
     }
-}
 
-void HelpBoxUi::toggle_visibility() { must_be_rendered = !must_be_rendered; }
-
-void HelpBoxUi::render() {
-    if (not must_be_rendered)
-        return;
-
-    const auto& config = ClientConfig::get();
-
-    renderer.SetDrawBlendMode(SDL_BLENDMODE_BLEND);
-    renderer.SetDrawColor(config.get_color_data().transparent_black);
-    renderer.FillRect(config.get_ui_data().viewport);
-    renderer.SetDrawBlendMode(SDL_BLENDMODE_NONE);
-
-    for (auto& text: help_texts) {
-        text.render_left();
-    }
+    help_pages.insert({page, std::move(help_new_page)});
 }

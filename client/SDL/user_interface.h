@@ -57,7 +57,7 @@ public:
     void clear_bound_item();
 
     // METODOS DE AYUDA ::::::
-    void toggle_help();
+    void toggle_help(const HelpPage& page);
     void render_help();
 };
 

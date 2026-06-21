@@ -66,8 +66,8 @@ void CommandHandler::handle_text_command() {
     assert(not chat_text.empty());
     assert(chat_text[0] == '/');
 
-    if (chat_text == "/ayuda")
-        ui.toggle_help();
+    if (chat_text.starts_with("/ayuda"))
+        handle_help_request(chat_text);
     else if (chat_text == "/resucitar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::RESURRECT));
     else if (chat_text == "/curar")
@@ -256,6 +256,29 @@ void CommandHandler::handle_meditate() {
 
 void CommandHandler::handle_teleport() {
     connection.push_command(std::make_unique<EventDTO>(CommandType::TELEPORT));
+}
+
+void CommandHandler::handle_help_request(const std::string& text) {
+    std::string prefix = "/ayuda";
+    assert(text.starts_with(prefix));
+
+    if (text == prefix) {
+        ui.toggle_help(HelpPage::GENERAL);
+        return;
+    }
+
+    prefix += "-";
+    if (not text.starts_with(prefix))
+        return;
+
+    const std::string page_name = extract_prefix(prefix, text);
+
+    if (page_name == "clan")
+        ui.toggle_help(HelpPage::CLAN);
+    else if (page_name == "cheat")
+        ui.toggle_help(HelpPage::CHEAT);
+    else if (page_name == "npc")
+        ui.toggle_help(HelpPage::NPC);
 }
 
 /// Handlers de clanes

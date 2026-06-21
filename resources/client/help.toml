@@ -38,8 +38,8 @@ help_messages = [
     "/clan-kick <usuario> : Expulsar a un miembro del clan",
     "- ¿Estás en un clan?",
     "/dejar-clan : Abandonar tu clan",
-    "",
-    "Tip: Si estás cerca de tus compañeros, recibirás un bonus de ataque y defensa"
+    "Tip: Si estás cerca de tus compañeros, recibirás un bonus de ataque y defensa",
+    "- H para cerrar esta guia"
 ]
 
 [help.npc]
@@ -56,8 +56,8 @@ help_messages = [
     "- Hablábndole a un Sacerdote",
     "/curar       :  Te curas por completo",
     "/resucitar   :  Te resucita inmediatamente",
-    "",
     "Tip: Hablas con los NPC haciendo click izquiero sobre ellos",
+    "- H para cerrar esta guia"
 ]
 
 [help.cheat]
@@ -70,5 +70,6 @@ help_messages = [
     "/cheat-infinite-recoverables : Obtienes vida y mana infinitos",
     "                               Puedes desactivarlo ingresando el mismo comando",
     "/cheat-get-item <item> : De ser posible, se agregará a tu inventario el item",
-    "/cheat-kill-creatures : Mata a todas las criaturas del mundo "
+    "/cheat-kill-creatures : Mata a todas las criaturas del mundo ",
+    "- H para cerrar esta guia"
 ]

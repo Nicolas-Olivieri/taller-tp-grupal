@@ -244,7 +244,7 @@ void ClientGame::handle_key_down(const SDL_Event& event) {
             cmd_handler.handle_drop_item_command();
             break;
         case SDLK_h:
-            ui.toggle_help();
+            ui.toggle_help(HelpPage::GENERAL);
             break;
         case SDLK_m:
             cmd_handler.handle_meditate();

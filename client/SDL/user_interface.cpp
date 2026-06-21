@@ -64,6 +64,6 @@ std::optional<uint8_t> UserInterface::get_item_in_equipment_slot(const int slot_
     return inventory_ui.get_item_in_slot(inventory_ui.equipment, slot_index);
 }
 
-void UserInterface::toggle_help() { help_ui.toggle_visibility(); }
+void UserInterface::toggle_help(const HelpPage& page) { help_ui.choose_page(page); }
 
 void UserInterface::render_help() { help_ui.render(); }
