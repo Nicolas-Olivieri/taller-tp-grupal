@@ -305,12 +305,12 @@ const HelpMsgData& ClientConfig::get_help_data() const { return help_data; }
 void ClientConfig::load_help_msg_data(toml::basic_value<toml::type_config> root) {
     const auto help_table = toml::find(root, "help");
 
-    help_data = {
-            toml::find<std::string>(help_table, "text", "start_help"),
-            toml::find<std::vector<std::string>>(help_table, "text", "help_messages"),
-            toml::find<uint16_t>(help_table, "spaces", "top_margin"),
-            toml::find<uint16_t>(help_table, "spaces", "left_margin"),
-            toml::find<uint16_t>(help_table, "spaces", "line_spacing"),
-            toml::find<uint16_t>(help_table, "spaces", "max_msg_per_page"),
-    };
+    help_data.start_help = toml::find<std::string>(help_table, "general", "start_help");
+    help_data.help_messages = toml::find<std::vector<std::string>>(help_table, "general", "help_messages");
+    help_data.top_margin = toml::find<uint16_t>(help_table, "spaces", "top_margin");
+    help_data.left_margin = toml::find<uint16_t>(help_table, "spaces", "left_margin");
+    help_data.line_spacing = toml::find<uint16_t>(help_table, "spaces", "line_spacing");
+    help_data.max_msg_per_page = toml::find<uint16_t>(help_table, "spaces", "max_msg_per_page");
+    help_data.clan_help_messages = toml::find<std::vector<std::string>>(help_table, "clan", "help_messages");
+    help_data.cheat_help_messages = toml::find<std::vector<std::string>>(help_table, "cheat", "help_messages");
 }

@@ -1,4 +1,4 @@
-[help.text]
+[help.general]
 start_help = "Presiona la tecla H o envía /ayuda por el chat para ver una guía de los comandos"
 help_messages = [
     "GUIA DE COMANDOS",
