@@ -2,8 +2,10 @@
 #define HELP_BOX_UI_H
 
 
+#include <string>
 #include <vector>
 
+#include "client/SDL/sprite_creation/sprite_creator.h"
 #include "client/SDL/sprites/ui/text_sprite.h"
 
 class HelpBoxUi {
@@ -12,7 +14,7 @@ class HelpBoxUi {
     std::vector<TextSprite> help_texts;
 
 public:
-    explicit HelpBoxUi(SDL2pp::Renderer& renderer);
+    HelpBoxUi(SpriteCreator& sprite_creator, SDL2pp::Renderer& renderer);
 
     void toggle_visibility();
 

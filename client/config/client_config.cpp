@@ -15,6 +15,8 @@
 #define CLIENT_SOUND_DATA_PATH "/client/sound_data.toml"
 #define CLIENT_CHAT_DATA_PATH "/client/chat.toml"
 #define CLIENT_COLOR_PATH "/client/color.toml"
+#define CLIENT_HELP_DATA_PATH "/client/help.toml"
+
 
 ClientConfig::ClientConfig() {
     load_items_data(toml::parse(CONFIG_PATH CLIENT_ITEMS_PATH));
@@ -24,6 +26,7 @@ ClientConfig::ClientConfig() {
     load_sound_data(toml::parse(CONFIG_PATH CLIENT_SOUND_DATA_PATH));
     load_chat_data(toml::parse(CONFIG_PATH CLIENT_CHAT_DATA_PATH));
     load_color_data(toml::parse(CONFIG_PATH CLIENT_COLOR_PATH));
+    load_help_msg_data(toml::parse(CONFIG_PATH CLIENT_HELP_DATA_PATH));
 }
 
 
@@ -297,9 +300,14 @@ SDL2pp::Color ClientConfig::to_color(const SDL2pp::Rect& rect) {
     return SDL2pp::Color(rect.x, rect.y, rect.w, rect.h);
 }
 
-const HelpMsgData& ClientConfig::get_help_data() const {
-    assert(false);  // no lo implemente todavía
-    return help_data;
-}
+const HelpMsgData& ClientConfig::get_help_data() const { return help_data; }
 
-void ClientConfig::load_help_msg_data(toml::basic_value<toml::type_config> /* root */) { assert(false); }
+void ClientConfig::load_help_msg_data(toml::basic_value<toml::type_config> root) {
+    const auto help_table = toml::find(root, "help");
+
+    help_data = {toml::find<std::string>(help_table, "text", "start_help"),
+                 toml::find<std::vector<std::string>>(help_table, "text", "help_messages"),
+                 toml::find<uint16_t>(help_table, "spaces", "top_margin"),
+                 toml::find<uint16_t>(help_table, "spaces", "left_margin"),
+                 toml::find<uint16_t>(help_table, "spaces", "line_spacing")};
+}

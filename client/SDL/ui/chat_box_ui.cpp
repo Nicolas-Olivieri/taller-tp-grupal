@@ -47,7 +47,7 @@ void ChatBoxUI::init_color_msg() {
 }
 
 void ChatBoxUI::init_help_msg() {
-    enqueue_message("Presiona la tecla H o envía /ayuda por el chat para ver una guía de los comandos",
+    enqueue_message(ClientConfig::get().get_help_data().start_help,
                     msg_type_to_color.at(MessageType::SYSTEM));
 }
 

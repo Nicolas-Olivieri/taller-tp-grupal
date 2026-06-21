@@ -1,0 +1,17 @@
+[help.text]
+start_help = "Presiona la tecla H o envía /ayuda por el chat para ver una guía de los comandos"
+help_messages = [
+    "GUIA DE COMANDOS",
+    "H o /ayuda : Muestra esta guia",
+    "/resucitar : Revives como fantasma",
+#    "",
+    "/meditar   : Recupera mana",
+    "/curar     : (Hablándole a un sacerdote) Te curas por completo",
+    "/tirar o Q : Tira el item seleccionado",
+    "/tomar o E : Recoge el item del suelo"
+]
+
+[help.spaces]
+top_margin = 50
+left_margin = 50
+line_spacing = 30

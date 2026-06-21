@@ -95,7 +95,11 @@ struct ChatData {
 };
 
 struct HelpMsgData {
+    std::string start_help;
     std::vector<std::string> help_messages;
+    uint16_t top_margin;
+    uint16_t left_margin;
+    uint16_t line_spacing;
 };
 
 #endif  // CLIENT_DATA_H
