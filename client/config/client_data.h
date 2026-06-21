@@ -100,6 +100,7 @@ struct HelpMsgData {
     uint16_t top_margin;
     uint16_t left_margin;
     uint16_t line_spacing;
+    uint16_t max_msg_per_page;
 };
 
 #endif  // CLIENT_DATA_H

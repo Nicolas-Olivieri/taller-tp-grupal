@@ -16,9 +16,11 @@ HelpBoxUi::HelpBoxUi(SpriteCreator& sprite_creator, SDL2pp::Renderer& renderer):
     uint16_t y_offset = viewport.y + config.top_margin;
     const uint16_t x_offset = viewport.x + config.left_margin;
     const uint16_t line_spacing = config.line_spacing;
+    const uint16_t msg_width = viewport.w - config.left_margin;
+    const uint16_t msg_height = (viewport.h - config.top_margin) / config.max_msg_per_page;
 
     for (const std::string& msg: help_messages) {
-        SDL2pp::Rect text_box(x_offset, y_offset, 600, 20);
+        SDL2pp::Rect text_box(x_offset, y_offset, msg_width, msg_height);
         help_texts.push_back(sprite_creator.create_sprite(text_box, msg, FontType::UI_MENU, white));
         y_offset += line_spacing;
     }

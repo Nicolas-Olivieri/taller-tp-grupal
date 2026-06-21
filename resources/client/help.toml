@@ -15,3 +15,4 @@ help_messages = [
 top_margin = 50
 left_margin = 50
 line_spacing = 30
+max_msg_per_page = 13

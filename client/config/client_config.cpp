@@ -305,9 +305,12 @@ const HelpMsgData& ClientConfig::get_help_data() const { return help_data; }
 void ClientConfig::load_help_msg_data(toml::basic_value<toml::type_config> root) {
     const auto help_table = toml::find(root, "help");
 
-    help_data = {toml::find<std::string>(help_table, "text", "start_help"),
-                 toml::find<std::vector<std::string>>(help_table, "text", "help_messages"),
-                 toml::find<uint16_t>(help_table, "spaces", "top_margin"),
-                 toml::find<uint16_t>(help_table, "spaces", "left_margin"),
-                 toml::find<uint16_t>(help_table, "spaces", "line_spacing")};
+    help_data = {
+            toml::find<std::string>(help_table, "text", "start_help"),
+            toml::find<std::vector<std::string>>(help_table, "text", "help_messages"),
+            toml::find<uint16_t>(help_table, "spaces", "top_margin"),
+            toml::find<uint16_t>(help_table, "spaces", "left_margin"),
+            toml::find<uint16_t>(help_table, "spaces", "line_spacing"),
+            toml::find<uint16_t>(help_table, "spaces", "max_msg_per_page"),
+    };
 }
