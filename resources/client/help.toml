@@ -1,19 +1,19 @@
 [help.general]
-start_help = "Presiona la tecla H o envía /ayuda por el chat para ver una guía de los comandos"
+start_help = "Presiona la tecla [h] o envía /ayuda por el chat para ver una guía de los comandos"
 help_messages = [
     "GUIA DE COMANDOS",
-    "/ayuda o H : Abre esta guia y cierra cualquier guia de comandos",
+    "/ayuda o [h] : Abre esta guia y cierra cualquier guia de comandos",
     "/ayuda-npc : Muestra comandos para relacionarse con NPCs",
     "/ayuda-clan : Muestra comandos de clanes",
     "/ayuda-cheat : Muestra trucos",
-    "C o click en el chat : Escribe comandos o envia mensajes",
-    "@nombre <mensaje> : Envia un mensaje privado a <usuario>",
+    "[C] o click en el chat : Escribe comandos o envia mensajes",
+    "@nombre <mensaje> : Envia un mensaje privado a <nombre>",
     "/inventario : Lista los items que tienes en el inventario",
     "/resucitar : Revives como fantasma",
     "             Tardará más mientras más lejos estés de un sacerdote",
-    "/meditar o M : Recuperas mana",
-    "/tirar o Q : Tiras el item seleccionado",
-    "/tomar o E : Recoges el item u oro del suelo",
+    "/meditar o [M] : Recuperas mana",
+    "/tirar o [Q] : Tiras el item seleccionado",
+    "/tomar o [E] : Recoges el item u oro del suelo",
     "/viajar : (vinculado a un totem) Viajas por el eter"
 ]
 
@@ -31,7 +31,7 @@ help_messages = [
     "                        Piénsalo bien, no podrás abandonarlo",
     "/unirse <nombre-clan> : Enviar solicitud de unión a un clan",
     "- ¿Fundaste un clan?",
-    "/clan-aceptar <usuario> o  : Aceptar la solicitud de un usuario",
+    "/clan-aceptar <usuario> : Aceptar la solicitud de un usuario",
     "/clan-rechazar <usuario> : Rechazar la solicitud de un usuario",
     "/clan-ban <usuario> : Banear a un usuario del clan",
     "                      Sus solicitudes serán descartadas automáticamente",
@@ -39,7 +39,7 @@ help_messages = [
     "- ¿Estás en un clan?",
     "/dejar-clan : Abandonar tu clan",
     "Tip: Si estás cerca de tus compañeros, recibirás un bonus de ataque y defensa",
-    "- H para cerrar esta guia"
+    "- [h] para cerrar esta guia"
 ]
 
 [help.npc]
@@ -47,17 +47,17 @@ help_messages = [
     "GUIA DE COMANDOS DE NPCS",
     "- Hablándole a un NPC",
     "/listar : Pedirle que liste items que tiene",
-    "/comprar <item> o /vender <item> : Comerciar 1 unidad del item",
-    "                                   Siempre y cuando tenga artículos a la venta",
+    "/comprar <item> : Comprar 1 unidad del item que tenga a la venta",
+    "- Hablándole a un Comerciante",
+    "/vender <item> : Vender 1 unidad de ese item",
     "- Hablándole a un banquero",
-    "/depositar oro <cantidad>  : Depositar oro",
-    "/retirar oro <cantidad> : Retirar oro",
+    "/depositar oro <cantidad> o /retirar : Depositar o retirar oro",
     "/depositar <item> o /retirar <item> :  Depositar o retirar el item",
     "- Hablábndole a un Sacerdote",
-    "/curar       :  Te curas por completo",
-    "/resucitar   :  Te resucita inmediatamente",
+    "/curar :  Te curas por completo",
+    "/resucitar :  Te resucita inmediatamente",
     "Tip: Hablas con los NPC haciendo click izquiero sobre ellos",
-    "- H para cerrar esta guia"
+    "- [h] para cerrar esta guia"
 ]
 
 [help.cheat]
@@ -71,5 +71,5 @@ help_messages = [
     "                               Puedes desactivarlo ingresando el mismo comando",
     "/cheat-get-item <item> : De ser posible, se agregará a tu inventario el item",
     "/cheat-kill-creatures : Mata a todas las criaturas del mundo ",
-    "- H para cerrar esta guia"
+    "- [h] para cerrar esta guia"
 ]
