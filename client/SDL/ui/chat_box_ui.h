@@ -37,6 +37,7 @@ private:
 
     void init_texts();
     void init_color_msg();
+    void init_help_msg();
 
     void render_chat_history();
     void render_chat_input(const std::string& input, bool is_chat_active);

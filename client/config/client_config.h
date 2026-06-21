@@ -23,6 +23,7 @@ private:
     SoundData sound_data;
     ChatData chat_data;
     ColorData color_data;
+    HelpMsgData help_data;
 
 public:
     static ClientConfig& get();
@@ -69,6 +70,8 @@ public:
 
     const ColorData& get_color_data() const;
 
+    const HelpMsgData& get_help_data() const;
+
 private:
     ClientConfig();
 
@@ -85,6 +88,8 @@ private:
     void load_sound_data(toml::basic_value<toml::type_config> root);
 
     void load_color_data(toml::basic_value<toml::type_config> root);
+
+    void load_help_msg_data(toml::basic_value<toml::type_config> root);
 
     SDL2pp::Color to_color(const SDL2pp::Rect& rect);
 

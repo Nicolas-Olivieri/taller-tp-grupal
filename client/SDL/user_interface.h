@@ -8,6 +8,7 @@
 #include "SDL2pp/Renderer.hh"
 #include "SDL2pp/Texture.hh"
 #include "client/SDL/fonts/font_manager.h"
+#include "client/SDL/ui/help_box_ui.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 #include "ui/chat_box_ui.h"
@@ -27,7 +28,7 @@ private:
     InventoryUI inventory_ui;
     ChatBoxUI chat_ui;
     InterfaceSprite game_border_ui;
-
+    HelpBoxUi help_ui;
 
 public:
     UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager);
@@ -54,6 +55,10 @@ public:
     void bind_item(int slot_index);
     std::optional<uint8_t> get_bound_item_id() const;
     void clear_bound_item();
+
+    // METODOS DE AYUDA ::::::
+    void toggle_help(const HelpPage& page);
+    void render_help();
 };
 
 

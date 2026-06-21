@@ -15,6 +15,8 @@
 #define CLIENT_SOUND_DATA_PATH "/client/sound_data.toml"
 #define CLIENT_CHAT_DATA_PATH "/client/chat.toml"
 #define CLIENT_COLOR_PATH "/client/color.toml"
+#define CLIENT_HELP_DATA_PATH "/client/help.toml"
+
 
 ClientConfig::ClientConfig() {
     load_items_data(toml::parse(CONFIG_PATH CLIENT_ITEMS_PATH));
@@ -24,6 +26,7 @@ ClientConfig::ClientConfig() {
     load_sound_data(toml::parse(CONFIG_PATH CLIENT_SOUND_DATA_PATH));
     load_chat_data(toml::parse(CONFIG_PATH CLIENT_CHAT_DATA_PATH));
     load_color_data(toml::parse(CONFIG_PATH CLIENT_COLOR_PATH));
+    load_help_msg_data(toml::parse(CONFIG_PATH CLIENT_HELP_DATA_PATH));
 }
 
 
@@ -288,10 +291,28 @@ void ClientConfig::load_color_data(toml::basic_value<toml::type_config> root) {
     color_data.red = to_color(parse_rect(color_table, "colors", "red"));
     color_data.light_blue = to_color(parse_rect(color_table, "colors", "light_blue"));
     color_data.black = to_color(parse_rect(color_table, "colors", "black"));
+    color_data.transparent_black = to_color(parse_rect(color_table, "colors", "transparent_black"));
 }
 
 const ColorData& ClientConfig::get_color_data() const { return color_data; }
 
 SDL2pp::Color ClientConfig::to_color(const SDL2pp::Rect& rect) {
     return SDL2pp::Color(rect.x, rect.y, rect.w, rect.h);
+}
+
+const HelpMsgData& ClientConfig::get_help_data() const { return help_data; }
+
+void ClientConfig::load_help_msg_data(toml::basic_value<toml::type_config> root) {
+    const auto help_table = toml::find(root, "help");
+
+    help_data.start_help = toml::find<std::string>(help_table, "general", "start_help");
+    help_data.help_messages = toml::find<std::vector<std::string>>(help_table, "general", "help_messages");
+    help_data.top_margin = toml::find<uint16_t>(help_table, "spaces", "top_margin");
+    help_data.left_margin = toml::find<uint16_t>(help_table, "spaces", "left_margin");
+    help_data.line_spacing = toml::find<uint16_t>(help_table, "spaces", "line_spacing");
+    help_data.max_msg_per_page = toml::find<uint16_t>(help_table, "spaces", "max_msg_per_page");
+    help_data.clan_help_messages = toml::find<std::vector<std::string>>(help_table, "clan", "help_messages");
+    help_data.cheat_help_messages =
+            toml::find<std::vector<std::string>>(help_table, "cheat", "help_messages");
+    help_data.npc_help_messages = toml::find<std::vector<std::string>>(help_table, "npc", "help_messages");
 }

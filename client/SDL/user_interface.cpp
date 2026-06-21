@@ -10,7 +10,8 @@ UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_nam
         player_name(player_name),
         inventory_ui(sprite_creator, player_name),
         chat_ui(sprite_creator, player_name),
-        game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen)) {}
+        game_border_ui(sprite_creator.create_sprite(UiElement::SCREEN, config.screen)),
+        help_ui(sprite_creator, renderer) {}
 
 void UserInterface::render(const std::string& input, bool is_chat_active) {
     game_border_ui.render();
@@ -62,3 +63,7 @@ int UserInterface::get_equipment_slot_at(const int x, const int y) const {
 std::optional<uint8_t> UserInterface::get_item_in_equipment_slot(const int slot_index) const {
     return inventory_ui.get_item_in_slot(inventory_ui.equipment, slot_index);
 }
+
+void UserInterface::toggle_help(const HelpPage& page) { help_ui.choose_page(page); }
+
+void UserInterface::render_help() { help_ui.render(); }

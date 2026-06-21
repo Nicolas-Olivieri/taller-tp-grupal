@@ -1,0 +1,75 @@
+[help.general]
+start_help = "Presiona la tecla [h] o envía /ayuda por el chat para ver una guía de los comandos"
+help_messages = [
+    "GUIA DE COMANDOS",
+    "/ayuda o [h] : Abre esta guia y cierra cualquier guia de comandos",
+    "/ayuda-npc : Muestra comandos para relacionarse con NPCs",
+    "/ayuda-clan : Muestra comandos de clanes",
+    "/ayuda-cheat : Muestra trucos",
+    "[C] o click en el chat : Escribe comandos o envia mensajes",
+    "@nombre <mensaje> : Envia un mensaje privado a <nombre>",
+    "/inventario : Lista los items que tienes en el inventario",
+    "/resucitar : Revives como fantasma",
+    "             Tardará más mientras más lejos estés de un sacerdote",
+    "/meditar o [M] : Recuperas mana",
+    "/tirar o [Q] : Tiras el item seleccionado",
+    "/tomar o [E] : Recoges el item u oro del suelo",
+    "/viajar : (vinculado a un totem) Viajas por el eter"
+]
+
+[help.spaces]
+top_margin = 30
+left_margin = 50
+line_spacing = 30
+max_msg_per_page = 15
+
+[help.clan]
+help_messages = [
+    "GUIA DE COMANDOS DE CLANES",
+    "- ¿No estás en un clan?",
+    "/fundar-clan <nombre> : Fundar tu propio clan, y jurarle lealtad",
+    "                        Piénsalo bien, no podrás abandonarlo",
+    "/unirse <nombre-clan> : Enviar solicitud de unión a un clan",
+    "- ¿Fundaste un clan?",
+    "/clan-aceptar <usuario> : Aceptar la solicitud de un usuario",
+    "/clan-rechazar <usuario> : Rechazar la solicitud de un usuario",
+    "/clan-ban <usuario> : Banear a un usuario del clan",
+    "                      Sus solicitudes serán descartadas automáticamente",
+    "/clan-kick <usuario> : Expulsar a un miembro del clan",
+    "- ¿Estás en un clan?",
+    "/dejar-clan : Abandonar tu clan",
+    "Tip: Si estás cerca de tus compañeros, recibirás un bonus de ataque y defensa",
+    "- [h] para cerrar esta guia"
+]
+
+[help.npc]
+help_messages = [
+    "GUIA DE COMANDOS DE NPCS",
+    "- Hablándole a un NPC",
+    "/listar : Pedirle que liste items que tiene",
+    "/comprar <item> : Comprar 1 unidad del item que tenga a la venta",
+    "- Hablándole a un Comerciante",
+    "/vender <item> : Vender 1 unidad de ese item",
+    "- Hablándole a un banquero",
+    "/depositar oro <cantidad> o /retirar : Depositar o retirar oro",
+    "/depositar <item> o /retirar <item> :  Depositar o retirar el item",
+    "- Hablábndole a un Sacerdote",
+    "/curar :  Te curas por completo",
+    "/resucitar :  Te resucita inmediatamente",
+    "Tip: Hablas con los NPC haciendo click izquiero sobre ellos",
+    "- [h] para cerrar esta guia"
+]
+
+[help.cheat]
+help_messages = [
+    "GUIA DE TRUCOS/CHEATS",
+    "/cheat-set-xp <nivel> : Obtienes el nivel de experiencia que te asignes",
+    "/cheat-gain-gold <cantidad> : Ganas esa cantidad de oro",
+    "                              O el máximo que te permita tu nivel acutal",
+    "/cheat-kill-self : Te conviertes en fantasma",
+    "/cheat-infinite-recoverables : Obtienes vida y mana infinitos",
+    "                               Puedes desactivarlo ingresando el mismo comando",
+    "/cheat-get-item <item> : De ser posible, se agregará a tu inventario el item",
+    "/cheat-kill-creatures : Mata a todas las criaturas del mundo ",
+    "- [h] para cerrar esta guia"
+]

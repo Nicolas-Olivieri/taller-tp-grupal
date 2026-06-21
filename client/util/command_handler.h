@@ -26,6 +26,8 @@ public:
 
     void handle_drop_item_command();
 
+    void handle_meditate();
+
 private:
     /// Handlers generales
 
@@ -47,11 +49,11 @@ private:
 
     void handle_withdraw_item_command(const std::string& text);
 
-    void handle_meditate();
-
     void handle_teleport();
 
     void handle_inventory_request();
+
+    void handle_help_request(const std::string& text);
 
     /// Handlers de clanes
 

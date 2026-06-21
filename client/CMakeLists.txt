@@ -45,6 +45,7 @@ target_sources(taller_client
         SDL/user_interface.cpp
         SDL/ui/inventory_ui.cpp
         SDL/ui/chat_box_ui.cpp
+        SDL/ui/help_box_ui.cpp
 
         config/client_config.cpp
 
@@ -108,6 +109,7 @@ target_sources(taller_client
         SDL/user_interface.h
         SDL/ui/inventory_ui.h
         SDL/ui/chat_box_ui.h
+        SDL/ui/help_box_ui.h
 
         config/client_config.h
         config/client_data.h

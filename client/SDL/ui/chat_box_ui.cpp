@@ -18,6 +18,7 @@ ChatBoxUI::ChatBoxUI(SpriteCreator& sprite_creator, const std::string& username)
         input_msg(creator.create_sprite(ui_config.input_box, "", FontType::UI_CHAT, white)) {
     init_texts();
     init_color_msg();
+    init_help_msg();
 }
 
 void ChatBoxUI::init_texts() {
@@ -44,6 +45,12 @@ void ChatBoxUI::init_color_msg() {
                               {MessageType::ERROR, config.red},
                               {MessageType::ALLY, config.light_blue}});
 }
+
+void ChatBoxUI::init_help_msg() {
+    enqueue_message(ClientConfig::get().get_help_data().start_help,
+                    msg_type_to_color.at(MessageType::SYSTEM));
+}
+
 
 void ChatBoxUI::render(const std::string& input, bool is_chat_active) {
     ui.render();
