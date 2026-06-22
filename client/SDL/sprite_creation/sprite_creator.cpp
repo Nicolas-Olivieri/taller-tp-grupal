@@ -76,7 +76,6 @@ FixedSprite SpriteCreator::create_sprite(const LootInfoDTO& loot_info) {
 }
 
 EffectSprite SpriteCreator::create_sprite(const ActionDTO& action_info, SDL2pp::Point position) {
-    // TODO ir agregando efectos segun actions
     switch (action_info.action) {
         case ActionType::ATTACK: {
             position = SDL2pp::Point(action_info.attack.x, action_info.attack.y);

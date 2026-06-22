@@ -24,8 +24,6 @@ struct PlayerInfoDTO: public ProtocolMessageDTO {
     PlayerStatsDTO stats;
     InventoryInfoDTO inventory;
     EquipmentInfoDTO equipment;
-    // PlayersStatsDTO stats; TODO: agregar esto Y NO OLVIDAR MODIFICAR LOS
-    // MÉTODOS PARA TENERLO EN CUENTA
 
     PlayerInfoDTO(const std::string& name, const ClanInfoDTO& clan, const Direction& direction, uint16_t x,
                   uint16_t y, uint16_t safe_gold, uint16_t excess_gold, const AppearanceDTO& appearance,

@@ -237,7 +237,6 @@ void GameWorld::spawn_random_creature() {
     players_positions.reserve(players.size());
 
     for (const auto& [name, player]: players) {
-        // TODO: capaz no hace falta filtrar que estén vivos
         if (player.is_alive()) {
             Position position = player.get_position();
             if (!config.is_safe_zone_floor(grid.get_tile(position).floor))
@@ -544,7 +543,6 @@ MeditateResult GameWorld::meditate(const std::string& player_name) {
 
     Player& player = players.at(player_name);
 
-    // TODO: Estos casos se podrían manejar como excepciones
     if (not player.is_alive())
         return MeditateResult(MeditateStatus::GHOST_FAIL);
 

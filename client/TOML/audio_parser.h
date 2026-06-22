@@ -106,7 +106,6 @@ struct toml::from<SFXConfig> {
                 {"clan_accept", SoundEvent::CLAN_ACCEPT},
                 {"clan_found", SoundEvent::CLAN_FOUND},
                 {"clan_leave", SoundEvent::CLAN_LEAVE},
-                // TODO: Agregar más sonidos...
         });
 
         SFXConfig config;

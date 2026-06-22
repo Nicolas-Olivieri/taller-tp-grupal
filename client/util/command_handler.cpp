@@ -378,8 +378,6 @@ void CommandHandler::handle_cheat(const std::string& text) {
         handle_get_item_cheat(cheat_type);
     else if (cheat_type == "kill-creatures")
         handle_kill_creatures_cheat();
-
-    // TODO agregar el resto de cheats
 }
 
 void CommandHandler::handle_xp_cheat(const std::string& text) {

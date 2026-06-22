@@ -40,8 +40,6 @@ private:
 
     CommandHandler cmd_handler;
 
-    // TODO: acá meter las cosas del chat
-
     // Principales
     void pollEvents();
 

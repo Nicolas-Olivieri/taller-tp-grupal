@@ -52,7 +52,8 @@ struct RequestedCommandDTO {
     std::string receiver;
     std::string message;
 
-    // OJO si se cambia esto de uint_8 a algo más cuidado que tmb se usa para enviar el nivel de experiencia
+    // TODO: OJO si se cambia esto de uint_8 a algo más cuidado que tmb se usa para enviar el nivel de
+    // experiencia
     uint8_t item_id;
 
     uint16_t gold_amount;
@@ -60,8 +61,6 @@ struct RequestedCommandDTO {
     std::string clan_name;
     bool command_selector;
 
-
-    // TODO: Refactorizar los constructores para que determinen el CommandType a partir de los parámetros
     RequestedCommandDTO(const CommandType& cmd, const Direction& direction);
 
     RequestedCommandDTO(const CommandType& cmd, int x, int y);

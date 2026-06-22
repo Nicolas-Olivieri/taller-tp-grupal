@@ -7,9 +7,6 @@
 
 #include "server/game/items/item_mapper.h"
 
-// TODO 1: Agregar la persistencia de inventario, banco, etc... a medida que se implementen en la lógica del
-// modelo
-
 // Constructor para jugador que vuelve a conectarse
 Player::Player(const std::string& player_name, const PlayerData& persisted_data):
         Killable(persisted_data.archetype, persisted_data.race, persisted_data.current_xp_amount,

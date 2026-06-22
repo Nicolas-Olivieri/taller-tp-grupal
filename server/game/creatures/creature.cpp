@@ -168,7 +168,6 @@ bool Creature::can_attack() const {
     return mana_cost <= stats.mana.get_current();
 }
 
-// TODO: modularizar
 bool Creature::can_reach(const Position& other_position) const {
     uint8_t range = get_weapon_range();
     return is_in_range(other_position, range);
