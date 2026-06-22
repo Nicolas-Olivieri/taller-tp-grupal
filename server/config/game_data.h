@@ -435,6 +435,7 @@ struct WorldConstantsData {
     uint16_t tick_between_saves;
     uint16_t creatures_amount_per_player;
     uint16_t max_player_amount;
+    double resurrection_time_factor;
 };
 
 template <>
@@ -443,7 +444,8 @@ struct toml::from<WorldConstantsData> {
         return WorldConstantsData{toml::find<uint8_t>(raw, "ticks_per_second"),
                                   toml::find<uint16_t>(raw, "tick_between_saves"),
                                   toml::find<uint16_t>(raw, "creatures_amount_per_player"),
-                                  toml::find<uint16_t>(raw, "max_player_amount")};
+                                  toml::find<uint16_t>(raw, "max_player_amount"),
+                                  toml::find<double>(raw, "resurrection_time_factor")};
     }
 };
 
