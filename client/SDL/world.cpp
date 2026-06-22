@@ -212,7 +212,7 @@ void World::erase_finished_effects() {
 }
 
 void World::handle_actions(const std::vector<ActionDTO>& actions) {
-    // TODO agregar todos los tipos que vayamos agregando
+    // TODO: lo modularizaría en mini handles
     for (auto& action: actions) {
         switch (action.action) {
             case ActionType::DESPAWN:

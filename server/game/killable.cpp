@@ -50,7 +50,6 @@ uint16_t Killable::receive_damage(uint16_t damage) {
     const uint16_t defense = Calculator::calculate_defense(equipment, clan.get_clan_buff_factor());
     const uint16_t damage_applied = damage > defense ? damage - defense : 0;
 
-    // TODO: creo que este método puede dejar de ser bool
     stats.health.loose(damage_applied);
 
     return damage_applied;
@@ -71,7 +70,6 @@ InteractResult Killable::interact(Player& attacker) {
     const uint16_t damage_applied = receive_damage(damage);
     is_meditating = false;
 
-    // TODO notificar el caso particular?
     if (damage_applied == 0)
         return InteractResult(attacker.get_equipment().weapon, 0, false);
 

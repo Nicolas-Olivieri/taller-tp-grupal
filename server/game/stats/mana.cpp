@@ -39,13 +39,10 @@ void Mana::meditate() {
 }
 
 
-bool Mana::loose(uint16_t amount) {
+void Mana::loose(uint16_t amount) {
     if (current_amount <= amount) {
-        // TODO: blquear el uso de hechizo, si no tiene maná suficiente, no debería poder usar el hechizo
         current_amount = 0;
     } else {
         current_amount -= amount;
     }
-
-    return false;
 }

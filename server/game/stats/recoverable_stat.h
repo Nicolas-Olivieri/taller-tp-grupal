@@ -20,7 +20,7 @@ public:
 
     virtual void update();
 
-    virtual bool loose(uint16_t amount) = 0;
+    virtual void loose(uint16_t amount) = 0;
 
     virtual void recover_all();
 

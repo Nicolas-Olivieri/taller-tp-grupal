@@ -18,7 +18,6 @@ enum class AttackStatus {
     SELF_IN_SAFE_ZONE
 };
 
-// TODO va a tener que incluir el clan name para notificar a los compis
 struct AttackResult {
     AttackStatus status;
 

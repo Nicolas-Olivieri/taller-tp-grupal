@@ -45,8 +45,6 @@ CommandType Deserializer::recv_command_type() {
     uint8_t byte = recv_uint8();
 
     switch (static_cast<CommandType>(byte)) {
-        // TODO: agregar un case para todos los tipos de comandos existentes,
-        // luego borrar este comentario
         case CommandType::MOVE:
         case CommandType::INTERACT:
         case CommandType::CHAT:
@@ -81,7 +79,6 @@ CommandType Deserializer::recv_command_type() {
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
-            // TODO: chequear si es la mejor excepción
     }
 }
 
@@ -97,7 +94,6 @@ Direction Deserializer::recv_direction() {
             return static_cast<Direction>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de dirección no reconocido");
-            // TODO: chequear si es la mejor excepción
     }
 }
 
@@ -200,8 +196,6 @@ std::vector<ActionDTO> Deserializer::recv_actions() {
 
 ActionDTO Deserializer::recv_action() {
     ActionType type = recv_action_type();
-    // TODO: recordar modificar esto para recibir la información según el
-    // ActionType
     switch (type) {
         case ActionType::ATTACK:
             return ActionDTO(recv_attack());
@@ -242,8 +236,6 @@ ActionType Deserializer::recv_action_type() {
     uint8_t byte = recv_uint8();
 
     switch (static_cast<ActionType>(byte)) {
-        // TODO: agregar un case para todos los tipos de comandos existentes,
-        // luego borrar este comentario
         case ActionType::ATTACK:
         case ActionType::DESPAWN:
         case ActionType::HEAL:
@@ -262,13 +254,10 @@ ActionType Deserializer::recv_action_type() {
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
-            // TODO: chequear si es la mejor excepción
     }
 }
 
 AppearanceDTO Deserializer::recv_appearance() {
-    // TODO 1: recordar considerar equipamientos y eso en el futuro
-    // TODO 2: capaz en un futuro cada categoría debería ser un enum
     uint8_t body = recv_uint8();
     uint8_t head = recv_uint8();
 
@@ -342,8 +331,6 @@ MessageType Deserializer::recv_message_type() {
     uint8_t byte = recv_uint8();
 
     switch (static_cast<MessageType>(byte)) {
-        // TODO: agregar un case para todos los tipos de comandos existentes,
-        // luego borrar este comentario
         case MessageType::SYSTEM:
         case MessageType::PRIVATE:
         case MessageType::GLOBAL:
@@ -353,7 +340,6 @@ MessageType Deserializer::recv_message_type() {
             return static_cast<MessageType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de visibilidad de mensaje no reconocido");
-            // TODO: chequear si es la mejor excepción
     }
 }
 

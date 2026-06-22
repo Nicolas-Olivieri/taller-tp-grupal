@@ -20,7 +20,6 @@ void ListItemsCommand::build_snapshot(SnapshotBuilder& builder) {
     }
 
     if (AllyType::TOTEM == result.get()->ally) {
-        // TODO el totem te contesta?? Me parece que queda misterioso
         builder.add_action(
                 ActionDTO(ChatMessageDTO(MessageType::ALLY, "Totem", player_name,
                                          "No puedo decirte el destino, tendrás que descubrirlo...")));

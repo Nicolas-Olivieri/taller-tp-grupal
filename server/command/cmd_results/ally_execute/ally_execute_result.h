@@ -15,9 +15,7 @@
 
 
 // Resultado devuelto por ally.execute()
-// TODO tiene que contener todos los results de las interacciones con aliados y constructores que convengan
 struct AllyExecuteResult {
-    // TODO agregar campos faltantes
     BuyResult buy;
     DepositItemResult deposit_item;
     DepositGoldResult deposit_gold;

@@ -4,8 +4,6 @@
 
 #include "common/protocol/serializer.h"
 
-// TODO: este método debería cambiar su comportamiento dependiendo del
-// ActionType, considerar opciones de implementación
 size_t ActionDTO::message_size() const {
     const auto base = sizeof(action);
 

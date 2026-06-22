@@ -175,7 +175,7 @@ void Protocol::check_header_message_byte(const Message& expected) {
     uint8_t msgbyte = deserializer.recv_uint8();
 
     if (msgbyte != static_cast<uint8_t>(expected)) {
-        throw std::runtime_error("Se recibió un byte que no era el esperado en "
-                                 "el protocolo");  // TODO: definir excepción
+        // TODO: definir excepción
+        throw std::runtime_error("Se recibió un byte que no era el esperado en el protocolo");
     }
 }

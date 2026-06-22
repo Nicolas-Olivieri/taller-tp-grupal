@@ -98,7 +98,6 @@ std::string ClientConfig::get_item_icon_path(const uint8_t item_id) {
 }
 
 ItemDisplayData ClientConfig::build_item_display_data(const toml::value& item_toml) const {
-    // TODO: Cargar el resto de atributos de un ítem para el cliente
     const auto name = toml::find<std::string>(item_toml, "name");
     return ItemDisplayData(name, string_utils::normalize(name),
                            toml::find<std::string>(item_toml, "icon_path"));

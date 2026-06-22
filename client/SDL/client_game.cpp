@@ -20,9 +20,6 @@
 #include "common/dto/events/ally_related/withdraw/withdraw_gold_event.h"
 #include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
 #include "common/dto/events/chat/chatevent.h"
-#include "common/dto/events/cheat/cheat_experience_set_event.h"
-#include "common/dto/events/cheat/cheat_get_item_event.h"
-#include "common/dto/events/cheat/cheat_gold_gain_event.h"
 #include "common/dto/events/clan/clan_found_event.h"
 #include "common/dto/events/clan/clan_join_event.h"
 #include "common/dto/events/clan/clan_remove_player_event.h"
@@ -140,7 +137,7 @@ void ClientGame::pollEvents() {
             handle_key_down(event);
         }
 
-        // Esto no sirvió en esta condición, nunca se cumplía
+        // TODO: Esto no sirvió en esta condición, nunca se cumplía
         // key_was_pressed == event.key.keysym.sym &&
         if (event.type == SDL_KEYUP && KeyMapper::is_movement_key(event.key.keysym.sym)) {
             key_being_pressed = SDLK_UNKNOWN;
