@@ -17,7 +17,6 @@ void Serializer::serialize(const ProtocolMessageDTO& dto) { dto.accept(*this); }
 void Serializer::serialize(const CredentialsDTO& credentials) {
     serialize(static_cast<uint8_t>(Message::CREDENTIALS));
     serialize(credentials.username);
-    serialize(credentials.password);
 }
 
 void Serializer::serialize(const EventDTO& event) {
