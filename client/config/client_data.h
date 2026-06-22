@@ -91,6 +91,7 @@ struct SoundData {
 
 struct ChatData {
     uint16_t max_chat_history;
+    uint16_t ms_between_cursor_appearance;
 };
 
 struct HelpMsgData {

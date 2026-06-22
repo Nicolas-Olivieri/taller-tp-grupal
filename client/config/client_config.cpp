@@ -272,7 +272,9 @@ void ClientConfig::load_chat_data(toml::basic_value<toml::type_config> root) {
 
     for (const auto& [key, value]: chat_table.as_table()) {
         if (key == "data") {
-            chat_data = {toml::find<uint16_t>(value, "max_chat_history")};
+            chat_data = {toml::find<uint16_t>(value, "max_chat_history"),
+                         toml::find<uint16_t>(value, "ms_between_cursor_appearance")};
+
             continue;
         }
 
