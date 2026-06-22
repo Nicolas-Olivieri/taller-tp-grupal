@@ -2,32 +2,15 @@
 
 #include <memory>
 #include <regex>
-#include <utility>
 
 #include <SDL2/SDL.h>
 #include <SDL2pp/Renderer.hh>
 #include <SDL2pp/SDL2pp.hh>
 #include <SDL2pp/Window.hh>
 
-#include "../client_constants.h"
 #include "client/config/client_config.h"
 #include "client/util/key_mapper.h"
-#include "common/dto/events/ally_related/deposit/deposit_gold_event.h"
-#include "common/dto/events/ally_related/deposit/deposit_item_event.h"
 #include "common/dto/events/ally_related/interact_event.h"
-#include "common/dto/events/ally_related/shop/buy_event.h"
-#include "common/dto/events/ally_related/shop/sell_event.h"
-#include "common/dto/events/ally_related/withdraw/withdraw_gold_event.h"
-#include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
-#include "common/dto/events/chat/chatevent.h"
-#include "common/dto/events/cheat/cheat_experience_set_event.h"
-#include "common/dto/events/cheat/cheat_get_item_event.h"
-#include "common/dto/events/cheat/cheat_gold_gain_event.h"
-#include "common/dto/events/clan/clan_found_event.h"
-#include "common/dto/events/clan/clan_join_event.h"
-#include "common/dto/events/clan/clan_remove_player_event.h"
-#include "common/dto/events/clan/clan_request_response_event.h"
-#include "common/dto/events/drop_item_event.h"
 #include "common/dto/events/movement/moveevent.h"
 #include "common/dto/events/unequip_item_event.h"
 #include "common/dto/events/use_item_event.h"
@@ -44,11 +27,12 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, 
                               config.window_width, config.window_height, SDL_WINDOW_BORDERLESS)),
         renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         connection(connection),
+        sprite_creator(renderer, font_manager),
         player_name(player_name),
-        world(renderer, connection.receive_map(), player_name, audio_manager, font_manager),
+        world(sprite_creator, connection.receive_map(), player_name, audio_manager),
         key_being_pressed(SDLK_UNKNOWN),
         camera(initialize_world_and_camera()),
-        ui(renderer, player_name, font_manager),
+        ui(renderer, sprite_creator, player_name),
         keep_running(true),
         just_restored(false),
         is_fullscreen(false),

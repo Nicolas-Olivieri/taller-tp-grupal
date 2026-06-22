@@ -23,6 +23,7 @@ private:
     SDL2pp::Window window;
     SDL2pp::Renderer renderer;
     ConnectionHandler& connection;
+    SpriteCreator sprite_creator;
 
     std::string player_name;
     World world;

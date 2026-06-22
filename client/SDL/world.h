@@ -23,9 +23,7 @@
 
 class World {
 private:
-    SDL2pp::Renderer& renderer;
-    TexturePool texture_pool;
-    SpriteCreator sprite_creator;
+    SpriteCreator& sprite_creator;
     AudioManager& audio_manager;
 
     SDL2pp::Rect world_view;
@@ -73,8 +71,8 @@ private:
     }
 
 public:
-    World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
-          AudioManager& audio_manager, FontManager& font_manager);
+    World(SpriteCreator& sprite_creator, const ClientMapDataDTO& map_data, const std::string& player_name,
+          AudioManager& audio_manager);
 
     void update_players(const std::vector<PlayerInfoDTO>& players_information);
 

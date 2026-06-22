@@ -18,10 +18,7 @@ class UserInterface {
 private:
     SDL2pp::Renderer& renderer;
     const UserInterfaceData& config;
-
-    SpriteCreator sprite_creator;
-
-    FontManager& font_manager;
+    SpriteCreator& sprite_creator;
 
     std::string& player_name;
 
@@ -31,7 +28,7 @@ private:
     HelpBoxUi help_ui;
 
 public:
-    UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager);
+    UserInterface(SDL2pp::Renderer& renderer, SpriteCreator& sprite_creator, std::string& player_name);
 
     void render(const std::string& input, bool is_chat_active);
 

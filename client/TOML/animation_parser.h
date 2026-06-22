@@ -14,12 +14,12 @@
 
 template <typename keyType>
 struct AnimationData {
-    std::map<SpriteCategory, std::map<keyType, Animation>> data;
+    std::unordered_map<SpriteCategory, std::map<keyType, Animation>> data;
 };
 
 struct AnimationTypesData {
-    std::map<SpriteCategory, std::map<Direction, Animation>> walking_animations;
-    std::map<SpriteCategory, std::map<uint8_t, Animation>> item_animations;
+    std::unordered_map<SpriteCategory, std::map<Direction, Animation>> walking_animations;
+    std::unordered_map<SpriteCategory, std::map<uint8_t, Animation>> item_animations;
 };
 
 template <>

@@ -8,15 +8,12 @@
 #include <vector>
 
 #include "client/config/client_config.h"
-#include "fonts/font_manager.h"
 
 #include "camera.h"
 
-World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
-             AudioManager& audio_manager, FontManager& font_manager):
-        renderer(renderer),
-        texture_pool(renderer),
-        sprite_creator(renderer, font_manager),
+World::World(SpriteCreator& sprite_creator, const ClientMapDataDTO& map_data, const std::string& player_name,
+             AudioManager& audio_manager):
+        sprite_creator(sprite_creator),
         audio_manager(audio_manager),
         world_view(SDL2pp::Point(0, 0),
                    SDL2pp::Point(map_data.world_width * ClientConfig::get().get_tile_size(),

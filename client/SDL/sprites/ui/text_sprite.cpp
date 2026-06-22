@@ -31,6 +31,9 @@ void TextSprite::set_text(const std::string& new_text) {
 }
 
 void TextSprite::set_color(const SDL2pp::Color new_color) {
+    if (color == new_color) {
+        return;
+    }
     color = new_color;
     if (!current_text.empty()) {
         texture = SDL2pp::Texture(renderer, font.RenderUTF8_Solid(current_text, color));

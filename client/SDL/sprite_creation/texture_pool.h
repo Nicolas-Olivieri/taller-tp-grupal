@@ -11,7 +11,7 @@
 class TexturePool {
 private:
     SDL2pp::Renderer& renderer;
-    std::map<SpriteCategory, std::map<uint8_t, SDL2pp::Texture>> textures;
+    std::unordered_map<SpriteCategory, std::map<uint8_t, SDL2pp::Texture>> textures;
 
 public:
     explicit TexturePool(SDL2pp::Renderer& renderer);

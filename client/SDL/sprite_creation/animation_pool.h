@@ -10,8 +10,8 @@
 
 class AnimationPool {
 private:
-    std::map<SpriteCategory, std::map<Direction, Animation>> walking_animations;
-    std::map<SpriteCategory, std::map<uint8_t, Animation>> item_animations;
+    std::unordered_map<SpriteCategory, std::map<Direction, Animation>> walking_animations;
+    std::unordered_map<SpriteCategory, std::map<uint8_t, Animation>> item_animations;
 
 public:
     AnimationPool();

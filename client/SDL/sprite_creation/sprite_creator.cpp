@@ -122,7 +122,6 @@ ProgressBarSprite SpriteCreator::create_sprite(UiElement bar_type, const SDL2pp:
                                                size_t current, size_t max) {
     SpriteLayer base = create_sprite_layer(SpriteCategory::UI, static_cast<int>(bar_type));
     SDL2pp::Point size = base.frame.GetSize();
-    SDL2pp::Rect texture_rect(dest_rect.GetTopLeft(), size);
 
     TextSprite label =
             create_sprite(dest_rect, "", FontType::UI_MENU, ClientConfig::get().get_color_data().white);
