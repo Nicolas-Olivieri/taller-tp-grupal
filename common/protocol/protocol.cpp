@@ -25,9 +25,8 @@ CredentialsDTO Protocol::recv_credentials() {
     Deserializer deserializer(this->socket);
 
     std::string username = deserializer.recv_string();
-    std::string password = deserializer.recv_string();
 
-    return CredentialsDTO(username, password);
+    return CredentialsDTO(username);
 }
 
 ExistenceDTO Protocol::recv_existence() {
