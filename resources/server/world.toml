@@ -3,6 +3,7 @@ ticks_per_second = 30 # máximo es 255
 tick_between_saves = 300
 creatures_amount_per_player = 5
 max_player_amount = 100
+resurrection_time_factor = 2.00
 
 [grid]
 roam_idle_weight = 4

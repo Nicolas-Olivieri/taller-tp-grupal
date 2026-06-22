@@ -609,10 +609,8 @@ const Ally* GameWorld::find_closest_priest(const Player& player) const {
 
 
 AllyExecuteResult GameWorld::start_delayed_resurrection(Player& player, const Ally* priest) const {
-    // TODO: El factor de proporcionalidad debe venir del TOML
-    constexpr double time_factor = 2;
     const double distance = player.get_position().distance_to(priest->get_position());
-    const double wait_time = distance * time_factor;
+    const double wait_time = distance * GameConfig::get().get_world_constants().resurrection_time_factor;
     player.start_delayed_resurrection(wait_time, priest->get_position());
     return AllyExecuteResult(ResurrectResult(ResurrectStatus::RESURRECTION_PENDING, AllyType::PRIEST));
 }
