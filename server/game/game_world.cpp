@@ -729,12 +729,12 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
 
     Clan& clan = clans.at(clan_name);
 
-
     ClanActionResult result = clan.execute(payload);
 
     if (result.status == ClanActionStatus::SUCCESS) {
         switch (payload.type) {
             case ClanActionType::ACCEPT: {
+                assert(players.contains(payload.other_player));
                 Player& player_accepted = players.at(payload.other_player);
                 if (not player_accepted.get_clan_name().empty()) {
                     clan.remove(payload.other_player);
@@ -747,11 +747,13 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
                 player.leave_clan();
                 break;
             case ClanActionType::KICK: {
+                assert(players.contains(payload.other_player));
                 Player& player_kicked = players.at(payload.other_player);
                 player_kicked.leave_clan();
                 break;
             }
             case ClanActionType::BAN: {
+                assert(players.contains(payload.other_player));
                 Player& player_banned = players.at(payload.other_player);
                 if (player_banned.get_clan_name() == clan_name)
                     player_banned.leave_clan();

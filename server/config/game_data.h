@@ -598,6 +598,7 @@ struct ClanMessagesData {
     std::string player_is_banned;
     std::string player_has_clan;
     std::string player_is_disconnected;
+    std::string is_not_member;
 };
 
 template <>
@@ -623,6 +624,7 @@ struct toml::from<ClanMessagesData> {
                 toml::find<std::string>(raw, "player_is_banned"),
                 toml::find<std::string>(raw, "player_has_clan"),
                 toml::find<std::string>(raw, "player_is_disconnected"),
+                toml::find<std::string>(raw, "is_not_member"),
         };
     }
 };

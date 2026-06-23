@@ -26,7 +26,7 @@ void ClanKickCommand::build_snapshot(SnapshotBuilder& builder) {
             return;
 
         case ClanActionStatus::IS_FOUNDER:
-            error_msg = "No puedes expulsarte a tí mismo del clan";
+            error_msg = clan_msgs.founder_cannot_kick_himself;
             break;
         case ClanActionStatus::IS_MEMBER:
             error_msg = clan_msgs.is_member_msg;
@@ -35,7 +35,7 @@ void ClanKickCommand::build_snapshot(SnapshotBuilder& builder) {
             error_msg = clan_msgs.not_in_clan_msg;
             break;
         case ClanActionStatus::NOT_A_PLAYER:
-            error_msg = std::format("El jugador {} no es un miembro del clan", other_player_name);
+            error_msg = clan_msgs.prefix + other_player_name + clan_msgs.is_not_member;
             break;
         case ClanActionStatus::PLAYER_DISCONNECTED:
             error_msg = other_player_name + clan_msgs.player_is_disconnected;
