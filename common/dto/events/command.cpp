@@ -10,7 +10,7 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const Direction
         y(0),
         receiver(""),
         message(""),
-        item_id(0),
+        one_byte_number(0),
         gold_amount(0),
         clan_name(),
         command_selector(false) {}
@@ -23,7 +23,7 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const int x, co
         y(y),
         receiver(""),
         message(""),
-        item_id(0),
+        one_byte_number(0),
         gold_amount(0),
         clan_name(),
         command_selector(false) {}
@@ -37,7 +37,7 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::stri
         y(0),
         receiver(receiver),
         message(content),
-        item_id(0),
+        one_byte_number(0),
         gold_amount(0),
         clan_name(),
         command_selector(false) {}
@@ -50,7 +50,7 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd):
         y(0),
         receiver(""),
         message(""),
-        item_id(0),
+        one_byte_number(0),
         gold_amount(0),
         clan_name(),
         command_selector(false)
@@ -58,14 +58,14 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd):
 {}
 
 
-RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const uint8_t item_id):
+RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const uint8_t _one_byte_number):
         command(cmd),
         direction(Direction::IDLE),
         x(0),
         y(0),
         receiver(""),
         message(""),
-        item_id(item_id),
+        one_byte_number(_one_byte_number),
         gold_amount(0),
         clan_name(),
         command_selector(false) {}
@@ -78,7 +78,7 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const uint16_t 
         y(0),
         receiver(""),
         message(""),
-        item_id(0),
+        one_byte_number(0),
         gold_amount(gold_amount),
         clan_name(),
         command_selector(false) {}
@@ -90,7 +90,7 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::stri
         y(0),
         receiver(),
         message(),
-        item_id(0),
+        one_byte_number(0),
         gold_amount(0),
         clan_name(clan_name),
         command_selector(false) {
@@ -106,7 +106,7 @@ RequestedCommandDTO::RequestedCommandDTO(const CommandType& cmd, const std::stri
         y(0),
         receiver(),
         message(),
-        item_id(0),
+        one_byte_number(0),
         gold_amount(0),
         clan_name(),
         command_selector(command_selector) {}
