@@ -6,11 +6,18 @@
 #include "common/dto/snapshot/actions/action_types/act_clan_accept/clan_accept.h"
 
 ClanAcceptCommand::ClanAcceptCommand(const std::string& player_name, const std::string& other_player_name):
-        player_name(player_name), other_player_name(other_player_name) {}
+        player_name(player_name), other_player_name(other_player_name), clan_name() {}
 
 void ClanAcceptCommand::execute(GameWorld& world) {
     result = world.execute_clan_action(
             ClanActionPayload(ClanActionType::ACCEPT, player_name, other_player_name));
+
+    assert(clan_name.empty());
+
+    if (result.status == ClanActionStatus::SUCCESS) {
+        assert(world.get_players().contains(player_name));
+        clan_name = world.get_players().at(player_name).get_clan_name();
+    }
 }
 
 void ClanAcceptCommand::build_snapshot(SnapshotBuilder& builder) {
@@ -20,14 +27,11 @@ void ClanAcceptCommand::build_snapshot(SnapshotBuilder& builder) {
     switch (result.status) {
         case ClanActionStatus::SUCCESS:
             builder.add_action(ActionDTO(ClanAcceptDTO(player_name, other_player_name)));
-            builder.add_action(
-                    ActionDTO(ChatMessageDTO(MessageType::CLAN, player_name,
-                                             std::format("{} fue aceptado al clan", other_player_name))));
+            builder.add_action(ActionDTO(ClanMessageDTO(
+                    clan_name, other_player_name + " ahora es miembro del clan", other_player_name)));
             builder.add_action(
                     ActionDTO(ChatMessageDTO(MessageType::CLAN, other_player_name,
                                              std::format("Bienvenido al clan {}!!", other_player_name))));
-            // TODO notificar al resto de los miembros? -> Necesito que el success me de el vector de rtas
-            // tmb, ahora está vacío
             return;
 
         case ClanActionStatus::IS_MEMBER:
