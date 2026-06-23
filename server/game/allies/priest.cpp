@@ -52,23 +52,19 @@ AllyExecuteResult Priest::execute(Player& player, const AllyActionPayload& paylo
 
 AllyExecuteResult Priest::handle_heal(Player& player) const {
     if (player.is_alive()) {
-        std::cout << "[Priest] El jugador fue curado" << std::endl;
         player.heal();
         return AllyExecuteResult(HealResult(HealStatus::PLAYER_HEALED, type));
     }
 
-    std::cout << "[Priest] El jugador está muerto" << std::endl;
     return AllyExecuteResult(HealResult(HealStatus::GHOST_FAIL, type));
 }
 
 
 AllyExecuteResult Priest::handle_resurrect(Player& player) const {
     if (not player.is_alive()) {
-        std::cout << "[Priest] El jugador fue resucitado" << std::endl;
         player.heal();
         return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_RESURRECTED, type));
     }
 
-    std::cout << "[Priest] El jugador ya está vivo" << std::endl;
     return AllyExecuteResult(ResurrectResult(ResurrectStatus::PLAYER_IS_ALIVE, type));
 }

@@ -330,7 +330,6 @@ InteractResult GameWorld::interact(const std::string& player_name, const Positio
 
             return result;
         }
-        std::cout << "[World] " << player_name << " golpeó al aire" << std::endl;
     } catch (const std::out_of_range&) {
         // Golpeó el borde del mapa
     }
@@ -567,7 +566,6 @@ AllyExecuteResult GameWorld::execute_ally_action(const std::string& player_name,
             return resurrect_unbounded_player(player);
         }
 
-        std::cout << "[World] Jugador " << player_name << " no tiene vinculado a ningún aliado" << std::endl;
         return AllyExecuteResult(false);
     }
 

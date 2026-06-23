@@ -54,8 +54,6 @@ AllyExecuteResult Banker::handle_deposit_gold(Player& player, const uint16_t gol
 
     try {
         player.deposit_gold_to_bank(gold_amount);
-        std::cout << "[Banker] Se han depositado " << static_cast<int>(gold_amount) << " monedas de oro"
-                  << std::endl;
         return AllyExecuteResult(DepositGoldResult(DepositGoldStatus::GOLD_DEPOSITED, type));
 
     } catch (const NotEnoughGold&) {
@@ -73,7 +71,6 @@ AllyExecuteResult Banker::handle_deposit_item(Player& player, const uint8_t item
 
     try {
         player.deposit_item_to_bank(item_id);
-        std::cout << "[Banker] Se ha depositado el ítem de ID " << static_cast<int>(item_id) << std::endl;
         return AllyExecuteResult(DepositItemResult(DepositItemStatus::ITEM_DEPOSITED, type));
 
     } catch (const ItemNotOwned&) {
@@ -105,8 +102,6 @@ AllyExecuteResult Banker::handle_withdraw_gold(Player& player, const uint16_t go
 
     try {
         player.withdraw_gold_from_bank(gold_amount);
-        std::cout << "[Banker] Se han retirado " << static_cast<int>(gold_amount) << " monedas de oro"
-                  << std::endl;
         return AllyExecuteResult(WithdrawGoldResult(WithdrawGoldStatus::GOLD_WITHDRAWN, type));
 
     } catch (const NotEnoughGoldInBank&) {
@@ -124,7 +119,6 @@ AllyExecuteResult Banker::handle_withdraw_item(Player& player, const uint8_t ite
 
     try {
         player.withdraw_item_from_bank(item_id);
-        std::cout << "[Banker] Se ha retirado el ítem de ID " << static_cast<int>(item_id) << std::endl;
         return AllyExecuteResult(WithdrawItemResult(WithdrawItemStatus::ITEM_WITHDRAWN, type));
 
     } catch (const ItemNotInBank&) {

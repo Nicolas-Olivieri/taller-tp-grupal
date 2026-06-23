@@ -97,7 +97,6 @@ bool Player::can_attack() const {
         return false;
 
     if (not is_alive()) {
-        std::cout << "[Player] Jugador " << player_name << " intentó atacar, pero está muerto" << std::endl;
         return false;
     }
 
@@ -120,7 +119,6 @@ void Player::update() {
 bool Player::can_reach(const Position& other_position) const {
     WeaponData data = GameConfig::get().get_weapon(equipment.weapon);
     uint8_t range = data.range;
-    //    std::cout << "rango: "<< range << "\n";
 
     return std::abs(position.get_x() - other_position.get_x()) <= range and
            std::abs(position.get_y() - other_position.get_y()) <= range;
@@ -261,17 +259,11 @@ void Player::drop_equipment(std::vector<Loot>& drops) {
     equipment.helmet = NO_ITEM;
 }
 
-void Player::bind_ally(Ally* ally) {
-    std::cout << "[Player] El jugador " << player_name << " se vinculó con un aliado" << std::endl;
-    bound_ally = ally;
-}
+void Player::bind_ally(Ally* ally) { bound_ally = ally; }
 
 Ally* Player::get_bound_ally() const { return bound_ally; }
 
-void Player::unbind_ally() {
-    std::cout << "[Player] El jugador " << player_name << " se desvinculó del aliado" << std::endl;
-    bound_ally = nullptr;
-}
+void Player::unbind_ally() { bound_ally = nullptr; }
 
 void Player::heal() {
     stats.health.recover_all();
@@ -364,7 +356,6 @@ void Player::complete_delayed_resurrection() {
     is_resurrecting = false;
     just_resurrected = true;
     heal();
-    std::cout << "[Player] " << player_name << " ha resucitado junto al sacerdote." << std::endl;
 }
 
 std::string Player::get_clan_name() const { return clan.get_clan_name(); }

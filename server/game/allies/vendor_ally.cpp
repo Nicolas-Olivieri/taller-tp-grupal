@@ -31,7 +31,6 @@ AllyExecuteResult VendorAlly::handle_buy_item(Player& player, const uint8_t item
         player.spend_gold(price);
         player.acquire_item(item_id);
 
-        std::cout << "[VendorAlly] Venta exitosa del ítem " << static_cast<int>(item_id) << std::endl;
         return AllyExecuteResult(BuyResult(BuyStatus::ITEM_SOLD, type));
 
     } catch (const NotEnoughGold&) {
