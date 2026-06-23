@@ -257,13 +257,17 @@ void ClientConfig::load_ui_data(toml::basic_value<toml::type_config> root) {
 void ClientConfig::load_sound_data(toml::basic_value<toml::type_config> root) {
     const auto sound_table = toml::find(root, "sound");
 
-    for (const auto& [key, value]: sound_table.as_table()) {
-        if (key == "distance") {
-            sound_data.max_sound_distance = toml::find<uint8_t>(value, "max_sound_distance");
-            continue;
-        }
+    sound_data.max_sound_distance = toml::find<uint8_t>(root, "sound", "distance", "max_sound_distance");
 
-        throw std::runtime_error(std::format("ClientConfig encontró un dato de sonido desconocido: {}", key));
+    const auto& weapons_array = toml::find(root, "sound", "weapons").as_array();
+    sound_data.weapon_to_sound_event.clear();
+
+    assert(sound_data.weapon_to_sound_event.empty());
+    for (const auto& entry: weapons_array) {
+        uint8_t weapon_id = toml::find<uint8_t>(entry, "id");
+        SoundEvent sound_event = static_cast<SoundEvent>(toml::find<int>(entry, "event"));
+
+        sound_data.weapon_to_sound_event.insert({weapon_id, sound_event});
     }
 }
 

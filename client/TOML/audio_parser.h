@@ -23,7 +23,8 @@ struct MusicConfig {
 };
 
 
-enum class SoundEvent {
+// Agregar siempre al final para no desordenar los índices en el config
+enum class SoundEvent : uint8_t {
     DEATH,
     DESPAWN,
     FOOTSTEP,

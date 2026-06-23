@@ -2,11 +2,13 @@
 #define CLIENT_DATA_H
 #include <cstdint>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <SDL2pp/Rect.hh>
 
 #include "SDL2pp/Color.hh"
+#include "client/TOML/audio_parser.h"
 
 struct CreatureDisplayData {
     std::string name;
@@ -86,7 +88,8 @@ struct ColorData {
 
 struct SoundData {
     uint8_t max_sound_distance;
-    // TODO agregar el mapeo de id_weapon a sonido?
+
+    std::unordered_map<uint8_t, SoundEvent> weapon_to_sound_event;
 };
 
 struct ChatData {
