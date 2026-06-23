@@ -578,4 +578,28 @@ struct toml::from<TraderSettingsData> {
     }
 };
 
+struct ClanMessagesData {
+    std::string not_in_clan_msg;
+    std::string not_a_player_msg;
+    std::string is_member_msg;
+    std::string is_already_member_msg;
+    std::string is_not_in_join_list_msg;
+    std::string clan_is_full_msg;
+};
+
+template <>
+struct toml::from<ClanMessagesData> {
+    static ClanMessagesData from_toml(const toml::value& raw) {
+        return ClanMessagesData{
+                toml::find<std::string>(raw, "not_in_clan_msg"),
+                toml::find<std::string>(raw, "not_a_player_msg"),
+                toml::find<std::string>(raw, "is_member_msg"),
+                toml::find<std::string>(raw, "is_already_member_msg"),
+                toml::find<std::string>(raw, "is_not_in_join_list_msg"),
+                toml::find<std::string>(raw, "clan_is_full_msg"),
+        };
+    }
+};
+
+
 #endif  // GAME_DATA_H
