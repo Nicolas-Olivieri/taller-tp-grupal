@@ -28,7 +28,7 @@ int main(const int argc, char* argv[]) {
         Client client(argc, argv);
         return client.run();
     } catch (const std::exception& e) {
-        log.err(EXCEPTION_MSG, e);
+        std::cerr << e.what() << "\n";
     } catch (...) {
         log.crit(UNKNOWN_EXCEPTION_MSG);
     }

@@ -24,6 +24,7 @@ private:
     SDL2pp::Window window;
     SDL2pp::Renderer renderer;
     ConnectionHandler& connection;
+    SpriteCreator sprite_creator;
 
     std::string player_name;
     World world;
@@ -40,7 +41,7 @@ private:
     // Principales
     void pollEvents();
 
-    void render_ui_and_world();
+    void render_ui_and_world(int iteration);
 
     void update_state_from_server();
 

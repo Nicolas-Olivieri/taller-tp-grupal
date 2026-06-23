@@ -2,11 +2,11 @@
 
 #include "client/config/client_config.h"
 
-UserInterface::UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager):
+UserInterface::UserInterface(SDL2pp::Renderer& renderer, SpriteCreator& sprite_creator,
+                             std::string& player_name):
         renderer(renderer),
         config(ClientConfig::get().get_ui_data()),
-        sprite_creator(SpriteCreator(renderer, font_manager)),
-        font_manager(font_manager),
+        sprite_creator(sprite_creator),
         player_name(player_name),
         inventory_ui(sprite_creator, player_name),
         chat_ui(sprite_creator, player_name),

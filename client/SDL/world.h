@@ -21,11 +21,15 @@
 
 #include "camera.h"
 
+#define CELL_ITEMS_SIZE 4
+
+struct CellSprites {
+    std::array<std::shared_ptr<FixedSprite>, CELL_ITEMS_SIZE> sprites;
+};
+
 class World {
 private:
-    SDL2pp::Renderer& renderer;
-    TexturePool texture_pool;
-    SpriteCreator sprite_creator;
+    SpriteCreator& sprite_creator;
     AudioManager& audio_manager;
 
     SDL2pp::Rect world_view;
@@ -34,14 +38,18 @@ private:
     std::map<uint16_t, std::shared_ptr<EnemySprite>> creatures;
     std::map<std::pair<uint16_t, uint16_t>, std::pair<std::shared_ptr<FixedSprite>, LootType>> loot;
 
-    std::set<std::shared_ptr<EffectSprite>> effects;
-    std::set<std::shared_ptr<FixedSprite>> map_tiles;
-    std::set<std::shared_ptr<FixedSprite>> map_safe_zones;
+    std::vector<std::vector<CellSprites>> map_fixed_items;
     std::set<std::shared_ptr<MovingSprite>> map_entities;
-    std::set<std::shared_ptr<FixedSprite>> map_loot;
-    std::set<std::shared_ptr<WorldSprite>> map_items;
+    std::set<std::shared_ptr<EffectSprite>> effects;
+
+    // Intancio para evitar crearlo constantemente antes de renderizar
+    std::vector<std::shared_ptr<WorldSprite>> viewed_items;
+    std::vector<std::shared_ptr<EffectSprite>> viewed_effects;
 
     void init_assets(const ClientMapDataDTO& map_data);
+
+    void store_category_pointers(const std::vector<AssetInfoDTO>& assets, SpriteCategory category,
+                                 int arr_index, const std::function<bool(SDL2pp::Point cell)>& condition);
 
     static bool cmp_by_y_coord(const std::shared_ptr<WorldSprite>& a, const std::shared_ptr<WorldSprite>& b);
 
@@ -59,22 +67,19 @@ private:
 
     void play_event(const SoundEvent& event, const SDL2pp::Point& source);
 
-    template <typename Range>
-    auto filter_viewed_sprites(const Camera& camera, Range&& sprites) const {
-        using SpritePtr = std::ranges::range_value_t<Range>;
-        std::vector<SpritePtr> viewed_sprites;
-
+    template <typename SpritePtrSrc, typename SpritePtrDst>
+    auto filter_viewed_sprites(const Camera& camera, const std::set<std::shared_ptr<SpritePtrSrc>>& sprites,
+                               std::vector<std::shared_ptr<SpritePtrDst>>& dest_vector) {
         auto is_visible = [&camera](const auto& item) {
             return item->intersects(camera.get_view(), camera.get_view().GetTopLeft());
         };
 
-        std::ranges::copy_if(sprites, std::back_inserter(viewed_sprites), is_visible);
-        return viewed_sprites;
+        std::ranges::copy_if(sprites, std::back_inserter(dest_vector), is_visible);
     }
 
 public:
-    World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
-          AudioManager& audio_manager, FontManager& font_manager);
+    World(SpriteCreator& sprite_creator, const ClientMapDataDTO& map_data, const std::string& player_name,
+          AudioManager& audio_manager);
 
     void update_players(const std::vector<PlayerInfoDTO>& players_information);
 
@@ -86,15 +91,15 @@ public:
 
     void handle_actions(const std::vector<ActionDTO>& actions);
 
-    void update_visuals(int iteration) const;
+    void update_visuals() const;
 
-    void render_in_z_order(const Camera& camera) const;
+    void render_in_z_order(const Camera& camera, int iteration);
 
     PlayerSprite& get_client_player();
 
     SDL2pp::Rect& get_world_size();
 
-    void add_new_player(const PlayerInfoDTO& info);
+    void add_new_player(const PlayerInfoDTO& info, bool is_client_player = false);
 };
 
 

@@ -17,6 +17,8 @@ public:
     SDL2pp::Rect get_world() const;
 
     SDL2pp::Rect get_view() const;
+
+    SDL2pp::Rect get_padded_view() const;
 };
 
 

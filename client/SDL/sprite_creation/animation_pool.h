@@ -2,6 +2,7 @@
 #define ANIMATION_POOL_H
 
 #include <map>
+#include <unordered_map>
 
 #include "common/direction.h"
 #include "common/util/constants.h"
@@ -10,8 +11,8 @@
 
 class AnimationPool {
 private:
-    std::map<SpriteCategory, std::map<Direction, Animation>> walking_animations;
-    std::map<SpriteCategory, std::map<uint8_t, Animation>> item_animations;
+    std::unordered_map<SpriteCategory, std::map<Direction, Animation>> walking_animations;
+    std::unordered_map<SpriteCategory, std::map<uint8_t, Animation>> item_animations;
 
 public:
     AnimationPool();

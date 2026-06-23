@@ -9,16 +9,17 @@
 #include "moving_sprite.h"
 
 
-class PlayerSprite: public MovingSprite {
+class PlayerSprite final: public MovingSprite {
     friend class SpriteCreator;
 
 private:
     std::map<Layer, SpriteLayer> layers;
     std::map<Direction, std::vector<Layer>> render_order;
+    bool is_client_player;
 
 public:
     PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, SDL2pp::Point position, SDL2pp::Point size,
-                 Direction direction);
+                 Direction direction, bool is_client_player_);
 
     virtual void update_frame(int iteration) override;
 

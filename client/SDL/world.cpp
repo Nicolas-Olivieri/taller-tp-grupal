@@ -3,20 +3,22 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
-#include <ranges>
 #include <unordered_set>
 #include <vector>
 
 #include "client/config/client_config.h"
-#include "fonts/font_manager.h"
+#include "client/util/sdl_grid_range.h"
 
 #include "camera.h"
 
-World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::string& player_name,
-             AudioManager& audio_manager, FontManager& font_manager):
-        renderer(renderer),
-        texture_pool(renderer),
-        sprite_creator(renderer, font_manager),
+#define TILE_IDX 0
+#define SAFE_ZONE_IDX 1
+#define LOOT_IDX 2
+#define COLLIDER_IDX 3
+
+World::World(SpriteCreator& sprite_creator, const ClientMapDataDTO& map_data, const std::string& player_name,
+             AudioManager& audio_manager):
+        sprite_creator(sprite_creator),
         audio_manager(audio_manager),
         world_view(SDL2pp::Point(0, 0),
                    SDL2pp::Point(map_data.world_width * ClientConfig::get().get_tile_size(),
@@ -26,43 +28,48 @@ World::World(SDL2pp::Renderer& renderer, const ClientMapDataDTO& map_data, std::
 }
 
 void World::init_assets(const ClientMapDataDTO& map_data) {
-    for (const auto& tile_data: map_data.tiles) {
-        FixedSprite tile = sprite_creator.create_sprite(SpriteCategory::TILE, tile_data);
-        map_tiles.emplace(std::make_shared<FixedSprite>(std::move(tile)));
+    // Inicializo la matriz
+    map_fixed_items.assign(map_data.world_height + 1, {});
+    for (auto& row: map_fixed_items) {
+        row.assign(map_data.world_width + 1, CellSprites());
     }
 
-    for (const auto& safe_zone_data: map_data.safe_zones) {
-        FixedSprite safe_zone = sprite_creator.create_sprite(SpriteCategory::SAFE_ZONE, safe_zone_data);
-        map_safe_zones.emplace(std::make_shared<FixedSprite>(std::move(safe_zone)));
-    }
+    // Defino condiciones de guardado
+    auto always_store = [](auto) { return true; };
+    auto store_if_tile = [this](auto cell) {
+        return map_fixed_items.at(cell.y).at(cell.x).sprites.at(TILE_IDX).get() != nullptr;
+    };
 
-    for (const auto& collider_data: map_data.colliders) {
-        FixedSprite collider = sprite_creator.create_sprite(SpriteCategory::COLLIDER, collider_data);
-        map_items.emplace(std::make_shared<FixedSprite>(std::move(collider)));
-    }
+    // Por cada categoria de asset, para cada asset, creo el Sprite, lo convierto a puntero y lo guardeo en la
+    // matriz en cada celda que ocupe según su tamaño
+    store_category_pointers(map_data.tiles, SpriteCategory::TILE, TILE_IDX, always_store);
+    store_category_pointers(map_data.safe_zones, SpriteCategory::SAFE_ZONE, SAFE_ZONE_IDX, store_if_tile);
+    store_category_pointers(map_data.colliders, SpriteCategory::COLLIDER, COLLIDER_IDX, always_store);
+    store_category_pointers(map_data.npcs, SpriteCategory::NPC, COLLIDER_IDX, store_if_tile);
+}
 
-    for (const auto& npc_data: map_data.npcs) {
-        FixedSprite npc = sprite_creator.create_sprite(SpriteCategory::NPC, npc_data);
-        map_items.emplace(std::make_shared<FixedSprite>(std::move(npc)));
+void World::store_category_pointers(const std::vector<AssetInfoDTO>& assets, const SpriteCategory category,
+                                    const int arr_index,
+                                    const std::function<bool(SDL2pp::Point cell)>& condition) {
+    for (const auto& asset_info: assets) {
+        FixedSprite asset = sprite_creator.create_sprite(category, asset_info);
+        const SDLGridRange range(asset_info.x, asset_info.y,
+                                 asset.get_size() / ClientConfig::get().get_tile_size());
+        const auto ptr = std::make_shared<FixedSprite>(std::move(asset));
+
+        for (const auto& cell: range) {
+            if (!condition(cell))
+                continue;
+            auto& cell_sprites = map_fixed_items.at(cell.y).at(cell.x).sprites;
+            cell_sprites.at(arr_index) = ptr;
+        }
     }
 }
 
 
-void World::update_visuals(const int it) const {
-    for (auto& tile: map_tiles) {
-        tile->update_frame(it);
-    }
-    for (auto& safe_zone: map_safe_zones) {
-        safe_zone->update_frame(it);
-    }
+void World::update_visuals() const {
     for (auto& entity: map_entities) {
         entity->update_visual_position();
-    }
-    for (auto& item: map_items) {
-        item->update_frame(it);
-    }
-    for (auto& fx: effects) {
-        fx->update_frame(it);
     }
 }
 
@@ -70,46 +77,53 @@ bool World::cmp_by_y_coord(const std::shared_ptr<WorldSprite>& a, const std::sha
     return a->get_ground_position().y <= b->get_ground_position().y;
 }
 
-void World::render_in_z_order(const Camera& camera) const {
-    // Obtengo tiles e items (colliders, npcs, players, enemies) que se llegan a ver en la cámara
-    auto viewed_tiles = filter_viewed_sprites(camera, map_tiles);
-    auto viewed_safe_zones = filter_viewed_sprites(camera, map_safe_zones);
-    auto viewed_loot = filter_viewed_sprites(camera, map_loot);
-    auto viewed_items = filter_viewed_sprites(camera, map_items);
-    auto viewed_effects = filter_viewed_sprites(camera, effects);
-    auto viewed_players = filter_viewed_sprites(camera, players | std::views::values);
-    auto viewed_creatures = filter_viewed_sprites(camera, creatures | std::views::values);
+void World::render_in_z_order(const Camera& camera, const int iteration) {
+    viewed_items.clear();
+    viewed_effects.clear();
+    filter_viewed_sprites(camera, effects, viewed_effects);
+    filter_viewed_sprites(camera, map_entities, viewed_items);
+
+    const uint8_t tile_size = ClientConfig::get().get_tile_size();
+    const SDL2pp::Rect camera_view = camera.get_padded_view();
+    const SDL2pp::Point origin = camera_view.GetTopLeft() / tile_size;
+    const SDL2pp::Point size = camera_view.GetSize() / tile_size;
+
+    const SDLGridRange viewed_range(origin, size);
+    for (const auto& cell: viewed_range) {
+        if (cell.x < 0 || cell.y < 0)
+            continue;
+
+        auto cell_sprites = map_fixed_items.at(cell.y).at(cell.x).sprites;
+
+        // Itero las primeras 4 capas que siempre iran por debajo del jugador y renderizo directo
+        for (size_t i = 0; i <= LOOT_IDX; i++) {
+            auto sprite = cell_sprites.at(i);
+            if (sprite == nullptr || sprite->already_selected_for_frame(iteration))
+                continue;
+
+            sprite->update_frame(iteration);
+            sprite->render(camera.get_view().GetTopLeft());
+            sprite->set_last_frame(iteration);
+        }
+
+        // Si hay un collider en la celda, lo guardo para poder ordenarlo y renderizarlo junto a las entidades
+        auto collider = cell_sprites.at(COLLIDER_IDX);
+        if (collider == nullptr || collider->already_selected_for_frame(iteration))
+            continue;
+        viewed_items.push_back(collider);
+        collider->set_last_frame(iteration);
+    }
 
     // Ordeno los items por y
     std::ranges::stable_sort(viewed_items, cmp_by_y_coord);
 
-    // Renderizo primero los tiles y luego los loot/items/fx por encima
-    for (const auto& tile: viewed_tiles) {
-        tile->render(camera.get_view().GetTopLeft());
-    }
-
-    for (const auto& safe_zone: viewed_safe_zones) {
-        safe_zone->render(camera.get_view().GetTopLeft());
-    }
-
-    for (const auto& top_loot: viewed_loot) {
-        top_loot->render(camera.get_view().GetTopLeft());
-    }
-
     for (const auto& item: viewed_items) {
+        item->update_frame(iteration);
         item->render(camera.get_view().GetTopLeft());
     }
 
-    for (const auto& player: viewed_players) {
-        if (player != players.at(player_name))
-            player->render_overlay(camera.get_view().GetTopLeft());
-    }
-
-    for (const auto& creature: viewed_creatures) {
-        creature->render_overlay(camera.get_view().GetTopLeft());
-    }
-
     for (const auto& fx: viewed_effects) {
+        fx->update_frame(iteration);
         fx->render(camera.get_view().GetTopLeft());
     }
 }
@@ -167,7 +181,6 @@ void World::erase_dead_creatures(const std::vector<CreatureInfoDTO>& creatures_i
     for (auto it = creatures.begin(); it != creatures.end();) {
         if (!sub_ids.contains(it->first)) {
             play_event(SoundEvent::DEATH, it->second.get()->get_position());
-            map_items.erase(it->second);
             map_entities.erase(it->second);
             it = creatures.erase(it);
         } else {
@@ -199,7 +212,10 @@ void World::erase_taken_loot(const std::vector<LootInfoDTO>& loot_information) {
 
     for (auto it = loot.begin(); it != loot.end();) {
         if (!places.contains(it->first)) {
-            map_loot.erase(it->second.first);
+            SDL2pp::Point cell = it->second.first->get_position() / ClientConfig::get().get_tile_size();
+            auto& cell_items = map_fixed_items.at(cell.y).at(cell.x).sprites;
+            cell_items.at(LOOT_IDX) = nullptr;
+
             it = loot.erase(it);
         } else {
             it++;
@@ -219,7 +235,6 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
                 if (players.contains(action.despawn.player_despawned)) {
                     auto player = players.extract(action.despawn.player_despawned);
                     play_event(SoundEvent::DESPAWN, player.mapped()->get_position());
-                    map_items.erase(player.mapped());
                     map_entities.erase(player.mapped());
                 }
                 break;
@@ -321,11 +336,10 @@ void World::handle_attack(const AttackDTO& attack) {
                SDL2pp::Point(attack.x, attack.y) * ClientConfig::get().get_tile_size());
 }
 
-void World::add_new_player(const PlayerInfoDTO& info) {
-    PlayerSprite player = sprite_creator.create_sprite(info);
+void World::add_new_player(const PlayerInfoDTO& info, const bool is_client_player) {
+    PlayerSprite player = sprite_creator.create_sprite(info, is_client_player);
     auto ptr = std::make_shared<PlayerSprite>(std::move(player));
     players.insert({{info.name, ptr}});
-    map_items.emplace(ptr);
     map_entities.emplace(ptr);
 }
 
@@ -333,7 +347,6 @@ void World::add_new_creature(const CreatureInfoDTO& info) {
     EnemySprite creature = sprite_creator.create_sprite(info);
     auto ptr = std::make_shared<EnemySprite>(std::move(creature));
     creatures.insert({{info.sub_id, ptr}});
-    map_items.emplace(ptr);
     map_entities.emplace(ptr);
 }
 
@@ -341,12 +354,13 @@ void World::add_new_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint
     FixedSprite drop = sprite_creator.create_sprite(info);
     auto ptr = std::make_shared<FixedSprite>(std::move(drop));
     loot[place] = {ptr, info.type};
-    map_loot.emplace(ptr);
+
+    auto& cell_items = map_fixed_items.at(info.y).at(info.x).sprites;
+    cell_items.at(LOOT_IDX) = ptr;
 }
 
 void World::update_top_loot(const LootInfoDTO& info, const std::pair<uint16_t, uint16_t>& place) {
-    auto& [sprite, type] = loot[place];
-    map_loot.extract(sprite);
+    map_fixed_items.at(info.y).at(info.x).sprites.at(LOOT_IDX) = nullptr;
     add_new_loot(info, place);
 }
 
