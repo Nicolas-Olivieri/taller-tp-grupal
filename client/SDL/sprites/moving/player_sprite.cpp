@@ -4,9 +4,10 @@
 #include <vector>
 
 PlayerSprite::PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, const SDL2pp::Point position,
-                           const SDL2pp::Point size, const Direction direction):
+                           const SDL2pp::Point size, const Direction direction, const bool is_client_player) :
         MovingSprite(position, size, direction),
-        layers({{Layer::HEAD, std::move(head)}, {Layer::BODY, std::move(body)}}) {
+        layers({{Layer::HEAD, std::move(head)}, {Layer::BODY, std::move(body)}}),
+        is_client_player(is_client_player) {
 
     // Se define de antemano cual es el orden de renderizado de los layers según la dirección a la que mira
     // Así por ejemplo el escudo se ve por detrás si va hacia la derecha o arriba, pero por delante en otro
@@ -39,8 +40,7 @@ void PlayerSprite::render(const SDL2pp::Point& camera_offset) {
             layers.at(layer).render(render_position);
         }
     }
-
-    render_overlay(camera_offset);
+    if (!is_client_player) render_overlay(camera_offset);
 }
 
 bool PlayerSprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const {

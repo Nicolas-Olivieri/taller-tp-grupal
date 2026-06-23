@@ -3,6 +3,7 @@
 #include "client/config/client_config.h"
 #include "client/util/sdl_grid_range.h"
 
+#define PADDING 2
 
 Camera::Camera(const int screen_width, const int screen_height, const SDL2pp::Rect world_size,
                PlayerSprite& user):
@@ -29,3 +30,13 @@ void Camera::update_position() {
 SDL2pp::Rect Camera::get_world() const { return world_size; }
 
 SDL2pp::Rect Camera::get_view() const { return view; }
+
+SDL2pp::Rect Camera::get_padded_view() const {
+    SDL2pp::Rect padded_view = view;
+    const uint8_t tile_size = ClientConfig::get().get_tile_size();
+
+    if (view.y+view.h+(PADDING*tile_size) <= world_size.h) padded_view.SetH(view.h+(PADDING*tile_size));
+    if (view.x+view.w+(PADDING*tile_size) <= world_size.w) padded_view.SetW(view.w+(PADDING*tile_size));
+
+    return padded_view;
+}

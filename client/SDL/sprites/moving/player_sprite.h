@@ -15,11 +15,11 @@ class PlayerSprite final : public MovingSprite {
 private:
     std::map<Layer, SpriteLayer> layers;
     std::map<Direction, std::vector<Layer>> render_order;
-    bool render_label;
+    bool is_client_player;
 
 public:
     PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, SDL2pp::Point position, SDL2pp::Point size,
-                 Direction direction);
+                 Direction direction, bool is_client_player);
 
     virtual void update_frame(int iteration) override;
 

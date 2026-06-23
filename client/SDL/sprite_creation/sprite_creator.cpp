@@ -44,10 +44,8 @@ PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info, cons
     SDL2pp::Rect body_rect(body.offset, body.frame.GetSize());
     const SDL2pp::Point size = body_rect.Union(head_rect).GetSize();
 
-    PlayerSprite sprite(std::move(head), std::move(body), position, size, player_info.direction);
-    if (!is_client_player) {
-        sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, player_info));
-    }
+    PlayerSprite sprite(std::move(head), std::move(body), position, size, player_info.direction, is_client_player);
+    sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, player_info));
 
     if (player_info.stats.current_health == 0)
         convert_to_ghost(sprite);
