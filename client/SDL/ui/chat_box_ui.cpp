@@ -93,8 +93,9 @@ void ChatBoxUI::render_chat_input(const std::string& input, bool is_chat_active)
 }
 
 void ChatBoxUI::add_twinkling_bar(std::string& display_text) {
-    // TODO: cada 500 ms de SDL lo agrega, reemplazar constantes
-    if ((SDL_GetTicks() / 500) % 2 == 0)
+    const uint16_t ticks = ClientConfig::get().get_chat_data().ms_between_cursor_appearance;
+
+    if ((SDL_GetTicks() / ticks) % 2 == 0)
         display_text += "|";
 }
 

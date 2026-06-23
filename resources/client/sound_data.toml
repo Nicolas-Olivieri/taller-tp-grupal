@@ -1,4 +1,57 @@
 [sound.distance]
 # Cantidad máxima de tiles a las que se puede seguir escuchando un sonido
 # Por defecto, debería cubrir toda la pantalla y un poco de las afueras de la misma
-max_sound_distance = 12
+max_sound_distance = 20
+
+# Ids del arma -> Sonido que hacen
+[[sound.weapons]]
+id = 0
+event = 7
+
+[[sound.weapons]]
+id = 1
+event = 8
+
+[[sound.weapons]]
+id = 2
+event = 9
+
+[[sound.weapons]]
+id = 3
+event = 10
+
+[[sound.weapons]]
+id = 4
+event = 11
+
+[[sound.weapons]]
+id = 5
+event = 12
+
+[[sound.weapons]]
+id = 6
+event = 13
+
+[[sound.weapons]]
+id = 7
+event = 14
+
+[[sound.weapons]]
+id = 8
+event = 16
+
+[[sound.weapons]]
+id = 9
+event = 16
+
+[[sound.weapons]]
+id = 20
+event = 8
+
+[[sound.weapons]]
+id = 21
+event = 15
+
+[[sound.weapons]]
+id = 22
+event = 16
