@@ -1,5 +1,8 @@
 #include "camera.h"
 
+#include "client/config/client_config.h"
+#include "client/util/sdl_grid_range.h"
+
 
 Camera::Camera(const int screen_width, const int screen_height, const SDL2pp::Rect world_size,
                PlayerSprite& user):

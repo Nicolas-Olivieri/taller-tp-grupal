@@ -51,6 +51,7 @@ target_sources(taller_client
 
         util/key_mapper.cpp
         util/command_handler.cpp
+        util/sdl_grid_range.cpp
 
     PUBLIC
         # .h files
@@ -116,4 +117,5 @@ target_sources(taller_client
 
         util/key_mapper.h
         util/command_handler.h
+        util/sdl_grid_range.h
     )

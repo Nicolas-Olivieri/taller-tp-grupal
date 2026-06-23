@@ -21,6 +21,10 @@
 
 #include "camera.h"
 
+struct CellSprites {
+    std::vector<std::shared_ptr<FixedSprite>> sprites;
+};
+
 class World {
 private:
     SpriteCreator& sprite_creator;
@@ -31,6 +35,8 @@ private:
     std::map<std::string, std::shared_ptr<PlayerSprite>> players;
     std::map<uint16_t, std::shared_ptr<EnemySprite>> creatures;
     std::map<std::pair<uint16_t, uint16_t>, std::pair<std::shared_ptr<FixedSprite>, LootType>> loot;
+
+    std::vector<std::vector<CellSprites>> fixed_items;
 
     std::set<std::shared_ptr<EffectSprite>> effects;
     std::set<std::shared_ptr<FixedSprite>> map_tiles;
@@ -84,15 +90,15 @@ public:
 
     void handle_actions(const std::vector<ActionDTO>& actions);
 
-    void update_visuals(int iteration) const;
+    void update_visuals() const;
 
-    void render_in_z_order(const Camera& camera) const;
+    void render_in_z_order(const Camera &camera, int iteration) const;
 
     PlayerSprite& get_client_player();
 
     SDL2pp::Rect& get_world_size();
 
-    void add_new_player(const PlayerInfoDTO& info);
+    void add_new_player(const PlayerInfoDTO &info, bool is_client_player = false);
 };
 
 

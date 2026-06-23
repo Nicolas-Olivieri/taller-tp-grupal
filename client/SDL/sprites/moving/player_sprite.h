@@ -9,12 +9,13 @@
 #include "moving_sprite.h"
 
 
-class PlayerSprite: public MovingSprite {
+class PlayerSprite final : public MovingSprite {
     friend class SpriteCreator;
 
 private:
     std::map<Layer, SpriteLayer> layers;
     std::map<Direction, std::vector<Layer>> render_order;
+    bool render_label;
 
 public:
     PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, SDL2pp::Point position, SDL2pp::Point size,

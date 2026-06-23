@@ -46,7 +46,7 @@ private:
     // Principales
     void pollEvents();
 
-    void render_ui_and_world();
+    void render_ui_and_world(int iteration);
 
     void update_state_from_server();
 

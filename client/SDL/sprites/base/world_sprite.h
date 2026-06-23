@@ -6,6 +6,7 @@
 class WorldSprite: public Sprite {
 protected:
     SDL2pp::Point to_sprite_point(const SDL2pp::Point& point);
+    int last_frame;
 
 public:
     WorldSprite(SDL2pp::Point position, SDL2pp::Point size, SDL2pp::Point render_offset);
@@ -17,6 +18,10 @@ public:
     virtual bool intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const = 0;
 
     SDL2pp::Point get_ground_position() const;
+
+    void set_last_frame(int iteration);
+
+    bool already_selected_for_frame(int iteration) const;
 };
 
 

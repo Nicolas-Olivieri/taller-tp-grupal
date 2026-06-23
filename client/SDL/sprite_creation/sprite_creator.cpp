@@ -29,7 +29,7 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer, FontManager& font_manag
         font_manager(font_manager) {}
 
 
-PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
+PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info, const bool is_client_player) {
     const SDL2pp::Point position(player_info.x, player_info.y);
     const AppearanceDTO& appearance_data = player_info.appearance;
 
@@ -45,7 +45,9 @@ PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
     const SDL2pp::Point size = body_rect.Union(head_rect).GetSize();
 
     PlayerSprite sprite(std::move(head), std::move(body), position, size, player_info.direction);
-    sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, player_info));
+    if (!is_client_player) {
+        sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, player_info));
+    }
 
     if (player_info.stats.current_health == 0)
         convert_to_ghost(sprite);

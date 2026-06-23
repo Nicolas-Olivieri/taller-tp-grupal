@@ -4,7 +4,7 @@
 #include "client/SDL/sprites/base/sprite_layer.h"
 
 
-class InterfaceSprite: public Sprite {
+class InterfaceSprite final : public Sprite {
 private:
     SDL2pp::Rect dest;
     SpriteLayer image;

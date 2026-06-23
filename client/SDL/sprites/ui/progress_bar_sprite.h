@@ -5,7 +5,7 @@
 #include "text_sprite.h"
 
 
-class ProgressBarSprite: public Sprite {
+class ProgressBarSprite final : public Sprite {
 private:
     SpriteLayer image;
     SDL2pp::Rect box;

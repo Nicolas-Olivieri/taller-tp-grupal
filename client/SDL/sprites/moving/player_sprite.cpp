@@ -39,6 +39,8 @@ void PlayerSprite::render(const SDL2pp::Point& camera_offset) {
             layers.at(layer).render(render_position);
         }
     }
+
+    render_overlay(camera_offset);
 }
 
 bool PlayerSprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const {

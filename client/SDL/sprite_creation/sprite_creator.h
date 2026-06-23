@@ -43,7 +43,7 @@ public:
 
     // Sobrecarga para tomar distintos DTOs
 
-    PlayerSprite create_sprite(const PlayerInfoDTO& player_info);
+    PlayerSprite create_sprite(const PlayerInfoDTO& player_info, bool is_client_player = false);
 
     FixedSprite create_sprite(SpriteCategory category, const AssetInfoDTO& asset_info);
 

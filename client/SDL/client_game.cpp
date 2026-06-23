@@ -59,10 +59,10 @@ void ClientGame::run() {
 
         renderer.Clear();
 
-        world.update_visuals(iteration);
+        world.update_visuals();
         camera.update_position();
 
-        render_ui_and_world();
+        render_ui_and_world(iteration);
         renderer.Present();
 
         iteration = timer.calculate_next_iteration();
@@ -83,7 +83,7 @@ Camera ClientGame::initialize_world_and_camera() {
         });
 
         if (it != info.end()) {
-            world.add_new_player(*it);
+            world.add_new_player(*it, true);
             world.update_players(info);
             break;
         }
@@ -247,11 +247,11 @@ void ClientGame::handle_mouse_click(const SDL_Event& event) {
     }
 }
 
-void ClientGame::render_ui_and_world() {
+void ClientGame::render_ui_and_world(const int iteration) {
     ui.render(chat_text, is_chat_active);
 
     renderer.SetViewport(config.viewport);
-    world.render_in_z_order(camera);
+    world.render_in_z_order(camera, iteration);
 
     renderer.SetViewport(SDL2pp::NullOpt);
 

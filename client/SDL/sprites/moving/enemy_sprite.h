@@ -5,7 +5,7 @@
 #include "moving_sprite.h"
 
 
-class EnemySprite: public MovingSprite {
+class EnemySprite final: public MovingSprite {
 private:
     SpriteLayer body;
 

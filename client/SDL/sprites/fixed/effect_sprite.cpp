@@ -2,7 +2,6 @@
 
 #include <utility>
 
-#include "client/client_constants.h"
 #include "client/config/client_config.h"
 
 EffectSprite::EffectSprite(SpriteLayer&& image, const SDL2pp::Point& position, const SDL2pp::Point& size):
