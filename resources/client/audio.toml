@@ -19,4 +19,8 @@ magic_arrow_spell = { paths = ["/sfx/attacks/spell/magic_arrow.wav"], volume = 1
 heal_spell = { paths = ["/sfx/attacks/spell/heal.wav"], volume = 16 }
 missile_spell = { paths = ["/sfx/attacks/spell/missile.wav"], volume = 16 }
 explosion_spell = { paths = ["/sfx/attacks/spell/explosion.wav"], volume = 16 }
+distortion_spell = { paths = ["/sfx/attacks/spell/distortion.wav"], volume = 32 }
 bow_attack = { paths = ["/sfx/attacks/bow/arrow1.wav", "/sfx/attacks/bow/arrow2.wav"], volume = 16 }
+clan_accept = { paths = ["/sfx/clan/accept.wav"], volume = 16 }
+clan_found = { paths = ["/sfx/clan/found.wav"], volume = 16 }
+clan_leave = { paths = ["/sfx/clan/leave.wav"], volume = 16 }

@@ -28,17 +28,32 @@ struct ShortcutsKeys {
     std::string safe_zone_key;
 };
 
+struct TutorialData {
+    std::string drag_btn;
+    std::string draw_btn;
+    std::string erase_btn;
+    std::string safe_zone_btn;
+    std::string unwalkable_cbox;
+    std::string safe_zone_cbox;
+    std::string asset_info;
+    std::string load_btn;
+    std::string save_btn;
+};
+
 class EditorConfig {
 private:
     std::unordered_map<std::string, std::vector<AssetData>> category_to_assets_data;
     EditorConstantsData constants;
     ShortcutsKeys shortcuts;
+    TutorialData tutorial;
 
     EditorConfig();
 
     void load_asset_data();
 
     void load_constants();
+
+    void load_tutorial_data();
 
     void load_shortcuts();
 
@@ -54,6 +69,8 @@ public:
     const SafeZoneData& get_safe_zone_data() const;
 
     const ShortcutsKeys& get_shortcuts_keys() const;
+
+    const TutorialData& get_tutorial_data() const;
 
     uint8_t get_teleport_id() const;
 };

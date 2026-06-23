@@ -19,6 +19,11 @@ private:
     WorldConstantsData world_constants_data;
     CreatureBehaviorConstantsData creature_constants_data;
     BiomesData biomes_data;
+    GridConstantsData grid_constants_data;
+    KillablesConstantsData killables_constants_data;
+    CalculatorConstantsData calculator_constants_data;
+    TraderSettingsData traders_settings;
+    ClanMessagesData clan_messages;
 
     GameConfig();
 
@@ -77,12 +82,21 @@ public:
 
     const BiomeData& get_biome_from_floor(uint8_t id) const;
 
-    uint8_t get_biome_id(uint8_t floor_id) const;
     const ClanConstantsData& get_clan_constants() const;
 
     const WorldConstantsData& get_world_constants() const;
 
     const CreatureBehaviorConstantsData& get_creature_behavior_constants() const;
+
+    const GridConstantsData& get_grid_constants() const;
+
+    const KillablesConstantsData& get_killables_constants() const;
+
+    const CalculatorConstantsData& get_calculator_constants() const;
+
+    const TraderSettingsData& get_traders_settings() const;
+
+    const ClanMessagesData& get_clan_messages() const;
 
     uint16_t get_item_price(uint8_t item_id) const;
 
@@ -113,6 +127,10 @@ public:
     const std::vector<uint8_t>& get_merchant_items(int id) const;
 
     int get_merchant_max_id() const;
+
+    bool is_safe_zone_floor(uint8_t floor_id);
+
+    bool is_dungeon_floor(uint8_t floor_id);
 };
 
 

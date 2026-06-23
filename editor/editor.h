@@ -10,6 +10,7 @@
 #include "toml11/types.hpp"
 #include "view/asset_selector.h"
 #include "view/map_canvas.h"
+#include "view/tutorial_overlay.h"
 
 #include "components.h"
 #include "map_data.h"
@@ -39,15 +40,17 @@ private:
     QHash<uint8_t, AssetData> colliders;
     QHash<uint8_t, AssetData> npcs;
 
+    TutorialOverlay tutorial;
     MapData map_data;
     MapCanvas map_canvas;
     AssetSelector asset_selector;
-    QHash<EditorMode, QPushButton*> action_buttons;
 
     MapLoader loader;
     MapSaver saver;
 
     QHash<uint8_t, AssetData> populate_hash(const std::string& category_name, ImageType type);
+
+    void config_tutorial();
 };
 
 #endif  // EDITOR_H

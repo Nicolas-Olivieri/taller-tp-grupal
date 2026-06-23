@@ -21,8 +21,6 @@ public:
 
     void send(const ProtocolMessageDTO& dto);
 
-    // TODO: en un futuro podría considerarse cambiar cada recv_x por un recv
-    // único + patrón factory de DTOs
     CredentialsDTO recv_credentials();
 
     ExistenceDTO recv_existence();
@@ -33,8 +31,6 @@ public:
 
     SnapshotDTO recv_snapshot();
 
-    // TODO: no implementa ProtocolMessageDTO, por lo que la idea del factory
-    // seguramente no se implemente
     RequestedCommandDTO recv_command();
 };
 

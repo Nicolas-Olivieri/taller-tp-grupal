@@ -3,6 +3,9 @@
 #include "common/protocol/serializer.h"
 
 
+DeathDTO::DeathDTO(): player_dead("") {}
+
+
 DeathDTO::DeathDTO(const std::string& player_name): player_dead(player_name) {}
 
 

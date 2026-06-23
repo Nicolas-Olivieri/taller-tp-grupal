@@ -19,6 +19,7 @@ void EnemySprite::update_frame(const int iteration) {
 void EnemySprite::render(const SDL2pp::Point& camera_offset) {
     const SDL2pp::Point render_position = position - camera_offset - render_offset;
     body.render(render_position);
+    render_overlay(camera_offset);
 }
 
 bool EnemySprite::intersects(const SDL2pp::Rect& area, const SDL2pp::Point& offset) const {

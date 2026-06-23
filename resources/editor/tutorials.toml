@@ -1,0 +1,18 @@
+# Agregar botones/componentes en caso de que se quiera explicar otras partes
+drag_btn = "<b>Mover</b><br>Activá este modo para hacer click y arrastrar el lienzo libremente en cualquier dirección.<br><b>Shortcut: M<b>"
+
+draw_btn = "<b>Dibujar</b><br>Permite colocar el tile, NPC o colisionable que tengas seleccionado actualmente en el panel izquierdo. Los NPCs y colisionables deben tener tiles por debajo de toda su superficie, y sus zonas no caminables no pueden superponerse.<br><b>Shortcut: D<b>"
+
+erase_btn = "<b>Borrar</b><br>Con este modo seleccionado, hace click sobre cualquier parte de la tile, colisionable o NPC para eliminarlo. En caso de que haya elementos superpuestos, elimina el de más arriba. ¡Ojo! No vas a poder borrar si estan tildadas las casillas de <i>Mostrar celdas no caminables</i> o <i>Mostrar zonas seguras</i>. Para borrar una tile, asegurate de que no tenga ningún colisionable o npc encima.<br><b>Shortcut: B<b>"
+
+safe_zone_btn = "<b>Setear zona segura</b><br>Permite marcar áreas específicas del mapa donde los jugadores no pueden atacar ni ser atacados (por otros jugadores o enemigos). Para borrar celdas seguras, asegurate de tener seleccionado <i>Mostrar zonas seguras</i>. En el juego las vas a ver marcadas con brillitos.<br><b>Shortcut: S<b>"
+
+unwalkable_cbox = "<b>Mostrar celdas no caminables</b><br>Activa esta casilla para visualizar de forma rápida qué celdas bloquean el paso (figuran con un círculo rojo)."
+
+safe_zone_cbox = "<b>Mostrar zonas seguras</b><br>Activa esta casilla para resaltar las áreas protegidas configuradas previamente."
+
+asset_info = "<b>Seleccionador de assets</b><br>En este menú vas a poder elegir entre Tiles, Colisionables y NPCs.<br>Hay un NPC especial: el <b>Totem de teletransportación</b>. Este le permite a los jugadores viajar entre dos puntos del mapa. Cuando ubiques uno, el próximo que coloques será su <i>hermano</i> y se conectarán entre sí. ¡Tené cuidado! Si borrás uno de ellos, el otro perderá su conexión y será solo decorativo; para volver a establecer la conexión debés ubicar otros dos nuevos totems."
+
+load_btn = "<b>Cargar mapa</b><br>Te permite importar un archivo de mapa existente al editor. ¡Ojo que borra lo que ya tenías! Guardá cualquier cambio que no quieras perder antes de cargar un mapa existente."
+
+save_btn = "<b>Guardar mapa</b><br>Te permite exportar tu trabajo actual a un formato que el juego puede interpretar. Lo único que tenes que hacer es guardarlo como <i>map.bin</i> en la carpeta <i>/resources/map</i> de Argentum para cargarlo en el servidor que corras!"

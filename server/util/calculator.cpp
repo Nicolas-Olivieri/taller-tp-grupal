@@ -15,38 +15,44 @@ uint16_t Calculator::calculate_max_health(uint8_t level, uint8_t constitution, f
 
 uint16_t Calculator::calculate_max_mana(uint8_t level, uint8_t intelligence, float factor_class,
                                         float factor_race) {
-    if (factor_class == 0) {
-        return 0;
-    }
-
     return intelligence * factor_class * factor_race * level;
 }
 
 uint16_t Calculator::calculate_max_gold(uint8_t level) {
-    return static_cast<uint16_t>(100 * std::pow(level, 1.1));
+    GameConfig& config = GameConfig::get();
+
+    return static_cast<uint16_t>(config.get_calculator_constants().base_gold_per_level *
+                                 std::pow(level, config.get_calculator_constants().pow_gold_per_level));
 }
 
-uint16_t Calculator::calculate_max_excess_gold(uint16_t max_safe_gold) { return max_safe_gold / 2; }
+uint16_t Calculator::calculate_max_excess_gold(uint16_t max_safe_gold) {
+    return max_safe_gold * GameConfig::get().get_calculator_constants().excess_gold_multiplier;
+}
 
 int Calculator::meditation_mana_recovery(uint8_t intelligence, float factor_class_meditation) {
-    if (factor_class_meditation == 0) {
-        return 0;
-    }
-
     return intelligence * factor_class_meditation;
 }
 
-
 uint32_t Calculator::calculate_xp_limit(uint8_t level) {
-    return static_cast<uint32_t>(1000 * std::pow(level, 1.8));
+    GameConfig& config = GameConfig::get();
+
+    return static_cast<uint32_t>(config.get_calculator_constants().base_xp_limit_per_level *
+                                 std::pow(level, config.get_calculator_constants().pow_xp_limit_per_level));
 }
 
 uint32_t Calculator::attack_exp(uint16_t damage, uint8_t foe_level, uint8_t own_level) {
-    return damage * std::max(foe_level - own_level + 10, 0);
+    return damage * std::max(foe_level - own_level +
+                                     GameConfig::get().get_calculator_constants().added_xp_levels_difference,
+                             0);
 }
 
 uint32_t Calculator::kill_exp(uint16_t foe_max_health, uint8_t foe_level, uint8_t own_level) {
-    return random_float(0.0f, 0.1f) * foe_max_health * std::max(foe_level - own_level + 10, 0);
+    GameConfig& config = GameConfig::get();
+
+    return random_float(config.get_calculator_constants().floor_kill_xp_random_factor,
+                        config.get_calculator_constants().top_kill_xp_random_factor) *
+           foe_max_health *
+           std::max(foe_level - own_level + config.get_calculator_constants().added_xp_levels_difference, 0);
 }
 
 int Calculator::random_number(const int min, const int max) {
@@ -101,17 +107,31 @@ float Calculator::random_float(const float min, const float max) {
 }
 
 uint8_t Calculator::calculate_averagable_stat(uint8_t archetype_stat, uint8_t race_stat) {
-    return std::min(UINT8_MAX, (archetype_stat + race_stat) / 2);
+    // para evitar un overflow
+    int sum = static_cast<int>(archetype_stat) + static_cast<int>(race_stat);
+    return static_cast<uint8_t>(std::min(static_cast<int>(UINT8_MAX), sum / 2));
 }
 
 uint8_t Calculator::calculate_scalable_stat(uint8_t base, uint8_t level, float multiplier) {
-    return std::min(UINT8_MAX, base + static_cast<uint8_t>(level * multiplier));
+    // para evitar un overflow
+    int res = static_cast<int>(base) + static_cast<int>(level * multiplier);
+    return static_cast<uint8_t>(std::min(static_cast<int>(UINT8_MAX), res));
 }
 
-bool Calculator::can_dodge(const int agility) { return std::pow(random_float(0.0f, 1.0f), agility) < 0.001f; }
+bool Calculator::can_dodge(const int agility) {
+    GameConfig& config = GameConfig::get();
+
+    return std::pow(random_float(config.get_calculator_constants().floor_dodge_random_factor,
+                                 config.get_calculator_constants().top_dodge_random_factor),
+                    agility) < config.get_calculator_constants().dodge_threshold;
+}
 
 uint16_t Calculator::calculate_random_drop_gold(uint8_t max_healh) {
-    return random_float(0.1, 0.2) * max_healh;
+    GameConfig& config = GameConfig::get();
+
+    return random_float(config.get_calculator_constants().floor_gold_drop_random_factor,
+                        config.get_calculator_constants().top_gold_drop_random_factor) *
+           max_healh;
 }
 
 uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& equipment, float buff_factor) {
@@ -119,5 +139,5 @@ uint16_t Calculator::calculate_damage(const uint8_t strength, const Equipment& e
 }
 
 uint8_t Calculator::calculate_creature_level(uint8_t base, float multiplier) {
-    return base * random_float(1, multiplier);
+    return base * random_float(GameConfig::get().get_killables_constants().min_level, multiplier);
 }

@@ -11,6 +11,7 @@
 #include "common/liberror.h"
 #include "common/protocol/protocol.h"
 #include "common/socket.h"
+#include "widgets/resolution_widget.h"
 
 #include "ui_login_window.h"
 
@@ -44,6 +45,8 @@ LoginWindow::LoginWindow(AudioManager& audio_manager, QWidget* parent):
     backgroundMovie->start();
     ui->conn_err->hide();
     ui->name_err->hide();
+    resolution_widget = new ResolutionWidget();
+    ui->res_widget->addWidget(resolution_widget);
 
     connect(ui->connectBtn, &QPushButton::clicked, this, &LoginWindow::connect_match);
     audio_manager.play_music(MusicTrack::LOGIN);
@@ -161,6 +164,8 @@ Socket LoginWindow::get_socket() {
 }
 
 std::string LoginWindow::get_username() { return username; }
+
+std::string LoginWindow::get_resolution() const { return resolution_widget->get_resolution(); }
 
 bool LoginWindow::was_forced_close() const { return force_close; }
 

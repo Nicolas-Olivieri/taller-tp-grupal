@@ -29,7 +29,7 @@ SpriteCreator::SpriteCreator(SDL2pp::Renderer& renderer, FontManager& font_manag
         font_manager(font_manager) {}
 
 
-PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
+PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info, const bool is_client_player) {
     const SDL2pp::Point position(player_info.x, player_info.y);
     const AppearanceDTO& appearance_data = player_info.appearance;
 
@@ -44,7 +44,8 @@ PlayerSprite SpriteCreator::create_sprite(const PlayerInfoDTO& player_info) {
     SDL2pp::Rect body_rect(body.offset, body.frame.GetSize());
     const SDL2pp::Point size = body_rect.Union(head_rect).GetSize();
 
-    PlayerSprite sprite(std::move(head), std::move(body), position, size, player_info.direction);
+    PlayerSprite sprite(std::move(head), std::move(body), position, size, player_info.direction,
+                        is_client_player);
     sprite.set_label(std::make_unique<SpriteLabel>(renderer, font_manager, player_info));
 
     if (player_info.stats.current_health == 0)
@@ -76,7 +77,6 @@ FixedSprite SpriteCreator::create_sprite(const LootInfoDTO& loot_info) {
 }
 
 EffectSprite SpriteCreator::create_sprite(const ActionDTO& action_info, SDL2pp::Point position) {
-    // TODO ir agregando efectos segun actions
     switch (action_info.action) {
         case ActionType::ATTACK: {
             position = SDL2pp::Point(action_info.attack.x, action_info.attack.y);
@@ -110,42 +110,44 @@ FixedSprite SpriteCreator::create_sprite(const SpriteCategory category, const As
     return asset;
 }
 
-InterfaceSprite SpriteCreator::create_sprite(UiElement ui_type, const SDL2pp::Point& position) {
+InterfaceSprite SpriteCreator::create_sprite(UiElement ui_type, const SDL2pp::Rect& box) {
     SpriteLayer base = create_sprite_layer(SpriteCategory::UI, static_cast<int>(ui_type));
     SDL2pp::Point size = base.frame.GetSize();
 
-    InterfaceSprite ui(std::move(base), position, size);
+    InterfaceSprite ui(std::move(base), box.GetTopLeft(), size, box);
     return ui;
 }
 
-ProgressBarSprite SpriteCreator::create_sprite(UiElement bar_type, const SDL2pp::Point position,
+ProgressBarSprite SpriteCreator::create_sprite(UiElement bar_type, const SDL2pp::Rect dest_rect,
                                                size_t current, size_t max) {
     SpriteLayer base = create_sprite_layer(SpriteCategory::UI, static_cast<int>(bar_type));
     SDL2pp::Point size = base.frame.GetSize();
-    SDL2pp::Rect box(position, size);
 
-    SDL_Color white = {255, 255, 255, 255};
-    TextSprite label = create_sprite(box, "", FontType::UI_MENU, white);
+    TextSprite label =
+            create_sprite(dest_rect, "", FontType::UI_MENU, ClientConfig::get().get_color_data().white);
 
-    ProgressBarSprite ui(std::move(base), (std::move(label)), position, size, box, current, max);
+    ProgressBarSprite ui(std::move(base), (std::move(label)), dest_rect.GetTopLeft(), size, dest_rect,
+                         current, max);
     return ui;
 }
 
-HudSprite SpriteCreator::create_sprite(const uint8_t id, const SDL2pp::Point position, bool has_amount) {
+HudSprite SpriteCreator::create_sprite(const uint8_t id, const SDL2pp::Rect& dest_rect, bool has_amount) {
     SpriteLayer base = create_sprite_layer(SpriteCategory::HUD, id);
     SDL2pp::Point size = base.frame.GetSize();
-    SDL2pp::Rect box(position.x, position.y - 4, size.x, size.y);
+    SDL2pp::Rect texture_rect(dest_rect.x, dest_rect.y, size.x, size.y);
     auto ptr = std::make_unique<SpriteLayer>(base);
 
     if (has_amount) {
-        SDL_Color white = {255, 255, 255, 255};
-        TextSprite amount_label = create_sprite(box, "", FontType::UI_ITEM_AMOUNT, white);
+        SDL2pp::Rect amount_rect(texture_rect.GetTopLeft() + SDL2pp::Point(4, 0), texture_rect.GetSize());
+        TextSprite amount_label = create_sprite(amount_rect, "", FontType::UI_ITEM_AMOUNT,
+                                                ClientConfig::get().get_color_data().white);
 
-        HudSprite item(renderer, std::move(ptr), std::move(amount_label), position, size);
+        HudSprite item(renderer, std::move(ptr), std::move(amount_label), texture_rect.GetTopLeft(), size,
+                       dest_rect);
         return item;
     }
 
-    HudSprite item(renderer, std::move(ptr), position, size);
+    HudSprite item(renderer, std::move(ptr), dest_rect.GetTopLeft(), size, dest_rect);
     return item;
 }
 
@@ -185,12 +187,11 @@ void SpriteCreator::convert_to_ghost(PlayerSprite& player) {
     const AppearanceDTO ghost_appearance = {config.get_ghost_body_id(), config.get_ghost_head_id()};
     update_appearance(player, ghost_appearance);
 
-    // 0 equivale a no tener item equipado
-    if (player.layer_is_different(Layer::HELMET, 0))
+    if (player.layer_is_different(Layer::HELMET, NO_ITEM))
         player.remove_layer(Layer::HELMET);
-    if (player.layer_is_different(Layer::SHIELD, 0))
+    if (player.layer_is_different(Layer::SHIELD, NO_ITEM))
         player.remove_layer(Layer::SHIELD);
-    if (player.layer_is_different(Layer::WEAPON, 0))
+    if (player.layer_is_different(Layer::WEAPON, NO_ITEM))
         player.remove_layer(Layer::WEAPON);
 }
 
@@ -243,7 +244,8 @@ SpriteLayer SpriteCreator::create_sprite_layer(const SpriteCategory category, co
         case SpriteCategory::ATTACK_VFX:
         case SpriteCategory::ACTION_VFX:
         case SpriteCategory::UI:
-        case SpriteCategory::HUD: {
+        case SpriteCategory::HUD:
+        case SpriteCategory::SAFE_ZONE: {
             const Animation action = animation_pool.get_item_animation(category, id);
             return SpriteLayer(renderer, texture, id, offset, action);
         }

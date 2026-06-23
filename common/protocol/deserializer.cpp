@@ -45,8 +45,6 @@ CommandType Deserializer::recv_command_type() {
     uint8_t byte = recv_uint8();
 
     switch (static_cast<CommandType>(byte)) {
-        // TODO: agregar un case para todos los tipos de comandos existentes,
-        // luego borrar este comentario
         case CommandType::MOVE:
         case CommandType::INTERACT:
         case CommandType::CHAT:
@@ -77,10 +75,10 @@ CommandType Deserializer::recv_command_type() {
         case CommandType::CHEAT_KILL_CREATURES:
         case CommandType::MEDITATE:
         case CommandType::TELEPORT:
+        case CommandType::INVENTORY_INFO:
             return static_cast<CommandType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de comando no reconocido");
-            // TODO: chequear si es la mejor excepción
     }
 }
 
@@ -88,8 +86,6 @@ Direction Deserializer::recv_direction() {
     uint8_t byte = recv_uint8();
 
     switch (static_cast<Direction>(byte)) {
-        // TODO: agregar un case para todos los tipos de comandos existentes,
-        // luego borrar este comentario
         case Direction::DOWN:
         case Direction::UP:
         case Direction::LEFT:
@@ -98,7 +94,6 @@ Direction Deserializer::recv_direction() {
             return static_cast<Direction>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de dirección no reconocido");
-            // TODO: chequear si es la mejor excepción
     }
 }
 
@@ -201,8 +196,6 @@ std::vector<ActionDTO> Deserializer::recv_actions() {
 
 ActionDTO Deserializer::recv_action() {
     ActionType type = recv_action_type();
-    // TODO: recordar modificar esto para recibir la información según el
-    // ActionType
     switch (type) {
         case ActionType::ATTACK:
             return ActionDTO(recv_attack());
@@ -226,6 +219,14 @@ ActionDTO Deserializer::recv_action() {
             return ActionDTO(recv_list_bank());
         case ActionType::CLAN_MESSAGE:
             return ActionDTO(recv_clan_message());
+        case ActionType::CLAN_ACCEPT:
+            return ActionDTO(recv_clan_accept());
+        case ActionType::CLAN_FOUND:
+            return ActionDTO(recv_clan_found());
+        case ActionType::CLAN_LEAVE:
+            return ActionDTO(recv_clan_leave());
+        case ActionType::INVENTORY_LIST:
+            return ActionDTO(recv_inventory_list());
         default:
             throw std::runtime_error("Deserializer encontró un tipo de acción desconocido");
     }
@@ -235,8 +236,6 @@ ActionType Deserializer::recv_action_type() {
     uint8_t byte = recv_uint8();
 
     switch (static_cast<ActionType>(byte)) {
-        // TODO: agregar un case para todos los tipos de comandos existentes,
-        // luego borrar este comentario
         case ActionType::ATTACK:
         case ActionType::DESPAWN:
         case ActionType::HEAL:
@@ -248,16 +247,17 @@ ActionType Deserializer::recv_action_type() {
         case ActionType::LIST_ITEMS:
         case ActionType::LIST_BANK:
         case ActionType::CLAN_MESSAGE:
+        case ActionType::CLAN_ACCEPT:
+        case ActionType::CLAN_FOUND:
+        case ActionType::CLAN_LEAVE:
+        case ActionType::INVENTORY_LIST:
             return static_cast<ActionType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de acción no reconocido");
-            // TODO: chequear si es la mejor excepción
     }
 }
 
 AppearanceDTO Deserializer::recv_appearance() {
-    // TODO 1: recordar considerar equipamientos y eso en el futuro
-    // TODO 2: capaz en un futuro cada categoría debería ser un enum
     uint8_t body = recv_uint8();
     uint8_t head = recv_uint8();
 
@@ -331,8 +331,6 @@ MessageType Deserializer::recv_message_type() {
     uint8_t byte = recv_uint8();
 
     switch (static_cast<MessageType>(byte)) {
-        // TODO: agregar un case para todos los tipos de comandos existentes,
-        // luego borrar este comentario
         case MessageType::SYSTEM:
         case MessageType::PRIVATE:
         case MessageType::GLOBAL:
@@ -342,7 +340,6 @@ MessageType Deserializer::recv_message_type() {
             return static_cast<MessageType>(byte);
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de visibilidad de mensaje no reconocido");
-            // TODO: chequear si es la mejor excepción
     }
 }
 
@@ -389,13 +386,12 @@ EquipmentInfoDTO Deserializer::recv_equipment_info() {
 }
 
 AttackDTO Deserializer::recv_attack() {
-    const std::string attacker = recv_string();
     const uint8_t weapon = recv_uint8();
     const uint16_t x = recv_uint16();
     const uint16_t y = recv_uint16();
     const uint8_t missed = recv_uint8();
 
-    return AttackDTO(attacker, weapon, x, y, missed);
+    return AttackDTO(weapon, x, y, missed);
 }
 
 MeditationDTO Deserializer::recv_meditation() {
@@ -495,6 +491,25 @@ ClanMessageDTO Deserializer::recv_clan_message() {
     return ClanMessageDTO(receiver_clan, content, sender);
 }
 
+ClanAcceptDTO Deserializer::recv_clan_accept() {
+    const std::string founder = recv_string();
+    const std::string accepted = recv_string();
+
+    return ClanAcceptDTO(founder, accepted);
+}
+
+ClanFoundDTO Deserializer::recv_clan_found() {
+    const std::string founder = recv_string();
+
+    return ClanFoundDTO(founder);
+}
+
+ClanLeaveDTO Deserializer::recv_clan_leave() {
+    const std::string leaver = recv_string();
+
+    return ClanLeaveDTO(leaver);
+}
+
 LootType Deserializer::recv_loot_type() {
     uint8_t byte = recv_uint8();
 
@@ -506,4 +521,10 @@ LootType Deserializer::recv_loot_type() {
         default:  // Undefined Behavior -> Excepción
             throw std::invalid_argument("Byte de looot no reconocido");
     }
+}
+
+InventoryListDTO Deserializer::recv_inventory_list() {
+    const std::string player_name = recv_string();
+    const InventoryInfoDTO inventory = recv_inventory_info();
+    return InventoryListDTO(player_name, inventory);
 }

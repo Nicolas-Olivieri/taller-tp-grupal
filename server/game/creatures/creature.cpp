@@ -25,7 +25,7 @@ uint8_t Creature::random_level(uint8_t race, uint8_t variation) {
     uint8_t level = Calculator::calculate_creature_level(
             config.get_creature_base_level(race), config.get_variation(variation).max_level_multiplier);
 
-    return level;
+    return std::min(config.get_killables_constants().max_level, level);
 }
 
 Equipment Creature::equip_items(uint8_t variation) {
@@ -92,6 +92,7 @@ std::vector<Loot> Creature::secret_drop() {
         case DropType::NOTHING:
         case DropType::GOLD:
         case DropType::USABLE:
+            break;
         case DropType::EQUIPABLE: {
             uint8_t item = Calculator::random_choice(config.get_secret_equipables_ids());
             if (item != NO_ITEM)
@@ -135,15 +136,18 @@ CreatureUpdate Creature::attack_player() {
     assert(is_targeting_someone() && can_reach(target->get_position()) && can_attack());
 
     const uint16_t damage = attack();
+    const Position& position = get_target_position();
 
     if (Calculator::can_dodge(target->get_stats().agility)) {
-        return CreatureUpdate(stats.race_id, target->get_name(), 0, false);
+        return CreatureUpdate(stats.race_id, target->get_name(), 0, false, equipment.weapon, position.get_x(),
+                              position.get_y());
     }
 
     const uint16_t damage_applied = target->receive_damage(damage);
     const bool was_killed = !target->is_alive();
 
-    return CreatureUpdate(stats.race_id, target->get_name(), damage_applied, was_killed);
+    return CreatureUpdate(stats.race_id, target->get_name(), damage_applied, was_killed, equipment.weapon,
+                          position.get_x(), position.get_y());
 }
 
 int Creature::attack() {
@@ -164,7 +168,6 @@ bool Creature::can_attack() const {
     return mana_cost <= stats.mana.get_current();
 }
 
-// TODO: modularizar
 bool Creature::can_reach(const Position& other_position) const {
     uint8_t range = get_weapon_range();
     return is_in_range(other_position, range);

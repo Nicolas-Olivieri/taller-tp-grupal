@@ -2,6 +2,8 @@
 
 #include "common/protocol/serializer.h"
 
+ChatMessageDTO::ChatMessageDTO(): type(MessageType::SYSTEM), sender(""), receiver(""), content("") {}
+
 ChatMessageDTO::ChatMessageDTO(const MessageType& type, const std::string& sender,
                                const std::string& receiver, const std::string& content):
         type(type), sender(sender), receiver(receiver), content(content) {}

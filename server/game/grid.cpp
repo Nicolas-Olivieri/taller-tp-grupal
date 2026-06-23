@@ -5,10 +5,6 @@
 
 #include "server/util/calculator.h"
 
-#define IDLE_WEIGHT 4  // TODO: toml
-#define NEAR_MIN_FACTOR 6
-#define NEAR_MAX_FACTOR 14  // TODO: toml
-
 Grid::Grid(): width_(0), height_(0) {}
 
 Grid::Grid(const int width, const int height, const GridMatrixDTO& grid_data):
@@ -50,8 +46,7 @@ Position Grid::spawn() const {
     do {
         x = get_random_width(generator);
         y = get_random_height(generator);
-    } while (!is_tile_available(x, y) || !config.has_biome_associated(tiles_[y][x].floor) ||
-             config.get_biome_id(tiles_[y][x].floor) != SAFE_ZONE_FLOOR);
+    } while (!is_tile_available(x, y) || !config.is_safe_zone_floor(tiles_[y][x].floor));
 
     return Position(x, y);
 }
@@ -70,16 +65,18 @@ Position Grid::spawn_near(const std::vector<Position>& positions) const {
 }
 
 void Grid::add_near_positions(std::vector<Position>& near_positions, uint16_t pos_x, uint16_t pos_y) const {
-    for (uint16_t y = std::max(0, pos_y - NEAR_MAX_FACTOR); y < std::min(height_, pos_y + NEAR_MAX_FACTOR);
-         y++) {
-        for (uint16_t x = std::max(0, pos_x - NEAR_MAX_FACTOR); x < std::min(width_, pos_x + NEAR_MAX_FACTOR);
-             x++) {
+    GameConfig& config = GameConfig::get();
+
+    for (uint16_t y = std::max(0, pos_y - config.get_grid_constants().max_near_factor);
+         y < std::min(height_, pos_y + config.get_grid_constants().max_near_factor); y++) {
+        for (uint16_t x = std::max(0, pos_x - config.get_grid_constants().max_near_factor);
+             x < std::min(width_, pos_x + config.get_grid_constants().max_near_factor); x++) {
             uint16_t distance_x = std::abs(x - pos_x);
             uint16_t distance_y = std::abs(y - pos_y);
 
             uint16_t current_distance = std::max(distance_x, distance_y);
 
-            if (current_distance >= NEAR_MIN_FACTOR && is_tile_available(x, y)) {
+            if (current_distance >= config.get_grid_constants().min_near_factor && is_tile_available(x, y)) {
                 near_positions.push_back(Position(x, y));
             }
         }
@@ -92,7 +89,6 @@ bool Grid::is_tile_available(int x, int y) const {
     return is_in_range && tiles_[y][x].is_walkable() && tiles_[y][x].occupant() == nullptr;
 }
 
-// TODO: seguramente se puede hacer sin crear tantos objetos
 Direction Grid::closest_movement(const Position& current, const Position& target) const {
     Direction closest_direction = Direction::IDLE;
     float min_distance = MAXFLOAT;
@@ -115,7 +111,8 @@ Direction Grid::closest_movement(const Position& current, const Position& target
 Direction Grid::random_movement(const Position& current) const {
     static std::random_device rd;
     static std::default_random_engine generator(rd());
-    std::uniform_int_distribution<size_t> get_random_width(0, directions.size() + IDLE_WEIGHT);
+    std::uniform_int_distribution<size_t> get_random_width(
+            0, directions.size() + GameConfig::get().get_grid_constants().roam_idle_weight);
 
     size_t index = get_random_width(generator);
     Direction direction = index < directions.size() ? directions[index] : Direction::IDLE;

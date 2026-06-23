@@ -36,6 +36,7 @@ target_sources(taller_client
         qt/creator_window.cpp
         qt/widgets/selector_widget.cpp
         qt/widgets/preview_widget.cpp
+        qt/widgets/resolution_widget.cpp
 
         connection/client_receiver.cpp
         connection/client_sender.cpp
@@ -44,11 +45,14 @@ target_sources(taller_client
         SDL/user_interface.cpp
         SDL/ui/inventory_ui.cpp
         SDL/ui/chat_box_ui.cpp
+        SDL/ui/help_box_ui.cpp
 
         config/client_config.cpp
 
         util/key_mapper.cpp
         util/command_handler.cpp
+        util/sdl_grid_range.cpp
+        util/key_handler.cpp
 
     PUBLIC
         # .h files
@@ -96,6 +100,8 @@ target_sources(taller_client
         qt/ui/selector_widget.ui
         qt/widgets/preview_widget.h
         qt/ui/preview_widget.ui
+        qt/widgets/resolution_widget.cpp
+        qt/ui/resolution_widget.ui
 
         connection/client_receiver.h
         connection/client_sender.h
@@ -105,10 +111,13 @@ target_sources(taller_client
         SDL/user_interface.h
         SDL/ui/inventory_ui.h
         SDL/ui/chat_box_ui.h
+        SDL/ui/help_box_ui.h
 
         config/client_config.h
         config/client_data.h
 
         util/key_mapper.h
         util/command_handler.h
+        util/key_handler.cpp
+        util/sdl_grid_range.h
     )

@@ -35,7 +35,8 @@ enum class CommandType : uint8_t {
     CHEAT_ITEM,
     CHEAT_KILL_CREATURES,
     MEDITATE,
-    TELEPORT
+    TELEPORT,
+    INVENTORY_INFO,
 };
 
 // No implementa ProtocolMessageDTO porque este no viaja por red, se construye a
@@ -51,16 +52,14 @@ struct RequestedCommandDTO {
     std::string receiver;
     std::string message;
 
-    // OJO si se cambia esto de uint_8 a algo más cuidado que tmb se usa para enviar el nivel de experiencia
-    uint8_t item_id;
+    // usado como nivel de experiencia o id de item
+    uint8_t one_byte_number;
 
     uint16_t gold_amount;
 
     std::string clan_name;
     bool command_selector;
 
-
-    // TODO: Refactorizar los constructores para que determinen el CommandType a partir de los parámetros
     RequestedCommandDTO(const CommandType& cmd, const Direction& direction);
 
     RequestedCommandDTO(const CommandType& cmd, int x, int y);
@@ -69,7 +68,7 @@ struct RequestedCommandDTO {
 
     explicit RequestedCommandDTO(const CommandType& cmd);
 
-    RequestedCommandDTO(const CommandType& cmd, uint8_t item_id);
+    RequestedCommandDTO(const CommandType& cmd, uint8_t _one_byte_number);
 
     RequestedCommandDTO(const CommandType& cmd, uint16_t gold_amount);
 

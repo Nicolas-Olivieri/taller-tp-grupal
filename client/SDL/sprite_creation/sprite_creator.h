@@ -43,7 +43,7 @@ public:
 
     // Sobrecarga para tomar distintos DTOs
 
-    PlayerSprite create_sprite(const PlayerInfoDTO& player_info);
+    PlayerSprite create_sprite(const PlayerInfoDTO& player_info, bool is_client_player = false);
 
     FixedSprite create_sprite(SpriteCategory category, const AssetInfoDTO& asset_info);
 
@@ -53,11 +53,11 @@ public:
 
     FixedSprite create_sprite(const LootInfoDTO& loot_info);
 
-    InterfaceSprite create_sprite(UiElement ui_type, const SDL2pp::Point& position);
+    InterfaceSprite create_sprite(UiElement ui_type, const SDL2pp::Rect& box);
 
-    ProgressBarSprite create_sprite(UiElement bar_type, SDL2pp::Point position, size_t current, size_t max);
+    ProgressBarSprite create_sprite(UiElement bar_type, SDL2pp::Rect dest_rect, size_t current, size_t max);
 
-    HudSprite create_sprite(uint8_t id, SDL2pp::Point position, bool has_amount);
+    HudSprite create_sprite(uint8_t id, const SDL2pp::Rect& dest_rect, bool has_amount);
 
     TextSprite create_sprite(SDL2pp::Rect box, const std::string& text, FontType font_type,
                              SDL2pp::Color font_color);

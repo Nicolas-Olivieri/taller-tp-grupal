@@ -18,7 +18,6 @@ struct PlayerAlreadyExists: public std::runtime_error {
     PlayerAlreadyExists(): std::runtime_error("There already is a player with this username.") {}
 };
 
-// TODO: modificar la clase para considerar contraseñas si llegamos
 class PlayerIndex {
 private:
     std::mutex mutex;

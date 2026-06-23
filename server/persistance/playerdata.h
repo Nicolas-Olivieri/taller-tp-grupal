@@ -12,8 +12,6 @@
 // Forward Declaration para evitar dependencia circular
 class Player;
 
-// TODO: Considerar cambiar algunos uint por enums
-
 #pragma pack(push, 1)
 
 struct PlayerData {

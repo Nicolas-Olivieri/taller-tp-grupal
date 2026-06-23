@@ -3,14 +3,16 @@
 #include "asset_parser.h"
 #include "toml.hpp"
 
-#define EDITOR_ASSETS_PATH "/assets_info.toml"
-#define EDITOR_CONSTANTS_PATH "/editor_constants.toml"
-#define EDITOR_SHORTCUTS_PATH "/editor_shortcuts.toml"
+#define EDITOR_ASSETS_PATH "/editor/assets_info.toml"
+#define EDITOR_CONSTANTS_PATH "/editor/editor_constants.toml"
+#define EDITOR_SHORTCUTS_PATH "/editor/shortcuts.toml"
+#define EDITOR_TUTORIALS_PATH "/editor/tutorials.toml"
 
 EditorConfig::EditorConfig() {
     load_asset_data();
     load_constants();
     load_shortcuts();
+    load_tutorial_data();
 }
 
 void EditorConfig::load_asset_data() {
@@ -36,6 +38,22 @@ void EditorConfig::load_constants() {
 
 
     constants = {safe_zone_data, file_header, tile_size, teleport_id};
+}
+
+void EditorConfig::load_tutorial_data() {
+    const auto tutorial_data = toml::parse(CONFIG_PATH EDITOR_TUTORIALS_PATH);
+
+    tutorial = {
+            toml::find<std::string>(tutorial_data, "drag_btn"),
+            toml::find<std::string>(tutorial_data, "draw_btn"),
+            toml::find<std::string>(tutorial_data, "erase_btn"),
+            toml::find<std::string>(tutorial_data, "safe_zone_btn"),
+            toml::find<std::string>(tutorial_data, "unwalkable_cbox"),
+            toml::find<std::string>(tutorial_data, "safe_zone_cbox"),
+            toml::find<std::string>(tutorial_data, "asset_info"),
+            toml::find<std::string>(tutorial_data, "load_btn"),
+            toml::find<std::string>(tutorial_data, "save_btn"),
+    };
 }
 
 EditorConfig& EditorConfig::get() {
@@ -66,3 +84,5 @@ const SafeZoneData& EditorConfig::get_safe_zone_data() const { return constants.
 const ShortcutsKeys& EditorConfig::get_shortcuts_keys() const { return shortcuts; }
 
 uint8_t EditorConfig::get_teleport_id() const { return constants.teleport_id; }
+
+const TutorialData& EditorConfig::get_tutorial_data() const { return tutorial; }

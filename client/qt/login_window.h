@@ -10,6 +10,7 @@
 
 #include "client/SDL/audio/audio_manager.h"
 #include "common/socket.h"
+#include "widgets/resolution_widget.h"
 
 #include "creator_window.h"
 
@@ -26,6 +27,8 @@ public:
     Socket get_socket();
 
     std::string get_username();
+
+    std::string get_resolution() const;
 
     bool was_forced_close() const;
 
@@ -51,6 +54,7 @@ private:
 
     QStackedWidget* stacked_widget;
     CreatorWindow* creator_window;
+    ResolutionWidget* resolution_widget;
 
     QPoint drag_offset;
 

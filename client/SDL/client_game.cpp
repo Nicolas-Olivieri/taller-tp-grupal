@@ -2,32 +2,15 @@
 
 #include <memory>
 #include <regex>
-#include <utility>
 
 #include <SDL2/SDL.h>
 #include <SDL2pp/Renderer.hh>
 #include <SDL2pp/SDL2pp.hh>
 #include <SDL2pp/Window.hh>
 
-#include "../client_constants.h"
 #include "client/config/client_config.h"
 #include "client/util/key_mapper.h"
-#include "common/dto/events/ally_related/deposit/deposit_gold_event.h"
-#include "common/dto/events/ally_related/deposit/deposit_item_event.h"
 #include "common/dto/events/ally_related/interact_event.h"
-#include "common/dto/events/ally_related/shop/buy_event.h"
-#include "common/dto/events/ally_related/shop/sell_event.h"
-#include "common/dto/events/ally_related/withdraw/withdraw_gold_event.h"
-#include "common/dto/events/ally_related/withdraw/withdraw_item_event.h"
-#include "common/dto/events/chat/chatevent.h"
-#include "common/dto/events/cheat/cheat_experience_set_event.h"
-#include "common/dto/events/cheat/cheat_get_item_event.h"
-#include "common/dto/events/cheat/cheat_gold_gain_event.h"
-#include "common/dto/events/clan/clan_found_event.h"
-#include "common/dto/events/clan/clan_join_event.h"
-#include "common/dto/events/clan/clan_remove_player_event.h"
-#include "common/dto/events/clan/clan_request_response_event.h"
-#include "common/dto/events/drop_item_event.h"
 #include "common/dto/events/movement/moveevent.h"
 #include "common/dto/events/unequip_item_event.h"
 #include "common/dto/events/use_item_event.h"
@@ -36,24 +19,23 @@
 #include "camera.h"
 
 
-ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, AudioManager& audio_manager,
-                       FontManager& font_manager):
+ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, const std::string& resolution,
+                       AudioManager& audio_manager, FontManager& font_manager):
+        config(ClientConfig::get().load_resolution_data(resolution)),
         sdl(SDL2pp::SDL(SDL_INIT_VIDEO)),
         window(SDL2pp::Window("Argentum Online", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                              SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS)),
+                              config.window_width, config.window_height, SDL_WINDOW_BORDERLESS)),
         renderer(SDL2pp::Renderer(window, -1, SDL_RENDERER_ACCELERATED)),
         connection(connection),
+        sprite_creator(renderer, font_manager),
         player_name(player_name),
-        world(renderer, connection.receive_map(), player_name, audio_manager, font_manager),
-        key_being_pressed(SDLK_UNKNOWN),
+        world(sprite_creator, connection.receive_map(), player_name, audio_manager),
         camera(initialize_world_and_camera()),
-        ui(renderer, player_name, font_manager),
+        ui(renderer, sprite_creator, player_name),
         keep_running(true),
         just_restored(false),
-        is_chat_active(false),
-        chat_text(""),
-        cmd_handler(player_name, connection, chat_text, ui) {
-    ClientConfig::get();
+        is_fullscreen(false),
+        key_handler(player_name, connection, ui) {
     SDL_SetWindowHitTest(window.Get(), hit_test_callback, this);
 }
 
@@ -73,10 +55,10 @@ void ClientGame::run() {
 
         renderer.Clear();
 
-        world.update_visuals(iteration);
+        world.update_visuals();
         camera.update_position();
 
-        render_ui_and_world();
+        render_ui_and_world(iteration);
         renderer.Present();
 
         iteration = timer.calculate_next_iteration();
@@ -97,19 +79,18 @@ Camera ClientGame::initialize_world_and_camera() {
         });
 
         if (it != info.end()) {
-            world.add_new_player(*it);
+            world.add_new_player(*it, true);
             world.update_players(info);
             break;
         }
     }
     PlayerSprite& user = world.get_client_player();
     SDL2pp::Rect& world_size = world.get_world_size();
-    return {game_viewport.GetW(), game_viewport.GetH(), world_size, user};
+    return {config.viewport.GetW(), config.viewport.GetH(), world_size, user};
 }
 
 void ClientGame::pollEvents() {
     SDL_Event event;
-    bool key_was_pressed = false;
 
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESTORED) {
@@ -128,20 +109,17 @@ void ClientGame::pollEvents() {
         if (event.type == SDL_MOUSEWHEEL)
             handle_mouse_wheel(event);
 
-        if (is_chat_active) {
-            handle_chat_events(event);
+        if (key_handler.is_chat_active()) {
+            key_handler.handle_chat_event(event);
             continue;
         }
 
         if (event.type == SDL_KEYDOWN) {
-            key_was_pressed = true;
-            handle_key_down(event);
+            key_handler.handle_key_down(event);
         }
 
-        // Esto no sirvió en esta condición, nunca se cumplía
-        // key_was_pressed == event.key.keysym.sym &&
-        if (event.type == SDL_KEYUP && KeyMapper::is_movement_key(event.key.keysym.sym)) {
-            key_being_pressed = SDLK_UNKNOWN;
+        if (key_handler.is_releasing_key(event)) {
+            key_handler.release_key();
         }
     }
 
@@ -150,46 +128,9 @@ void ClientGame::pollEvents() {
         return;
     }
 
-    // TODO esto definitivamente habría que modularizarlo/encapsularlo
-    if (!key_was_pressed && KeyMapper::is_movement_key(key_being_pressed)) {
-        connection.push_command(std::make_unique<MoveEventDTO>(KeyMapper::get_direction(key_being_pressed)));
-    }
+    key_handler.handle_continuous_movement();
 }
 
-void ClientGame::handle_chat_events(const SDL_Event& event) {
-    if (event.type == SDL_TEXTINPUT) {
-        chat_text += event.text.text;
-        return;
-    }
-
-    if (event.type == SDL_KEYUP) {
-        key_being_pressed = SDLK_UNKNOWN;
-        return;
-    }
-
-    if (event.type != SDL_KEYDOWN)
-        return;
-
-    if (event.key.keysym.sym == SDLK_BACKSPACE && !chat_text.empty()) {
-        chat_text.pop_back();
-        return;
-    }
-
-    if (event.key.keysym.sym == SDLK_RETURN) {
-        if (chat_text.empty())
-            return;
-
-        ui.chat_scroll_to_bottom();
-
-        cmd_handler.process_chat_output();
-    }
-
-    if (event.key.keysym.sym == SDLK_ESCAPE) {
-        is_chat_active = false;
-        SDL_StopTextInput();
-        chat_text.clear();
-    }
-}
 
 void ClientGame::update_state_from_server() {
     if (connection.is_finished()) {
@@ -217,53 +158,24 @@ void ClientGame::update_state_from_server() {
 }
 
 
-void ClientGame::handle_key_down(const SDL_Event& event) {
-    assert(event.type == SDL_KEYDOWN);
-    auto key_pressed = event.key.keysym.sym;
-
-    if (KeyMapper::is_movement_key(key_pressed)) {
-        Direction direction_chosen = KeyMapper::get_direction(key_pressed);
-
-        connection.push_command(std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
-        key_being_pressed = key_pressed;
-    }
-
-    if (!KeyMapper::is_command_key(key_pressed))
-        return;
-
-    switch (key_pressed) {
-        case SDLK_c:
-            toggle_chat();
-            break;
-        case SDLK_e:
-            cmd_handler.handle_pick_up_command();
-            break;
-        case SDLK_q:
-            cmd_handler.handle_drop_item_command();
-            break;
-        default:
-            throw std::runtime_error("Esta tecla aún no tiene una funcionalidad asignada");
-    }
-}
-
 void ClientGame::handle_mouse_click(const SDL_Event& event) {
     assert(event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP);
-    if (is_inside_viewport(event.button.x, event.button.y, game_viewport)) {
+    if (is_inside_viewport(event.button.x, event.button.y, config.viewport)) {
         handle_game_click(event);
     } else {
         handle_ui_click(event);
     }
 }
 
-void ClientGame::render_ui_and_world() {
-    ui.render(chat_text, is_chat_active);
+void ClientGame::render_ui_and_world(const int iteration) {
+    ui.render(key_handler.get_chat_text(), key_handler.is_chat_active());
 
-    renderer.SetViewport(game_viewport);
-    world.render_in_z_order(camera);
+    renderer.SetViewport(config.viewport);
+    world.render_in_z_order(camera, iteration);
 
     renderer.SetViewport(SDL2pp::NullOpt);
 
-    // TODO actualizar campos de vida, mana en función a que se sabe del personaje, si escribió, etc.
+    ui.render_help();
 }
 
 bool ClientGame::is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport) {
@@ -302,30 +214,30 @@ void ClientGame::handle_ui_click(const SDL_Event& event) {
 
     if (event.button.button == SDL_BUTTON_LEFT) {
         // Clic izquierdo sobre el chat
-        if (is_inside_viewport(x, y, chat_icon)) {
-            toggle_chat();
-        } else if (is_inside_viewport(x, y, minimize_button)) {
+        if (is_inside_viewport(x, y, config.chat_icon)) {
+            key_handler.toggle_chat();
+        } else if (is_inside_viewport(x, y, config.minimize_button)) {
             window.Minimize();
-        } else if (is_inside_viewport(x, y, close_button)) {
+
+        } else if (is_inside_viewport(x, y, config.maximize_button)) {
+            if (is_fullscreen) {
+                SDL_SetWindowFullscreen(window.Get(), 0);
+                is_fullscreen = false;
+            } else {
+                SDL_SetWindowFullscreen(window.Get(), SDL_WINDOW_FULLSCREEN_DESKTOP);
+                is_fullscreen = true;
+            }
+
+        } else if (is_inside_viewport(x, y, config.close_button)) {
             keep_running = false;
         }
     }
 }
 
-void ClientGame::toggle_chat() {
-    is_chat_active = !is_chat_active;
-
-    if (is_chat_active) {
-        SDL_StartTextInput();
-    } else {
-        SDL_StopTextInput();
-    }
-}
-
 void ClientGame::handle_game_click(const SDL_Event& event) {
     const uint16_t tile_size = ClientConfig::get().get_tile_size();
-    int game_click_x = event.button.x - game_viewport.x;
-    int game_click_y = event.button.y - game_viewport.y;
+    int game_click_x = event.button.x - config.viewport.x;
+    int game_click_y = event.button.y - config.viewport.y;
 
     if (event.button.button == SDL_BUTTON_LEFT) {
         const uint16_t target_x = (camera.get_view().GetX() + game_click_x) / tile_size;
@@ -337,7 +249,7 @@ void ClientGame::handle_game_click(const SDL_Event& event) {
 SDL_HitTestResult ClientGame::hit_test_callback(SDL_Window*, const SDL_Point* area, void* data) {
     ClientGame* game = static_cast<ClientGame*>(data);
 
-    if (game->is_inside_viewport(area->x, area->y, game->header_bar)) {
+    if (game->is_inside_viewport(area->x, area->y, game->config.header_bar)) {
         return SDL_HITTEST_DRAGGABLE;
     }
 

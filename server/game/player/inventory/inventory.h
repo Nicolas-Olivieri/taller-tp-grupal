@@ -33,7 +33,6 @@ class Inventory {
     // Mapa de item_id a cantidad en posesión de ese item
     std::map<uint8_t, uint8_t, std::greater<>> items_amounts;
     uint8_t max_item_amount;
-    // TODO agregar maximo de items
 
 public:
     Inventory();

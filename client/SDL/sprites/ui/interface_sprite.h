@@ -4,12 +4,13 @@
 #include "client/SDL/sprites/base/sprite_layer.h"
 
 
-class InterfaceSprite: public Sprite {
+class InterfaceSprite final: public Sprite {
 private:
+    SDL2pp::Rect dest;
     SpriteLayer image;
 
 public:
-    InterfaceSprite(SpriteLayer&& image, SDL2pp::Point position, SDL2pp::Point size);
+    InterfaceSprite(SpriteLayer&& image, SDL2pp::Point position, SDL2pp::Point size, SDL2pp::Rect dest);
 
     void render();
 };

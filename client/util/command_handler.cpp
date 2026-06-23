@@ -66,7 +66,9 @@ void CommandHandler::handle_text_command() {
     assert(not chat_text.empty());
     assert(chat_text[0] == '/');
 
-    if (chat_text == "/resucitar")
+    if (chat_text.starts_with("/ayuda"))
+        handle_help_request(chat_text);
+    else if (chat_text == "/resucitar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::RESURRECT));
     else if (chat_text == "/curar")
         connection.push_command(std::make_unique<EventDTO>(CommandType::HEAL));
@@ -117,6 +119,9 @@ void CommandHandler::handle_text_command() {
 
     else if (chat_text == "/viajar")
         handle_teleport();
+
+    else if (chat_text == "/inventario")
+        handle_inventory_request();
 }
 
 void CommandHandler::handle_pick_up_command() {
@@ -253,6 +258,29 @@ void CommandHandler::handle_teleport() {
     connection.push_command(std::make_unique<EventDTO>(CommandType::TELEPORT));
 }
 
+void CommandHandler::handle_help_request(const std::string& text) {
+    std::string prefix = "/ayuda";
+    assert(text.starts_with(prefix));
+
+    if (text == prefix) {
+        ui.toggle_help(HelpPage::GENERAL);
+        return;
+    }
+
+    prefix += "-";
+    if (not text.starts_with(prefix))
+        return;
+
+    const std::string page_name = extract_prefix(prefix, text);
+
+    if (page_name == "clan")
+        ui.toggle_help(HelpPage::CLAN);
+    else if (page_name == "cheat")
+        ui.toggle_help(HelpPage::CHEAT);
+    else if (page_name == "npc")
+        ui.toggle_help(HelpPage::NPC);
+}
+
 /// Handlers de clanes
 
 void CommandHandler::handle_clan_foundation(const std::string& text) {
@@ -350,8 +378,6 @@ void CommandHandler::handle_cheat(const std::string& text) {
         handle_get_item_cheat(cheat_type);
     else if (cheat_type == "kill-creatures")
         handle_kill_creatures_cheat();
-
-    // TODO agregar el resto de cheats
 }
 
 void CommandHandler::handle_xp_cheat(const std::string& text) {
@@ -436,4 +462,8 @@ void CommandHandler::trim_text(std::string& text) {
     auto not_space = [](uint8_t c) { return !std::isspace(c); };
     text.erase(text.begin(), std::find_if(text.begin(), text.end(), not_space));
     text.erase(std::find_if(text.rbegin(), text.rend(), not_space).base(), text.end());
+}
+
+void CommandHandler::handle_inventory_request() {
+    connection.push_command(std::make_unique<EventDTO>(CommandType::INVENTORY_INFO));
 }

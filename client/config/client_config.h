@@ -22,6 +22,8 @@ private:
     UserInterfaceData ui_data;
     SoundData sound_data;
     ChatData chat_data;
+    ColorData color_data;
+    HelpMsgData help_data;
 
 public:
     static ClientConfig& get();
@@ -29,6 +31,8 @@ public:
     ClientConfig(const ClientConfig&) = delete;
 
     ClientConfig& operator=(const ClientConfig&) = delete;
+
+    const UserInterfaceData& load_resolution_data(const std::string& resolution);
 
     const CreatureDisplayData& get_creature_data(uint8_t creature) const;
 
@@ -64,6 +68,10 @@ public:
 
     const ChatData& get_chat_data() const;
 
+    const ColorData& get_color_data() const;
+
+    const HelpMsgData& get_help_data() const;
+
 private:
     ClientConfig();
 
@@ -78,6 +86,12 @@ private:
     void load_chat_data(toml::basic_value<toml::type_config> root);
 
     void load_sound_data(toml::basic_value<toml::type_config> root);
+
+    void load_color_data(toml::basic_value<toml::type_config> root);
+
+    void load_help_msg_data(toml::basic_value<toml::type_config> root);
+
+    SDL2pp::Color to_color(const SDL2pp::Rect& rect);
 
     ItemDisplayData build_item_display_data(const toml::value& item_toml) const;
 

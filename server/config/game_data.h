@@ -433,7 +433,9 @@ struct toml::from<ClanConstantsData> {
 struct WorldConstantsData {
     uint8_t ticks_per_second;
     uint16_t tick_between_saves;
-    uint16_t max_creatures_amount;
+    uint16_t creatures_amount_per_player;
+    uint16_t max_player_amount;
+    double resurrection_time_factor;
 };
 
 template <>
@@ -441,7 +443,9 @@ struct toml::from<WorldConstantsData> {
     static WorldConstantsData from_toml(const toml::value& raw) {
         return WorldConstantsData{toml::find<uint8_t>(raw, "ticks_per_second"),
                                   toml::find<uint16_t>(raw, "tick_between_saves"),
-                                  toml::find<uint16_t>(raw, "max_creatures_amount")};
+                                  toml::find<uint16_t>(raw, "creatures_amount_per_player"),
+                                  toml::find<uint16_t>(raw, "max_player_amount"),
+                                  toml::find<double>(raw, "resurrection_time_factor")};
     }
 };
 
@@ -461,6 +465,8 @@ struct toml::from<CreatureBehaviorConstantsData> {
 };
 
 struct BiomesData {
+    uint8_t safe_zone_id;
+    uint8_t dungeon_id;
     std::unordered_map<uint8_t, uint8_t> floor_to_biome;
     std::unordered_map<uint8_t, BiomeData> biomes;
 };
@@ -476,6 +482,12 @@ struct toml::from<BiomesData> {
 
         for (const auto& [category, value]: biomes_table.at("biomes").as_table()) {
             uint8_t id = toml::find<uint8_t>(value, "id");
+            if (category == "safe_zone") {
+                data.safe_zone_id = id;
+            } else if (category == "dungeon") {
+                data.dungeon_id = id;
+            }
+
             auto biome = toml::get<BiomeData>(value);
 
             data.biomes[id] = biome;
@@ -485,5 +497,137 @@ struct toml::from<BiomesData> {
         return data;
     }
 };
+
+struct GridConstantsData {
+    uint8_t roam_idle_weight;
+    uint8_t min_near_factor;
+    uint8_t max_near_factor;
+};
+
+template <>
+struct toml::from<GridConstantsData> {
+    static GridConstantsData from_toml(const toml::value& raw) {
+        return GridConstantsData{
+                toml::find<uint8_t>(raw, "roam_idle_weight"),
+                toml::find<uint8_t>(raw, "min_near_factor"),
+                toml::find<uint8_t>(raw, "max_near_factor"),
+        };
+    }
+};
+
+struct KillablesConstantsData {
+    uint8_t min_level;
+    uint8_t max_level;
+};
+
+template <>
+struct toml::from<KillablesConstantsData> {
+    static KillablesConstantsData from_toml(const toml::value& raw) {
+        return KillablesConstantsData{toml::find<uint8_t>(raw, "min_level"),
+                                      toml::find<uint8_t>(raw, "max_level")};
+    }
+};
+
+struct CalculatorConstantsData {
+    uint8_t base_gold_per_level;
+    float pow_gold_per_level;
+    float excess_gold_multiplier;
+    uint16_t base_xp_limit_per_level;
+    float pow_xp_limit_per_level;
+    uint8_t added_xp_levels_difference;
+    float floor_kill_xp_random_factor;
+    float top_kill_xp_random_factor;
+    float floor_dodge_random_factor;
+    float top_dodge_random_factor;
+    float dodge_threshold;
+    float floor_gold_drop_random_factor;
+    float top_gold_drop_random_factor;
+};
+
+template <>
+struct toml::from<CalculatorConstantsData> {
+    static CalculatorConstantsData from_toml(const toml::value& raw) {
+        return CalculatorConstantsData{
+                toml::find<uint8_t>(raw, "base_gold_per_level"),
+                toml::find<float>(raw, "pow_gold_per_level"),
+                toml::find<float>(raw, "excess_gold_multiplier"),
+                toml::find<uint16_t>(raw, "base_xp_limit_per_level"),
+                toml::find<float>(raw, "pow_xp_limit_per_level"),
+                toml::find<uint8_t>(raw, "added_xp_levels_difference"),
+                toml::find<float>(raw, "floor_kill_xp_random_factor"),
+                toml::find<float>(raw, "top_kill_xp_random_factor"),
+                toml::find<float>(raw, "floor_dodge_random_factor"),
+                toml::find<float>(raw, "top_dodge_random_factor"),
+                toml::find<float>(raw, "dodge_threshold"),
+                toml::find<float>(raw, "floor_gold_drop_random_factor"),
+                toml::find<float>(raw, "top_gold_drop_random_factor"),
+        };
+    }
+};
+
+struct TraderSettingsData {
+    float selling_percentage;
+};
+
+template <>
+struct toml::from<TraderSettingsData> {
+    static TraderSettingsData from_toml(const toml::value& raw) {
+        return TraderSettingsData{
+                toml::find<float>(raw, "selling_percentage"),
+        };
+    }
+};
+
+struct ClanMessagesData {
+    std::string not_in_clan_msg;
+    std::string not_a_player_msg;
+    std::string is_member_msg;
+    std::string is_already_member_msg;
+    std::string is_not_in_join_list_msg;
+    std::string clan_is_full_msg;
+    std::string prefix;
+    std::string player_left_clan;
+    std::string founder_cannot_leave_clan;
+    std::string founder_cannot_kick_himself;
+    std::string player_was_banned;
+    std::string reject_founder_prefix;
+    std::string reject_founder;
+    std::string request_rejected;
+    std::string player_was_accepted;
+    std::string you_were_accepted;
+    std::string player_is_banned;
+    std::string player_has_clan;
+    std::string player_is_disconnected;
+    std::string is_not_member;
+};
+
+template <>
+struct toml::from<ClanMessagesData> {
+    static ClanMessagesData from_toml(const toml::value& raw) {
+        return ClanMessagesData{
+                toml::find<std::string>(raw, "not_in_clan_msg"),
+                toml::find<std::string>(raw, "not_a_player_msg"),
+                toml::find<std::string>(raw, "is_member_msg"),
+                toml::find<std::string>(raw, "is_already_member_msg"),
+                toml::find<std::string>(raw, "is_not_in_join_list_msg"),
+                toml::find<std::string>(raw, "clan_is_full_msg"),
+                toml::find<std::string>(raw, "player_prefix"),
+                toml::find<std::string>(raw, "player_left_clan"),
+                toml::find<std::string>(raw, "founder_cannot_leave_clan"),
+                toml::find<std::string>(raw, "founder_cannot_kick_himself"),
+                toml::find<std::string>(raw, "player_was_banned"),
+                toml::find<std::string>(raw, "reject_founder_prefix"),
+                toml::find<std::string>(raw, "reject_founder"),
+                toml::find<std::string>(raw, "request_rejected"),
+                toml::find<std::string>(raw, "player_was_accepted"),
+                toml::find<std::string>(raw, "you_were_accepted"),
+                toml::find<std::string>(raw, "player_is_banned"),
+                toml::find<std::string>(raw, "player_has_clan"),
+                toml::find<std::string>(raw, "player_is_disconnected"),
+                toml::find<std::string>(raw, "is_not_member"),
+        };
+    }
+};
+
 
 #endif  // GAME_DATA_H

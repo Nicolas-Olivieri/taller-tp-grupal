@@ -11,11 +11,13 @@ struct ClientMapDataDTO: public ProtocolMessageDTO {
     uint16_t world_width;
     uint16_t world_height;
     std::vector<AssetInfoDTO> tiles;
+    std::vector<AssetInfoDTO> safe_zones;
     std::vector<AssetInfoDTO> colliders;
     std::vector<AssetInfoDTO> npcs;
 
     ClientMapDataDTO(uint16_t world_w, uint16_t world_h, const std::vector<AssetInfoDTO>& tiles,
-                     const std::vector<AssetInfoDTO>& colliders, const std::vector<AssetInfoDTO>& npcs);
+                     const std::vector<AssetInfoDTO>& safe_zones, const std::vector<AssetInfoDTO>& colliders,
+                     const std::vector<AssetInfoDTO>& npcs);
 
     size_t message_size() const override;
 

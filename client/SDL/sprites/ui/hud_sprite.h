@@ -7,20 +7,21 @@
 #include "text_sprite.h"
 
 
-class HudSprite: public Sprite {
+class HudSprite final: public Sprite {
 private:
     SDL2pp::Renderer& renderer;
 
     std::unique_ptr<SpriteLayer> image;
+    SDL2pp::Rect dest;
     std::optional<TextSprite> amount_label;
     bool bounded;
 
 public:
     HudSprite(SDL2pp::Renderer& renderer, std::unique_ptr<SpriteLayer>&& image, const SDL2pp::Point& position,
-              const SDL2pp::Point& size);
+              const SDL2pp::Point& size, const SDL2pp::Rect& dest);
 
     HudSprite(SDL2pp::Renderer& renderer, std::unique_ptr<SpriteLayer>&& image, TextSprite&& amount_label,
-              const SDL2pp::Point& position, const SDL2pp::Point& size);
+              const SDL2pp::Point& position, const SDL2pp::Point& size, const SDL2pp::Rect& dest);
 
     void render();
 

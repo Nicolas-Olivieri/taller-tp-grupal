@@ -25,9 +25,8 @@ CredentialsDTO Protocol::recv_credentials() {
     Deserializer deserializer(this->socket);
 
     std::string username = deserializer.recv_string();
-    std::string password = deserializer.recv_string();
 
-    return CredentialsDTO(username, password);
+    return CredentialsDTO(username);
 }
 
 ExistenceDTO Protocol::recv_existence() {
@@ -51,10 +50,11 @@ ClientMapDataDTO Protocol::recv_map() {
     const uint16_t height = deserializer.recv_uint16();
 
     const std::vector<AssetInfoDTO> tiles = deserializer.recv_assets_information();
+    const std::vector<AssetInfoDTO> safe_zones = deserializer.recv_assets_information();
     const std::vector<AssetInfoDTO> colliders = deserializer.recv_assets_information();
     const std::vector<AssetInfoDTO> npcs = deserializer.recv_assets_information();
 
-    return ClientMapDataDTO(width, height, tiles, colliders, npcs);
+    return ClientMapDataDTO(width, height, tiles, safe_zones, colliders, npcs);
 }
 
 CreatePlayerDTO Protocol::recv_appearance() {
@@ -75,61 +75,85 @@ RequestedCommandDTO Protocol::recv_command() {
 
     Deserializer deserializer(this->socket);
 
-    CommandType command = deserializer.recv_command_type();
+    const CommandType command = deserializer.recv_command_type();
+    switch (command) {
+        case CommandType::INTERACT: {
+            const int x = deserializer.recv_uint16();
+            const int y = deserializer.recv_uint16();
+            return RequestedCommandDTO(command, x, y);
+        }
 
-    // TODO: Refactorizar (convertir a switch case o mapa)
-    if (command == CommandType::INTERACT) {
-        const int x = deserializer.recv_uint16();
-        const int y = deserializer.recv_uint16();
+        case CommandType::MOVE: {
+            const Direction direction = deserializer.recv_direction();
+            return RequestedCommandDTO(command, direction);
+        }
 
-        return RequestedCommandDTO(command, x, y);
-    } else if (command == CommandType::MOVE) {
-        Direction direction = deserializer.recv_direction();
+        case CommandType::CHAT: {
+            const std::string receiver = deserializer.recv_string();
+            const std::string content = deserializer.recv_string();
+            return RequestedCommandDTO(command, receiver, content);
+        }
 
-        return RequestedCommandDTO(command, direction);
-    } else if (command == CommandType::CHAT) {
-        const std::string receiver = deserializer.recv_string();
-        const std::string content = deserializer.recv_string();
+        case CommandType::RESURRECT:
+        case CommandType::HEAL:
+        case CommandType::LIST_ITEMS:
+        case CommandType::CLAN_REVIEW:
+        case CommandType::CLAN_LEAVE:
+        case CommandType::PICKUP:
+        case CommandType::CHEAT_DEATH:
+        case CommandType::CHEAT_INFINITE_RECOVERABLES:
+        case CommandType::MEDITATE:
+        case CommandType::CHEAT_KILL_CREATURES:
+        case CommandType::TELEPORT:
+        case CommandType::INVENTORY_INFO: {
+            return RequestedCommandDTO(command);
+        }
 
-        return RequestedCommandDTO(command, receiver, content);
-    } else if (command == CommandType::RESURRECT or command == CommandType::HEAL or
-               command == CommandType::LIST_ITEMS or command == CommandType::CLAN_REVIEW or
-               command == CommandType::CLAN_LEAVE or command == CommandType::PICKUP or
-               command == CommandType::CHEAT_DEATH or command == CommandType::CHEAT_INFINITE_RECOVERABLES or
-               command == CommandType::MEDITATE or command == CommandType::CHEAT_KILL_CREATURES or
-               command == CommandType::TELEPORT) {
-        return RequestedCommandDTO(command);
-    } else if (command == CommandType::BUY_ITEM or command == CommandType::SELL_ITEM or
-               command == CommandType::DEPOSIT_ITEM or command == CommandType::WITHDRAW_ITEM or
-               command == CommandType::USE_ITEM or command == CommandType::DROP_ITEM or
-               command == CommandType::UNEQUIP_ITEM or command == CommandType::CHEAT_ITEM) {
-        const uint8_t item_id = deserializer.recv_uint8();
-        return RequestedCommandDTO(command, item_id);
-    } else if (command == CommandType::DEPOSIT_GOLD or command == CommandType::WITHDRAW_GOLD or
-               command == CommandType::CHEAT_GOLD) {
-        const uint16_t gold_amount = deserializer.recv_uint16();
-        return RequestedCommandDTO(command, gold_amount);
-    } else if (command == CommandType::CLAN_FOUND or command == CommandType::CLAN_JOIN) {
-        const std::string clan_name = deserializer.recv_string();
-        return RequestedCommandDTO(command, clan_name);
-    } else if (command == CommandType::CLAN_REQUEST_RESPONSE) {
-        const std::string player_name = deserializer.recv_string();
-        const bool is_accepted = deserializer.recv_uint8();
-        return RequestedCommandDTO(command, player_name, is_accepted);
-    } else if (command == CommandType::CLAN_REMOVE_PLAYER) {
-        const std::string player_name = deserializer.recv_string();
-        const bool is_permanent_removal = deserializer.recv_uint8();
-        return RequestedCommandDTO(command, player_name, is_permanent_removal);
-    } else if (command == CommandType::CHEAT_XP) {
-        const uint8_t level = deserializer.recv_uint8();
-        return RequestedCommandDTO(command, level);
-    } else {
-        throw std::invalid_argument("The received command type has no known way to be deserialized");
+        case CommandType::BUY_ITEM:
+        case CommandType::SELL_ITEM:
+        case CommandType::DEPOSIT_ITEM:
+        case CommandType::WITHDRAW_ITEM:
+        case CommandType::USE_ITEM:
+        case CommandType::DROP_ITEM:
+        case CommandType::UNEQUIP_ITEM:
+        case CommandType::CHEAT_ITEM: {
+            const uint8_t item_id = deserializer.recv_uint8();
+            return RequestedCommandDTO(command, item_id);
+        }
+
+        case CommandType::DEPOSIT_GOLD:
+        case CommandType::WITHDRAW_GOLD:
+        case CommandType::CHEAT_GOLD: {
+            const uint16_t gold_amount = deserializer.recv_uint16();
+            return RequestedCommandDTO(command, gold_amount);
+        }
+
+        case CommandType::CLAN_FOUND:
+        case CommandType::CLAN_JOIN: {
+            const std::string clan_name = deserializer.recv_string();
+            return RequestedCommandDTO(command, clan_name);
+        }
+
+        case CommandType::CLAN_REQUEST_RESPONSE: {
+            const std::string player_name = deserializer.recv_string();
+            const bool is_accepted = deserializer.recv_uint8();
+            return RequestedCommandDTO(command, player_name, is_accepted);
+        }
+
+        case CommandType::CLAN_REMOVE_PLAYER: {
+            const std::string player_name = deserializer.recv_string();
+            const bool is_permanent_removal = deserializer.recv_uint8();
+            return RequestedCommandDTO(command, player_name, is_permanent_removal);
+        }
+
+        case CommandType::CHEAT_XP: {
+            const uint8_t level = deserializer.recv_uint8();
+            return RequestedCommandDTO(command, level);
+        }
+
+        default:
+            throw std::invalid_argument("The received command type has no known way to be deserialized");
     }
-
-    /* TODO 2: agregar los siguientes al implementar los correspondientes
-    comandos item_id
-    */
 }
 
 SnapshotDTO Protocol::recv_snapshot() {
@@ -150,7 +174,7 @@ void Protocol::check_header_message_byte(const Message& expected) {
     uint8_t msgbyte = deserializer.recv_uint8();
 
     if (msgbyte != static_cast<uint8_t>(expected)) {
-        throw std::runtime_error("Se recibió un byte que no era el esperado en "
-                                 "el protocolo");  // TODO: definir excepción
+        // TODO: definir excepción
+        throw std::runtime_error("Se recibió un byte que no era el esperado en el protocolo");
     }
 }

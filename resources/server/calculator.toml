@@ -1,0 +1,27 @@
+[calculator]
+# calculate_max_gold
+base_gold_per_level = 100
+pow_gold_per_level = 1.10
+
+# calculate_max_excess_gold
+excess_gold_multiplier = 0.50               # qué % del oro seguro debe ser el oro en exceso
+
+# calculate_xp_limit
+base_xp_limit_per_level = 1000
+pow_xp_limit_per_level = 1.80
+
+# attack_exp, kill_exp
+added_xp_levels_difference = 10
+
+# kill_exp
+floor_kill_xp_random_factor = 0.00
+top_kill_xp_random_factor = 0.10
+
+# can_dodge
+floor_dodge_random_factor = 0.00
+top_dodge_random_factor = 1.00
+dodge_threshold = 0.001
+
+# calculate_random_drop_gold
+floor_gold_drop_random_factor = 0.10
+top_gold_drop_random_factor = 0.20

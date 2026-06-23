@@ -3,7 +3,7 @@
 #include "fixed_sprite.h"
 
 
-class EffectSprite: public FixedSprite {
+class EffectSprite final: public FixedSprite {
 private:
     int elapsed_frames;
     bool finished;

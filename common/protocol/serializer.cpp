@@ -17,7 +17,6 @@ void Serializer::serialize(const ProtocolMessageDTO& dto) { dto.accept(*this); }
 void Serializer::serialize(const CredentialsDTO& credentials) {
     serialize(static_cast<uint8_t>(Message::CREDENTIALS));
     serialize(credentials.username);
-    serialize(credentials.password);
 }
 
 void Serializer::serialize(const EventDTO& event) {
@@ -48,6 +47,7 @@ void Serializer::serialize(const ClientMapDataDTO& map) {
     serialize(map.world_width);
     serialize(map.world_height);
     serialize(map.tiles);
+    serialize(map.safe_zones);
     serialize(map.colliders);
     serialize(map.npcs);
 }
@@ -103,7 +103,6 @@ void Serializer::serialize(const LootInfoDTO& info) {
     serialize(info.y);
 }
 
-// TODO: se debería serializar dependiendo de action.action (ActionType)
 void Serializer::serialize(const ActionDTO& action) {
     serialize(static_cast<uint8_t>(action.action));
 
@@ -140,6 +139,18 @@ void Serializer::serialize(const ActionDTO& action) {
             break;
         case ActionType::CLAN_MESSAGE:
             serialize(action.clan_msg);
+            break;
+        case ActionType::CLAN_ACCEPT:
+            serialize(action.clan_accept);
+            break;
+        case ActionType::CLAN_FOUND:
+            serialize(action.clan_found);
+            break;
+        case ActionType::CLAN_LEAVE:
+            serialize(action.clan_leave);
+            break;
+        case ActionType::INVENTORY_LIST:
+            serialize(action.inventory_list);
             break;
         default:
             throw std::runtime_error("Serializer encontró un tipo de acción desconocido");
@@ -236,7 +247,6 @@ void Serializer::serialize(const EquipmentInfoDTO& equipment) {
 }
 
 void Serializer::serialize(const AttackDTO& attack) {
-    serialize(attack.attacker);
     serialize(attack.weapon);
     serialize(attack.x);
     serialize(attack.y);
@@ -357,4 +367,18 @@ void Serializer::serialize(const ClanMessageDTO& clan_msg) {
     serialize(clan_msg.receiver_clan);
     serialize(clan_msg.content);
     serialize(clan_msg.sender);
+}
+
+void Serializer::serialize(const ClanAcceptDTO& clan_accept) {
+    serialize(clan_accept.founder);
+    serialize(clan_accept.accepted);
+}
+
+void Serializer::serialize(const ClanFoundDTO& clan_found) { serialize(clan_found.founder); }
+
+void Serializer::serialize(const ClanLeaveDTO& clan_leave) { serialize(clan_leave.leaver); }
+
+void Serializer::serialize(const InventoryListDTO& inventory_list) {
+    serialize(inventory_list.player_name);
+    serialize(inventory_list.inventory);
 }

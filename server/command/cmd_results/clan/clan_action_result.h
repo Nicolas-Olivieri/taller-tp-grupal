@@ -5,13 +5,6 @@
 #include <string>
 #include <vector>
 
-#define NOT_IN_CLAN_MSG "Debes estar en un clan para realizar esta accion"
-#define NOT_A_PLAYER_MSG "El jugador {} no existe"
-#define IS_MEMBER_MSG "Solo el fundador del clan puede realizar esa accion"
-#define IS_ALREADY_MEMBER_MSG "El jugador {} ya es un miembro del clan"
-#define IS_NOT_IN_JOIN_LIST_MSG "El jugador {} no solicito unirse al clan"
-#define CLAN_IS_FULL_MSG "El clan ya esta lleno"
-
 enum class FoundClanResult {
     SUCCESS,
     NOT_ENOUGH_LEVEL,
@@ -37,11 +30,11 @@ enum class ClanActionStatus {
     IS_NOT_IN_JOIN_LIST,
     CLAN_IS_FULL,
     PLAYER_HAS_CLAN,
+    PLAYER_DISCONNECTED,
 
 };
 
 struct ClanActionResult {
-    bool clan_exists = true;
     ClanActionStatus status;
     std::vector<std::string> clan_members;
     std::vector<std::string> joining_requests;

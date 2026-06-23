@@ -59,8 +59,8 @@ void InteractCommand::handle_attack(SnapshotBuilder& builder) {
         return;
     }
 
-    builder.add_action(ActionDTO(AttackDTO(player_name, result.attack.weapon, position.get_x(),
-                                           position.get_y(), static_cast<uint8_t>(status))));
+    builder.add_action(ActionDTO(AttackDTO(result.attack.weapon, position.get_x(), position.get_y(),
+                                           static_cast<uint8_t>(status))));
 
     switch (status) {
         case AttackStatus::HIT:
@@ -176,11 +176,9 @@ void InteractCommand::handle_recover(SnapshotBuilder& builder) {
         return;
     }
 
-    builder.add_action(
-            ActionDTO(AttackDTO(result.recover.player_recovered, result.recover.weapon, position.get_x(),
-                                position.get_y(), static_cast<uint8_t>(status))));
+    builder.add_action(ActionDTO(AttackDTO(result.recover.weapon, position.get_x(), position.get_y(),
+                                           static_cast<uint8_t>(status))));
 
-    // TODO: lógica de clanes para curaciones? (porfa no)
     if (player_name == result.recover.player_recovered) {
         builder.add_action(ActionDTO(
                 ChatMessageDTO(MessageType::SYSTEM, player_name,

@@ -8,6 +8,7 @@
 #include "SDL2pp/Renderer.hh"
 #include "SDL2pp/Texture.hh"
 #include "client/SDL/fonts/font_manager.h"
+#include "client/SDL/ui/help_box_ui.h"
 #include "common/dto/snapshot/actions/action.h"
 #include "common/dto/snapshot/info/playerinfo.h"
 #include "ui/chat_box_ui.h"
@@ -17,20 +18,17 @@ class UserInterface {
 private:
     SDL2pp::Renderer& renderer;
     const UserInterfaceData& config;
+    SpriteCreator& sprite_creator;
 
-    SpriteCreator sprite_creator;
-
-    FontManager& font_manager;
+    std::string& player_name;
 
     InventoryUI inventory_ui;
     ChatBoxUI chat_ui;
     InterfaceSprite game_border_ui;
-
-    std::string& player_name;
-    std::string clan_name;
+    HelpBoxUi help_ui;
 
 public:
-    UserInterface(SDL2pp::Renderer& renderer, std::string& player_name, FontManager& font_manager);
+    UserInterface(SDL2pp::Renderer& renderer, SpriteCreator& sprite_creator, std::string& player_name);
 
     void render(const std::string& input, bool is_chat_active);
 
@@ -54,6 +52,10 @@ public:
     void bind_item(int slot_index);
     std::optional<uint8_t> get_bound_item_id() const;
     void clear_bound_item();
+
+    // METODOS DE AYUDA ::::::
+    void toggle_help(const HelpPage& page);
+    void render_help();
 };
 
 
