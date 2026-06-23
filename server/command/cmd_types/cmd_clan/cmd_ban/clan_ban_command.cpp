@@ -30,10 +30,12 @@ void ClanBanCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::NOT_A_PLAYER:
             error_msg = clan_msgs.prefix + other_player_name + clan_msgs.not_a_player_msg;
             break;
+        case ClanActionStatus::IS_FOUNDER:
+            error_msg = clan_msgs.founder_cannot_kick_himself;
+            break;
         case ClanActionStatus::NO_RESULT:
         case ClanActionStatus::IS_ALREADY_MEMBER:
         case ClanActionStatus::IS_BANNED_PLAYER:
-        case ClanActionStatus::IS_FOUNDER:
         case ClanActionStatus::IS_NOT_IN_JOIN_LIST:
         default:
             throw std::runtime_error("ClanBanCommand encontró un tipo de resultado inválido");
