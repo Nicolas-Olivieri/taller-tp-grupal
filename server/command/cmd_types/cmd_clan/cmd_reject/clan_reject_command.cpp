@@ -44,10 +44,11 @@ void ClanRejectCommand::build_snapshot(SnapshotBuilder& builder) {
 }
 
 void ClanRejectCommand::notify_success(SnapshotBuilder& builder) {
-    builder.add_action(ActionDTO(ChatMessageDTO(
-            MessageType::CLAN, player_name,
-            std::format("Rechazaste la solicitud de {} de unirse al clan", other_player_name))));
+    const ClanMessagesData& clan_msgs = GameConfig::get().get_clan_messages();
+
     builder.add_action(ActionDTO(
-            ChatMessageDTO(MessageType::CLAN, other_player_name,
-                           std::format("{} rechazo tu solicitud de unirte a su clan", player_name))));
+            ChatMessageDTO(MessageType::CLAN, player_name,
+                           clan_msgs.reject_founder_prefix + other_player_name + clan_msgs.reject_founder)));
+    builder.add_action(ActionDTO(
+            ChatMessageDTO(MessageType::CLAN, other_player_name, player_name + clan_msgs.request_rejected)));
 }

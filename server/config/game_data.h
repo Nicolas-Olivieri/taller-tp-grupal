@@ -590,6 +590,9 @@ struct ClanMessagesData {
     std::string founder_cannot_leave_clan;
     std::string founder_cannot_kick_himself;
     std::string player_was_banned;
+    std::string reject_founder_prefix;
+    std::string reject_founder;
+    std::string request_rejected;
 };
 
 template <>
@@ -602,11 +605,14 @@ struct toml::from<ClanMessagesData> {
                 toml::find<std::string>(raw, "is_already_member_msg"),
                 toml::find<std::string>(raw, "is_not_in_join_list_msg"),
                 toml::find<std::string>(raw, "clan_is_full_msg"),
-                toml::find<std::string>(raw, "prefix"),
+                toml::find<std::string>(raw, "player_prefix"),
                 toml::find<std::string>(raw, "player_left_clan"),
                 toml::find<std::string>(raw, "founder_cannot_leave_clan"),
                 toml::find<std::string>(raw, "founder_cannot_kick_himself"),
                 toml::find<std::string>(raw, "player_was_banned"),
+                toml::find<std::string>(raw, "reject_founder_prefix"),
+                toml::find<std::string>(raw, "reject_founder"),
+                toml::find<std::string>(raw, "request_rejected"),
         };
     }
 };
