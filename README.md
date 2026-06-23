@@ -1,48 +1,32 @@
-# Ejemplo de CMAKE para el TP Final
+# Proyecto de recreación del juego: Argentum Online
 
-**Importante:** el primer commit de este repositorio tiene el setup
-básico para el TP Final que incluye la instalación de la lib de Google
-Tests, `SDL2` y `SDL2pp` (el wrapper de C++).
+Este repositorio corresponde al Trabajo Práctico final de la materia TA045 Taller de Programación [cátedra Veiga](https://taller-de-programacion.github.io/bienvenido.html).
 
-El resto de los commits son a modo de ejemplo de como se pueden
-agregar mas código fuente al proyecto.
+El proyecto consiste en una implementación propia en *C++* del juego argentino [*Argentum Online*](https://www.argentumonline.com.ar/). El juego ofrece un multijugador online masivo en un mundo de rol y fantasía lleno de criaturas salvajes y mazmorras que explorar.
 
-Este ejemplo **no** incluye instalarse otras libs que son dependencias
-tanto de `SDL2` como de `SDL2pp` (pero si estan documentadas en el
-`CMakeFile` para Xubuntu 24.04).
+## Integrantes
 
-Este repo **no** incluye tampoco un instalador.
+[Bono Neer](https://github.com/bono-neer) - 112158
+[Nicolás Olivieri](https://github.com/Nicolas-Olivieri) - 111902
+[Bogdan Skorokhod](https://github.com/bskorokhod) - 111692
+[Oriana Toscano](https://github.com/OrianaToscano) - 111984
 
-**Se deben agregar las librerias necesarias y el instalador.**
+## Enlaces a documentación
 
-También el ejemplo usa una estructura de carpetas muy simple:
+### Manual de usuario
 
-```
-client/
-server/
-editor/
-common/
-```
+<!-- TODO: Agregar el link al manual de usuario (github page) -->
+El [manual de usuario](#) es una guía básica para los nuevos usuarios. En el mismo se explica cómo instalar y correr el juego. Además, cuenta con una lista de controles y comandos para usar una vez se esté dentro del juego.
 
-Bien se puede mejorar (cambiando el cmakefile) agregando mas
-sub-carpetas.
+### Documentación técnica
 
-Asi tambien **deben** ser cambiados los *targets* del cmake (`taller_client`,
-`taller_server`, ...) por nombres mas acordes al TP que se este
-haciendo.
+<!-- TODO: Agregar link a la documentación técnica (directorio /doc con los UML) -->
+La [documentación técnica](#) tiene la información necearia para que nuevos desarrolladores, que quieran unirse, puedan entender la arquitectura implementada rápidamente.
 
-Tambien, por default solo se compila una version *debug* sin
-optimizar. Si se quiere compilar binarios optimizados
-(lo que cmake llama *release*) se puede, solo hay modificar
-cmake.
+### Manual de proyecto
 
-Aprender del ejemplo para saber como extenderlo!
-
-**Importante:** este repositorio **no** incluye pre-commits hooks,
-ni scripts adicionales (como correr valgrind).
-
-**Eso esta a cargo de los estudiantes,** tal como fue mostrado
-en los tps individuales, recaps y hands-on.
+<!-- TODO: Agregar link al manual de proyecto (un archivo en el directorio /doc) -->
+El [manual de proyecto](#) es una documentación que resume cómo fue la experiencia del grupo en el desarrollo de este trabajo práctico.
 
 ## Créditos
 

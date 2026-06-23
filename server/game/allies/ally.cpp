@@ -10,7 +10,6 @@ Ally::Ally(const Position& position, const AllyType& type): position(position), 
 
 InteractResult Ally::interact(Player& player) {
     player.bind_ally(this);
-    std::cout << "[Ally] El jugador se vinculó con el aliado" << std::endl;
 
     return InteractResult(type);
 }

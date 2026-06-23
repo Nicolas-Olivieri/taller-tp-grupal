@@ -90,6 +90,9 @@
      <pointsize>14</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255)</string>
+   </property>
    <property name="text">
     <string>Resolución</string>
    </property>
@@ -108,6 +111,9 @@
      <family>Nimbus Roman [urw]</family>
      <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 255, 255)</string>
    </property>
    <property name="text">
     <string>TextLabel</string>

@@ -10,27 +10,18 @@
 
 
 int main(const int argc, char* argv[]) {
-    const auto log = Logger();
     try {
-
         if (argc != CLI_MIN_ARGS) {
-            std::cerr << "Usage: " << argv[0] << " " << std::endl;
+            std::cerr << "Corre el programa con el lanzador client.sh" << std::endl;
             return ERROR;
         }
-
-        // TODO probar meter el init de QT app aca
-        //  hay que emular los argc y argv para hacerlo, y no parece ser lo más
-        //  conveniente tmpc
-        //        int _argc = 3;
-        //        char *_argv[] = {argv[0], &text1, "", nullptr};
-        //        QApplication app(argc, argv);
 
         Client client(argc, argv);
         return client.run();
     } catch (const std::exception& e) {
-        std::cerr << e.what() << "\n";
+        std::cerr << EXCEPTION_MSG << ": " << e.what() << std::endl;
     } catch (...) {
-        log.crit(UNKNOWN_EXCEPTION_MSG);
+        std::cerr << UNKNOWN_EXCEPTION_MSG << std::endl;
     }
 
     return ERROR;
