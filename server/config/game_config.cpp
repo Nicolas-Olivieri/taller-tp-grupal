@@ -22,6 +22,7 @@ GameConfig::GameConfig() {
     killables_constants_data = retrieve_config_data<KillablesConstantsData>(paths_data, "world", "killables");
     calculator_constants_data =
             retrieve_config_data<CalculatorConstantsData>(paths_data, "calculator", "calculator");
+    traders_settings = retrieve_config_data<TraderSettingsData>(paths_data, "traders", "settings");
 }
 
 GameConfig& GameConfig::get() {
@@ -149,3 +150,5 @@ const KillablesConstantsData& GameConfig::get_killables_constants() const { retu
 const CalculatorConstantsData& GameConfig::get_calculator_constants() const {
     return calculator_constants_data;
 }
+
+const TraderSettingsData& GameConfig::get_traders_settings() const { return traders_settings; }

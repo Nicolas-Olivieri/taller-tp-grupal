@@ -50,17 +50,16 @@ AllyExecuteResult Merchant::execute(Player& player, const AllyActionPayload& pay
 
 
 AllyExecuteResult Merchant::handle_sell_item(Player& player, const uint8_t item_id) const {
+    GameConfig& config = GameConfig::get();
+
     if (not player.is_alive())
         return AllyExecuteResult(SellResult(SellStatus::GHOST_FAIL, type));
 
     try {
-        const uint16_t price = GameConfig::get().get_item_price(item_id);
+        const uint16_t price = config.get_item_price(item_id);
         player.drop_item(item_id);
-        // TODO: El porcentaje de precio de venta debería venir del TOML
-        player.add_gold(price * 0.70);
+        player.add_gold(price * config.get_traders_settings().selling_percentage);
 
-        std::cout << "[Merchant] Compra exitosa del ítem " << static_cast<int>(item_id) << " por "
-                  << price * 0.70 << " monedas de oro" << std::endl;
         return AllyExecuteResult(SellResult(SellStatus::ITEM_BOUGHT, type));
 
     } catch (const ItemNotOwned&) {
