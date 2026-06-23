@@ -586,6 +586,8 @@ struct ClanMessagesData {
     std::string is_not_in_join_list_msg;
     std::string clan_is_full_msg;
     std::string prefix;
+    std::string player_left_clan;
+    std::string founder_cannot_leave_clan;
 };
 
 template <>
@@ -599,6 +601,8 @@ struct toml::from<ClanMessagesData> {
                 toml::find<std::string>(raw, "is_not_in_join_list_msg"),
                 toml::find<std::string>(raw, "clan_is_full_msg"),
                 toml::find<std::string>(raw, "prefix"),
+                toml::find<std::string>(raw, "player_left_clan"),
+                toml::find<std::string>(raw, "founder_cannot_leave_clan"),
         };
     }
 };

@@ -18,11 +18,11 @@ void ClanLeaveCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::SUCCESS:
             builder.add_action(ActionDTO(ClanLeaveDTO(player_name)));
             builder.add_action(
-                    ActionDTO(ChatMessageDTO(MessageType::CLAN, player_name, "Has abandonado el clan")));
+                    ActionDTO(ChatMessageDTO(MessageType::CLAN, player_name, clan_msgs.player_left_clan)));
             return;
 
         case ClanActionStatus::IS_FOUNDER:
-            error_msg = "Como fundador del clan, no puedes abandonarlo";
+            error_msg = clan_msgs.founder_cannot_leave_clan;
             break;
         case ClanActionStatus::NOT_IN_CLAN:
             error_msg = clan_msgs.not_in_clan_msg;
