@@ -58,8 +58,9 @@ void ClanAcceptCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::PLAYER_HAS_CLAN:
             error_msg = other_player_name + clan_msgs.player_has_clan;
             break;
-        case ClanActionStatus::IS_FOUNDER:
-        case ClanActionStatus::NO_RESULT:
+        case ClanActionStatus::PLAYER_DISCONNECTED:
+            error_msg = other_player_name + clan_msgs.player_is_disconnected;
+            break;
         default:
             throw std::runtime_error("ClanAcceptCommand encontró un tipo de resultado inválido");
     }

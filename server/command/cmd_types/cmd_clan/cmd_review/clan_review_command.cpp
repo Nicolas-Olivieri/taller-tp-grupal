@@ -26,12 +26,6 @@ void ClanReviewCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::NOT_IN_CLAN:
             error_msg = clan_msgs.not_in_clan_msg;
             break;
-        case ClanActionStatus::IS_FOUNDER:
-        case ClanActionStatus::NO_RESULT:
-        case ClanActionStatus::NOT_A_PLAYER:
-        case ClanActionStatus::IS_ALREADY_MEMBER:
-        case ClanActionStatus::IS_BANNED_PLAYER:
-        case ClanActionStatus::IS_NOT_IN_JOIN_LIST:
         default:
             throw std::runtime_error("ClanReviewCommand encontró un tipo de resultado inválido");
     }
@@ -42,14 +36,14 @@ void ClanReviewCommand::build_review(SnapshotBuilder& builder) {
     lines.reserve(1 + 2 + 2 + result.banned_players.size() + 1 + result.clan_members.size() + 1 +
                   result.joining_requests.size());
 
-    lines.push_back("Revision del clan:");
+    lines.push_back("Revisión del clan:");
 
     lines.push_back(std::format("* Miembros: ({} / {})", result.clan_members.size() + 1,
                                 GameConfig::get().get_clan_constants().max_members_per_clan));
     lines.push_back(std::format("{} - Fundador", player_name));
     std::copy(result.clan_members.begin(), result.clan_members.end(), std::back_inserter(lines));
 
-    lines.push_back(std::format("* Solicitudes de union del clan: ({})", result.joining_requests.size()));
+    lines.push_back(std::format("* Solicitudes de unión del clan: ({})", result.joining_requests.size()));
     std::copy(result.joining_requests.begin(), result.joining_requests.end(), std::back_inserter(lines));
 
     lines.push_back(std::format("* Jugadores baneados del clan: ({})", result.banned_players.size()));

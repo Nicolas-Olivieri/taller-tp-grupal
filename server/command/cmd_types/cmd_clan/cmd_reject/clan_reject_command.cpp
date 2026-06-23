@@ -34,9 +34,9 @@ void ClanRejectCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::IS_NOT_IN_JOIN_LIST:
             error_msg = clan_msgs.prefix + other_player_name + clan_msgs.is_not_in_join_list_msg;
             break;
-        case ClanActionStatus::IS_FOUNDER:
-        case ClanActionStatus::IS_BANNED_PLAYER:
-        case ClanActionStatus::NO_RESULT:
+        case ClanActionStatus::PLAYER_DISCONNECTED:
+            error_msg = other_player_name + clan_msgs.player_is_disconnected;
+            break;
         default:
             throw std::runtime_error("ClanRejectCommand encontró un tipo de resultado inválido");
     }

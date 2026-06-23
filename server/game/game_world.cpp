@@ -718,12 +718,17 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
     if (clan_name.empty())
         return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
 
-    if ((not players.contains(payload.other_player)) and (not payload.other_player.empty()))
-        return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
+    if ((not players.contains(payload.other_player)) and (not payload.other_player.empty())) {  // NOLINT
+        if (not player_repository.exists(payload.other_player))
+            return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
+
+        return ClanActionResult(ClanActionStatus::PLAYER_DISCONNECTED);
+    }
 
     assert(clans.contains(clan_name));
 
     Clan& clan = clans.at(clan_name);
+
 
     ClanActionResult result = clan.execute(payload);
 

@@ -27,12 +27,6 @@ void ClanLeaveCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::NOT_IN_CLAN:
             error_msg = clan_msgs.not_in_clan_msg;
             break;
-        case ClanActionStatus::IS_MEMBER:
-        case ClanActionStatus::NOT_A_PLAYER:
-        case ClanActionStatus::NO_RESULT:
-        case ClanActionStatus::IS_ALREADY_MEMBER:
-        case ClanActionStatus::IS_BANNED_PLAYER:
-        case ClanActionStatus::IS_NOT_IN_JOIN_LIST:
         default:
             throw std::runtime_error("ClanLeaveCommand encontró un tipo de resultado inválido");
     }

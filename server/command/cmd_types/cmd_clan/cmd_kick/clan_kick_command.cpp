@@ -37,10 +37,9 @@ void ClanKickCommand::build_snapshot(SnapshotBuilder& builder) {
         case ClanActionStatus::NOT_A_PLAYER:
             error_msg = std::format("El jugador {} no es un miembro del clan", other_player_name);
             break;
-        case ClanActionStatus::IS_ALREADY_MEMBER:
-        case ClanActionStatus::IS_BANNED_PLAYER:
-        case ClanActionStatus::IS_NOT_IN_JOIN_LIST:
-        case ClanActionStatus::NO_RESULT:
+        case ClanActionStatus::PLAYER_DISCONNECTED:
+            error_msg = other_player_name + clan_msgs.player_is_disconnected;
+            break;
         default:
             throw std::runtime_error("ClanKickCommand encontró un tipo de resultado inválido");
     }

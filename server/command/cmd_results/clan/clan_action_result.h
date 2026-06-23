@@ -30,6 +30,7 @@ enum class ClanActionStatus {
     IS_NOT_IN_JOIN_LIST,
     CLAN_IS_FULL,
     PLAYER_HAS_CLAN,
+    PLAYER_DISCONNECTED,
 
 };
 
