@@ -13,16 +13,18 @@ void ClanReviewCommand::execute(GameWorld& world) {
 
 void ClanReviewCommand::build_snapshot(SnapshotBuilder& builder) {
     std::string error_msg;
+    const ClanMessagesData& clan_msgs = GameConfig::get().get_clan_messages();
+
     switch (result.status) {
         case ClanActionStatus::SUCCESS:
             build_review(builder);
             return;
 
         case ClanActionStatus::IS_MEMBER:
-            error_msg = IS_MEMBER_MSG;
+            error_msg = clan_msgs.is_member_msg;
             break;
         case ClanActionStatus::NOT_IN_CLAN:
-            error_msg = NOT_IN_CLAN_MSG;
+            error_msg = clan_msgs.not_in_clan_msg;
             break;
         case ClanActionStatus::IS_FOUNDER:
         case ClanActionStatus::NO_RESULT:

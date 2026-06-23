@@ -8,9 +8,10 @@ max_attack_buff_factor = 5.00
 # Ejemplo: si max_attack_buff_factor == 10.00 -> vas a hacer x10 de daño
 
 [clans_messages]
-not_in_clan_msg = "Debes estar en un clan para realizar esta accion"
-not_a_player_msg = "El jugador {} no existe"
-is_member_msg = "Solo el fundador del clan puede realizar esa accion"
-is_already_member_msg = "El jugador {} ya es un miembro del clan"
-is_not_in_join_list_msg = "El jugador {} no solicito unirse al clan"
+not_in_clan_msg = "Debes estar en un clan para realizar esta acción"
+not_a_player_msg = " no existe"
+is_member_msg = "Solo el fundador del clan puede realizar esa acción"
+is_already_member_msg = " ya es un miembro del clan"
+is_not_in_join_list_msg = " no solicito unirse al clan"
 clan_is_full_msg = "El clan ya esta lleno"
+prefix = "El jugador "

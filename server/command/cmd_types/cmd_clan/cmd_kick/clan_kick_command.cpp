@@ -13,6 +13,8 @@ void ClanKickCommand::execute(GameWorld& world) {
 
 void ClanKickCommand::build_snapshot(SnapshotBuilder& builder) {
     std::string error_msg;
+    const ClanMessagesData& clan_msgs = GameConfig::get().get_clan_messages();
+
     switch (result.status) {
         case ClanActionStatus::SUCCESS:
             builder.add_action(
@@ -27,10 +29,10 @@ void ClanKickCommand::build_snapshot(SnapshotBuilder& builder) {
             error_msg = "No puedes expulsarte a tí mismo del clan";
             break;
         case ClanActionStatus::IS_MEMBER:
-            error_msg = IS_MEMBER_MSG;
+            error_msg = clan_msgs.is_member_msg;
             break;
         case ClanActionStatus::NOT_IN_CLAN:
-            error_msg = NOT_IN_CLAN_MSG;
+            error_msg = clan_msgs.not_in_clan_msg;
             break;
         case ClanActionStatus::NOT_A_PLAYER:
             error_msg = std::format("El jugador {} no es un miembro del clan", other_player_name);

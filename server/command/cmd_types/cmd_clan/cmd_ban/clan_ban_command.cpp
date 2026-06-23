@@ -13,6 +13,8 @@ void ClanBanCommand::execute(GameWorld& world) {
 
 void ClanBanCommand::build_snapshot(SnapshotBuilder& builder) {
     std::string error_msg;
+    const ClanMessagesData& clan_msgs = GameConfig::get().get_clan_messages();
+
     switch (result.status) {
         case ClanActionStatus::SUCCESS:
             builder.add_action(ActionDTO(ChatMessageDTO(MessageType::CLAN, player_name,
@@ -20,13 +22,13 @@ void ClanBanCommand::build_snapshot(SnapshotBuilder& builder) {
             return;
 
         case ClanActionStatus::IS_MEMBER:
-            error_msg = IS_MEMBER_MSG;
+            error_msg = clan_msgs.is_member_msg;
             break;
         case ClanActionStatus::NOT_IN_CLAN:
-            error_msg = NOT_IN_CLAN_MSG;
+            error_msg = clan_msgs.not_in_clan_msg;
             break;
         case ClanActionStatus::NOT_A_PLAYER:
-            error_msg = std::format(NOT_A_PLAYER_MSG, other_player_name);
+            error_msg = clan_msgs.prefix + other_player_name + clan_msgs.not_a_player_msg;
             break;
         case ClanActionStatus::NO_RESULT:
         case ClanActionStatus::IS_ALREADY_MEMBER:
