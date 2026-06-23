@@ -1,6 +1,7 @@
 #include "sdl_grid_range.h"
 
-SDLGridRange::Iterator::Iterator(const SDL2pp::Point origin, const int width, const int curr_x, const int curr_y):
+SDLGridRange::Iterator::Iterator(const SDL2pp::Point origin, const int width, const int curr_x,
+                                 const int curr_y):
         origin(origin), curr_x(curr_x), curr_y(curr_y), width(width) {}
 
 SDLGridRange::Iterator& SDLGridRange::Iterator::operator++() {

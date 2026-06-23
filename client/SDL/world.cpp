@@ -8,6 +8,7 @@
 
 #include "client/config/client_config.h"
 #include "client/util/sdl_grid_range.h"
+
 #include "camera.h"
 
 #define TILE_IDX 0
@@ -28,33 +29,37 @@ World::World(SpriteCreator& sprite_creator, const ClientMapDataDTO& map_data, co
 
 void World::init_assets(const ClientMapDataDTO& map_data) {
     // Inicializo la matriz
-    map_fixed_items.assign(map_data.world_height+1, {});
-    for (auto& row : map_fixed_items) {
-        row.assign(map_data.world_width+1, CellSprites());
+    map_fixed_items.assign(map_data.world_height + 1, {});
+    for (auto& row: map_fixed_items) {
+        row.assign(map_data.world_width + 1, CellSprites());
     }
 
     // Defino condiciones de guardado
     auto always_store = [](auto) { return true; };
-    auto store_if_tile = [this](auto cell)
-                         {return map_fixed_items.at(cell.y).at(cell.x).sprites.at(TILE_IDX).get() != nullptr;};
+    auto store_if_tile = [this](auto cell) {
+        return map_fixed_items.at(cell.y).at(cell.x).sprites.at(TILE_IDX).get() != nullptr;
+    };
 
-    // Por cada categoria de asset, para cada asset, creo el Sprite, lo convierto a puntero y lo guardeo en la matriz
-    // en cada celda que ocupe según su tamaño
+    // Por cada categoria de asset, para cada asset, creo el Sprite, lo convierto a puntero y lo guardeo en la
+    // matriz en cada celda que ocupe según su tamaño
     store_category_pointers(map_data.tiles, SpriteCategory::TILE, TILE_IDX, always_store);
     store_category_pointers(map_data.safe_zones, SpriteCategory::SAFE_ZONE, SAFE_ZONE_IDX, store_if_tile);
     store_category_pointers(map_data.colliders, SpriteCategory::COLLIDER, COLLIDER_IDX, always_store);
     store_category_pointers(map_data.npcs, SpriteCategory::NPC, COLLIDER_IDX, store_if_tile);
 }
 
-void World::store_category_pointers(const std::vector<AssetInfoDTO> &assets, const SpriteCategory category, const int arr_index,
-                           const std::function<bool(SDL2pp::Point cell)> &condition) {
+void World::store_category_pointers(const std::vector<AssetInfoDTO>& assets, const SpriteCategory category,
+                                    const int arr_index,
+                                    const std::function<bool(SDL2pp::Point cell)>& condition) {
     for (const auto& asset_info: assets) {
         FixedSprite asset = sprite_creator.create_sprite(category, asset_info);
-        const SDLGridRange range(asset_info.x, asset_info.y, asset.get_size()/ClientConfig::get().get_tile_size());
+        const SDLGridRange range(asset_info.x, asset_info.y,
+                                 asset.get_size() / ClientConfig::get().get_tile_size());
         const auto ptr = std::make_shared<FixedSprite>(std::move(asset));
 
-        for (const auto& cell : range) {
-            if (!condition(cell)) continue;
+        for (const auto& cell: range) {
+            if (!condition(cell))
+                continue;
             auto& cell_sprites = map_fixed_items.at(cell.y).at(cell.x).sprites;
             cell_sprites.at(arr_index) = ptr;
         }
@@ -84,15 +89,17 @@ void World::render_in_z_order(const Camera& camera, const int iteration) {
     const SDL2pp::Point size = camera_view.GetSize() / tile_size;
 
     const SDLGridRange viewed_range(origin, size);
-    for (const auto& cell : viewed_range) {
-        if (cell.x < 0 || cell.y < 0) continue;
+    for (const auto& cell: viewed_range) {
+        if (cell.x < 0 || cell.y < 0)
+            continue;
 
         auto cell_sprites = map_fixed_items.at(cell.y).at(cell.x).sprites;
 
         // Itero las primeras 4 capas que siempre iran por debajo del jugador y renderizo directo
         for (size_t i = 0; i <= LOOT_IDX; i++) {
             auto sprite = cell_sprites.at(i);
-            if (sprite == nullptr || sprite->already_selected_for_frame(iteration)) continue;
+            if (sprite == nullptr || sprite->already_selected_for_frame(iteration))
+                continue;
 
             sprite->update_frame(iteration);
             sprite->render(camera.get_view().GetTopLeft());
@@ -101,7 +108,8 @@ void World::render_in_z_order(const Camera& camera, const int iteration) {
 
         // Si hay un collider en la celda, lo guardo para poder ordenarlo y renderizarlo junto a las entidades
         auto collider = cell_sprites.at(COLLIDER_IDX);
-        if (collider == nullptr || collider->already_selected_for_frame(iteration)) continue;
+        if (collider == nullptr || collider->already_selected_for_frame(iteration))
+            continue;
         viewed_items.push_back(collider);
         collider->set_last_frame(iteration);
     }

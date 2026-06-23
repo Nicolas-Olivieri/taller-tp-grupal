@@ -7,7 +7,7 @@
 #include "text_sprite.h"
 
 
-class HudSprite final : public Sprite {
+class HudSprite final: public Sprite {
 private:
     SDL2pp::Renderer& renderer;
 

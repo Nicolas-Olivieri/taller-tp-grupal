@@ -48,8 +48,8 @@ private:
 
     void init_assets(const ClientMapDataDTO& map_data);
 
-    void store_category_pointers(const std::vector<AssetInfoDTO> &assets, SpriteCategory category, int arr_index,
-                                 const std::function<bool(SDL2pp::Point cell)> &condition);
+    void store_category_pointers(const std::vector<AssetInfoDTO>& assets, SpriteCategory category,
+                                 int arr_index, const std::function<bool(SDL2pp::Point cell)>& condition);
 
     static bool cmp_by_y_coord(const std::shared_ptr<WorldSprite>& a, const std::shared_ptr<WorldSprite>& b);
 
@@ -67,7 +67,7 @@ private:
 
     void play_event(const SoundEvent& event, const SDL2pp::Point& source);
 
-    template<typename SpritePtrSrc, typename SpritePtrDst>
+    template <typename SpritePtrSrc, typename SpritePtrDst>
     auto filter_viewed_sprites(const Camera& camera, const std::set<std::shared_ptr<SpritePtrSrc>>& sprites,
                                std::vector<std::shared_ptr<SpritePtrDst>>& dest_vector) {
         auto is_visible = [&camera](const auto& item) {
@@ -93,13 +93,13 @@ public:
 
     void update_visuals() const;
 
-    void render_in_z_order(const Camera &camera, int iteration);
+    void render_in_z_order(const Camera& camera, int iteration);
 
     PlayerSprite& get_client_player();
 
     SDL2pp::Rect& get_world_size();
 
-    void add_new_player(const PlayerInfoDTO &info, bool is_client_player = false);
+    void add_new_player(const PlayerInfoDTO& info, bool is_client_player = false);
 };
 
 

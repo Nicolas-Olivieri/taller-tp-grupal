@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 
 #include "SDL2pp/SDL2pp.hh"
 #include "common/util/constants.h"

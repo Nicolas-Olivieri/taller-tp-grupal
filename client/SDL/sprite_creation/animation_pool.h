@@ -2,6 +2,7 @@
 #define ANIMATION_POOL_H
 
 #include <map>
+#include <unordered_map>
 
 #include "common/direction.h"
 #include "common/util/constants.h"

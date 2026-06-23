@@ -45,4 +45,4 @@ public:
 };
 
 
-#endif  //SDLGRIDRANGE_H
+#endif  // SDLGRIDRANGE_H

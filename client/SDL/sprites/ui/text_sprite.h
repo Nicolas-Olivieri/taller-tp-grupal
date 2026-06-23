@@ -5,7 +5,7 @@
 #include "client/SDL/fonts/font_manager.h"
 #include "client/SDL/sprites/base/sprite.h"
 
-class TextSprite final : public Sprite {
+class TextSprite final: public Sprite {
 private:
     SDL2pp::Renderer& renderer;
 

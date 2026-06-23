@@ -2,7 +2,8 @@
 
 #include "client/config/client_config.h"
 
-UserInterface::UserInterface(SDL2pp::Renderer& renderer, SpriteCreator& sprite_creator, std::string& player_name):
+UserInterface::UserInterface(SDL2pp::Renderer& renderer, SpriteCreator& sprite_creator,
+                             std::string& player_name):
         renderer(renderer),
         config(ClientConfig::get().get_ui_data()),
         sprite_creator(sprite_creator),

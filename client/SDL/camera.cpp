@@ -35,8 +35,10 @@ SDL2pp::Rect Camera::get_padded_view() const {
     SDL2pp::Rect padded_view = view;
     const uint8_t tile_size = ClientConfig::get().get_tile_size();
 
-    if (view.y+view.h+(PADDING*tile_size) <= world_size.h) padded_view.SetH(view.h+(PADDING*tile_size));
-    if (view.x+view.w+(PADDING*tile_size) <= world_size.w) padded_view.SetW(view.w+(PADDING*tile_size));
+    if (view.y + view.h + (PADDING * tile_size) <= world_size.h)
+        padded_view.SetH(view.h + (PADDING * tile_size));
+    if (view.x + view.w + (PADDING * tile_size) <= world_size.w)
+        padded_view.SetW(view.w + (PADDING * tile_size));
 
     return padded_view;
 }
