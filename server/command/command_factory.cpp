@@ -69,16 +69,16 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
             return std::make_unique<ListItemsCommand>(player_name);
 
         case CommandType::BUY_ITEM:
-            return std::make_unique<BuyCommand>(player_name, dto.item_id);
+            return std::make_unique<BuyCommand>(player_name, dto.one_byte_number);
 
         case CommandType::SELL_ITEM:
-            return std::make_unique<SellCommand>(player_name, dto.item_id);
+            return std::make_unique<SellCommand>(player_name, dto.one_byte_number);
 
         case CommandType::DEPOSIT_ITEM:
-            return std::make_unique<DepositItemCommand>(player_name, dto.item_id);
+            return std::make_unique<DepositItemCommand>(player_name, dto.one_byte_number);
 
         case CommandType::WITHDRAW_ITEM:
-            return std::make_unique<WithdrawItemCommand>(player_name, dto.item_id);
+            return std::make_unique<WithdrawItemCommand>(player_name, dto.one_byte_number);
 
         case CommandType::DEPOSIT_GOLD:
             return std::make_unique<DepositGoldCommand>(player_name, dto.gold_amount);
@@ -90,13 +90,13 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
             return std::make_unique<PickUpCommand>(player_name);
 
         case CommandType::USE_ITEM:
-            return std::make_unique<UseItemCommand>(player_name, dto.item_id);
+            return std::make_unique<UseItemCommand>(player_name, dto.one_byte_number);
 
         case CommandType::UNEQUIP_ITEM:
-            return std::make_unique<UnequipItemCommand>(player_name, dto.item_id);
+            return std::make_unique<UnequipItemCommand>(player_name, dto.one_byte_number);
 
         case CommandType::DROP_ITEM:
-            return std::make_unique<DropItemCommand>(player_name, dto.item_id);
+            return std::make_unique<DropItemCommand>(player_name, dto.one_byte_number);
 
         case CommandType::CLAN_FOUND:
             return std::make_unique<ClanFoundCommand>(player_name, dto.clan_name);
@@ -121,7 +121,7 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
             return std::make_unique<ClanReviewCommand>(player_name);
 
         case CommandType::CHEAT_XP:
-            return std::make_unique<SetExperienceCommand>(player_name, dto.item_id);
+            return std::make_unique<SetExperienceCommand>(player_name, dto.one_byte_number);
 
         case CommandType::CHEAT_GOLD:
             return std::make_unique<GainGoldCommand>(player_name, dto.gold_amount);
@@ -133,7 +133,7 @@ std::unique_ptr<Command> CommandFactory::create(const RequestedCommandDTO& dto) 
             return std::make_unique<InfiniteRecoberableStatsCommand>(player_name);
 
         case CommandType::CHEAT_ITEM:
-            return std::make_unique<GetItemCommand>(player_name, dto.item_id);
+            return std::make_unique<GetItemCommand>(player_name, dto.one_byte_number);
 
         case CommandType::MEDITATE:
             return std::make_unique<MeditateCommand>(player_name);

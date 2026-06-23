@@ -11,6 +11,7 @@ class ClanAcceptCommand: public Command {
     std::string player_name;
     std::string other_player_name;
     ClanActionResult result;
+    std::string clan_name;
 
 public:
     ClanAcceptCommand(const std::string& player_name, const std::string& other_player_name);

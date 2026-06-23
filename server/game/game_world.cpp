@@ -718,8 +718,12 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
     if (clan_name.empty())
         return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
 
-    if ((not players.contains(payload.other_player)) and (not payload.other_player.empty()))
-        return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
+    if ((not players.contains(payload.other_player)) and (not payload.other_player.empty())) {  // NOLINT
+        if (not player_repository.exists(payload.other_player))
+            return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
+
+        return ClanActionResult(ClanActionStatus::PLAYER_DISCONNECTED);
+    }
 
     assert(clans.contains(clan_name));
 
@@ -730,6 +734,7 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
     if (result.status == ClanActionStatus::SUCCESS) {
         switch (payload.type) {
             case ClanActionType::ACCEPT: {
+                assert(players.contains(payload.other_player));
                 Player& player_accepted = players.at(payload.other_player);
                 if (not player_accepted.get_clan_name().empty()) {
                     clan.remove(payload.other_player);
@@ -742,11 +747,13 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
                 player.leave_clan();
                 break;
             case ClanActionType::KICK: {
+                assert(players.contains(payload.other_player));
                 Player& player_kicked = players.at(payload.other_player);
                 player_kicked.leave_clan();
                 break;
             }
             case ClanActionType::BAN: {
+                assert(players.contains(payload.other_player));
                 Player& player_banned = players.at(payload.other_player);
                 if (player_banned.get_clan_name() == clan_name)
                     player_banned.leave_clan();

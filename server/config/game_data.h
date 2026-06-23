@@ -578,4 +578,56 @@ struct toml::from<TraderSettingsData> {
     }
 };
 
+struct ClanMessagesData {
+    std::string not_in_clan_msg;
+    std::string not_a_player_msg;
+    std::string is_member_msg;
+    std::string is_already_member_msg;
+    std::string is_not_in_join_list_msg;
+    std::string clan_is_full_msg;
+    std::string prefix;
+    std::string player_left_clan;
+    std::string founder_cannot_leave_clan;
+    std::string founder_cannot_kick_himself;
+    std::string player_was_banned;
+    std::string reject_founder_prefix;
+    std::string reject_founder;
+    std::string request_rejected;
+    std::string player_was_accepted;
+    std::string you_were_accepted;
+    std::string player_is_banned;
+    std::string player_has_clan;
+    std::string player_is_disconnected;
+    std::string is_not_member;
+};
+
+template <>
+struct toml::from<ClanMessagesData> {
+    static ClanMessagesData from_toml(const toml::value& raw) {
+        return ClanMessagesData{
+                toml::find<std::string>(raw, "not_in_clan_msg"),
+                toml::find<std::string>(raw, "not_a_player_msg"),
+                toml::find<std::string>(raw, "is_member_msg"),
+                toml::find<std::string>(raw, "is_already_member_msg"),
+                toml::find<std::string>(raw, "is_not_in_join_list_msg"),
+                toml::find<std::string>(raw, "clan_is_full_msg"),
+                toml::find<std::string>(raw, "player_prefix"),
+                toml::find<std::string>(raw, "player_left_clan"),
+                toml::find<std::string>(raw, "founder_cannot_leave_clan"),
+                toml::find<std::string>(raw, "founder_cannot_kick_himself"),
+                toml::find<std::string>(raw, "player_was_banned"),
+                toml::find<std::string>(raw, "reject_founder_prefix"),
+                toml::find<std::string>(raw, "reject_founder"),
+                toml::find<std::string>(raw, "request_rejected"),
+                toml::find<std::string>(raw, "player_was_accepted"),
+                toml::find<std::string>(raw, "you_were_accepted"),
+                toml::find<std::string>(raw, "player_is_banned"),
+                toml::find<std::string>(raw, "player_has_clan"),
+                toml::find<std::string>(raw, "player_is_disconnected"),
+                toml::find<std::string>(raw, "is_not_member"),
+        };
+    }
+};
+
+
 #endif  // GAME_DATA_H

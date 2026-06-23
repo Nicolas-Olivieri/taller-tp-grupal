@@ -52,9 +52,8 @@ struct RequestedCommandDTO {
     std::string receiver;
     std::string message;
 
-    // TODO: OJO si se cambia esto de uint_8 a algo más cuidado que tmb se usa para enviar el nivel de
-    // experiencia
-    uint8_t item_id;
+    // usado como nivel de experiencia o id de item
+    uint8_t one_byte_number;
 
     uint16_t gold_amount;
 
@@ -69,7 +68,7 @@ struct RequestedCommandDTO {
 
     explicit RequestedCommandDTO(const CommandType& cmd);
 
-    RequestedCommandDTO(const CommandType& cmd, uint8_t item_id);
+    RequestedCommandDTO(const CommandType& cmd, uint8_t _one_byte_number);
 
     RequestedCommandDTO(const CommandType& cmd, uint16_t gold_amount);
 

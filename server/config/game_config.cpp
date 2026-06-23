@@ -13,7 +13,7 @@ GameConfig::GameConfig() {
     traders = retrieve_config_data<TradersData>(paths_data, "traders");
     drop_probabilities = retrieve_config_data<DropProbabilitiesData>(paths_data, "drops", "probabilities");
     fair_play_levels = retrieve_config_data<FairPlayData>(paths_data, "fair_play", "fair_play");
-    clan_constants_data = retrieve_config_data<ClanConstantsData>(paths_data, "clans", "clans");
+    clan_constants_data = retrieve_config_data<ClanConstantsData>(paths_data, "clans", "clans_constants");
     biomes_data = retrieve_config_data<BiomesData>(paths_data, "biomes");
     world_constants_data = retrieve_config_data<WorldConstantsData>(paths_data, "world", "world");
     creature_constants_data = retrieve_config_data<CreatureBehaviorConstantsData>(
@@ -23,6 +23,7 @@ GameConfig::GameConfig() {
     calculator_constants_data =
             retrieve_config_data<CalculatorConstantsData>(paths_data, "calculator", "calculator");
     traders_settings = retrieve_config_data<TraderSettingsData>(paths_data, "traders", "settings");
+    clan_messages = retrieve_config_data<ClanMessagesData>(paths_data, "clans", "clans_messages");
 }
 
 GameConfig& GameConfig::get() {
@@ -152,3 +153,5 @@ const CalculatorConstantsData& GameConfig::get_calculator_constants() const {
 }
 
 const TraderSettingsData& GameConfig::get_traders_settings() const { return traders_settings; }
+
+const ClanMessagesData& GameConfig::get_clan_messages() const { return clan_messages; }
