@@ -26,12 +26,12 @@ void ClanAcceptCommand::build_snapshot(SnapshotBuilder& builder) {
 
     switch (result.status) {
         case ClanActionStatus::SUCCESS:
+            assert(not clan_name.empty());
             builder.add_action(ActionDTO(ClanAcceptDTO(player_name, other_player_name)));
             builder.add_action(ActionDTO(ClanMessageDTO(
-                    clan_name, other_player_name + " ahora es miembro del clan", other_player_name)));
-            builder.add_action(
-                    ActionDTO(ChatMessageDTO(MessageType::CLAN, other_player_name,
-                                             std::format("Bienvenido al clan {}!!", other_player_name))));
+                    clan_name, other_player_name + clan_msgs.player_was_accepted, other_player_name)));
+            builder.add_action(ActionDTO(ChatMessageDTO(MessageType::CLAN, other_player_name,
+                                                        clan_msgs.you_were_accepted + clan_name)));
             return;
 
         case ClanActionStatus::IS_MEMBER:
@@ -47,7 +47,7 @@ void ClanAcceptCommand::build_snapshot(SnapshotBuilder& builder) {
             error_msg = clan_msgs.prefix + other_player_name + clan_msgs.is_already_member_msg;
             break;
         case ClanActionStatus::IS_BANNED_PLAYER:
-            error_msg = std::format("El jugador {} esta baneado del clan", other_player_name);
+            error_msg = clan_msgs.prefix + other_player_name + clan_msgs.player_is_banned;
             break;
         case ClanActionStatus::IS_NOT_IN_JOIN_LIST:
             error_msg = clan_msgs.prefix + other_player_name + clan_msgs.is_not_in_join_list_msg;
@@ -56,7 +56,7 @@ void ClanAcceptCommand::build_snapshot(SnapshotBuilder& builder) {
             error_msg = clan_msgs.clan_is_full_msg;
             break;
         case ClanActionStatus::PLAYER_HAS_CLAN:
-            error_msg = std::format("{} ya se unio a otro clan", other_player_name);
+            error_msg = other_player_name + clan_msgs.player_has_clan;
             break;
         case ClanActionStatus::IS_FOUNDER:
         case ClanActionStatus::NO_RESULT:
