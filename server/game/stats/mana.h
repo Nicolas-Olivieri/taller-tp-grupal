@@ -17,7 +17,7 @@ public:
 
     void meditate();
 
-    bool loose(uint16_t amount) override;
+    void loose(uint16_t amount) override;
 };
 
 

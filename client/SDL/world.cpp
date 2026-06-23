@@ -220,7 +220,7 @@ void World::erase_finished_effects() {
 }
 
 void World::handle_actions(const std::vector<ActionDTO>& actions) {
-    // TODO agregar todos los tipos que vayamos agregando
+    // TODO: lo modularizaría en mini handles
     for (auto& action: actions) {
         switch (action.action) {
             case ActionType::DESPAWN:
@@ -319,16 +319,7 @@ void World::handle_actions(const std::vector<ActionDTO>& actions) {
 }
 
 void World::handle_attack(const AttackDTO& attack) {
-    // TODO: Este mapa debería estar en otro lugar (o que el SoundEvent sea un atributo de un ítem en
-    //  ClientConfig)
-    static const std::map<uint8_t, SoundEvent> weapon_to_sound_event{
-            {0, SoundEvent::FISTS_ATTACK},      {1, SoundEvent::SWORD_ATTACK},
-            {2, SoundEvent::AXE_ATTACK},        {3, SoundEvent::HAMMER_ATTACK},
-            {4, SoundEvent::MAGIC_ARROW_SPELL}, {5, SoundEvent::HEAL_SPELL},
-            {6, SoundEvent::MISSILE_SPELL},     {7, SoundEvent::EXPLOSION_SPELL},
-            {8, SoundEvent::BOW_ATTACK},        {9, SoundEvent::BOW_ATTACK},
-            {20, SoundEvent::SWORD_ATTACK},     {21, SoundEvent::DISTORTION_SPELL},
-            {22, SoundEvent::BOW_ATTACK}};
+    const auto& weapon_to_sound_event = ClientConfig::get().get_sound_data().weapon_to_sound_event;
 
     if (not weapon_to_sound_event.contains(attack.weapon))
         return;

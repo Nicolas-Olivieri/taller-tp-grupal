@@ -11,6 +11,7 @@
 #include "audio/audio_manager.h"
 #include "client/connection/connection_handler.h"
 #include "client/util/command_handler.h"
+#include "client/util/key_handler.h"
 
 #include "camera.h"
 #include "user_interface.h"
@@ -27,7 +28,6 @@ private:
 
     std::string player_name;
     World world;
-    int key_being_pressed;
     Camera camera;
 
     UserInterface ui;
@@ -36,12 +36,7 @@ private:
     bool just_restored;
     bool is_fullscreen;
 
-    bool is_chat_active;
-    std::string chat_text;
-
-    CommandHandler cmd_handler;
-
-    // TODO: acá meter las cosas del chat
+    KeyHandler key_handler;
 
     // Principales
     void pollEvents();
@@ -49,8 +44,6 @@ private:
     void render_ui_and_world(int iteration);
 
     void update_state_from_server();
-
-    void handle_key_down(const SDL_Event& event);
 
     void handle_mouse_click(const SDL_Event& event);
 
@@ -60,12 +53,7 @@ private:
 
     bool is_inside_viewport(int x, int y, const SDL2pp::Rect& viewport);
 
-    void toggle_chat();
-
-    void handle_chat_events(const SDL_Event& event);
-
     void handle_mouse_wheel(const SDL_Event& event);
-
 
     // Este método aprovecha el funcionamiento del SO para mover la ventana sin bordes
     static SDL_HitTestResult hit_test_callback(SDL_Window*, const SDL_Point* area, void* data);

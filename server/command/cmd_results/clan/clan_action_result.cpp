@@ -2,7 +2,7 @@
 
 #include <utility>
 
-ClanActionResult::ClanActionResult(): clan_exists(false), status(ClanActionStatus::NO_RESULT) {}
+ClanActionResult::ClanActionResult(): status(ClanActionStatus::NO_RESULT) {}
 
 ClanActionResult::ClanActionResult(const ClanActionStatus& status): status(status) {}
 

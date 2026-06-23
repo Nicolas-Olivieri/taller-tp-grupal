@@ -22,7 +22,6 @@ void Server::run() {
         std::cerr << e.what() << std::endl;
     }
 
-    // TODO: revisar condición de corte
     while (std::getchar() != CMD_EXIT) {}
 
     waiting_players.close();

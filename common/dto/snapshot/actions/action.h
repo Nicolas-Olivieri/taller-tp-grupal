@@ -55,10 +55,6 @@ struct ActionDTO: public ProtocolMessageDTO {
     ClanLeaveDTO clan_leave;
     InventoryListDTO inventory_list;
 
-    // TODO: REVISAR CONSTRUCTOR DEPENDIENDO DE COMO SE MANEJEN LAS ACTION EN EL FUTURO.
-    // pueden llegar a no necesitar el ActionType dependiendo del contenido.
-    //    explicit ActionDTO(ActionType action);
-
     explicit ActionDTO(const AttackDTO& attack);
 
     explicit ActionDTO(const DespawnDTO& despawn);

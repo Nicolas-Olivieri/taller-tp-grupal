@@ -25,15 +25,10 @@ void Health::update() {
     RecoverableStat::update();
 }
 
-bool Health::loose(uint16_t amount) {
-    if (current_amount == 0) {
-        return false;
-    } else if (current_amount < amount) {
-        // TODO: Morir
+void Health::loose(uint16_t amount) {
+    if (current_amount < amount) {
         current_amount = 0;
-        return true;
+    } else if (current_amount > 0) {
+        current_amount -= amount;
     }
-
-    current_amount -= amount;
-    return false;
 }

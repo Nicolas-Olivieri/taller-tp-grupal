@@ -30,16 +30,12 @@ ClientGame::ClientGame(ConnectionHandler& connection, std::string& player_name, 
         sprite_creator(renderer, font_manager),
         player_name(player_name),
         world(sprite_creator, connection.receive_map(), player_name, audio_manager),
-        key_being_pressed(SDLK_UNKNOWN),
         camera(initialize_world_and_camera()),
         ui(renderer, sprite_creator, player_name),
         keep_running(true),
         just_restored(false),
         is_fullscreen(false),
-        is_chat_active(false),
-        chat_text(""),
-        cmd_handler(player_name, connection, chat_text, ui) {
-    ClientConfig::get();
+        key_handler(player_name, connection, ui) {
     SDL_SetWindowHitTest(window.Get(), hit_test_callback, this);
 }
 
@@ -95,7 +91,6 @@ Camera ClientGame::initialize_world_and_camera() {
 
 void ClientGame::pollEvents() {
     SDL_Event event;
-    bool key_was_pressed = false;
 
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESTORED) {
@@ -114,20 +109,17 @@ void ClientGame::pollEvents() {
         if (event.type == SDL_MOUSEWHEEL)
             handle_mouse_wheel(event);
 
-        if (is_chat_active) {
-            handle_chat_events(event);
+        if (key_handler.is_chat_active()) {
+            key_handler.handle_chat_event(event);
             continue;
         }
 
         if (event.type == SDL_KEYDOWN) {
-            key_was_pressed = true;
-            handle_key_down(event);
+            key_handler.handle_key_down(event);
         }
 
-        // Esto no sirvió en esta condición, nunca se cumplía
-        // key_was_pressed == event.key.keysym.sym &&
-        if (event.type == SDL_KEYUP && KeyMapper::is_movement_key(event.key.keysym.sym)) {
-            key_being_pressed = SDLK_UNKNOWN;
+        if (key_handler.is_releasing_key(event)) {
+            key_handler.release_key();
         }
     }
 
@@ -136,46 +128,9 @@ void ClientGame::pollEvents() {
         return;
     }
 
-    // TODO esto definitivamente habría que modularizarlo/encapsularlo
-    if (!key_was_pressed && KeyMapper::is_movement_key(key_being_pressed)) {
-        connection.push_command(std::make_unique<MoveEventDTO>(KeyMapper::get_direction(key_being_pressed)));
-    }
+    key_handler.handle_continuous_movement();
 }
 
-void ClientGame::handle_chat_events(const SDL_Event& event) {
-    if (event.type == SDL_TEXTINPUT) {
-        chat_text += event.text.text;
-        return;
-    }
-
-    if (event.type == SDL_KEYUP) {
-        key_being_pressed = SDLK_UNKNOWN;
-        return;
-    }
-
-    if (event.type != SDL_KEYDOWN)
-        return;
-
-    if (event.key.keysym.sym == SDLK_BACKSPACE && !chat_text.empty()) {
-        chat_text.pop_back();
-        return;
-    }
-
-    if (event.key.keysym.sym == SDLK_RETURN) {
-        if (chat_text.empty())
-            return;
-
-        ui.chat_scroll_to_bottom();
-
-        cmd_handler.process_chat_output();
-    }
-
-    if (event.key.keysym.sym == SDLK_ESCAPE) {
-        is_chat_active = false;
-        SDL_StopTextInput();
-        chat_text.clear();
-    }
-}
 
 void ClientGame::update_state_from_server() {
     if (connection.is_finished()) {
@@ -203,41 +158,6 @@ void ClientGame::update_state_from_server() {
 }
 
 
-void ClientGame::handle_key_down(const SDL_Event& event) {
-    assert(event.type == SDL_KEYDOWN);
-    auto key_pressed = event.key.keysym.sym;
-
-    if (KeyMapper::is_movement_key(key_pressed)) {
-        Direction direction_chosen = KeyMapper::get_direction(key_pressed);
-
-        connection.push_command(std::make_unique<MoveEventDTO>(MoveEventDTO(direction_chosen)));
-        key_being_pressed = key_pressed;
-    }
-
-    if (!KeyMapper::is_command_key(key_pressed))
-        return;
-
-    switch (key_pressed) {
-        case SDLK_c:
-            toggle_chat();
-            break;
-        case SDLK_e:
-            cmd_handler.handle_pick_up_command();
-            break;
-        case SDLK_q:
-            cmd_handler.handle_drop_item_command();
-            break;
-        case SDLK_h:
-            ui.toggle_help(HelpPage::GENERAL);
-            break;
-        case SDLK_m:
-            cmd_handler.handle_meditate();
-            break;
-        default:
-            throw std::runtime_error("Esta tecla aún no tiene una funcionalidad asignada");
-    }
-}
-
 void ClientGame::handle_mouse_click(const SDL_Event& event) {
     assert(event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP);
     if (is_inside_viewport(event.button.x, event.button.y, config.viewport)) {
@@ -248,7 +168,7 @@ void ClientGame::handle_mouse_click(const SDL_Event& event) {
 }
 
 void ClientGame::render_ui_and_world(const int iteration) {
-    ui.render(chat_text, is_chat_active);
+    ui.render(key_handler.get_chat_text(), key_handler.is_chat_active());
 
     renderer.SetViewport(config.viewport);
     world.render_in_z_order(camera, iteration);
@@ -295,7 +215,7 @@ void ClientGame::handle_ui_click(const SDL_Event& event) {
     if (event.button.button == SDL_BUTTON_LEFT) {
         // Clic izquierdo sobre el chat
         if (is_inside_viewport(x, y, config.chat_icon)) {
-            toggle_chat();
+            key_handler.toggle_chat();
         } else if (is_inside_viewport(x, y, config.minimize_button)) {
             window.Minimize();
 
@@ -311,16 +231,6 @@ void ClientGame::handle_ui_click(const SDL_Event& event) {
         } else if (is_inside_viewport(x, y, config.close_button)) {
             keep_running = false;
         }
-    }
-}
-
-void ClientGame::toggle_chat() {
-    is_chat_active = !is_chat_active;
-
-    if (is_chat_active) {
-        SDL_StartTextInput();
-    } else {
-        SDL_StopTextInput();
     }
 }
 

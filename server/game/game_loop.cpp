@@ -38,7 +38,6 @@ void GameLoop::run() {
         last_iteration = current_iteration;
         current_iteration = timer.calculate_next_iteration();
 
-        // TODO: engrapadísimo también
         if (current_iteration % GameConfig::get().get_world_constants().tick_between_saves == 0)
             player_repository.save_progress(game_world.get_players());
     }

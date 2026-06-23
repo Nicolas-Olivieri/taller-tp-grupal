@@ -179,7 +179,6 @@ void InteractCommand::handle_recover(SnapshotBuilder& builder) {
     builder.add_action(ActionDTO(AttackDTO(result.recover.weapon, position.get_x(), position.get_y(),
                                            static_cast<uint8_t>(status))));
 
-    // TODO: lógica de clanes para curaciones? (porfa no)
     if (player_name == result.recover.player_recovered) {
         builder.add_action(ActionDTO(
                 ChatMessageDTO(MessageType::SYSTEM, player_name,

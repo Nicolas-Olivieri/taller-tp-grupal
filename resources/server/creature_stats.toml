@@ -1,3 +1,5 @@
+# Tipo de Creature
+
 [races.goblin]
 id = 0
 health_factor = 0.75
@@ -64,7 +66,7 @@ intelligence = 20
 strength = 20
 base_level = 8
 
-# TODO: agregarles un equipment cuando se termine de implementar
+# Variación de la creature
 
 [variations.default]
 id = 0

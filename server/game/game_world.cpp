@@ -237,7 +237,6 @@ void GameWorld::spawn_random_creature() {
     players_positions.reserve(players.size());
 
     for (const auto& [name, player]: players) {
-        // TODO: capaz no hace falta filtrar que estén vivos
         if (player.is_alive()) {
             Position position = player.get_position();
             if (!config.is_safe_zone_floor(grid.get_tile(position).floor))
@@ -544,7 +543,6 @@ MeditateResult GameWorld::meditate(const std::string& player_name) {
 
     Player& player = players.at(player_name);
 
-    // TODO: Estos casos se podrían manejar como excepciones
     if (not player.is_alive())
         return MeditateResult(MeditateStatus::GHOST_FAIL);
 
@@ -611,10 +609,8 @@ const Ally* GameWorld::find_closest_priest(const Player& player) const {
 
 
 AllyExecuteResult GameWorld::start_delayed_resurrection(Player& player, const Ally* priest) const {
-    // TODO: El factor de proporcionalidad debe venir del TOML
-    constexpr double time_factor = 2;
     const double distance = player.get_position().distance_to(priest->get_position());
-    const double wait_time = distance * time_factor;
+    const double wait_time = distance * GameConfig::get().get_world_constants().resurrection_time_factor;
     player.start_delayed_resurrection(wait_time, priest->get_position());
     return AllyExecuteResult(ResurrectResult(ResurrectStatus::RESURRECTION_PENDING, AllyType::PRIEST));
 }
@@ -722,8 +718,12 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
     if (clan_name.empty())
         return ClanActionResult(ClanActionStatus::NOT_IN_CLAN);
 
-    if ((not players.contains(payload.other_player)) and (not payload.other_player.empty()))
-        return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
+    if ((not players.contains(payload.other_player)) and (not payload.other_player.empty())) {  // NOLINT
+        if (not player_repository.exists(payload.other_player))
+            return ClanActionResult(ClanActionStatus::NOT_A_PLAYER);
+
+        return ClanActionResult(ClanActionStatus::PLAYER_DISCONNECTED);
+    }
 
     assert(clans.contains(clan_name));
 
@@ -734,6 +734,7 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
     if (result.status == ClanActionStatus::SUCCESS) {
         switch (payload.type) {
             case ClanActionType::ACCEPT: {
+                assert(players.contains(payload.other_player));
                 Player& player_accepted = players.at(payload.other_player);
                 if (not player_accepted.get_clan_name().empty()) {
                     clan.remove(payload.other_player);
@@ -746,11 +747,13 @@ ClanActionResult GameWorld::execute_clan_action(const ClanActionPayload& payload
                 player.leave_clan();
                 break;
             case ClanActionType::KICK: {
+                assert(players.contains(payload.other_player));
                 Player& player_kicked = players.at(payload.other_player);
                 player_kicked.leave_clan();
                 break;
             }
             case ClanActionType::BAN: {
+                assert(players.contains(payload.other_player));
                 Player& player_banned = players.at(payload.other_player);
                 if (player_banned.get_clan_name() == clan_name)
                     player_banned.leave_clan();

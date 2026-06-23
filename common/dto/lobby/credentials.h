@@ -5,15 +5,11 @@
 
 #include "common/dto/message.h"
 
+// TODO: sacar la password y el constructor que la usa
 struct CredentialsDTO: public ProtocolMessageDTO {
     std::string username;
-    std::string password;
 
-    explicit CredentialsDTO(const std::string& username);  // TODO: eliminar esta
-
-    // TODO: usar solo esta firma y eliminar la otra cuando implementemos la
-    // lógica con contraseñas
-    CredentialsDTO(const std::string& username, const std::string& password);
+    explicit CredentialsDTO(const std::string& username);
 
     size_t message_size() const override;
 

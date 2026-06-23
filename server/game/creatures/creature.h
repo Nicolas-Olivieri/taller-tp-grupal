@@ -33,8 +33,6 @@ private:
     static Equipment equip_items(uint8_t variation);
 
 public:
-    // TODO: mover métodos que no son públicos a la sección private
-
     Creature(const uint8_t race, const uint8_t variation, const Position& position);
 
     std::vector<Loot> drop() override;

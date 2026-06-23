@@ -89,7 +89,6 @@ bool Grid::is_tile_available(int x, int y) const {
     return is_in_range && tiles_[y][x].is_walkable() && tiles_[y][x].occupant() == nullptr;
 }
 
-// TODO: seguramente se puede hacer sin crear tantos objetos
 Direction Grid::closest_movement(const Position& current, const Position& target) const {
     Direction closest_direction = Direction::IDLE;
     float min_distance = MAXFLOAT;

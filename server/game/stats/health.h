@@ -13,7 +13,7 @@ public:
 
     void update() override;
 
-    bool loose(uint16_t amount) override;
+    void loose(uint16_t amount) override;
 };
 
 

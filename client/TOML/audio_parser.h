@@ -23,7 +23,8 @@ struct MusicConfig {
 };
 
 
-enum class SoundEvent {
+// Agregar siempre al final para no desordenar los índices en el config
+enum class SoundEvent : uint8_t {
     DEATH,
     DESPAWN,
     FOOTSTEP,
@@ -106,7 +107,6 @@ struct toml::from<SFXConfig> {
                 {"clan_accept", SoundEvent::CLAN_ACCEPT},
                 {"clan_found", SoundEvent::CLAN_FOUND},
                 {"clan_leave", SoundEvent::CLAN_LEAVE},
-                // TODO: Agregar más sonidos...
         });
 
         SFXConfig config;

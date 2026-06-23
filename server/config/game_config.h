@@ -22,6 +22,8 @@ private:
     GridConstantsData grid_constants_data;
     KillablesConstantsData killables_constants_data;
     CalculatorConstantsData calculator_constants_data;
+    TraderSettingsData traders_settings;
+    ClanMessagesData clan_messages;
 
     GameConfig();
 
@@ -91,6 +93,10 @@ public:
     const KillablesConstantsData& get_killables_constants() const;
 
     const CalculatorConstantsData& get_calculator_constants() const;
+
+    const TraderSettingsData& get_traders_settings() const;
+
+    const ClanMessagesData& get_clan_messages() const;
 
     uint16_t get_item_price(uint8_t item_id) const;
 
