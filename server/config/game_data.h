@@ -565,4 +565,17 @@ struct toml::from<CalculatorConstantsData> {
     }
 };
 
+struct TraderSettingsData {
+    float selling_percentage;
+};
+
+template <>
+struct toml::from<TraderSettingsData> {
+    static TraderSettingsData from_toml(const toml::value& raw) {
+        return TraderSettingsData{
+                toml::find<float>(raw, "selling_percentage"),
+        };
+    }
+};
+
 #endif  // GAME_DATA_H
