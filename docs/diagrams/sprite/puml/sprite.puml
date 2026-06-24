@@ -1,0 +1,71 @@
+@startuml
+
+class Sprite {
+  - Point position
+  - Point size
+  - Point render_offset
+}
+
+abstract class WorldSprite extends Sprite {
+  + Point get_ground_position()
+  + {abstract} render(camera_offset)
+  + {abstract} bool intersects(area, offset)
+}
+
+class FixedSprite extends WorldSprite {
+  + render(camera_offset)
+  + bool intersects(area, offset)
+}
+
+class EffectSprite extends FixedSprite {
+  + update_frame(iteration)
+  + bool has_finished()
+}
+
+class MovingSprite extends WorldSprite {
+  # Point target_position
+  # Direction direction
+  + bool is_idle()
+}
+
+class EnemySprite extends MovingSprite {
+  + update_frame(iteration)
+  + render(camera_offset)
+}
+
+class PlayerSprite extends MovingSprite {
+  + update_frame(iteration)
+  + render(camera_offset)
+}
+
+class InterfaceSprite extends Sprite {
+  - Rect dest
+  + render()
+}
+
+class HudSprite extends Sprite {
+  - Rect dest
+  + render()
+}
+
+class ProgressBarSprite extends Sprite {
+  - Rect box
+  - size_t max
+  - size_t current
+  + render()
+  + update_values(new_current, new_max)
+}
+
+class TextSprite extends Sprite {
+  - string current_text
+  - Color color
+  - Font& font
+  - optional<Texture> texture
+  + render()
+  - cut_text_if_necessary(text_size, max_width)
+}
+
+HudSprite o-- TextSprite : amount_label
+ProgressBarSprite o-- TextSprite : label
+
+@enduml

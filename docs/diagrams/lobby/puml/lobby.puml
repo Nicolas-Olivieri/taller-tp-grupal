@@ -7,6 +7,7 @@ participant "LobbyHandler\n<<thread>>" as LH
 queue "waiting_players\n<<ThreadSafeQueue>>" as Q
 participant "GameAcceptor\n<<thread>>" as GA
 
+activate Q
 activate GA
 note right of GA : bloqueado en pop()
 
@@ -35,12 +36,8 @@ CH --> CG : ClientMapDataDTO
 LH -> Q : push(ConnectionInfo)
 
 Q -> GA : pop()
-deactivate GA
 note right of GA : vuelve a \nbloquearse \nen pop()
 
 deactivate LH
-deactivate ACC
-deactivate CH
-deactivate CG
 
 @enduml
