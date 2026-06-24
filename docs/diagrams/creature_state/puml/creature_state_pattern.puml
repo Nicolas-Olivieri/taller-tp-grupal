@@ -1,0 +1,35 @@
+@startuml
+
+class "Creature" {
+    -state : CreatureState*
+    __
+    +can_attack()
+    +can_reach_target()
+    +is_targeting_someone()
+    +should_stop_targeting()
+}
+
+interface "CreatureState" {
+    {abstract} +next(Creature&) : CreatureState*
+}
+
+class "IdleState" {
+    +next(Creature&) : CreatureState*
+}
+
+class "FollowingState" {
+    +next(Creature&) : CreatureState*
+}
+
+class "AttackingState" {
+    +next(Creature&) : CreatureState*
+}
+
+"Creature" o--> "CreatureState"
+
+"CreatureState" <|-- "IdleState"
+"CreatureState" <|-- "AttackingState"
+"CreatureState" <|-- "FollowingState"
+
+@enduml
+
