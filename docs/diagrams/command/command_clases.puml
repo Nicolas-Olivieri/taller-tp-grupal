@@ -1,0 +1,40 @@
+@startuml
+
+package "cmd_type" {
+}
+
+package "cmd_results" {
+}
+
+abstract class Thread {
+    + run()
+}
+
+class Receiver {
+    - protocol : Protocol
+    - factory : CommandFactory
+    + start()
+}
+
+class Protocol {
+    - socket : Socket&
+}
+
+class CommandFactory {
+    + create(RequestedCommandDTO)
+}
+
+interface Command {
+    + {abstract} execute(GameWorld&)
+    + {abstract} build_snapshot(SnapshotBuilder&)
+}
+
+Receiver --|> Thread
+Receiver *-- Protocol
+Receiver *-- CommandFactory
+
+CommandFactory ..> "cmd_type" : «crea»
+"cmd_type" *-- "cmd_results"
+"cmd_type" ..|> Command
+
+@enduml
