@@ -239,7 +239,6 @@ TEST_F(ProtocolTest, Command_DecodesInteractRawBinaryCorrectly) {
     EXPECT_EQ(received.y, ntohs(target_y));
 }
 
-
 /*
  * Pruebas unitarias para ExistenceDTO
  */
@@ -285,4 +284,55 @@ TEST_F(ProtocolTest, Existence_ThrowsOnTruncatedFrameAndDisconnect) {
     client_skt->close();  // simula una desconexión abrupta del cliente
 
     EXPECT_THROW(server_protocol->recv_existence(), ClosedSocket);
+}
+/*
+ * Prueba unitarias para RequestedCommandDTO
+ */
+
+TEST_F(ProtocolTest, CreatePlayer_ReceiveValidOptionsCorrectly) {
+    const CreatePlayerDTO to_send = helper.mock_create_player();
+    client_protocol->send(to_send);
+
+    const CreatePlayerDTO received = server_protocol->recv_appearance();
+    const AppearanceDTO received_appearance = received.appearance;
+
+    EXPECT_EQ(to_send.appearance.body, received.appearance.body);
+    EXPECT_EQ(to_send.appearance.head, received.appearance.head);
+    EXPECT_EQ(to_send.archetype, received.archetype);
+    EXPECT_EQ(to_send.race, received.race);
+}
+
+TEST_F(ProtocolTest, CreatePlayer_ThrowsOnWrongHeaderByte) {
+    std::vector<uint8_t> buffer;
+    buffer.push_back(static_cast<uint8_t>(Message::CREDENTIALS));
+    buffer.push_back(sizeof(CreatePlayerDTO) - sizeof(Message));
+
+    client_skt->sendall(buffer.data(), buffer.size());
+
+    EXPECT_THROW(server_protocol->recv_appearance(), std::runtime_error);
+}
+
+TEST_F(ProtocolTest, CreatePlayer_DecodesCreatePlayerRawBinaryCorrectly) {
+    const CreatePlayerDTO target = helper.mock_create_player();
+
+    std::vector<uint8_t> buffer(sizeof(Message) + sizeof(target.appearance.body) +
+                                sizeof(target.appearance.head) + sizeof(target.archetype) +
+                                sizeof(target.race));
+    size_t offset = 0;
+
+    buffer[offset++] = static_cast<uint8_t>(Message::CREATE_PLAYER);
+
+    buffer[offset++] = target.appearance.body;
+    buffer[offset++] = target.appearance.head;
+    buffer[offset++] = target.archetype;
+    buffer[offset++] = target.race;
+
+    client_skt->sendall(buffer.data(), buffer.size());
+
+    const CreatePlayerDTO received = server_protocol->recv_appearance();
+
+    EXPECT_EQ(received.appearance.body, target.appearance.body);
+    EXPECT_EQ(received.appearance.head, target.appearance.head);
+    EXPECT_EQ(received.archetype, target.archetype);
+    EXPECT_EQ(received.race, target.race);
 }
