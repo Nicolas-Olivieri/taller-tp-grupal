@@ -132,7 +132,7 @@ TEST_F(ProtocolTest, Credentials_DecodesRawBinaryFrameCorrectly) {
 
 
 /*
- * Prueba unitarias para RequestedCommandDTO
+ * Pruebas unitarias para RequestedCommandDTO
  */
 
 TEST_F(ProtocolTest, Command_ReceiveMoveCorrectly) {
@@ -237,4 +237,52 @@ TEST_F(ProtocolTest, Command_DecodesInteractRawBinaryCorrectly) {
     EXPECT_EQ(received.command, CommandType::INTERACT);
     EXPECT_EQ(received.x, ntohs(target_x));
     EXPECT_EQ(received.y, ntohs(target_y));
+}
+
+
+/*
+ * Pruebas unitarias para ExistenceDTO
+ */
+
+TEST_F(ProtocolTest, Existence_SendAndReceiveSuccessfully) {
+    const ExistenceDTO to_send(1, 0);
+
+    client_protocol->send(to_send);
+    const ExistenceDTO received = server_protocol->recv_existence();
+
+    EXPECT_EQ(received.user_exists, to_send.user_exists);
+    EXPECT_EQ(received.user_connected, to_send.user_connected);
+}
+
+TEST_F(ProtocolTest, Existence_DecodesRawBinaryCorrectly) {
+    constexpr uint8_t user_exists = 1;
+    constexpr uint8_t user_connected = 1;
+
+    std::vector<uint8_t> buffer(sizeof(Message) + sizeof(user_exists) + sizeof(user_connected));
+    size_t offset = 0;
+
+    buffer[offset++] = static_cast<uint8_t>(Message::EXISTENCE);
+    buffer[offset++] = user_exists;
+    buffer[offset] = user_connected;
+
+    client_skt->sendall(buffer.data(), buffer.size());
+    const ExistenceDTO received = server_protocol->recv_existence();
+
+    EXPECT_EQ(received.user_exists, user_exists);
+    EXPECT_EQ(received.user_connected, user_connected);
+}
+
+TEST_F(ProtocolTest, Existence_ThrowsOnTruncatedFrameAndDisconnect) {
+    constexpr uint8_t user_exists = 1;
+
+    std::vector<uint8_t> buffer(sizeof(Message) + sizeof(user_exists));
+    size_t offset = 0;
+
+    buffer[offset++] = static_cast<uint8_t>(Message::EXISTENCE);
+    buffer[offset] = user_exists;
+
+    client_skt->sendall(buffer.data(), buffer.size());
+    client_skt->close();  // simula una desconexión abrupta del cliente
+
+    EXPECT_THROW(server_protocol->recv_existence(), ClosedSocket);
 }
