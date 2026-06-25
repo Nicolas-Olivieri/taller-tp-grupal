@@ -19,6 +19,24 @@ std::vector<AssetInfoDTO> TestHelper::mock_asset_vector(const int size) {
     return result;
 }
 
+MoveEventDTO TestHelper::mock_move_event() { return MoveEventDTO(Direction::DOWN); }
+
+ChatEventDTO TestHelper::mock_chat_event() { return ChatEventDTO("dummy", "content"); }
+
+EventDTO TestHelper::mock_event(const CommandType& command) { return EventDTO(command); }
+
+BuyEventDTO TestHelper::mock_buy_event() { return BuyEventDTO(1); }
+
+DepositGoldEventDTO TestHelper::mock_deposit_gold_event() { return DepositGoldEventDTO(1000); }
+
+ClanFoundEventDTO TestHelper::mock_clan_found_event() { return ClanFoundEventDTO("TestClan"); }
+
+RequestResponseEventDTO TestHelper::mock_request_response_event() {
+    return RequestResponseEventDTO("TestClan", true);
+}
+
+InteractEventDTO TestHelper::mock_interact_event() { return InteractEventDTO(150, 200); }
+
 AppearanceDTO TestHelper::mock_appearance() { return AppearanceDTO(1, 2); }
 
 ClanInfoDTO TestHelper::mock_clan_info() { return ClanInfoDTO("TestClan", 0); }
@@ -41,10 +59,9 @@ InventoryInfoDTO TestHelper::mock_inventory_info() {
 }
 
 PlayerInfoDTO TestHelper::mock_player_info(int variation) {
-    return PlayerInfoDTO(std::format("dummy_{}", variation),
-                         mock_clan_info(), Direction::IDLE,
-                         1 * variation, 1 * variation, 100 * variation, 50 * variation,
-                         mock_appearance(), mock_player_stats(), mock_inventory_info(), mock_equipment());
+    return PlayerInfoDTO(std::format("dummy_{}", variation), mock_clan_info(), Direction::IDLE, 1 * variation,
+                         1 * variation, 100 * variation, 50 * variation, mock_appearance(),
+                         mock_player_stats(), mock_inventory_info(), mock_equipment());
 }
 
 std::vector<PlayerInfoDTO> TestHelper::mock_players_information(const int size) {
@@ -57,17 +74,15 @@ std::vector<PlayerInfoDTO> TestHelper::mock_players_information(const int size) 
 
 CredentialsDTO TestHelper::mock_credentials(const std::string& username) { return CredentialsDTO(username); }
 
-ExistenceDTO TestHelper::mock_existence(uint8_t exists, uint8_t connected) {
-    return ExistenceDTO(exists, connected);
-}
+ExistenceDTO TestHelper::mock_existence() { return ExistenceDTO(1, 0); }
 
 CreatePlayerDTO TestHelper::mock_create_player() { return CreatePlayerDTO(1, 1, 1, 1); }
 
 CreatureStatsDTO TestHelper::mock_creature_stats() { return CreatureStatsDTO(50, 30, 2); }
 
 CreatureInfoDTO TestHelper::mock_creature_info(const int variation) {
-    return CreatureInfoDTO(1 * variation, 1 * variation, 100 * variation, Direction::UP,
-                         10 * variation, 20 * variation, mock_creature_stats());
+    return CreatureInfoDTO(1 * variation, 1 * variation, 100 * variation, Direction::UP, 10 * variation,
+                           20 * variation, mock_creature_stats());
 }
 
 std::vector<CreatureInfoDTO> TestHelper::mock_creatures_information(const int size) {
@@ -183,6 +198,36 @@ bool TestHelper::equals(const std::vector<AssetInfoDTO>& a, const std::vector<As
 
 bool TestHelper::equals(const AppearanceDTO& a, const AppearanceDTO& b) {
     return a.body == b.body && a.head == b.head;
+}
+
+bool TestHelper::equals(const RequestedCommandDTO& a, const MoveEventDTO& b) {
+    return a.command == b.command && a.direction == b.direction;
+}
+
+bool TestHelper::equals(const RequestedCommandDTO& a, const ChatEventDTO& b) {
+    return a.command == b.command && a.receiver == b.receiver && a.message == b.content;
+}
+
+bool TestHelper::equals(const RequestedCommandDTO& a, const EventDTO& b) { return a.command == b.command; }
+
+bool TestHelper::equals(const RequestedCommandDTO& a, const BuyEventDTO& b) {
+    return a.command == b.command && a.one_byte_number == b.item_id;
+}
+
+bool TestHelper::equals(const RequestedCommandDTO& a, const DepositGoldEventDTO& b) {
+    return a.command == b.command && a.gold_amount == b.gold_amount;
+}
+
+bool TestHelper::equals(const RequestedCommandDTO& a, const ClanFoundEventDTO& b) {
+    return a.command == b.command && a.clan_name == b.clan_name;
+}
+
+bool TestHelper::equals(const RequestedCommandDTO& a, const RequestResponseEventDTO& b) {
+    return a.command == b.command && a.player_name == b.player_name && a.command_selector == b.is_accepted;
+}
+
+bool TestHelper::equals(const RequestedCommandDTO& a, const InteractEventDTO& b) {
+    return a.command == b.command && a.x == b.target_x && a.y == b.target_y;
 }
 
 bool TestHelper::equals(const ClanInfoDTO& a, const ClanInfoDTO& b) {

@@ -3,6 +3,13 @@
 #include <string>
 #include <vector>
 
+#include "common/dto/events/ally_related/deposit/deposit_gold_event.h"
+#include "common/dto/events/ally_related/interact_event.h"
+#include "common/dto/events/ally_related/shop/buy_event.h"
+#include "common/dto/events/chat/chatevent.h"
+#include "common/dto/events/clan/clan_found_event.h"
+#include "common/dto/events/clan/clan_request_response_event.h"
+#include "common/dto/events/movement/moveevent.h"
 #include "common/dto/lobby/create_player.h"
 #include "common/dto/lobby/credentials.h"
 #include "common/dto/lobby/existence.h"
@@ -34,7 +41,7 @@ public:
     EquipableItemInfoDTO mock_equipable_item();
     EquipmentInfoDTO mock_equipment();
     InventoryInfoDTO mock_inventory_info();
-    ExistenceDTO mock_existence(uint8_t exists, uint8_t connected);
+    ExistenceDTO mock_existence();
     CreatePlayerDTO mock_create_player();
     CreatureStatsDTO mock_creature_stats();
     CredentialsDTO mock_credentials(const std::string& username);
@@ -62,6 +69,16 @@ public:
     ClanLeaveDTO mock_clan_leave();
     InventoryListDTO mock_inventory_list();
 
+    // MOCK DE EVENTS :::::::::::::
+    MoveEventDTO mock_move_event();
+    ChatEventDTO mock_chat_event();
+    EventDTO mock_event(const CommandType& command);
+    BuyEventDTO mock_buy_event();
+    DepositGoldEventDTO mock_deposit_gold_event();
+    ClanFoundEventDTO mock_clan_found_event();
+    RequestResponseEventDTO mock_request_response_event();
+    InteractEventDTO mock_interact_event();
+
     // EQUALS DE INFO :::::::::::::
     bool equals(const PlayerInfoDTO& a, const PlayerInfoDTO& b);
     bool equals(const std::vector<PlayerInfoDTO>& a, const std::vector<PlayerInfoDTO>& b);
@@ -82,7 +99,6 @@ public:
     bool equals(const CredentialsDTO& a, const CredentialsDTO& b);
     bool equals(const AppearanceDTO& a, const AppearanceDTO& b);
 
-
     // EQUALS DE ACTIONS :::::::::::::
     bool equals(const AttackDTO& a, const AttackDTO& b);
     bool equals(const DespawnDTO& a, const DespawnDTO& b);
@@ -100,8 +116,17 @@ public:
     bool equals(const ClanLeaveDTO& a, const ClanLeaveDTO& b);
     bool equals(const InventoryListDTO& a, const InventoryListDTO& b);
     bool equals(const ActionDTO& a, const ActionDTO& b);
+    bool equals(const std::vector<ActionDTO>& a, const std::vector<ActionDTO>& b);
 
-    bool equals(const std::vector<ActionDTO> &a, const std::vector<ActionDTO> &b);
+    // EQUALS DE EVENTS :::::::::::::
+    bool equals(const RequestedCommandDTO& a, const MoveEventDTO& b);
+    bool equals(const RequestedCommandDTO& a, const ChatEventDTO& b);
+    bool equals(const RequestedCommandDTO& a, const EventDTO& b);
+    bool equals(const RequestedCommandDTO& a, const BuyEventDTO& b);
+    bool equals(const RequestedCommandDTO& a, const DepositGoldEventDTO& b);
+    bool equals(const RequestedCommandDTO& a, const ClanFoundEventDTO& b);
+    bool equals(const RequestedCommandDTO& a, const RequestResponseEventDTO& b);
+    bool equals(const RequestedCommandDTO& a, const InteractEventDTO& b);
 };
 
 
