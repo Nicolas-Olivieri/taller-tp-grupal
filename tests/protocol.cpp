@@ -7,8 +7,9 @@
 #include <gtest/gtest.h>
 #include <sys/socket.h>
 
-#include "test_helper.h"
 #include "common/socket.h"
+
+#include "test_helper.h"
 
 class ProtocolTest: public ::testing::Test {
 protected:
@@ -38,8 +39,6 @@ protected:
         client_skt.reset();
         server_skt.reset();
     }
-
-
 };
 
 TEST_F(ProtocolTest, SendAndReceiveMap) {
@@ -63,5 +62,3 @@ TEST_F(ProtocolTest, SendAndReceiveMap) {
     EXPECT_TRUE(helper.equals(received.colliders, to_send.colliders));
     EXPECT_TRUE(helper.equals(received.npcs, to_send.npcs));
 }
-
-
