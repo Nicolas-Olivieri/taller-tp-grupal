@@ -336,3 +336,24 @@ TEST_F(ProtocolTest, CreatePlayer_DecodesCreatePlayerRawBinaryCorrectly) {
     EXPECT_EQ(received.archetype, target.archetype);
     EXPECT_EQ(received.race, target.race);
 }
+
+/*
+ * Prueba unitarias para SnapshotDTO
+ */
+TEST_F(ProtocolTest, Snapshot_SendAndReceiveSuccessfully) {
+    const auto players_information = helper.mock_players_information(10);
+    const auto creatures_information =  helper.mock_creatures_information(5);
+    const auto loot_information = helper.mock_loots_information(7);
+    const auto actions = helper.mock_actions();
+
+    const SnapshotDTO to_send(players_information, creatures_information, loot_information, actions);
+
+    client_protocol->send(to_send);
+
+    const SnapshotDTO received = server_protocol->recv_snapshot();
+
+    EXPECT_TRUE(helper.equals(received.players_information, to_send.players_information));
+    EXPECT_TRUE(helper.equals(received.creatures_information, to_send.creatures_information));
+    EXPECT_TRUE(helper.equals(received.loot_information, to_send.loot_information));
+    EXPECT_TRUE(helper.equals(received.actions, to_send.actions));
+}
