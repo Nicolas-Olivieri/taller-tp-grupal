@@ -12,12 +12,11 @@ std::vector<AssetInfoDTO> TestHelper::mock_asset_vector(const int size) {
 }
 
 
-bool TestHelper::equals(const std::vector<AssetInfoDTO> &a, const std::vector<AssetInfoDTO> &b) {
-    if (a.size() != b.size()) return false;
+bool TestHelper::equals(const std::vector<AssetInfoDTO>& a, const std::vector<AssetInfoDTO>& b) {
+    if (a.size() != b.size())
+        return false;
     for (size_t i = 0; i < a.size(); i++) {
-        if (a[i].id != b[i].id ||
-            a[i].x != b[i].x ||
-            a[i].y != b[i].y ) {
+        if (a[i].id != b[i].id || a[i].x != b[i].x || a[i].y != b[i].y) {
             return false;
         }
     }

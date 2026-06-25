@@ -11,8 +11,8 @@ public:
 
     std::vector<AssetInfoDTO> mock_asset_vector(int size);
 
-    bool equals(const std::vector<AssetInfoDTO> &a, const std::vector<AssetInfoDTO> &b);
+    bool equals(const std::vector<AssetInfoDTO>& a, const std::vector<AssetInfoDTO>& b);
 };
 
 
-#endif //TEST_HELPER_H
+#endif  // TEST_HELPER_H
