@@ -88,4 +88,4 @@ public:
 };
 
 
-#endif  // TEST_HELPER_H
+#endif //TEST_HELPER_H
