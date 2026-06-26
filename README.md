@@ -13,21 +13,20 @@ El proyecto consiste en una implementación propia en *C++* del juego argentino 
 | [Oriana Toscano](https://github.com/OrianaToscano) | 111984 |
 
 
+## [¡Link a nuestra página!](https://nicolas-olivieri.github.io/taller-tp-grupal)
+
 ## Enlaces a documentación
 
 ### Manual de usuario
 
-<!-- TODO: Agregar el link al manual de usuario (github page) -->
-El [manual de usuario](#) es una guía básica para los nuevos usuarios. En el mismo se explica cómo instalar y correr el juego. Además, cuenta con una lista de controles y comandos para usar una vez se esté dentro del juego.
+El [manual de usuario](https://nicolas-olivieri.github.io/taller-tp-grupal/#/aventurero) es una guía básica para los nuevos usuarios. En el mismo se explica cómo instalar y correr el juego. Además, cuenta con una lista de controles y comandos para usar una vez se esté dentro del juego.
 
 ### Documentación técnica
 
-<!-- TODO: Agregar link a la documentación técnica (directorio /doc con los UML) -->
 La [documentación técnica](/docs/documentacion_tecnica.md) tiene la información necearia para que nuevos desarrolladores, que quieran unirse, puedan entender la arquitectura implementada rápidamente.
 
 ### Manual de proyecto
 
-<!-- TODO: Agregar link al manual de proyecto (un archivo en el directorio /doc) -->
 El [manual de proyecto](/docs/manual_del_proyecto.md) es una documentación que resume cómo fue la experiencia del grupo en el desarrollo de este trabajo práctico.
 
 ## Créditos
