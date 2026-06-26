@@ -1,0 +1,17 @@
+@startuml
+
+[*] --> IdleState : Spawn
+
+IdleState --> FollowingState : is_targeting_someone()
+
+FollowingState --> AttackingState : can_reach_target()\n and\n can_attack()
+FollowingState --> IdleState : not is_targeting_someone()\n or\n should_stop_targeting()
+
+AttackingState --> FollowingState : not can_reach_target()
+
+'Notas
+note left of IdleState : Deambula por el mundo
+note left of FollowingState : Persigue a un jugador
+note left of AttackingState : Inflige daño y aplica cooldown
+
+@enduml

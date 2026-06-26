@@ -1,0 +1,45 @@
+
+@startuml
+participant "GameLoop\n<<Thread>>" as GameLoop
+[-> GameLoop : process_commands(builder)
+activate GameLoop
+
+loop
+
+queue "Queue"
+GameLoop -> "Queue" : try_pop(command)
+activate "Queue"
+GameLoop <-- "Queue" : command
+deactivate "Queue"
+
+participant "Command"
+GameLoop -> "Command" : command.execute(world)
+activate "Command"
+
+participant "GameWorld"
+"Command" -> "GameWorld" : world.foo()
+activate "GameWorld"
+
+"Command" <-- "GameWorld" : result
+deactivate "GameWorld"
+
+deactivate "Command"
+
+GameLoop -> "Command" : command.build_snapshot(builder)
+activate "Command"
+
+participant "SnapshotBuilder"
+"Command" -> "SnapshotBuilder" : builder.add_action()
+activate "SnapshotBuilder"
+
+"Command" <-- "SnapshotBuilder"
+deactivate "SnapshotBuilder"
+
+GameLoop <-- "Command"
+deactivate "Command"
+
+end
+
+deactivate GameLoop
+
+@enduml

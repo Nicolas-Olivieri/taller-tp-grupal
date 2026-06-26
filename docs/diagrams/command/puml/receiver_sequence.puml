@@ -1,0 +1,31 @@
+@startuml
+
+participant "Receiver\n<<Thread>>" as Receiver
+[-> Receiver : run()
+activate Receiver
+
+loop
+
+participant "Protocol"
+Receiver -> "Protocol" : recv_command()
+activate "Protocol"
+Receiver <-- "Protocol" : dto
+deactivate "Protocol"
+
+participant "CommandFactory"
+Receiver -> "CommandFactory" : create(dto)
+activate "CommandFactory"
+Receiver <-- "CommandFactory" : command
+deactivate "CommandFactory"
+
+queue "Queue"
+Receiver -> "Queue" : push(command)
+activate "Queue"
+Receiver <-- "Queue"
+deactivate "Queue"
+
+end
+
+deactivate Receiver
+
+@enduml

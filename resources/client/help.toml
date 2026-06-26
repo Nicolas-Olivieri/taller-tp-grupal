@@ -18,7 +18,7 @@ help_messages = [
 ]
 
 [help.spaces]
-top_margin = 30
+top_margin = 25
 left_margin = 50
 line_spacing = 30
 max_msg_per_page = 15
@@ -31,6 +31,7 @@ help_messages = [
     "                        Piénsalo bien, no podrás abandonarlo",
     "/unirse <nombre-clan> : Enviar solicitud de unión a un clan",
     "- ¿Fundaste un clan?",
+    "/revisar-clan : Lista los miembros del clan y solicitudes pendientes",
     "/clan-aceptar <usuario> : Aceptar la solicitud de un usuario",
     "/clan-rechazar <usuario> : Rechazar la solicitud de un usuario",
     "/clan-ban <usuario> : Banear a un usuario del clan",
