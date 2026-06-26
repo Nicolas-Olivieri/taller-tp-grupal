@@ -3,6 +3,9 @@
 
 #include <stdexcept>
 
+// forward declaration
+class ProtocolTest;
+
 
 struct ClosedSocket: public std::runtime_error {
     ClosedSocket(): std::runtime_error("The socket is already closed.") {}
@@ -24,6 +27,9 @@ private:
      * Construye el socket pasándole directamente el file descriptor.
      * */
     explicit Socket(int skt);
+
+    // Para permitir tests con socketpair()
+    friend ProtocolTest;
 
     /*
      * Checkea que el file descriptor (skt) sea "valido".

@@ -1,0 +1,120 @@
+@startuml
+
+interface "Interactive" {
+    {abstract} +interact(Player&) = 0 : InteractResult
+}
+
+abstract "Ally" {
+    #position : const Position
+    #type : AllyType
+    __
+    {abstract} +execute(Player&, AllyActionPayload) = 0 : AllyExecuteResult
+    #handle_action_not_accepted<TResult, TStatus>(TStatus) : AllyExecuteResult
+    +interact(Player&) : InteractResult
+    ...
+}
+
+class "Banker" {
+    +execute(Player&, AllyActionPayload&) : AllyExecuteResult
+    -handle_deposit_gold(Player&, uint16_t) : AllyExecuteResult
+    -handle_deposit_item(Player&, uint8_t) : AllyExecuteResult
+    -handle_list_items(Player&) : AllyExecuteResult
+    -handle_withdraw_gold(Player&, uint16_t) : AllyExecuteResult
+    -handle_withdraw_item(Player&, uint8_t) : AllyExecuteResult
+}
+
+class "TeleportationTotem" {
+    -peer_position : Position
+    __
+    +execute(Player&, AllyActionPayload) : AllyExecuteResult
+}
+
+class "VendorAlly" {
+    #items : std::vector<uint8_t>
+    __
+    #assign_items(AllyType, uint8_t) : std::vector<uint8_t>
+    #handle_buy_item(Player&, uint8_t) : AllyExecuteResult
+    #handle_list_items() : AllyExecuteResult
+}
+
+class "Merchant" {
+    +execute(Player&, AllyActionPayload) : AllyExecuteResult
+    -handle_sell_item(Player&, uint8_t) : AllyExecuteResult
+}
+
+
+class "Priest" {
+    +execute(Player&, AllyActionPayload) : AllyExecuteResult
+    -handle_heal(Player&) : AllyExecuteResult
+    -handle_resurrect(Player&) : AllyExecuteResult
+}
+
+interface "Attacker" {
+    {abstract} +attack() = 0 : int
+    {abstract} +can_attack() = 0 : bool
+    {abstract} +can_reach(Position) = 0 : bool
+}
+
+abstract "Killable" {
+    #direction : Direction
+    #equipment : Equipment
+    #position : Position
+    #stats : Stats
+    ...
+    __
+    +die()
+    {abstract} +drop() = 0 : std::vector<Loot>
+    +interact(Player&) : InteractResult
+    +receive_damage(uint16_t) : uint16_t
+    +update()
+    +update_position(Position, Direction)
+    ...
+}
+
+class "Player" {
+    -bound_ally : Ally*
+    ...
+    __
+    +attack() : int
+    +bind_ally(Ally*)
+    +can_attack() : bool
+    +can_reach(Position) : bool
+    +drop() : std::vector<Loot>
+    +interact(Player&) : InteractResult
+    +update()
+    +update_position(Position, Direction)
+    ...
+}
+
+class "Creature" {
+    -target : Player*
+    ...
+    __
+    +attack() : int
+    +can_attack() : bool
+    +can_reach(Position) : bool
+    +drop() : std::vector<Loot>
+    +interact(Player&) : InteractResult
+    +update()
+    +update_state()
+    ...
+}
+
+"Interactive" <|-- "Ally"
+
+"Ally" <|-- "Banker"
+"Ally" <|-- "TeleportationTotem"
+"Ally" <|-- "VendorAlly"
+
+"VendorAlly" <|-- "Merchant"
+"VendorAlly" <|-- "Priest"
+
+"Interactive" <|-- "Killable"
+
+"Killable" <|-- "Player"
+"Killable" <|-- "Creature"
+
+"Attacker" <|-- "Player"
+"Attacker" <|-- "Creature"
+
+@enduml

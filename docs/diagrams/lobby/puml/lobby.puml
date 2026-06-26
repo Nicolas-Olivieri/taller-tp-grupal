@@ -1,0 +1,43 @@
+@startuml
+actor "LoginWindow" as LW
+participant "ClientGame" as CG
+participant "ConnectionHandler" as CH
+participant "Acceptor\n<<thread>>" as ACC
+participant "LobbyHandler\n<<thread>>" as LH
+queue "waiting_players\n<<ThreadSafeQueue>>" as Q
+participant "GameAcceptor\n<<thread>>" as GA
+
+activate Q
+activate GA
+note right of GA : bloqueado en pop()
+
+LW -> ACC : Socket(host, port)
+activate ACC
+ACC -> LH : send_to_lobby()
+activate LH
+
+LW -> LH : protocol.send(CredentialsDTO)
+LH -> LW : protocol.recv_existence()\n(ExistenceDTO)
+
+LW -> LH : protocol.send(CreatePlayerDTO)
+LH -> LW : protocol.recv_existence()\n(ExistenceDTO)
+
+LH -> LH : server_loader.get_client_data()
+
+LW -> CH : ConnectionHandler(Socket)
+activate CH
+LH -> CH : protocol.send(ClientMapDataDTO)
+LW -> CG : ClientGame(ConnectionHandler, ...)
+activate CG
+
+CG -> CH : recieve_map()
+CH --> CG : ClientMapDataDTO
+
+LH -> Q : push(ConnectionInfo)
+
+Q -> GA : pop()
+note right of GA : vuelve a \nbloquearse \nen pop()
+
+deactivate LH
+
+@enduml

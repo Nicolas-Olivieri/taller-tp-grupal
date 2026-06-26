@@ -13,7 +13,7 @@ PlayerSprite::PlayerSprite(SpriteLayer&& head, SpriteLayer&& body, const SDL2pp:
     // Así por ejemplo el escudo se ve por detrás si va hacia la derecha o arriba, pero por delante en otro
     // caso
     render_order.insert(
-            {{Direction::DOWN, {Layer::HEAD, Layer::BODY, Layer::HELMET, Layer::SHIELD, Layer::WEAPON}},
+            {{Direction::DOWN, {Layer::BODY, Layer::HEAD, Layer::HELMET, Layer::SHIELD, Layer::WEAPON}},
              {Direction::UP, {Layer::SHIELD, Layer::WEAPON, Layer::BODY, Layer::HEAD, Layer::HELMET}},
              {Direction::LEFT, {Layer::WEAPON, Layer::BODY, Layer::HEAD, Layer::HELMET, Layer::SHIELD}},
              {Direction::RIGHT, {Layer::SHIELD, Layer::BODY, Layer::HEAD, Layer::HELMET, Layer::WEAPON}}});

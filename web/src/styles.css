@@ -1,0 +1,169 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-parchment: var(--parchment);
+  --color-parchment-dark: var(--parchment-dark);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --color-gold-dim: var(--gold-dim);
+  --color-blood: var(--blood);
+  --color-ember: var(--ember);
+  --color-mana: var(--mana);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --font-pixel: "Press Start 2P", monospace;
+  --font-display: "MedievalSharp", "Cinzel", serif;
+  --font-body: "VT323", monospace;
+}
+
+:root {
+  --background: oklch(0.14 0.015 50);
+  --foreground: oklch(0.88 0.04 75);
+  --parchment: oklch(0.20 0.025 55);
+  --parchment-dark: oklch(0.11 0.015 50);
+  --gold: oklch(0.72 0.14 75);
+  --gold-bright: oklch(0.85 0.16 85);
+  --gold-dim: oklch(0.45 0.09 70);
+  --blood: oklch(0.45 0.18 25);
+  --ember: oklch(0.65 0.20 40);
+  --mana: oklch(0.55 0.18 250);
+  --muted: oklch(0.25 0.02 55);
+  --muted-foreground: oklch(0.62 0.04 70);
+  --border: oklch(0.35 0.06 70);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    background-color: var(--color-background);
+  }
+  body {
+    background-color: transparent;
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 3px, oklch(0 0 0 / 0.15) 3px 4px);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    font-size: 20px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+
+
+  img.pixel {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* === Pixel-frame: chunky stepped border like RPG UI panels === */
+@utility pixel-frame {
+  position: relative;
+  background: var(--color-parchment);
+  box-shadow:
+    0 0 0 4px var(--color-parchment),
+    0 0 0 8px var(--color-gold-dim),
+    0 0 0 12px var(--color-parchment-dark),
+    0 0 0 16px var(--color-gold),
+    inset 0 0 0 1px oklch(0 0 0 / 0.6),
+    8px 8px 0 16px oklch(0 0 0 / 0.6);
+}
+
+@utility pixel-frame-inner {
+  background: var(--color-parchment-dark);
+  box-shadow:
+    inset 0 0 0 2px oklch(0 0 0 / 0.8),
+    inset 0 0 0 4px var(--color-gold-dim),
+    inset 0 0 0 6px oklch(0 0 0 / 0.8),
+    inset 0 0 30px oklch(0 0 0 / 0.6);
+}
+
+@utility pixel-btn {
+  display: inline-block;
+  background: var(--color-gold-dim);
+  color: var(--color-background);
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow:
+    0 -3px 0 0 inset oklch(0 0 0 / 0.4),
+    0 0 0 3px var(--color-background),
+    0 0 0 6px var(--color-gold);
+  transition: transform 0.05s;
+  &:hover {
+    background: var(--color-gold);
+    color: oklch(0.12 0.02 50);
+  }
+  &:active {
+    transform: translate(2px, 2px);
+  }
+}
+
+@utility cmd-key {
+  display: inline-block;
+  background: oklch(0.08 0.01 50);
+  color: var(--color-gold-bright);
+  font-family: var(--font-pixel);
+  font-size: 0.7em;
+  padding: 0.25rem 0.5rem;
+  margin: 0 0.15rem;
+  border: 1px solid var(--color-gold-dim);
+  box-shadow:
+    inset 0 -2px 0 oklch(0 0 0 / 0.7),
+    inset 0 1px 0 oklch(0.95 0.1 80 / 0.15),
+    0 2px 0 oklch(0 0 0 / 0.8);
+  text-shadow: 0 0 8px oklch(0.85 0.16 85 / 0.6);
+  vertical-align: 0.05em;
+}
+
+@utility scanlines {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0 2px,
+      oklch(0 0 0 / 0.25) 2px 3px
+    );
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+}
+
+@utility title-glow {
+  color: var(--color-gold-bright);
+  text-shadow:
+    0 0 1px oklch(0 0 0),
+    2px 0 0 oklch(0 0 0),
+    -2px 0 0 oklch(0 0 0),
+    0 2px 0 oklch(0 0 0),
+    0 -2px 0 oklch(0 0 0),
+    4px 4px 0 oklch(0.30 0.10 30),
+    0 0 20px oklch(0.85 0.16 85 / 0.4);
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  45% { opacity: 0.92; }
+  47% { opacity: 0.78; }
+  49% { opacity: 1; }
+}
+
+@utility torch-flicker {
+  animation: flicker 4s infinite;
+}

@@ -139,11 +139,13 @@ bool GameConfig::has_biome_associated(uint8_t id) const { return biomes_data.flo
 const GridConstantsData& GameConfig::get_grid_constants() const { return grid_constants_data; }
 
 bool GameConfig::is_safe_zone_floor(uint8_t floor_id) {
-    return has_biome_associated(floor_id) && floor_id == biomes_data.safe_zone_id;
+    return has_biome_associated(floor_id) &&
+           biomes_data.floor_to_biome.at(floor_id) == biomes_data.safe_zone_id;
 }
 
 bool GameConfig::is_dungeon_floor(uint8_t floor_id) {
-    return has_biome_associated(floor_id) && floor_id == biomes_data.dungeon_id;
+    return has_biome_associated(floor_id) &&
+           biomes_data.floor_to_biome.at(floor_id) == biomes_data.dungeon_id;
 }
 
 const KillablesConstantsData& GameConfig::get_killables_constants() const { return killables_constants_data; }
