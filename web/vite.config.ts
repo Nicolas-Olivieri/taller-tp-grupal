@@ -5,7 +5,7 @@ import path from "node:path";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: "/taller-tp-grupal_fork/",
+  base: "/taller-tp-grupal/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
