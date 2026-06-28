@@ -203,8 +203,8 @@ void ClientConfig::load_constants_data(toml::basic_value<toml::type_config> root
 }
 
 const UserInterfaceData& ClientConfig::load_resolution_data(const std::string& resolution) {
-    const std::string path = std::format("{}_{}.toml", DATA_PATH CLIENT_UI_DATA_PATH, resolution);
-    if (path == DATA_PATH CLIENT_UI_DATA_PATH_DEFAULT) {
+    const std::string path = std::format("{}_{}.toml", CONFIG_PATH CLIENT_UI_DATA_PATH, resolution);
+    if (path == CONFIG_PATH CLIENT_UI_DATA_PATH_DEFAULT) {
         return ui_data;
     }
     load_ui_data(toml::parse(path));
