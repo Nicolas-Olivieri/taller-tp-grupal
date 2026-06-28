@@ -14,10 +14,17 @@ GAME_NAME="taller_tp"
 INSTALL_BIN="/usr/bin"
 INSTALL_CONFIG="/etc/${GAME_NAME}"
 INSTALL_DATA="/var/${GAME_NAME}"
-DESKTOP_DIR="$HOME/Desktop/"
+
+if [ -n "$SUDO_USER" ]; then
+    REAL_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+else
+    REAL_HOME="$HOME"
+fi
+
+DESKTOP_DIR="$REAL_HOME/Desktop/"
 
 if [ ! -d "$DESKTOP_DIR" ]; then
-    DESKTOP_DIR="$HOME/Escritorio"
+    DESKTOP_DIR="$REAL_HOME/Escritorio/"
 fi
 
 echo -e "${BLUE}========================================${NC}"
